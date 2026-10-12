@@ -77,6 +77,7 @@ export function Intro() {
   const go = (n: number) => {
     touched.current = true;
     setI(Math.max(0, Math.min(SLIDES.length - 1, n)));
+    window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
   return (

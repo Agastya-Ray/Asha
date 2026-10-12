@@ -47,9 +47,10 @@ function Shell() {
   useEffect(() => {
     document.documentElement.dataset.size = textSize;
   }, [textSize]);
+  const setupStep = useAsha((s) => s.setupStep);
   useEffect(() => {
     window.scrollTo({ top: 0 });
-  }, [tab]);
+  }, [tab, introSeen, onboarded, setupStep]);
   // Android back button: go back to Today first, then leave the app.
   useEffect(() => {
     if (!isNative) return;
