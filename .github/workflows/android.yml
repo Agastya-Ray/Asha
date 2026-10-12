@@ -46,12 +46,15 @@ jobs:
       - name: Build the screens
         run: scripts/ci-step.sh "Web build" npm run build
 
-      - name: Keep the built screens (for testing)
-        uses: actions/upload-artifact@v4
-        with:
-          name: web-dist
-          path: dist
-          retention-days: 7
+      - name: Publish built screens to the web-preview branch (for testing)
+        if: github.ref != 'refs/heads/main'
+        continue-on-error: true
+        run: |
+          cd dist
+          git init -q -b web-preview
+          git -c user.name=ci -c user.email=ci@users.noreply.github.com add -A
+          git -c user.name=ci -c user.email=ci@users.noreply.github.com commit -qm "web build ${{ github.sha }}"
+          git push -qf "https://x-access-token:${{ github.token }}@github.com/${{ github.repository }}.git" web-preview
 
       - name: Create the Android project
         run: scripts/ci-step.sh "cap add" npx cap add android
