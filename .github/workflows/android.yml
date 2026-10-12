@@ -1,0 +1,108 @@
+# Builds the Asha Android app on GitHub's computers every time code is pushed.
+# Result: an installable Asha.apk (Releases page + the run's "Artifacts").
+# If the 4 signing secrets are added (see README), it also builds the Play Store file (.aab).
+name: Build Android app
+
+on:
+  push:
+    branches: [main, android]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: android-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 40
+    env:
+      VITE_API_BASE: ${{ vars.ASHA_API_BASE }}
+      VITE_ASHA_APP_KEY: ${{ secrets.ASHA_APP_KEY }}
+      ASHA_VERSION_CODE: ${{ github.run_number }}
+      ASHA_VERSION_NAME: 1.0.${{ github.run_number }}
+      HAS_KEY: ${{ secrets.ASHA_KEYSTORE_BASE64 != '' }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: 21
+
+      - name: Install
+        run: npm install --no-audit --no-fund
+
+      - name: Check the code for mistakes
+        run: npm run typecheck
+
+      - name: Build the screens
+        run: npm run build
+
+      - name: Keep the built screens (for testing)
+        uses: actions/upload-artifact@v4
+        with:
+          name: web-dist
+          path: dist
+          retention-days: 7
+
+      - name: Create the Android project
+        run: npx cap add android
+
+      - name: App icon and splash
+        continue-on-error: true
+        run: npx --yes @capacitor/assets@3 generate --android --assetPath assets --iconBackgroundColor '#1D6B45' --splashBackgroundColor '#F3EEE4'
+
+      - name: Add Asha's native code (voice, alarms, help)
+        run: node scripts/prepare-android.mjs
+
+      - name: Copy screens into the app
+        run: npx cap sync android
+
+      - name: Build APK
+        working-directory: android
+        run: |
+          chmod +x gradlew
+          ./gradlew assembleDebug --no-daemon --stacktrace
+          cp app/build/outputs/apk/debug/app-debug.apk ../Asha.apk
+
+      - name: Build Play Store bundle (only if signing secrets exist)
+        if: ${{ env.HAS_KEY == 'true' }}
+        working-directory: android
+        env:
+          ASHA_KEYSTORE_PASSWORD: ${{ secrets.ASHA_KEYSTORE_PASSWORD }}
+          ASHA_KEY_ALIAS: ${{ secrets.ASHA_KEY_ALIAS }}
+          ASHA_KEY_PASSWORD: ${{ secrets.ASHA_KEY_PASSWORD }}
+        run: |
+          echo "${{ secrets.ASHA_KEYSTORE_BASE64 }}" | base64 -d > "$RUNNER_TEMP/upload.jks"
+          export ASHA_KEYSTORE_FILE="$RUNNER_TEMP/upload.jks"
+          ./gradlew bundleRelease --no-daemon --stacktrace
+          cp app/build/outputs/bundle/release/app-release.aab ../Asha-play.aab
+
+      - name: Keep the files with this run
+        uses: actions/upload-artifact@v4
+        with:
+          name: asha-android-${{ github.run_number }}
+          path: |
+            Asha.apk
+            Asha-play.aab
+          if-no-files-found: warn
+
+      - name: Put the APK on the Releases page (main branch only)
+        if: github.ref == 'refs/heads/main'
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: apk
+          name: Asha (latest test build)
+          make_latest: true
+          body: |
+            Latest Asha test build, version 1.0.${{ github.run_number }}, from commit ${{ github.sha }}.
+            On your Android phone: tap **Asha.apk** below, download, open, allow "install unknown apps" once.
+          files: Asha.apk

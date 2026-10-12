@@ -1,7 +1,7 @@
 import { useRef, useState } from "react";
 import { Button } from "@/components/ui/button";
-import { Card, FieldLabel, t } from "@/components/asha/bits";
-import { readPrescription } from "@/lib/asha/ai";
+import { Card, FieldLabel, SpeakField, t } from "@/components/asha/bits";
+import { apiReadPrescription } from "@/lib/asha/api";
 import { normTime } from "@/lib/asha/time";
 import { newId, useAsha } from "@/lib/asha/store";
 import type { Food, Med } from "@/lib/asha/types";
@@ -37,20 +37,10 @@ export function MedEditor({
   return (
     <Card>
       <FieldLabel>{t(lang, { en: "Medicine name", hi: "दवा का नाम" })}</FieldLabel>
-      <input
-        className="field"
-        value={med.name}
-        onChange={(e) => setMed({ ...med, name: e.target.value })}
-        placeholder={t(lang, { en: "Metformin", hi: "मेटफॉर्मिन" })}
-      />
+      <SpeakField value={med.name} onChange={(v) => setMed({ ...med, name: v })} placeholder={t(lang, { en: "Metformin", hi: "मेटफॉर्मिन" })} />
       <div className="mt-4">
         <FieldLabel>{t(lang, { en: "How much", hi: "कितनी" })}</FieldLabel>
-        <input
-          className="field"
-          value={med.dose}
-          onChange={(e) => setMed({ ...med, dose: e.target.value })}
-          placeholder={t(lang, { en: "1 tablet, 500 mg", hi: "1 गोली, 500 mg" })}
-        />
+        <SpeakField value={med.dose} onChange={(v) => setMed({ ...med, dose: v })} placeholder={t(lang, { en: "1 tablet, 500 mg", hi: "1 गोली, 500 mg" })} />
       </div>
       <div className="mt-4">
         <FieldLabel>{t(lang, { en: "Times", hi: "समय" })}</FieldLabel>
@@ -195,6 +185,7 @@ export function MedsScreen() {
   const [drafts, setDrafts] = useState<Draft[] | null>(null);
   const [caution, setCaution] = useState("");
   const fileRef = useRef<HTMLInputElement>(null);
+  const galleryRef = useRef<HTMLInputElement>(null);
 
   async function onFile(file: File) {
     setError("");
@@ -202,9 +193,15 @@ export function MedsScreen() {
     setDrafts(null);
     try {
       const image = await fileToJpeg(file);
-      const res = await readPrescription({ data: { image } });
+      const res = await apiReadPrescription(image);
       if (!res.ok) {
-        setError(res.error);
+        setError(
+          res.error === "offline"
+            ? t(lang, { en: "No internet right now. Type the medicines instead.", hi: "अभी इंटरनेट नहीं. दवाएँ लिख दें." })
+            : res.status === 429
+              ? t(lang, { en: "Photo reading needs a short rest. Type the medicines, or try later.", hi: "फ़ोटो पढ़ना थोड़ी देर रुका है. दवाएँ लिखें, या बाद में कोशिश करें." })
+              : t(lang, { en: "The page could not be read. Type the names, or try a clearer photo in daylight.", hi: "पन्ना पढ़ा नहीं गया. नाम लिखें, या दिन की रोशनी में साफ़ फ़ोटो लें." }),
+        );
         return;
       }
       const next: Draft[] = res.medicines.map((m) => {
@@ -216,7 +213,7 @@ export function MedsScreen() {
           dose: m.dose || (lang === "hi" ? "खुराक लिखें" : "Add the dose"),
           times: times.length ? times : ["08:00"],
           food,
-          note: m.note,
+          note: [m.note, m.days > 0 ? (lang === "hi" ? `${m.days} दिन के लिए` : `For ${m.days} days`) : ""].filter(Boolean).join(" · "),
           pillsLeft: null,
           keep: true,
         };
@@ -321,11 +318,18 @@ export function MedsScreen() {
       ) : (
         <div className="mt-4 flex flex-col gap-3">
           <Button onClick={() => setAdding(true)}>{t(lang, { en: "Add a medicine", hi: "दवा जोड़ें" })}</Button>
-          <Button variant="quiet" onClick={() => fileRef.current?.click()} disabled={reading}>
-            {reading
-              ? t(lang, { en: "Reading the page…", hi: "पन्ना पढ़ रही हूँ…" })
-              : t(lang, { en: "Read a prescription photo", hi: "पर्ची की फ़ोटो पढ़ें" })}
-          </Button>
+          {reading ? (
+            <p className="text-lg font-bold text-sage">{t(lang, { en: "Reading the page…", hi: "पन्ना पढ़ रही हूँ…" })}</p>
+          ) : (
+            <div className="grid grid-cols-2 gap-2">
+              <Button variant="quiet" onClick={() => fileRef.current?.click()}>
+                {t(lang, { en: "Photo of prescription", hi: "पर्ची की फ़ोटो लें" })}
+              </Button>
+              <Button variant="quiet" onClick={() => galleryRef.current?.click()}>
+                {t(lang, { en: "Choose from gallery", hi: "गैलरी से चुनें" })}
+              </Button>
+            </div>
+          )}
           <p className="text-base text-quiet">
             {t(lang, {
               en: "One page, in daylight, lying flat. Asha suggests names. She does not add them until you say so.",
@@ -339,6 +343,17 @@ export function MedsScreen() {
         type="file"
         accept="image/*"
         capture="environment"
+        className="sr-only"
+        onChange={(e) => {
+          const file = e.target.files?.[0];
+          e.target.value = "";
+          if (file) void onFile(file);
+        }}
+      />
+      <input
+        ref={galleryRef}
+        type="file"
+        accept="image/*"
         className="sr-only"
         onChange={(e) => {
           const file = e.target.files?.[0];

@@ -61,7 +61,9 @@ export type Checkin = {
   water: number;
 };
 
-export type ChatTurn = { role: "user" | "asha"; text: string };
+export type ChatTurn = { role: "user" | "asha"; text: string; say?: string };
+
+export type TextSize = "normal" | "large" | "xl";
 
 export type AgendaState = "later" | "now" | "open" | "snoozed" | "taken" | "skipped";
 
@@ -73,7 +75,10 @@ export type AgendaItem = {
   minutes: number;
   title: string;
   detail: string;
+  /** shown on screen, in the screen language */
   sentence: string;
+  /** spoken out loud, in Asha's voice language */
+  say: string;
   state: AgendaState;
 };
 
@@ -81,7 +86,21 @@ export type Persist = {
   onboarded: boolean;
   setupStep: 1 | 2 | 3 | 4;
   name: string;
+  /** language written on screen */
   lang: Lang;
+  /** language Asha speaks and listens in */
+  voiceLang: Lang;
+  introSeen: boolean;
+  textSize: TextSize;
+  deviceId: string;
+  /** Help: text every loved one automatically (Android, needs SMS permission) */
+  sosAutoSms: boolean;
+  /** Text family when a medicine reminder goes unanswered three times */
+  familyAlert: boolean;
+  /** Morning and night spoken greetings */
+  dailyGreetings: boolean;
+  wakeTime: string;
+  sleepTime: string;
   conditions: ConditionId[];
   contacts: Contact[];
   emergencyNumber: string;

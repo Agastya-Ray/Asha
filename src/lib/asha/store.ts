@@ -9,6 +9,7 @@ import type {
   Med,
   Persist,
   Tab,
+  TextSize,
 } from "@/lib/asha/types";
 import { defaultMeals, emptyCheckin } from "@/lib/asha/schedule";
 import { shiftDay, todayKey } from "@/lib/asha/time";
@@ -20,6 +21,15 @@ export const initialPersist = (): Persist => ({
   setupStep: 1,
   name: "",
   lang: "en",
+  voiceLang: "en",
+  introSeen: false,
+  textSize: "normal",
+  deviceId: "",
+  sosAutoSms: false,
+  familyAlert: false,
+  dailyGreetings: true,
+  wakeTime: "07:30",
+  sleepTime: "21:30",
   conditions: [],
   contacts: [],
   emergencyNumber: "",
@@ -49,6 +59,12 @@ type State = Persist & {
   openSettings: () => void;
   closeSettings: () => void;
   setLang: (lang: Lang) => void;
+  setVoiceLang: (lang: Lang) => void;
+  setBothLangs: (lang: Lang) => void;
+  setTextSize: (size: TextSize) => void;
+  finishIntro: () => void;
+  replayIntro: () => void;
+  applyNativeActions: (actions: { key: string; action: string; at: number }[]) => void;
   setName: (name: string) => void;
   toggleCondition: (id: ConditionId) => void;
   setConditions: (ids: ConditionId[]) => void;
@@ -69,7 +85,14 @@ type State = Persist & {
   markReminded: (keys: string[]) => void;
   patchCheckin: (patch: Partial<Checkin>) => void;
   addWater: () => void;
-  setPrefs: (patch: Partial<Pick<Persist, "voiceOn" | "richVoice" | "speakOnOpen" | "keepAwake" | "pro">>) => void;
+  setPrefs: (
+    patch: Partial<
+      Pick<
+        Persist,
+        "voiceOn" | "richVoice" | "speakOnOpen" | "keepAwake" | "pro" | "sosAutoSms" | "familyAlert" | "dailyGreetings" | "wakeTime" | "sleepTime"
+      >
+    >,
+  ) => void;
   pushChat: (turn: ChatTurn) => void;
   dismissCoach: () => void;
   finishSetup: () => void;
@@ -117,6 +140,11 @@ function sanitize(raw: unknown): Persist {
     ...base,
     ...r,
     lang: r.lang === "hi" ? "hi" : "en",
+    voiceLang: r.voiceLang === "hi" ? "hi" : r.voiceLang === "en" ? "en" : r.lang === "hi" ? "hi" : "en",
+    textSize: r.textSize === "large" || r.textSize === "xl" ? r.textSize : "normal",
+    deviceId: typeof r.deviceId === "string" && r.deviceId ? r.deviceId : uid(),
+    // people who used the older version already know Asha
+    introSeen: typeof r.introSeen === "boolean" ? r.introSeen : Boolean(r.onboarded),
     conditions: Array.isArray(r.conditions) ? r.conditions.filter(Boolean) : [],
     contacts: Array.isArray(r.contacts) ? r.contacts : [],
     meds: Array.isArray(r.meds) ? r.meds : [],
@@ -140,7 +168,7 @@ export const useAsha = create<State>((set) => ({
     if (typeof window === "undefined") return;
     try {
       const raw = localStorage.getItem(KEY);
-      const data = raw ? sanitize(JSON.parse(raw) as unknown) : initialPersist();
+      const data = raw ? sanitize(JSON.parse(raw) as unknown) : { ...initialPersist(), deviceId: uid() };
       set({ ...data, hydrated: true });
     } catch {
       set({ hydrated: true });
@@ -150,6 +178,36 @@ export const useAsha = create<State>((set) => ({
   openSettings: () => set((s) => ({ returnTab: s.tab === "settings" ? s.returnTab : s.tab, tab: "settings" })),
   closeSettings: () => set((s) => ({ tab: s.returnTab })),
   setLang: (lang) => set({ lang }),
+  setVoiceLang: (voiceLang) => set({ voiceLang }),
+  setBothLangs: (lang) => set({ lang, voiceLang: lang }),
+  setTextSize: (textSize) => set({ textSize }),
+  finishIntro: () => set({ introSeen: true }),
+  replayIntro: () => set({ introSeen: false }),
+  applyNativeActions: (actions) =>
+    set((s) => {
+      // Buttons pressed on the lock-screen card while the app was closed.
+      // key looks like "med|<medId>|08:00" or "meal|<mealId>|13:00".
+      let doseLogs = s.doseLogs;
+      let mealLogs = s.mealLogs;
+      let meds = s.meds;
+      const reminded = new Set(s.reminded);
+      for (const a of actions) {
+        const [kind, id, time] = a.key.split("|");
+        const day = todayKey(new Date(a.at || Date.now()));
+        reminded.add(`${day}|${kind}|${id}|${time}`);
+        if (a.action !== "taken") continue;
+        if (kind === "med" && id && time) {
+          const had = doseLogs.find((l) => l.day === day && l.medId === id && l.time === time);
+          doseLogs = [...doseLogs.filter((l) => !(l.day === day && l.medId === id && l.time === time)), { medId: id, time, day, status: "taken" }];
+          if (had?.status !== "taken") {
+            meds = meds.map((m) => (m.id === id && m.pillsLeft !== null ? { ...m, pillsLeft: Math.max(0, m.pillsLeft - 1) } : m));
+          }
+        } else if (kind === "meal" && id && !mealLogs.some((l) => l.day === day && l.mealId === id)) {
+          mealLogs = [...mealLogs, { mealId: id, day }];
+        }
+      }
+      return { doseLogs, mealLogs, meds, reminded: [...reminded] };
+    }),
   setName: (name) => set({ name }),
   toggleCondition: (id) =>
     set((s) => ({
@@ -171,7 +229,18 @@ export const useAsha = create<State>((set) => ({
       meds: s.meds.some((m) => m.id === med.id) ? s.meds.map((m) => (m.id === med.id ? med : m)) : [...s.meds, med],
     })),
   removeMed: (id) => set((s) => ({ meds: s.meds.filter((m) => m.id !== id) })),
-  saveMeds: (meds) => set((s) => ({ meds: [...s.meds, ...meds] })),
+  // From a prescription photo: a medicine already on the list is updated, not added twice.
+  saveMeds: (incoming) =>
+    set((s) => {
+      const norm = (n: string) => n.toLowerCase().replace(/[^a-z0-9\u0900-\u097f]/g, "");
+      const meds = s.meds.slice();
+      for (const m of incoming) {
+        const i = meds.findIndex((x) => norm(x.name) === norm(m.name));
+        if (i >= 0) meds[i] = { ...meds[i], dose: m.dose || meds[i].dose, times: m.times, food: m.food, note: m.note || meds[i].note };
+        else meds.push(m);
+      }
+      return { meds };
+    }),
   updateMeal: (id, patch) =>
     set((s) => ({
       meals: s.meals.map((m) => (m.id === id ? { ...m, ...patch } : m)),
@@ -241,8 +310,8 @@ export const useAsha = create<State>((set) => ({
   pushChat: (turn) => set((s) => ({ chat: [...s.chat, turn].slice(-24) })),
   dismissCoach: () => set({ coachDismissed: true }),
   finishSetup: () => set({ onboarded: true, setupStep: 4, sample: false }),
-  loadSample: () => set(sampleDay()),
-  eraseAll: () => set({ ...initialPersist(), hydrated: true, tab: "today" }),
+  loadSample: () => set((s) => ({ ...sampleDay(), deviceId: s.deviceId, introSeen: true, lang: s.lang, voiceLang: s.voiceLang })),
+  eraseAll: () => set((s) => ({ ...initialPersist(), deviceId: s.deviceId, introSeen: true, hydrated: true, tab: "today" })),
 }));
 
 function sampleDay(): Partial<State> {

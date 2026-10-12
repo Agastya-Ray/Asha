@@ -154,3 +154,34 @@ export function smsBody(lang: Lang, name: string) {
   }
   return `This is ${who}. I need help right now. Please call me or come if you can. Sent from Asha.`;
 }
+
+export function againSentence(lang: Lang, name: string, title: string) {
+  const who = person(name, lang);
+  if (lang === "hi") return `${who}, ${title} अभी भी बाकी है. ले लें तो हरा बटन दबा दें. कोई जल्दी नहीं.`;
+  return `${who}, ${title} is still waiting. When it's done, press the green button. No rush.`;
+}
+
+/** Text sent to family when a medicine reminder goes unanswered. Written in the screen language. */
+export function missedText(lang: Lang, name: string, medName: string, time: string) {
+  const who = name.trim() || (lang === "hi" ? "आपके अपने" : "Your family member");
+  if (lang === "hi") return `आशा से संदेश: ${who} ने ${speakClock(lang, time)} की ${medName} अभी तक ली हुई नहीं दिखाई है. एक बार फ़ोन कर लें.`;
+  return `Message from Asha: ${who} has not marked their ${speakClock(lang, time)} ${medName} as taken yet. A quick call might help.`;
+}
+
+export function morningLine(lang: Lang, name: string) {
+  const who = person(name, lang);
+  if (lang === "hi") return `सुप्रभात, ${who}. नया दिन है. पानी का एक गिलास पी लें. आज की दवा और खाना मैं याद दिलाती रहूँगी.`;
+  return `Good morning, ${who}. A new day. Start with a glass of water. I'll remind you about medicines and meals as the day goes.`;
+}
+
+export function nightLine(lang: Lang, name: string) {
+  const who = person(name, lang);
+  if (lang === "hi") return `शुभ रात्रि, ${who}. आज के लिए बस इतना. आराम से सोइए. कल सुबह मैं फिर यहीं हूँ.`;
+  return `Good night, ${who}. That's enough for today. Rest well. I'll be here in the morning.`;
+}
+
+export function sosText(lang: Lang, name: string, mapLink: string) {
+  const base = smsBody(lang, name);
+  if (!mapLink) return base;
+  return lang === "hi" ? `${base} मेरी जगह: ${mapLink}` : `${base} Where I am: ${mapLink}`;
+}

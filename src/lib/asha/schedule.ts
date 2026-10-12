@@ -12,7 +12,10 @@ export function defaultMeals(): Meal[] {
   ];
 }
 
-export function buildAgenda(state: Pick<Persist, "name" | "lang" | "meds" | "meals" | "doseLogs" | "mealLogs" | "snooze">, now = new Date()): AgendaItem[] {
+export function buildAgenda(
+  state: Pick<Persist, "name" | "lang" | "voiceLang" | "meds" | "meals" | "doseLogs" | "mealLogs" | "snooze">,
+  now = new Date(),
+): AgendaItem[] {
   const day = todayKey(now);
   const nowMin = minutesNow(now);
   const nowMs = now.getTime();
@@ -38,6 +41,7 @@ export function buildAgenda(state: Pick<Persist, "name" | "lang" | "meds" | "mea
         title: med.name,
         detail: `${med.dose}${med.note ? ` · ${med.note}` : ""}`,
         sentence: doseSentence(state.lang, state.name, med, time),
+        say: doseSentence(state.voiceLang, state.name, med, time),
         state: agendaState,
       });
     }
@@ -62,6 +66,7 @@ export function buildAgenda(state: Pick<Persist, "name" | "lang" | "meds" | "mea
       title: mealTitle(meal, state.lang),
       detail: note,
       sentence: mealSentence(state.lang, state.name, meal, meal.time),
+      say: mealSentence(state.voiceLang, state.name, meal, meal.time),
       state: agendaState,
     });
   }
@@ -77,13 +82,17 @@ export function buildAgenda(state: Pick<Persist, "name" | "lang" | "meds" | "mea
   return items.sort((a, b) => rank[a.state] - rank[b.state] || a.minutes - b.minutes);
 }
 
-export function shouldSpeak(item: AgendaItem, reminded: string[], snooze: Record<string, number>, now = new Date()) {
+/**
+ * Speak once per item per day: when it is due, or (if the app was opened late)
+ * when it is still open up to 4 hours later. A snooze clears the "reminded" mark,
+ * so it speaks again when the snooze ends.
+ */
+export function shouldSpeak(item: AgendaItem, reminded: string[], _snooze: Record<string, number>, now = new Date()) {
   if (reminded.includes(item.key)) return false;
-  const nowMin = minutesNow(now);
-  const late = nowMin - item.minutes;
-  const until = snooze[item.key];
-  if (item.state === "now" && late >= 0 && late <= 45) return true;
-  if (item.state === "now" && until && until <= now.getTime() && late <= 180) return true;
+  const late = minutesNow(now) - item.minutes;
+  if (late < 0) return false;
+  if (item.state === "now") return true;
+  if (item.state === "open" && late <= 240) return true;
   return false;
 }
 

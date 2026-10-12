@@ -1,6 +1,9 @@
 import { Droplets } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, Hear, t, useNow } from "@/components/asha/bits";
+import { ReminderHealth } from "@/components/asha/reminder-health";
+import { VoiceCommand } from "@/components/asha/voice-command";
+import { isNative } from "@/lib/asha/native";
 import { plateLine } from "@/lib/asha/plans";
 import { buildAgenda, doseProgress, todayCheckin } from "@/lib/asha/schedule";
 import { greeting } from "@/lib/asha/speech";
@@ -11,6 +14,7 @@ import type { AgendaItem } from "@/lib/asha/types";
 export function TodayScreen() {
   const now = useNow();
   const lang = useAsha((s) => s.lang);
+  const voiceLang = useAsha((s) => s.voiceLang);
   const name = useAsha((s) => s.name);
   const conditions = useAsha((s) => s.conditions);
   const sample = useAsha((s) => s.sample);
@@ -32,7 +36,8 @@ export function TodayScreen() {
   const setTab = useAsha((s) => s.setTab);
 
   const hello = greeting(lang, name, now);
-  const agenda = buildAgenda({ name, lang, meds, meals, doseLogs, mealLogs, snooze }, now);
+  const helloSay = greeting(voiceLang, name, now);
+  const agenda = buildAgenda({ name, lang, voiceLang, meds, meals, doseLogs, mealLogs, snooze }, now);
   const active = agenda.filter((item) => item.state === "now" || item.state === "snoozed" || item.state === "open");
   const later = agenda.filter((item) => item.state === "later");
   const featuredLater = active.length === 0 ? later[0] : undefined;
@@ -48,8 +53,11 @@ export function TodayScreen() {
       <h1 className="display text-4xl leading-tight">{hello.title}</h1>
       <p className="mt-3 text-lg text-quiet">{hello.line}</p>
       <div className="mt-4">
-        <Hear text={`${hello.title} ${hello.line}`} label={t(lang, { en: "Hear this", hi: "इसे सुनें" })} />
+        <Hear say={`${helloSay.title} ${helloSay.line}`} label={t(lang, { en: "Hear this", hi: "इसे सुनें" })} />
       </div>
+
+      <ReminderHealth />
+      <VoiceCommand />
 
       {conditions.includes("heart") && checkin?.chestOk !== true ? (
         <Card className="mt-5 border-sos bg-sos-soft">
@@ -232,10 +240,15 @@ export function TodayScreen() {
           <li>{t(lang, { en: "Help stays at the top and opens the numbers you saved.", hi: "मदद ऊपर रहती है और सहेजे नंबर खोलती है." })}</li>
         </ol>
         <p className="mt-3 text-base text-quiet">
-          {t(lang, {
-            en: "She can speak only while this page is open. Leave it on the table at home, or open it when you sit down to eat.",
-            hi: "वह तभी बोलती है जब यह पन्ना खुला हो. घर पर मेज़ पर छोड़ दें, या खाने बैठें तब खोलें.",
-          })}
+          {isNative
+            ? t(lang, {
+                en: "She speaks even when the phone is locked. If you do not press anything, she asks again twice, ten minutes apart.",
+                hi: "फ़ोन लॉक हो तब भी वह बोलती है. कुछ न दबाएँ तो दस-दस मिनट पर दो बार और पूछती है.",
+              })
+            : t(lang, {
+                en: "In a web browser she can speak only while this page is open. The Android app speaks even when the phone is locked.",
+                hi: "ब्राउज़र में वह तभी बोलती है जब यह पन्ना खुला हो. एंड्रॉइड ऐप फ़ोन लॉक होने पर भी बोलता है.",
+              })}
         </p>
         {!coach ? (
           <div className="mt-4">
@@ -245,7 +258,7 @@ export function TodayScreen() {
           </div>
         ) : null}
       </details>
-      <Card className="mt-5">
+      {isNative ? null : <Card className="mt-5">
         <p className="text-lg font-bold">{t(lang, { en: "Keep Asha on the home screen", hi: "आशा को होम स्क्रीन पर रखें" })}</p>
         <p className="mt-2 text-base text-quiet">
           {t(lang, {
@@ -253,7 +266,7 @@ export function TodayScreen() {
             hi: "क्रोम में मेनू खोलें (तीन बिंदु), फिर Install app या होम स्क्रीन में जोड़ें. उसी आइकन से खोलें.",
           })}
         </p>
-      </Card>
+      </Card>}
     </div>
   );
 }
@@ -291,7 +304,7 @@ function AgendaCard({ item }: { item: AgendaItem }) {
       ) : null}
       <p className="mt-3 text-lg">{item.sentence}</p>
       <div className="mt-3">
-        <Hear text={item.sentence} label={t(lang, { en: "Hear this", hi: "इसे सुनें" })} />
+        <Hear say={item.say} label={t(lang, { en: "Hear this", hi: "इसे सुनें" })} />
       </div>
       <div className="mt-4 flex flex-col gap-2">
         <Button

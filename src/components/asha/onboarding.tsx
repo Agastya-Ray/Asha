@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
-import { Choice, FieldLabel, t } from "@/components/asha/bits";
+import { Choice, FieldLabel, LangSwitch, SpeakField, t } from "@/components/asha/bits";
 import { MedEditor } from "@/components/asha/meds";
 import { CONDITIONS } from "@/lib/asha/plans";
 import { digits } from "@/lib/asha/schedule";
@@ -12,7 +12,9 @@ export function Onboarding() {
   const step = useAsha((s) => s.setupStep);
   const name = useAsha((s) => s.name);
   const conditions = useAsha((s) => s.conditions);
+  const voiceLang = useAsha((s) => s.voiceLang);
   const setLang = useAsha((s) => s.setLang);
+  const setBoth = useAsha((s) => s.setBothLangs);
   const setName = useAsha((s) => s.setName);
   const toggle = useAsha((s) => s.toggleCondition);
   const setStep = useAsha((s) => s.setSetupStep);
@@ -42,35 +44,16 @@ export function Onboarding() {
           </h1>
           <p className="mt-4 text-lg text-quiet">
             {t(lang, {
-              en: "Asha speaks medicines and meals in a sentence, not a beep. Help stays at the top. This stays on this phone.",
-              hi: "आशा दवा और खाना एक वाक्य में बोलती है, बीप में नहीं. मदद ऊपर रहती है. यह इसी फ़ोन पर रहता है.",
+              en: "Four short steps: your name, your health, your people, your medicines. You can press the microphone instead of typing.",
+              hi: "चार छोटे कदम: आपका नाम, आपकी सेहत, आपके लोग, आपकी दवाएँ. लिखने की जगह माइक दबा सकते हैं.",
             })}
           </p>
-          <div className="mt-6 grid grid-cols-2 gap-2 rounded-2xl border border-line bg-paper p-1">
-            <button
-              type="button"
-              onClick={() => setLang("en")}
-              className={`min-h-12 rounded-xl text-lg font-bold ${lang === "en" ? "bg-sage text-paper" : "text-ink"}`}
-            >
-              English
-            </button>
-            <button
-              type="button"
-              onClick={() => setLang("hi")}
-              className={`min-h-12 rounded-xl text-lg font-bold ${lang === "hi" ? "bg-sage text-paper" : "text-ink"}`}
-            >
-              हिन्दी
-            </button>
+          <div className="mt-6">
+            <LangSwitch value={lang} onChange={(l) => (lang === voiceLang ? setBoth(l) : setLang(l))} />
           </div>
           <div className="mt-6">
             <FieldLabel>{t(lang, { en: "What should Asha call you?", hi: "आशा आपको क्या कहे?" })}</FieldLabel>
-            <input
-              className="field"
-              value={name}
-              onChange={(e) => setName(e.target.value)}
-              placeholder={t(lang, { en: "Meena", hi: "मीना" })}
-              autoComplete="given-name"
-            />
+            <SpeakField value={name} onChange={setName} placeholder={t(lang, { en: "Meena", hi: "मीना" })} autoComplete="given-name" />
             <p className="mt-2 text-base text-quiet">
               {t(lang, {
                 en: "A first name is enough. She will use it when she speaks.",
@@ -145,8 +128,8 @@ export function Onboarding() {
           <h1 className="display text-4xl">{t(lang, { en: "Who should the phone call?", hi: "फ़ोन किसे लगना चाहिए?" })}</h1>
           <p className="mt-3 text-lg text-quiet">
             {t(lang, {
-              en: "Add at least one number. A daughter, a neighbor, or the emergency number where you live. In India that is often 112. In the US it is 911.",
-              hi: "कम से कम एक नंबर डालें. बेटी, पड़ोसी, या इमरजेंसी नंबर. भारत में अक्सर 112. अमेरिका में 911.",
+              en: "Add at least one number. A daughter, a neighbour, or the emergency number. In India 112 reaches police, fire and ambulance.",
+              hi: "कम से कम एक नंबर डालें. बेटी, पड़ोसी, या इमरजेंसी नंबर. भारत में 112 पर पुलिस, फ़ायर और एम्बुलेंस मिलती है.",
             })}
           </p>
           <div className="mt-5">
@@ -166,12 +149,9 @@ export function Onboarding() {
               </p>
               <div className="mt-3">
                 <FieldLabel>{t(lang, { en: "Name", hi: "नाम" })}</FieldLabel>
-                <input
-                  className="field"
+                <SpeakField
                   value={person.name}
-                  onChange={(e) =>
-                    setPeople((list) => list.map((p) => (p.id === person.id ? { ...p, name: e.target.value } : p)))
-                  }
+                  onChange={(v) => setPeople((list) => list.map((p) => (p.id === person.id ? { ...p, name: v } : p)))}
                 />
               </div>
               <div className="mt-3">

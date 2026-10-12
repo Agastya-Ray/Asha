@@ -1,31 +1,131 @@
-import { Phone, MessageSquare } from "lucide-react";
+import { useEffect, useRef, useState } from "react";
+import { MessageSquare, Phone } from "lucide-react";
+import { Geolocation } from "@capacitor/geolocation";
 import { Button } from "@/components/ui/button";
 import { Card, t } from "@/components/asha/bits";
+import { AshaNative, isNative } from "@/lib/asha/native";
 import { digits, smsHref, telHref, todayCheckin } from "@/lib/asha/schedule";
-import { smsBody } from "@/lib/asha/speech";
+import { sosText } from "@/lib/asha/speech";
 import { useAsha } from "@/lib/asha/store";
+import { speak } from "@/lib/asha/voice";
+
+const HOLD_MS = 1800;
+
+async function whereAmI(): Promise<string> {
+  try {
+    const pos = await Promise.race([
+      Geolocation.getCurrentPosition({ enableHighAccuracy: true, timeout: 7000, maximumAge: 120000 }),
+      new Promise<null>((r) => setTimeout(() => r(null), 8000)),
+    ]);
+    if (!pos) return "";
+    const { latitude, longitude } = pos.coords;
+    return `https://maps.google.com/?q=${latitude.toFixed(5)},${longitude.toFixed(5)}`;
+  } catch {
+    return "";
+  }
+}
+
+async function callNumber(number: string) {
+  if (isNative) {
+    try {
+      await AshaNative.call({ number });
+      return;
+    } catch {
+      /* fall back to link */
+    }
+  }
+  window.location.href = telHref(number);
+}
 
 export function SosScreen() {
   const lang = useAsha((s) => s.lang);
+  const voiceLang = useAsha((s) => s.voiceLang);
   const name = useAsha((s) => s.name);
   const contacts = useAsha((s) => s.contacts);
   const emergency = useAsha((s) => s.emergencyNumber);
+  const autoSms = useAsha((s) => s.sosAutoSms);
   const checkins = useAsha((s) => s.checkins);
-  const tight = todayCheckin(checkins)?.chestOk === false;
   const openSettings = useAsha((s) => s.openSettings);
-  const body = smsBody(lang, name);
+  const tight = todayCheckin(checkins)?.chestOk === false;
   const people = contacts.filter((c) => digits(c.phone).length >= 3);
   const hasEmergency = digits(emergency).length >= 3;
+  const [progress, setProgress] = useState(0);
+  const [steps, setSteps] = useState<string[]>([]);
+  const [running, setRunning] = useState(false);
+  const [mapLink, setMapLink] = useState("");
+  const holdTimer = useRef<number | undefined>(undefined);
+  const start = useRef(0);
+
+  useEffect(() => () => window.clearInterval(holdTimer.current), []);
+
+  const log = (line: string) => setSteps((s) => [...s, line]);
+
+  async function runHelp() {
+    setRunning(true);
+    setSteps([]);
+    void speak(
+      voiceLang === "hi" ? "मैं आपके अपनों को बुला रही हूँ. जहाँ हैं वहीं रहिए." : "I'm getting your people now. Stay where you are.",
+      voiceLang,
+      "device",
+    );
+    log(t(lang, { en: "Finding where you are…", hi: "आपकी जगह ढूँढ रही हूँ…" }));
+    const link = await whereAmI();
+    setMapLink(link);
+    log(link ? t(lang, { en: "Location found.", hi: "जगह मिल गई." }) : t(lang, { en: "Location not found. Sending without it.", hi: "जगह नहीं मिली. उसके बिना भेज रही हूँ." }));
+    const text = sosText(lang, name, link);
+    const numbers = people.map((p) => p.phone);
+
+    if (numbers.length && isNative && autoSms) {
+      try {
+        const { sent } = await AshaNative.sendSms({ numbers, text });
+        log(
+          lang === "hi"
+            ? `${sent} लोगों को संदेश भेजा.`
+            : `Message sent to ${sent} ${sent === 1 ? "person" : "people"}.`,
+        );
+      } catch {
+        log(t(lang, { en: "Could not send messages by itself. Use the Message buttons below.", hi: "खुद संदेश नहीं भेज पाई. नीचे संदेश बटन दबाएँ." }));
+      }
+    } else if (numbers.length) {
+      log(t(lang, { en: "Press Message under each person to send your location.", hi: "जगह भेजने के लिए हर व्यक्ति के नीचे संदेश दबाएँ." }));
+    }
+
+    const first = hasEmergency ? emergency : people[0]?.phone;
+    if (first) {
+      log(lang === "hi" ? `कॉल लगा रही हूँ: ${first}` : `Calling ${first}…`);
+      await callNumber(first);
+    } else {
+      log(t(lang, { en: "No number saved. Add one in Settings.", hi: "कोई नंबर नहीं. सेटिंग में जोड़ें." }));
+    }
+    setRunning(false);
+  }
+
+  function beginHold() {
+    if (running) return;
+    start.current = Date.now();
+    window.clearInterval(holdTimer.current);
+    holdTimer.current = window.setInterval(() => {
+      const p = Math.min(1, (Date.now() - start.current) / HOLD_MS);
+      setProgress(p);
+      if (p >= 1) {
+        window.clearInterval(holdTimer.current);
+        setProgress(0);
+        if (navigator.vibrate) navigator.vibrate(200);
+        void runHelp();
+      }
+    }, 40);
+  }
+  function endHold() {
+    window.clearInterval(holdTimer.current);
+    setProgress(0);
+  }
+
+  const R = 92;
+  const C = 2 * Math.PI * R;
 
   return (
     <div className="py-5">
       <h1 className="display text-4xl text-sos">{t(lang, { en: "Help", hi: "मदद" })}</h1>
-      <p className="mt-3 text-lg">
-        {t(lang, {
-          en: "Press a button. Your phone opens the call or message screen. Then press the green call button there. Asha cannot dial by herself.",
-          hi: "बटन दबाएँ. फ़ोन कॉल या संदेश की स्क्रीन खोलेगा. वहाँ हरा कॉल बटन दबाएँ. आशा खुद डायल नहीं कर सकती.",
-        })}
-      </p>
       {tight ? (
         <Card className="mt-4 border-sos bg-sos-soft">
           <p className="text-lg font-bold">
@@ -37,18 +137,76 @@ export function SosScreen() {
         </Card>
       ) : null}
 
-      <div className="mt-5">
+      <div className="mt-6 flex flex-col items-center">
+        <button
+          type="button"
+          onPointerDown={beginHold}
+          onPointerUp={endHold}
+          onPointerLeave={endHold}
+          onPointerCancel={endHold}
+          onContextMenu={(e) => e.preventDefault()}
+          disabled={running}
+          aria-label={t(lang, { en: "Hold for help", hi: "मदद के लिए दबाकर रखें" })}
+          className="relative flex size-56 touch-none select-none items-center justify-center rounded-full bg-sos text-paper shadow-lg active:scale-[0.98] disabled:opacity-70"
+        >
+          <svg viewBox="0 0 200 200" className="absolute inset-0 size-full -rotate-90" aria-hidden>
+            <circle cx="100" cy="100" r={R} fill="none" stroke="rgba(255,255,255,0.25)" strokeWidth="10" />
+            <circle
+              className="hold-fill"
+              cx="100"
+              cy="100"
+              r={R}
+              fill="none"
+              stroke="#fffdf8"
+              strokeWidth="10"
+              strokeLinecap="round"
+              strokeDasharray={C}
+              strokeDashoffset={C * (1 - progress)}
+            />
+          </svg>
+          <span className="relative text-center">
+            <span className="block text-4xl font-bold">SOS</span>
+            <span className="mt-1 block text-lg">{running ? t(lang, { en: "Working…", hi: "हो रहा है…" }) : t(lang, { en: "Hold 2 seconds", hi: "2 सेकंड दबाएँ" })}</span>
+          </span>
+        </button>
+        <p className="mt-4 text-center text-lg">
+          {t(lang, {
+            en: isNative && autoSms
+              ? "Asha texts your loved ones where you are, then calls."
+              : "Asha finds where you are, then calls. Messages go with one more press.",
+            hi: isNative && autoSms
+              ? "आशा आपके अपनों को आपकी जगह भेजती है, फिर कॉल करती है."
+              : "आशा आपकी जगह ढूँढती है, फिर कॉल करती है. संदेश एक और बटन से जाते हैं.",
+          })}
+        </p>
+      </div>
+
+      {steps.length ? (
+        <Card className="mt-5">
+          <ul className="space-y-1 text-lg">
+            {steps.map((s, i) => (
+              <li key={`${i}-${s}`}>• {s}</li>
+            ))}
+          </ul>
+        </Card>
+      ) : null}
+
+      <div className="mt-6">
         {hasEmergency ? (
-          <a href={telHref(emergency)} className="inline-flex min-h-16 w-full items-center justify-center gap-2 rounded-2xl bg-sos px-5 text-xl font-bold text-paper">
+          <button
+            type="button"
+            onClick={() => void callNumber(emergency)}
+            className="inline-flex min-h-16 w-full items-center justify-center gap-2 rounded-2xl border-2 border-sos bg-paper px-5 text-xl font-bold text-sos"
+          >
             <Phone className="size-6" aria-hidden />
             {t(lang, { en: "Call emergency", hi: "इमरजेंसी कॉल" })} {emergency}
-          </a>
+          </button>
         ) : (
           <Card>
             <p className="text-lg">
               {t(lang, {
-                en: "No emergency number yet. Add 112, 911, or the number your family uses.",
-                hi: "अभी इमरजेंसी नंबर नहीं. 112, 911, या जो नंबर परिवार इस्तेमाल करे, वह डालें.",
+                en: "No emergency number yet. In India, 112 reaches police, fire and ambulance. 108 is ambulance in most states.",
+                hi: "अभी इमरजेंसी नंबर नहीं. भारत में 112 पर पुलिस, फ़ायर और एम्बुलेंस. ज़्यादातर राज्यों में 108 एम्बुलेंस है.",
               })}
             </p>
           </Card>
@@ -57,9 +215,7 @@ export function SosScreen() {
 
       <h2 className="mt-6 text-2xl font-bold">{t(lang, { en: "Loved ones", hi: "अपने लोग" })}</h2>
       {people.length === 0 ? (
-        <p className="mt-2 text-lg text-quiet">
-          {t(lang, { en: "No phone numbers saved yet.", hi: "अभी कोई फ़ोन नंबर सहेजा नहीं." })}
-        </p>
+        <p className="mt-2 text-lg text-quiet">{t(lang, { en: "No phone numbers saved yet.", hi: "अभी कोई फ़ोन नंबर सहेजा नहीं." })}</p>
       ) : (
         <div className="mt-3 flex flex-col gap-3">
           {people.map((person) => (
@@ -69,11 +225,18 @@ export function SosScreen() {
                 {person.relation} · {person.phone}
               </p>
               <div className="mt-4 grid grid-cols-2 gap-2">
-                <a href={telHref(person.phone)} className="inline-flex min-h-14 items-center justify-center gap-2 rounded-2xl bg-sage px-3 text-lg font-bold text-paper">
+                <button
+                  type="button"
+                  onClick={() => void callNumber(person.phone)}
+                  className="inline-flex min-h-14 items-center justify-center gap-2 rounded-2xl bg-sage px-3 text-lg font-bold text-paper"
+                >
                   <Phone className="size-5" aria-hidden />
                   {t(lang, { en: "Call", hi: "कॉल" })}
-                </a>
-                <a href={smsHref(person.phone, body)} className="inline-flex min-h-14 items-center justify-center gap-2 rounded-2xl border border-line bg-paper px-3 text-lg font-bold text-ink">
+                </button>
+                <a
+                  href={smsHref(person.phone, sosText(lang, name, mapLink))}
+                  className="inline-flex min-h-14 items-center justify-center gap-2 rounded-2xl border border-line bg-paper px-3 text-lg font-bold text-ink"
+                >
                   <MessageSquare className="size-5" aria-hidden />
                   {t(lang, { en: "Message", hi: "संदेश" })}
                 </a>
@@ -82,10 +245,7 @@ export function SosScreen() {
           ))}
         </div>
       )}
-      <p className="mt-4 text-base text-quiet">
-        {t(lang, { en: "The message says you need help now and asks them to call or come.", hi: "संदेश कहता है कि अभी मदद चाहिए और उन्हें कॉल या आने को कहता है." })}
-      </p>
-      <div className="mt-4">
+      <div className="mt-5">
         <Button variant="quiet" onClick={() => openSettings()}>
           {t(lang, { en: "Add or change numbers", hi: "नंबर जोड़ें या बदलें" })}
         </Button>

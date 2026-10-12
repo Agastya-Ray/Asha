@@ -1,15 +1,19 @@
-import { useEffect } from "react";
+import { useCallback, useEffect, useState } from "react";
+import { App as NativeApp } from "@capacitor/app";
 import { HeartPulse, Leaf, MessageCircle, Pill, Settings, Sun } from "lucide-react";
 import { CareScreen } from "@/components/asha/care";
 import { ReminderEngine } from "@/components/asha/engine";
 import { MedsScreen } from "@/components/asha/meds";
+import { Intro } from "@/components/asha/intro";
 import { Onboarding } from "@/components/asha/onboarding";
+import { Splash } from "@/components/asha/splash";
 import { SettingsScreen } from "@/components/asha/settings";
 import { SosScreen } from "@/components/asha/sos";
 import { TalkScreen } from "@/components/asha/talk";
 import { TodayScreen } from "@/components/asha/today";
 import { t, useNow } from "@/components/asha/bits";
 import { cn } from "@/lib/cn";
+import { isNative } from "@/lib/asha/native";
 import { clockLabel, dateLabel } from "@/lib/asha/time";
 import { useAsha } from "@/lib/asha/store";
 import type { Tab } from "@/lib/asha/types";
@@ -18,36 +22,57 @@ import { stopSpeaking, unlockAudio, useSpeech } from "@/lib/asha/voice";
 export function AshaApp() {
   const hydrated = useAsha((s) => s.hydrated);
   const hydrate = useAsha((s) => s.hydrate);
+  const [splash, setSplash] = useState(true);
+  const endSplash = useCallback(() => setSplash(false), []);
   useEffect(() => {
     hydrate();
   }, [hydrate]);
-  if (!hydrated) {
-    return (
-      <main className="flex min-h-dvh items-center justify-center bg-linen px-6">
-        <div className="text-center">
-          <p className="display text-6xl text-ink">Asha</p>
-          <p className="mt-3 text-lg text-quiet">A calm voice for the day.</p>
-        </div>
-      </main>
-    );
-  }
-  return <Shell />;
+  return (
+    <>
+      {hydrated ? <Shell /> : null}
+      {splash ? <Splash onDone={endSplash} /> : null}
+    </>
+  );
 }
 
 function Shell() {
   const onboarded = useAsha((s) => s.onboarded);
   const tab = useAsha((s) => s.tab);
   const lang = useAsha((s) => s.lang);
+  const introSeen = useAsha((s) => s.introSeen);
+  const textSize = useAsha((s) => s.textSize);
   useEffect(() => {
     document.documentElement.lang = lang === "hi" ? "hi" : "en";
   }, [lang]);
+  useEffect(() => {
+    document.documentElement.dataset.size = textSize;
+  }, [textSize]);
+  useEffect(() => {
+    window.scrollTo({ top: 0 });
+  }, [tab]);
+  // Android back button: go back to Today first, then leave the app.
+  useEffect(() => {
+    if (!isNative) return;
+    let remove: (() => void) | undefined;
+    void NativeApp.addListener("backButton", () => {
+      const s = useAsha.getState();
+      if (s.tab === "settings") s.closeSettings();
+      else if (s.tab !== "today" && s.onboarded) s.setTab("today");
+      else void NativeApp.minimizeApp();
+    }).then((h) => {
+      remove = () => void h.remove();
+    });
+    return () => remove?.();
+  }, []);
 
   return (
     <div className="min-h-dvh bg-linen text-ink" onPointerDown={() => unlockAudio()}>
       <div className="mx-auto flex min-h-dvh w-full max-w-lg flex-col">
         <Header />
         <main className="flex-1 px-4 pb-36">
-          {!onboarded ? (
+          {!introSeen ? (
+            <Intro />
+          ) : !onboarded ? (
             <Onboarding />
           ) : tab === "meds" ? (
             <MedsScreen />
@@ -64,7 +89,7 @@ function Shell() {
           )}
         </main>
       </div>
-      {onboarded ? <Nav /> : null}
+      {onboarded && introSeen ? <Nav /> : null}
       <Speaking />
       <ReminderEngine />
     </div>
@@ -79,7 +104,7 @@ function Header() {
   const openSettings = useAsha((s) => s.openSettings);
   const now = useNow();
   return (
-    <header className="sticky top-0 z-20 border-b border-line bg-linen/95 px-4 py-3 backdrop-blur-sm">
+    <header className="safe-top sticky top-0 z-20 border-b border-line bg-linen/95 px-4 py-3 backdrop-blur-sm">
       <div className="mx-auto flex w-full max-w-lg items-center gap-3">
         <span className="inline-flex size-11 shrink-0 items-center justify-center rounded-full bg-sage text-paper">
           <Leaf className="size-5" aria-hidden />

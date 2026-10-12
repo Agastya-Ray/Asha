@@ -99,3 +99,186 @@
 .dock {
   padding-bottom: max(0.75rem, env(safe-area-inset-bottom));
 }
+
+/* ---------- text size (Settings → Text size) ---------- */
+html[data-size="large"] {
+  font-size: 112.5%;
+}
+html[data-size="xl"] {
+  font-size: 125%;
+}
+
+/* ---------- opening animation ---------- */
+.splash {
+  transition: opacity 0.5s ease;
+}
+.splash-out {
+  opacity: 0;
+}
+.ring {
+  position: absolute;
+  inset: 0;
+  border-radius: 9999px;
+  border: 2px solid var(--color-sage);
+  opacity: 0;
+  animation: breathe 2.6s ease-out infinite;
+}
+.ring-2 {
+  animation-delay: 0.45s;
+}
+.ring-3 {
+  animation-delay: 0.9s;
+}
+@keyframes breathe {
+  0% {
+    transform: scale(0.45);
+    opacity: 0.45;
+  }
+  100% {
+    transform: scale(1.15);
+    opacity: 0;
+  }
+}
+.leaf-body {
+  fill: var(--color-sage);
+  stroke: var(--color-sage);
+  stroke-width: 3;
+  fill-opacity: 0;
+  stroke-dasharray: 260;
+  stroke-dashoffset: 260;
+  animation:
+    draw 1s ease-out forwards,
+    fillin 0.6s ease-out 0.85s forwards;
+}
+.leaf-vein,
+.leaf-stem {
+  fill: none;
+  stroke-width: 4;
+  stroke-linecap: round;
+  stroke-dasharray: 100;
+  stroke-dashoffset: 100;
+  animation: draw 0.7s ease-out 1s forwards;
+}
+.leaf-vein {
+  stroke: var(--color-linen);
+}
+.leaf-stem {
+  stroke: var(--color-sage);
+}
+.leaf {
+  animation: sway 3s ease-in-out 1.2s infinite;
+  transform-origin: 20% 85%;
+}
+@keyframes draw {
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+@keyframes fillin {
+  to {
+    fill-opacity: 1;
+  }
+}
+@keyframes sway {
+  0%,
+  100% {
+    transform: rotate(0deg);
+  }
+  50% {
+    transform: rotate(-4deg);
+  }
+}
+.splash-word,
+.splash-sub {
+  opacity: 0;
+  transform: translateY(10px);
+  animation: rise 0.8s ease-out forwards;
+}
+.splash-word {
+  animation-delay: 0.9s;
+}
+.splash-sub {
+  animation-delay: 1.25s;
+}
+@keyframes rise {
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+/* ---------- intro cards ---------- */
+.intro-card {
+  animation: rise-in 0.45s ease-out both;
+}
+@keyframes rise-in {
+  from {
+    opacity: 0;
+    transform: translateY(14px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+.float {
+  animation: float 4s ease-in-out infinite;
+}
+@keyframes float {
+  50% {
+    transform: translateY(-6px);
+  }
+}
+.wave {
+  animation: wave 1.6s ease-in-out infinite;
+}
+.w2 {
+  animation-delay: 0.3s;
+}
+@keyframes wave {
+  0%,
+  100% {
+    opacity: 0.25;
+  }
+  50% {
+    opacity: 1;
+  }
+}
+.pulse {
+  animation: pulse 1.8s ease-out infinite;
+}
+@keyframes pulse {
+  from {
+    transform: scale(0.8);
+    opacity: 0.9;
+  }
+  to {
+    transform: scale(1.5);
+    opacity: 0;
+  }
+}
+.bubble {
+  animation: rise-in 0.6s ease-out both;
+}
+.b2 {
+  animation-delay: 0.35s;
+}
+
+/* ---------- microphone listening ---------- */
+.listening {
+  animation: listen 1.2s ease-in-out infinite;
+}
+@keyframes listen {
+  50% {
+    box-shadow: 0 0 0 8px color-mix(in srgb, var(--color-sage) 25%, transparent);
+  }
+}
+
+/* ---------- Help: hold-to-send ring ---------- */
+.hold-fill {
+  transition: stroke-dashoffset 0.1s linear;
+}
+
+.safe-top {
+  padding-top: max(0.75rem, env(safe-area-inset-top));
+}

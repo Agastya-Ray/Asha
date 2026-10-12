@@ -5,7 +5,8 @@ import { Card, FieldLabel, t } from "@/components/asha/bits";
 import { CONDITIONS, planById, text } from "@/lib/asha/plans";
 import { mealNote, mealTitle } from "@/lib/asha/speech";
 import { todayCheckin } from "@/lib/asha/schedule";
-import { shortWeekday } from "@/lib/asha/time";
+import { shiftDay, shortWeekday } from "@/lib/asha/time";
+import { AshaNative, isNative } from "@/lib/asha/native";
 import { useAsha } from "@/lib/asha/store";
 import type { ConditionId } from "@/lib/asha/types";
 
@@ -287,7 +288,88 @@ export function CareScreen() {
           ))}
         </div>
       )}
+      <DoctorReport />
     </div>
+  );
+}
+
+/** A plain-text summary of the last two weeks, ready to send to the doctor on WhatsApp or SMS. */
+function DoctorReport() {
+  const lang = useAsha((s) => s.lang);
+  const [done, setDone] = useState("");
+  async function share() {
+    const s = useAsha.getState();
+    const days = new Set<string>();
+    for (let i = 0; i < 14; i++) days.add(shiftDay(i));
+    const rows = s.checkins.filter((c) => days.has(c.day)).sort((a, b) => a.day.localeCompare(b.day));
+    const avg = (xs: (number | undefined)[]) => {
+      const v = xs.filter((x): x is number => typeof x === "number");
+      return v.length ? Math.round(v.reduce((a, b) => a + b, 0) / v.length) : null;
+    };
+    let planned = 0;
+    let taken = 0;
+    for (const d of days) {
+      for (const m of s.meds) {
+        for (const time of m.times) {
+          planned += 1;
+          if (s.doseLogs.some((l) => l.day === d && l.medId === m.id && l.time === time && l.status === "taken")) taken += 1;
+        }
+      }
+    }
+    const conds = s.conditions.map((id) => CONDITIONS.find((c) => c.id === id)?.title.en ?? id).join(", ") || "-";
+    const lines = [
+      `Health summary from Asha, last 14 days`,
+      `Name: ${s.name || "-"}`,
+      `Conditions noted: ${conds}`,
+      `Medicines: ${s.meds.map((m) => `${m.name} ${m.dose} (${m.times.join(", ")})`).join("; ") || "-"}`,
+      `Doses marked taken: ${taken} of ${planned}${planned ? ` (${Math.round((taken / planned) * 100)}%)` : ""}`,
+    ];
+    const fs = avg(rows.map((r) => r.fastingSugar));
+    const as = avg(rows.map((r) => r.afterSugar));
+    const sys = avg(rows.map((r) => r.bpSys));
+    const dia = avg(rows.map((r) => r.bpDia));
+    const pain = avg(rows.map((r) => r.pain));
+    if (fs !== null) lines.push(`Fasting sugar, average: ${fs} mg/dL`);
+    if (as !== null) lines.push(`Sugar 2h after food, average: ${as} mg/dL`);
+    if (sys !== null && dia !== null) lines.push(`Blood pressure, average: ${sys}/${dia}`);
+    if (pain !== null) lines.push(`Joint pain, average: ${pain}/10`);
+    const daily = rows
+      .filter((r) => r.fastingSugar || r.bpSys || r.pain !== undefined)
+      .map((r) =>
+        [r.day, r.fastingSugar ? `FBS ${r.fastingSugar}` : "", r.afterSugar ? `PP ${r.afterSugar}` : "", r.bpSys ? `BP ${r.bpSys}/${r.bpDia ?? "?"}` : "", r.pain !== undefined ? `pain ${r.pain}` : ""]
+          .filter(Boolean)
+          .join("  "),
+      );
+    if (daily.length) lines.push("", "Daily readings:", ...daily);
+    lines.push("", "Recorded at home in the Asha app. Not a diagnosis.");
+    const text = lines.join("\n");
+    try {
+      if (isNative) await AshaNative.share({ text, title: "Asha health summary" });
+      else if (navigator.share) await navigator.share({ title: "Asha health summary", text });
+      else {
+        await navigator.clipboard.writeText(text);
+        setDone(t(lang, { en: "Copied. Paste it into WhatsApp or SMS.", hi: "कॉपी हो गया. व्हाट्सऐप या एसएमएस में चिपकाएँ." }));
+      }
+    } catch {
+      /* the person closed the share sheet */
+    }
+  }
+  return (
+    <Card className="mt-8">
+      <p className="text-xl font-bold">{t(lang, { en: "For the doctor", hi: "डॉक्टर के लिए" })}</p>
+      <p className="mt-2 text-lg text-quiet">
+        {t(lang, {
+          en: "A short summary of two weeks: medicines taken, sugar, blood pressure and pain. Send it before a visit.",
+          hi: "दो हफ्तों का छोटा सार: दवा, शुगर, बीपी और दर्द. डॉक्टर से मिलने से पहले भेजें.",
+        })}
+      </p>
+      <div className="mt-4">
+        <Button variant="quiet" onClick={() => void share()}>
+          {t(lang, { en: "Share the summary", hi: "सार भेजें" })}
+        </Button>
+      </div>
+      {done ? <p className="mt-2 text-base text-sage">{done}</p> : null}
+    </Card>
   );
 }
 
