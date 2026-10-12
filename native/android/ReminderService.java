@@ -1,0 +1,183 @@
+package com.agastyaray.asha;
+
+import android.Manifest;
+import android.app.Notification;
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
+import android.app.Service;
+import android.content.Context;
+import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.content.pm.ServiceInfo;
+import android.os.Build;
+import android.os.Handler;
+import android.os.IBinder;
+import android.os.Looper;
+import android.telephony.SmsManager;
+
+import org.json.JSONArray;
+import org.json.JSONObject;
+
+import java.util.ArrayList;
+
+/**
+ * Runs for a few seconds when a reminder is due:
+ * shows a big notification with "Taken" / "10 minutes" buttons, speaks the sentence out loud,
+ * and lines up a follow-up if nobody presses anything.
+ */
+public class ReminderService extends Service {
+    public static final String CHANNEL = "asha_reminders";
+    private static final int SERVICE_NOTE = 7001;
+    private final Handler main = new Handler(Looper.getMainLooper());
+
+    @Override public IBinder onBind(Intent intent) { return null; }
+
+    @Override
+    public int onStartCommand(Intent intent, int flags, int startId) {
+        String key = intent != null ? intent.getStringExtra("key") : null;
+        int attempt = intent != null ? intent.getIntExtra("attempt", 0) : 0;
+        JSONObject t = key != null ? AlarmStore.find(this, key) : null;
+
+        Notification busy = baseBuilder(this)
+            .setContentTitle("Asha")
+            .setContentText(t != null ? t.optString("title") : "")
+            .setSmallIcon(android.R.drawable.ic_lock_idle_alarm)
+            .build();
+        try {
+            if (Build.VERSION.SDK_INT >= 34) {
+                startForeground(SERVICE_NOTE, busy, ServiceInfo.FOREGROUND_SERVICE_TYPE_SHORT_SERVICE);
+            } else {
+                startForeground(SERVICE_NOTE, busy);
+            }
+        } catch (Exception e) {
+            // keep going without the foreground status
+        }
+
+        if (t == null) { finish(startId); return START_NOT_STICKY; }
+
+        showCard(this, t, attempt);
+        JSONObject cfg = AlarmStore.config(this);
+        int maxRepeats = cfg.optInt("repeats", 2);
+        int gap = cfg.optInt("repeatMinutes", 10);
+        boolean greet = "greet".equals(t.optString("kind"));
+        if (greet) {
+            // greetings ring once, no follow-up
+        } else if (attempt < maxRepeats) {
+            AlarmStore.scheduleFollowUp(this, t.optString("key"), attempt + 1,
+                System.currentTimeMillis() + gap * 60_000L);
+        } else if ("med".equals(t.optString("kind")) && cfg.optBoolean("familyAlert", false)) {
+            alertFamily(this, t, cfg);
+        }
+
+        final int id = startId;
+        if (!cfg.optBoolean("speak", true)) { finish(id); return START_NOT_STICKY; }
+        main.postDelayed(() -> finish(id), 60_000); // safety stop
+        Speaker.get(this).speak(sentence(t, attempt), t.optString("lang", "en"),
+            (float) cfg.optDouble("rate", 0.92), ok -> main.post(() -> finish(id)));
+        return START_NOT_STICKY;
+    }
+
+    private void finish(int startId) {
+        try {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) stopForeground(STOP_FOREGROUND_REMOVE);
+            else stopForeground(true);
+        } catch (Exception ignored) { }
+        stopSelf(startId);
+    }
+
+    // Android 14+: a short service must stop when its time is up.
+    @Override
+    public void onTimeout(int startId) {
+        Speaker.get(this).stop();
+        finish(startId);
+    }
+
+    static String sentence(JSONObject t, int attempt) {
+        if (attempt > 0) {
+            String again = t.optString("again");
+            if (!again.isEmpty()) return again;
+        }
+        return t.optString("say");
+    }
+
+    static Notification.Builder baseBuilder(Context ctx) {
+        ensureChannel(ctx);
+        Notification.Builder b = Build.VERSION.SDK_INT >= Build.VERSION_CODES.O
+            ? new Notification.Builder(ctx, CHANNEL)
+            : new Notification.Builder(ctx);
+        return b.setColor(0xFF1D6B45);
+    }
+
+    static void ensureChannel(Context ctx) {
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.O) return;
+        NotificationManager nm = ctx.getSystemService(NotificationManager.class);
+        if (nm == null || nm.getNotificationChannel(CHANNEL) != null) return;
+        NotificationChannel ch = new NotificationChannel(CHANNEL, "Medicine and meal reminders",
+            NotificationManager.IMPORTANCE_HIGH);
+        ch.setDescription("Asha speaks these out loud");
+        ch.setSound(null, null); // Asha's voice is the sound
+        ch.enableVibration(true);
+        ch.setVibrationPattern(new long[]{0, 400, 250, 400});
+        ch.setLockscreenVisibility(Notification.VISIBILITY_PUBLIC);
+        nm.createNotificationChannel(ch);
+    }
+
+    static void showCard(Context ctx, JSONObject t, int attempt) {
+        NotificationManager nm = (NotificationManager) ctx.getSystemService(Context.NOTIFICATION_SERVICE);
+        if (nm == null) return;
+        String key = t.optString("key");
+        boolean med = "med".equals(t.optString("kind"));
+
+        Intent open = ctx.getPackageManager().getLaunchIntentForPackage(ctx.getPackageName());
+        PendingIntent openPi = PendingIntent.getActivity(ctx, AlarmStore.notificationId(key), open,
+            PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE);
+
+        Notification.Builder b = baseBuilder(ctx)
+            .setSmallIcon(android.R.drawable.ic_lock_idle_alarm)
+            .setContentTitle(t.optString("title"))
+            .setContentText(t.optString("body"))
+            .setStyle(new Notification.BigTextStyle().bigText(t.optString("body")))
+            .setCategory(Notification.CATEGORY_REMINDER)
+            .setPriority(Notification.PRIORITY_MAX)
+            .setVisibility(Notification.VISIBILITY_PUBLIC)
+            .setContentIntent(openPi)
+            .setAutoCancel(true)
+            .setOngoing(false);
+        if (!"greet".equals(t.optString("kind"))) {
+            b.addAction(new Notification.Action.Builder(null, t.optString("doneLabel", med ? "Taken" : "Eaten"),
+                ActionReceiver.pending(ctx, key, "taken")).build())
+            .addAction(new Notification.Action.Builder(null, t.optString("snoozeLabel", "10 min later"),
+                ActionReceiver.pending(ctx, key, "snooze")).build());
+        }
+        if (attempt > 0) b.setSubText(t.optString("againLabel", "Reminder " + (attempt + 1)));
+        nm.notify(AlarmStore.notificationId(key), b.build());
+    }
+
+    /** Last reminder went unanswered: text the family, if the user switched this on. */
+    static void alertFamily(Context ctx, JSONObject t, JSONObject cfg) {
+        if (ctx.checkSelfPermission(Manifest.permission.SEND_SMS) != PackageManager.PERMISSION_GRANTED) return;
+        JSONArray numbers = cfg.optJSONArray("familyNumbers");
+        String text = t.optString("missedText");
+        if (numbers == null || text.isEmpty()) return;
+        sendSms(ctx, numbers, text);
+    }
+
+    static int sendSms(Context ctx, JSONArray numbers, String text) {
+        int sent = 0;
+        try {
+            SmsManager sms = Build.VERSION.SDK_INT >= Build.VERSION_CODES.S
+                ? ctx.getSystemService(SmsManager.class)
+                : SmsManager.getDefault();
+            if (sms == null) return 0;
+            ArrayList<String> parts = sms.divideMessage(text);
+            for (int i = 0; i < numbers.length(); i++) {
+                String n = numbers.optString(i).replaceAll("[^0-9+]", "");
+                if (n.length() < 3) continue;
+                sms.sendMultipartTextMessage(n, null, parts, null, null);
+                sent++;
+            }
+        } catch (Exception ignored) { }
+        return sent;
+    }
+}
