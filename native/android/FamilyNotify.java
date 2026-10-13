@@ -91,7 +91,8 @@ public final class FamilyNotify {
         ensureChannels(ctx);
         NotificationManager nm = (NotificationManager) ctx.getSystemService(Context.NOTIFICATION_SERVICE);
         if (nm == null) return;
-        String channel = urgent ? CH_URGENT : elder ? CH_VOICE : CH_FAMILY;
+        // quiet hours: use the silent channel so the card arrives without a sound
+        String channel = urgent ? CH_URGENT : (elder || quiet) ? CH_VOICE : CH_FAMILY;
         Intent open = ctx.getPackageManager().getLaunchIntentForPackage(ctx.getPackageName());
         if (open != null) open.putExtra("openTab", "family");
         PendingIntent openPi = PendingIntent.getActivity(ctx, 9000 + (int) (id % 1000), open,
@@ -112,10 +113,7 @@ public final class FamilyNotify {
             b.setLargeIcon(android.graphics.BitmapFactory.decodeResource(ctx.getResources(),
                 ctx.getResources().getIdentifier("fairy_happy", "drawable", ctx.getPackageName())));
         } catch (Exception ignored) { }
-        if (quiet && !urgent) {
-            b.setOnlyAlertOnce(true);
-            if (Build.VERSION.SDK_INT >= 31) b.setSilent(true);
-        }
+        if (quiet && !urgent) b.setOnlyAlertOnce(true);
         if (id > 0 && !"reaction".equals(kind) && !"test".equals(kind)) {
             String heart = "hi".equals(FamilyStore.config(ctx).optString("lang")) ? "❤️ दिल भेजें" : "❤️ Send a heart back";
             b.addAction(new Notification.Action.Builder(null, heart, FamilyActionReceiver.pending(ctx, id)).build());

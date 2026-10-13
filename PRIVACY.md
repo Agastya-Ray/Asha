@@ -1,6 +1,6 @@
 # Asha — Privacy Policy
 
-_Last updated: 12 October 2026_
+_Last updated: 13 October 2026_
 
 Asha is a reminder and companion app. We keep as little as possible.
 
@@ -22,12 +22,24 @@ Only when you use these features:
 These providers process the data under their own terms. A random device number is sent with each
 request only to limit overuse; it is not linked to your identity.
 
+## Family Circle (only if you create or join one)
+- **What is stored on our server** (Supabase, Mumbai): a random phone ID, the name you chose to show, language,
+  quiet hours, your phone's notification address, who is in your circle, and the messages sent in it
+  (ready-made texts, typed messages, voice notes, and the updates the elder agreed to share).
+- **What is not stored there:** medicine names, health readings, contacts or location — except that a Help alert
+  includes a map link to where the phone was at that moment.
+- Messages and voice notes are **deleted after 90 days**. "Delete my family circle" (Settings) deletes everything at once.
+- Typed messages and voice notes are checked for safety (and translated) automatically; if a Gemini key is set up,
+  they pass through Google's AI service for this. They are not used for anything else.
+- Instant delivery uses Google Firebase Cloud Messaging.
+
 ## Permissions
 - **Microphone** — only while you press a microphone button, to turn speech into text.
 - **Location** — only when you use Help, to put a map link in the message to your loved ones.
 - **SMS** — only if you turn on "Help texts loved ones" or "Tell family if a medicine is missed".
 - **Phone calls** — only if you turn on "Help calls straight away".
-- **Notifications, alarms** — to show and speak reminders on time.
+- **Notifications, alarms** — to show and speak reminders and family messages on time.
+- **Display over other apps** — only if you turn on the floating fairy.
 
 ## Children
 Asha is not meant for children under 13.

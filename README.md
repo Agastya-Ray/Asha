@@ -29,6 +29,7 @@ Installing a newer APK keeps all of mom's medicines (same signing key every time
 | Free for everyone | Pro (talk freely) |
 |---|---|
 | Spoken medicine + meal reminders (works with the app closed) | Talk about anything, by voice or typing |
+| Family Circle: sweet ready-made messages, hearts, updates | Family: your own words + 20-sec voice notes |
 | Asks again twice if nothing is pressed | Replies spoken in a warm voice |
 | "Tell Asha": say *"I took it"*, *"I have eaten"*, *"a glass of water"*, *"help"* | |
 | Read a prescription photo (camera or gallery) | |
@@ -43,6 +44,45 @@ Installing a newer APK keeps all of mom's medicines (same signing key every time
 
 ---
 
+## Family Circle and the fairy 🧚
+
+Family members (son, daughter, husband, wife…) install the **same Asha app** and choose **"I'm family"**.
+Maa opens the **Family** tab → **Make an invite code** → sends the 6-digit code (WhatsApp button included).
+Family types the code once. After that:
+
+- **Family → Maa:** ready-made sweet messages ("Rahul is travelling and it's raining — thanks for the raincoat, Maa!"),
+  a one-tap **❤️ Thinking of you**, and (Pro) their own words or a 20-second voice note.
+- **Maa → family:** the same, plus automatic little updates **only if she agrees**: medicines taken, meals eaten,
+  her mood, "missed a medicine after 3 reminders", and "hasn't opened Asha by 1 pm". She can choose one summary at night instead.
+- **Help (SOS)** always alerts family in the app first (free, instant, with a map link), then SMS/call as before.
+- Messages arrive in English or Hindi for each person. Asha reads them aloud on Maa's phone (not during quiet hours).
+- **The fairy** lives in the app, on the **home screen** (long-press home screen → Widgets → Asha), and optionally
+  **floating over other apps** (Settings → Family and the fairy). Her pet **Chintu** tumbles in with an envelope when a message arrives.
+- People without the app can still get messages: every ready-made message has a **WhatsApp** button.
+
+### What is set up already
+| Piece | Where | Notes |
+|---|---|---|
+| Database + server function `family` | Supabase project **asha** (`qheqzgxtzcagpayelfxn`, Mumbai, free plan) | Tables are locked; only the function reads them |
+| Instant messages | Firebase project **asha-12-10-2026** | `google-services.json` is in this repo (safe to share) |
+| Firebase secret key | Supabase → **Vault** → `firebase_service_account` | Never in GitHub or the app |
+| Night summary + 1 pm check | Supabase → **Integrations → Cron** → job `asha-family` (every 15 min) | Also deletes messages older than 90 days |
+
+The server code is in `supabase/functions/family/`. Supabase runs the copy pinned to one GitHub commit
+(see the one-line `index.ts` in the Supabase dashboard). To update it, change the code here, push, and redeploy with the new commit.
+
+### Optional: switch on translation + safety AI + voice notes (free)
+Typed messages are always checked by strict rules (no links, numbers, money/OTP talk, medicine changes, rude words).
+To also add an AI check, translation (English ↔ Hindi) and voice notes:
+1. Get a free key at **aistudio.google.com** → *Get API key*.
+2. Supabase dashboard → project **asha** → **Edge Functions → Secrets** → add `GEMINI_API_KEY` = your key.
+   (Or: **Vault** → new secret named `gemini_api_key`.)
+That's it — no rebuild needed.
+
+### If the Firebase key ever needs changing
+Firebase console → ⚙ Project settings → Service accounts → **Generate new private key**.
+Then Supabase → **Vault** → `firebase_service_account` → paste the whole new file. Delete the old key in Firebase.
+
 ## How it is built (for whoever fixes things later)
 
 ```
@@ -50,7 +90,9 @@ src/               the app screens (React + TypeScript + Tailwind)
   components/asha/ each screen: today, meds, care, talk, sos (Help), settings, intro, splash
   lib/asha/        logic: store (saved data), voice, listen, alarms, api, plans (health text)
 api/               small server on Vercel: chat, voice (tts), prescription reading (rx), status
-native/android/    Asha's own Android code (Java): spoken alarms, phone voice, mic, SMS, calls
+native/android/    Asha's own Android code (Java): spoken alarms, phone voice, mic, SMS, calls,
+                   family push messages, home-screen fairy widget, floating fairy
+supabase/          Family Circle server: database (migrations/) and the "family" function
 scripts/           prepare-android.mjs wires native/android into the Android project
 assets/            app icon + splash pictures
 .github/workflows/ android.yml builds the APK on GitHub
