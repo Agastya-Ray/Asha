@@ -17,7 +17,7 @@ import {
 } from "@/lib/asha/family";
 import { AshaNative, isNative } from "@/lib/asha/native";
 import { useAsha } from "@/lib/asha/store";
-import { speak } from "@/lib/asha/voice";
+import { speak, useSpeech } from "@/lib/asha/voice";
 
 /** Keeps the Family Circle in sync: on open, on return to the app, and when a push arrives. */
 export function FamilyEngine() {
@@ -76,10 +76,11 @@ export function FairyDock() {
   const setTab = useAsha((s) => s.setTab);
   const messages = useFamily((s) => s.messages);
   const heardLocal = useFamily((s) => s.heardLocal);
+  const speaking = useSpeech((s) => s.active);
   const unread = unreadOf({ messages, heardLocal });
   if (!unread.length || tab === "family" || tab === "sos") return null;
   return (
-    <div className="fairy-dock fixed right-3 z-30 flex items-end gap-2">
+    <div className={`fairy-dock fixed right-3 z-30 flex items-end gap-2 ${speaking ? "fairy-dock-up" : ""}`}>
       <div className="mb-6 max-w-[11rem] rounded-2xl rounded-br-sm border border-line bg-paper px-3 py-2 text-base font-bold shadow-sm">
         {lang === "hi" ? `${unread.length} प्यार भरा संदेश! मुझे छुएँ` : `${unread.length} love note${unread.length > 1 ? "s" : ""}! Tap me`}
       </div>
