@@ -111,7 +111,7 @@ export function syncReminders(force = false) {
   timer = window.setTimeout(() => {
     const s = useAsha.getState();
     if (!s.hydrated) return;
-    const items = s.onboarded ? buildReminders(s) : [];
+    const items = s.onboarded && s.appRole === "elder" ? buildReminders(s) : [];
     const config = {
       speak: s.voiceOn,
       repeats: 2,
