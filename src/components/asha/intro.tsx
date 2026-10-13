@@ -1,11 +1,12 @@
 import { useEffect, useRef, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { FieldLabel, Hear, LangSwitch, t } from "@/components/asha/bits";
+import { FairyScene } from "@/components/asha/fairy";
 import type { Localized } from "@/lib/asha/plans";
 import { useAsha } from "@/lib/asha/store";
 import { speak, stopSpeaking } from "@/lib/asha/voice";
 
-type Slide = { art: "hello" | "voice" | "plate" | "help" | "talk"; title: Localized; body: Localized };
+type Slide = { art: "hello" | "voice" | "plate" | "help" | "family" | "talk"; title: Localized; body: Localized };
 
 const SLIDES: Slide[] = [
   {
@@ -38,6 +39,14 @@ const SLIDES: Slide[] = [
     body: {
       en: "Hold the red Help button. I'll message your loved ones with where you are, and call them or the emergency number. You choose those people in a moment.",
       hi: "लाल 'मदद' बटन दबाकर रखें. मैं आपके अपनों को आपकी जगह के साथ संदेश भेजूँगी, और उन्हें या इमरजेंसी नंबर को कॉल करूँगी. ये लोग आप अभी चुनेंगे.",
+    },
+  },
+  {
+    art: "family",
+    title: { en: "Your family, a little closer.", hi: "आपका परिवार, थोड़ा और पास." },
+    body: {
+      en: "Your son or daughter can send you little notes of love from their own phone — and you can send yours. My fairy friend and her cheeky pet Chintu bring each one and read it out.",
+      hi: "आपके बेटे या बेटी अपने फ़ोन से छोटे-छोटे प्यार भरे संदेश भेज सकते हैं — और आप उन्हें. मेरी परी सहेली और उसका शरारती साथी चिंटू हर संदेश लाकर पढ़कर सुनाते हैं.",
     },
   },
   {
@@ -182,6 +191,7 @@ function Art({ kind }: { kind: Slide["art"] }) {
           <span className="relative flex size-24 items-center justify-center rounded-full bg-sos text-2xl font-bold text-paper">SOS</span>
         </div>
       ) : null}
+      {kind === "family" ? <FairyScene news size="lg" /> : null}
       {kind === "talk" ? (
         <svg viewBox="0 0 160 120" className="h-36" aria-hidden>
           <rect className="bubble b1" x="16" y="18" width="86" height="38" rx="16" fill="#fffdf8" />

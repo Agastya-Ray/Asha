@@ -8,6 +8,7 @@ import type {
   Lang,
   Med,
   Persist,
+  AppRole,
   Tab,
   TextSize,
 } from "@/lib/asha/types";
@@ -23,6 +24,8 @@ export const initialPersist = (): Persist => ({
   lang: "en",
   voiceLang: "en",
   introSeen: false,
+  appRole: "elder",
+  roleChosen: false,
   textSize: "normal",
   deviceId: "",
   sosAutoSms: false,
@@ -63,6 +66,7 @@ type State = Persist & {
   setBothLangs: (lang: Lang) => void;
   setTextSize: (size: TextSize) => void;
   finishIntro: () => void;
+  chooseRole: (role: AppRole) => void;
   replayIntro: () => void;
   applyNativeActions: (actions: { key: string; action: string; at: number }[]) => void;
   setName: (name: string) => void;
@@ -145,6 +149,9 @@ function sanitize(raw: unknown): Persist {
     deviceId: typeof r.deviceId === "string" && r.deviceId ? r.deviceId : uid(),
     // people who used the older version already know Asha
     introSeen: typeof r.introSeen === "boolean" ? r.introSeen : Boolean(r.onboarded),
+    appRole: r.appRole === "family" ? "family" : "elder",
+    // people who already set up meds are the person cared for
+    roleChosen: typeof r.roleChosen === "boolean" ? r.roleChosen : Boolean(r.onboarded),
     conditions: Array.isArray(r.conditions) ? r.conditions.filter(Boolean) : [],
     contacts: Array.isArray(r.contacts) ? r.contacts : [],
     meds: Array.isArray(r.meds) ? r.meds : [],
@@ -182,6 +189,7 @@ export const useAsha = create<State>((set) => ({
   setBothLangs: (lang) => set({ lang, voiceLang: lang }),
   setTextSize: (textSize) => set({ textSize }),
   finishIntro: () => set({ introSeen: true }),
+  chooseRole: (appRole) => set({ appRole, roleChosen: true, tab: appRole === "family" ? "family" : "today" }),
   replayIntro: () => set({ introSeen: false }),
   applyNativeActions: (actions) =>
     set((s) => {
@@ -310,7 +318,7 @@ export const useAsha = create<State>((set) => ({
   pushChat: (turn) => set((s) => ({ chat: [...s.chat, turn].slice(-24) })),
   dismissCoach: () => set({ coachDismissed: true }),
   finishSetup: () => set({ onboarded: true, setupStep: 4, sample: false }),
-  loadSample: () => set((s) => ({ ...sampleDay(), deviceId: s.deviceId, introSeen: true, lang: s.lang, voiceLang: s.voiceLang })),
+  loadSample: () => set((s) => ({ ...sampleDay(), deviceId: s.deviceId, introSeen: true, roleChosen: true, appRole: "elder", lang: s.lang, voiceLang: s.voiceLang })),
   eraseAll: () => set((s) => ({ ...initialPersist(), deviceId: s.deviceId, introSeen: true, hydrated: true, tab: "today" })),
 }));
 

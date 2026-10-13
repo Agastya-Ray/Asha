@@ -18,6 +18,24 @@ for (const f of readdirSync(join(root, "native/android"))) {
   if (f.endsWith(".java")) copyFileSync(join(root, "native/android", f), join(pkgDir, f));
 }
 
+// 1b. Pictures, widget layout and texts (merged into the app's res folder).
+const copyTree = (from, to) => {
+  if (!existsSync(from)) return;
+  for (const name of readdirSync(from, { withFileTypes: true })) {
+    const src = join(from, name.name);
+    const dst = join(to, name.name);
+    if (name.isDirectory()) {
+      mkdirSync(dst, { recursive: true });
+      copyTree(src, dst);
+    } else copyFileSync(src, dst);
+  }
+};
+copyTree(join(root, "native/android/res"), join(android, "app/src/main/res"));
+
+// 1c. Firebase settings (instant family messages). Without this file the app still works, with 15-minute checks.
+const gs = join(root, "google-services.json");
+if (existsSync(gs)) copyFileSync(gs, join(android, "app/google-services.json"));
+
 // 2. MainActivity registers the AshaNative plugin.
 writeFileSync(
   join(pkgDir, "MainActivity.java"),
@@ -54,6 +72,7 @@ if (!manifest.includes(MARK)) {
     "android.permission.CALL_PHONE",
     "android.permission.ACCESS_COARSE_LOCATION",
     "android.permission.ACCESS_FINE_LOCATION",
+    "android.permission.SYSTEM_ALERT_WINDOW",
   ].filter((p) => !manifest.includes(`"${p}"`));
   const permXml =
     `    ${MARK}\n` +
@@ -75,6 +94,20 @@ if (!manifest.includes(MARK)) {
             </intent-filter>
         </receiver>
         <service android:name=".ReminderService" android:exported="false" android:foregroundServiceType="shortService" />
+        <receiver android:name=".FamilyActionReceiver" android:exported="false" />
+        <service android:name=".AshaMessagingService" android:exported="false">
+            <intent-filter>
+                <action android:name="com.google.firebase.MESSAGING_EVENT" />
+            </intent-filter>
+        </service>
+        <service android:name=".FairyBubbleService" android:exported="false" />
+        <receiver android:name=".FairyWidget" android:exported="false" android:label="Asha fairy">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+            </intent-filter>
+            <meta-data android:name="android.appwidget.provider" android:resource="@xml/fairy_widget_info" />
+        </receiver>
+        <meta-data android:name="com.google.firebase.messaging.default_notification_channel_id" android:value="asha_family" />
 `;
   const queries = `
     <queries>
@@ -124,6 +157,26 @@ if (!gradle.includes("ASHA_KEYSTORE_FILE")) {
     `$1\n            if (System.getenv("ASHA_KEYSTORE_FILE")) { signingConfig signingConfigs.release }`,
   );
 }
+if (!gradle.includes("firebase-messaging")) {
+  gradle = gradle.replace(
+    /dependencies\s*\{/,
+    `dependencies {
+    implementation platform("com.google.firebase:firebase-bom:33.7.0")
+    implementation "com.google.firebase:firebase-messaging"
+    implementation "androidx.work:work-runtime:2.9.1"`,
+  );
+}
+// Capacitor's template applies the Google Services plugin only when google-services.json exists. Make sure it does.
+if (existsSync(join(android, "app/google-services.json")) && !/apply plugin: ['"]com\.google\.gms\.google-services['"]/.test(gradle)) {
+  gradle += `\napply plugin: 'com.google.gms.google-services'\n`;
+}
 writeFileSync(gradlePath, gradle);
+
+const rootGradlePath = join(android, "build.gradle");
+let rootGradle = readFileSync(rootGradlePath, "utf8");
+if (!rootGradle.includes("com.google.gms:google-services")) {
+  rootGradle = rootGradle.replace(/(dependencies\s*\{)/, `$1\n        classpath 'com.google.gms:google-services:4.4.2'`);
+  writeFileSync(rootGradlePath, rootGradle);
+}
 
 console.log("Asha native code wired into android/ ✔");

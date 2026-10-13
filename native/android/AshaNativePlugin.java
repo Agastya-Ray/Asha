@@ -45,6 +45,105 @@ import java.util.ArrayList;
 )
 public class AshaNativePlugin extends Plugin {
     private SpeechRecognizer recognizer;
+    private static AshaNativePlugin instance;
+    private static String pendingTab = "";
+
+    @Override
+    public void load() {
+        instance = this;
+        FamilyNotify.ensureChannels(getContext());
+        Intent start = getActivity() != null ? getActivity().getIntent() : null;
+        if (start != null && start.hasExtra("openTab")) pendingTab = start.getStringExtra("openTab");
+    }
+
+    @Override
+    protected void handleOnNewIntent(Intent intent) {
+        super.handleOnNewIntent(intent);
+        if (intent != null && intent.hasExtra("openTab")) {
+            pendingTab = intent.getStringExtra("openTab");
+            notifyListeners("family", new JSObject());
+        }
+    }
+
+    /** Called by FamilyNotify when a message arrives while the app is running. */
+    static void emitFamily() {
+        AshaNativePlugin p = instance;
+        if (p == null) return;
+        try { p.notifyListeners("family", new JSObject()); } catch (Exception ignored) { }
+    }
+
+    // ---------------- family circle ----------------
+
+    @PluginMethod
+    public void getPushToken(PluginCall call) {
+        try {
+            com.google.firebase.messaging.FirebaseMessaging.getInstance().getToken()
+                .addOnCompleteListener(task -> {
+                    JSObject r = new JSObject();
+                    String token = task.isSuccessful() && task.getResult() != null ? task.getResult() : FamilyStore.token(getContext());
+                    if (token != null && !token.isEmpty()) FamilyStore.setToken(getContext(), token);
+                    r.put("token", token == null ? "" : token);
+                    call.resolve(r);
+                });
+        } catch (Exception e) {
+            // Firebase not set up in this build: the 15-minute check is used instead
+            JSObject r = new JSObject();
+            r.put("token", "");
+            call.resolve(r);
+        }
+    }
+
+    @PluginMethod
+    public void setFamilyConfig(PluginCall call) {
+        JSObject cfg = call.getData();
+        FamilyStore.saveConfig(getContext(), cfg);
+        FamilyWorker.schedule(getContext(), cfg.optBoolean("poll", false) && cfg.optBoolean("inCircle", false));
+        call.resolve();
+    }
+
+    @PluginMethod
+    public void drainFamily(PluginCall call) {
+        JSObject r = new JSObject();
+        r.put("changed", FamilyStore.changed(getContext()));
+        r.put("openTab", pendingTab);
+        FamilyStore.markChanged(getContext(), false);
+        pendingTab = "";
+        call.resolve(r);
+    }
+
+    @PluginMethod
+    public void updateWidget(PluginCall call) {
+        FamilyStore.setFace(getContext(), call.getString("mood", "idle"), call.getString("text", ""), call.getInt("unread", 0));
+        FairyWidget.refreshAll(getContext());
+        FairyBubbleService.refresh(getContext());
+        call.resolve();
+    }
+
+    @PluginMethod
+    public void canDrawOverlays(PluginCall call) {
+        call.resolve(ok(FairyBubbleService.canDraw(getContext())));
+    }
+
+    @PluginMethod
+    public void openOverlaySettings(PluginCall call) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            Intent i = new Intent(Settings.ACTION_MANAGE_OVERLAY_PERMISSION, Uri.parse("package:" + getContext().getPackageName()));
+            i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            try { getContext().startActivity(i); } catch (Exception ignored) { }
+        }
+        call.resolve();
+    }
+
+    @PluginMethod
+    public void setBubble(PluginCall call) {
+        boolean on = call.getBoolean("on", false);
+        FamilyStore.setBubble(getContext(), on);
+        if (on) call.resolve(ok(FairyBubbleService.start(getContext())));
+        else {
+            FairyBubbleService.stop(getContext());
+            call.resolve(ok(true));
+        }
+    }
 
     // ---------------- voice out ----------------
 
