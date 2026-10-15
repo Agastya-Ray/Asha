@@ -1,0 +1,72 @@
+# A first-time user: intro, "for my own care", four setup steps, first medicine.
+appId: com.agastyaray.asha
+---
+- launchApp:
+    clearState: true
+- extendedWaitUntil:
+    visible: "Next"
+    timeout: 30000
+- takeScreenshot: 01-intro-1
+- repeat:
+    times: 5
+    commands:
+      - tapOn: "Next"
+      - waitForAnimationToEnd
+- takeScreenshot: 02-intro-last
+- tapOn: "Let's set up.*"
+- extendedWaitUntil:
+    visible: "Who will use this phone?"
+    timeout: 10000
+- takeScreenshot: 03-role-choice
+- tapOn: ".*for my own care.*"
+- extendedWaitUntil:
+    visible: "Step 1 / 4"
+    timeout: 10000
+- takeScreenshot: 04-setup-step1
+- tapOn: "Meena"
+- inputText: "Kamla"
+- hideKeyboard
+- takeScreenshot: 05-setup-step1-typed
+- tapOn: "Continue"
+- tapOn: "Diabetes"
+- tapOn: "After a heart attack"
+- takeScreenshot: 06-setup-step2
+- tapOn: "Continue"
+- takeScreenshot: 07-setup-step3
+- tapOn: "112"
+- inputText: "112"
+- hideKeyboard
+- tapOn: "Daughter"
+- inputText: "Daughter"
+- hideKeyboard
+- tapOn: "+91"
+- inputText: "+919876543210"
+- hideKeyboard
+- tapOn:
+    below: "Loved one 1"
+    optional: true
+- inputText: "Priya"
+- hideKeyboard
+- takeScreenshot: 08-setup-step3-typed
+- scrollUntilVisible:
+    element: "Continue"
+- tapOn: "Continue"
+- extendedWaitUntil:
+    visible: "Step 4 / 4"
+    timeout: 10000
+- takeScreenshot: 09-setup-step4
+- tapOn: "Add one medicine now"
+- tapOn: "Metformin"
+- inputText: "Metformin"
+- hideKeyboard
+- tapOn: "1 tablet, 500 mg"
+- inputText: "500 mg"
+- hideKeyboard
+- takeScreenshot: 10-med-editor
+- scrollUntilVisible:
+    element: "Save this medicine"
+- tapOn: "Save this medicine"
+- takeScreenshot: 11-med-saved
+- tapOn: "Go to my day"
+- waitForAnimationToEnd
+- takeScreenshot: 12-today-first-open

@@ -1,0 +1,19 @@
+# Start a family circle from Maa's phone and get an invite code.
+appId: com.agastyaray.asha
+---
+- launchApp
+- tapOn: "Family"
+- extendedWaitUntil:
+    notVisible: "Opening your family circle.*"
+    timeout: 20000
+- takeScreenshot: 50-family-start
+- scrollUntilVisible:
+    element: ".*(Start|Create|Make).*"
+    optional: true
+- tapOn:
+    text: ".*(Start|Create|Make).*"
+    optional: true
+- waitForAnimationToEnd
+- takeScreenshot: 51-family-after-start
+- scroll
+- takeScreenshot: 52-family-after-start-2

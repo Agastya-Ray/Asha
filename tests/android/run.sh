@@ -1,0 +1,88 @@
+#!/usr/bin/env bash
+# User-style test of Asha on an Android emulator. Writes screenshots and logs to $OUT.
+set -u
+OUT="${OUT:-$PWD/results}"
+FLOWS="$(cd "$(dirname "$0")" && pwd)/flows"
+mkdir -p "$OUT"
+export PATH="$HOME/.maestro/bin:$PATH"
+PKG=com.agastyaray.asha
+log() { echo "== $*" | tee -a "$OUT/steps.log"; }
+shot() { adb exec-out screencap -p > "$OUT/$1.png"; }
+# centre of the first on-screen element whose text or content-desc matches $1 (regex)
+center() {
+  adb shell uiautomator dump /sdcard/ui.xml >/dev/null 2>&1
+  adb exec-out cat /sdcard/ui.xml | python3 -c '
+import re,sys
+pat=re.compile(sys.argv[1]); x=sys.stdin.read()
+for m in re.finditer(r"<node [^>]*>", x):
+    n=m.group(0); t=re.search(r" text=\"([^\"]*)\"", n).group(1); d=re.search(r"content-desc=\"([^\"]*)\"", n).group(1)
+    if pat.search(t) or pat.search(d):
+        a,b,c,e=map(int,re.search(r"bounds=\"\[(\d+),(\d+)\]\[(\d+),(\d+)\]\"", n).groups()); print((a+c)//2,(b+e)//2); break
+' "$1"
+}
+flow() { log "flow $1"; (cd "$OUT" && maestro test "$FLOWS/$1" >> "$OUT/maestro.log" 2>&1) || log "flow $1 had a failing step (see maestro.log)"; }
+setclock() { adb shell "date $1" >/dev/null; log "clock set to $(adb shell date)"; }
+
+adb root >/dev/null 2>&1; sleep 3; adb wait-for-device
+adb shell settings put global auto_time 0
+adb shell settings put global auto_time_zone 0
+adb shell service call alarm 3 s16 Asia/Kolkata >/dev/null
+setclock 101507302026.00          # 15 Oct 2026, 07:30 India time
+adb shell settings put system screen_off_timeout 600000
+adb install -r -g "${APK:-Asha.apk}" >/dev/null && log "installed (all permissions pre-granted: no)" || true
+# reinstall without auto-grant so the user sees the real permission prompts
+adb uninstall $PKG >/dev/null; adb install -r "${APK:-Asha.apk}" && log "installed Asha"
+adb logcat -c
+
+# a prescription photo in the gallery for the photo-reading test
+if command -v convert >/dev/null; then
+  convert -size 900x1200 xc:white -font DejaVu-Sans -pointsize 38 -fill black \
+    -annotate +60+120 "Dr. R. Sharma, MBBS, MD" -annotate +60+180 "Patient: Kamla Devi   Age 68" \
+    -annotate +60+300 "Rx" -annotate +60+380 "1. Tab Metformin 500 mg   1-0-1   after food" \
+    -annotate +60+460 "2. Tab Amlodipine 5 mg   OD   morning" -annotate +60+540 "3. Tab Paracetamol 650 mg   SOS for pain" \
+    -annotate +60+640 "x 30 days" -annotate +60+1000 "Sign: R. Sharma" /tmp/rx.jpg
+  adb push /tmp/rx.jpg /sdcard/Pictures/prescription.jpg >/dev/null
+  adb shell am broadcast -a android.intent.action.MEDIA_SCANNER_SCAN_FILE -d file:///sdcard/Pictures/prescription.jpg >/dev/null
+fi
+
+flow 01_setup.yaml
+flow 02_permissions.yaml
+shot 25-today-after-permissions
+
+# --- Lock-screen reminder: Metformin and breakfast are both due at 08:00 ---
+log "lock-screen reminder test"
+adb shell input keyevent KEYCODE_HOME
+setclock 101507585026.00 2>/dev/null || setclock 101507582026.50
+sleep 2; adb shell input keyevent KEYCODE_SLEEP
+sleep 95
+adb shell dumpsys notification --noredact | grep -E "pkg=$PKG|android.title=|android.text=" | grep -A2 "pkg=$PKG" > "$OUT/notifications-0800.txt" || true
+adb shell input keyevent KEYCODE_WAKEUP; sleep 3
+shot 26-lockscreen-at-0800
+adb shell wm dismiss-keyguard; sleep 2
+adb shell cmd statusbar expand-notifications; sleep 2
+shot 27-notification-shade-0800
+xy=$(center "Taken")
+if [ -n "$xy" ]; then adb shell input tap $xy; log "tapped Taken on the notification at $xy"; sleep 3; else log "no Taken button found in the shade"; fi
+shot 28-after-tapping-taken
+adb shell cmd statusbar collapse
+
+# --- every screen, as a user ---
+flow 03_tabs.yaml
+flow 04_family.yaml
+flow 05_prescription.yaml
+
+# --- Help: hold the red SOS button for 2.5 s ---
+flow 06_help.yaml
+adb emu geo fix 77.2090 28.6139 >/dev/null 2>&1
+xy=$(center "Hold for help|SOS")
+if [ -n "$xy" ]; then adb shell input swipe $xy $xy 2600; log "held SOS at $xy"; fi
+sleep 3; shot 71-help-after-hold
+xy=$(center "Allow|While using the app|Only this time"); [ -n "$xy" ] && { shot 72-help-location-prompt; adb shell input tap $xy; sleep 8; }
+shot 73-help-after-location
+sleep 5; shot 74-help-call
+adb shell input keyevent KEYCODE_ENDCALL; adb shell input keyevent KEYCODE_BACK; sleep 2
+shot 75-back-in-asha
+
+adb logcat -d > "$OUT/logcat-full.txt"
+grep -iE "chromium|Capacitor|Asha|TextToSpeech|tts|AndroidRuntime|FATAL" "$OUT/logcat-full.txt" > "$OUT/logcat-asha.txt" || true
+log "done"
