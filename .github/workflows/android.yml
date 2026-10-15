@@ -5,7 +5,7 @@ name: Build Android app
 
 on:
   push:
-    branches: [main, android]
+    branches: ["**"]
   workflow_dispatch:
 
 permissions:
@@ -76,6 +76,14 @@ jobs:
           ../scripts/ci-step.sh "Gradle APK" ./gradlew assembleDebug --no-daemon
           cp app/build/outputs/apk/debug/app-debug.apk ../Asha.apk
 
+      - name: Check Firebase is inside the app
+        run: |
+          if unzip -p Asha.apk resources.arsc | grep -aq google_app_id; then
+            echo "::notice title=Firebase::Firebase is built into this APK (instant family messages ON)"
+          else
+            echo "::warning title=Firebase::Firebase NOT found in this APK (family messages will use the 15-minute check)"
+          fi
+
       - name: Build Play Store bundle (only if signing secrets exist)
         if: ${{ env.HAS_KEY == 'true' }}
         working-directory: android
@@ -97,6 +105,19 @@ jobs:
             Asha.apk
             Asha-play.aab
           if-no-files-found: warn
+
+      - name: Put a test APK on its own page (other branches)
+        if: github.ref != 'refs/heads/main'
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: test-${{ github.ref_name }}
+          name: "TEST build: ${{ github.ref_name }}"
+          prerelease: true
+          make_latest: false
+          body: |
+            Test build of branch `${{ github.ref_name }}`, version 1.0.${{ github.run_number }} (commit ${{ github.sha }}).
+            Not the official version yet. On your Android phone: tap **Asha.apk** below to install it over the current app (your data stays).
+          files: Asha.apk
 
       - name: Put the APK on the Releases page (main branch only)
         if: github.ref == 'refs/heads/main'

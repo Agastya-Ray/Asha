@@ -282,3 +282,180 @@ html[data-size="xl"] {
 .safe-top {
   padding-top: max(0.75rem, env(safe-area-inset-top));
 }
+
+/* ---------- fairy + Chintu ---------- */
+.fairy-body {
+  transform-origin: 60px 90px;
+  animation: fairy-breathe 3.6s ease-in-out infinite;
+}
+@keyframes fairy-breathe {
+  50% {
+    transform: translateY(-3px);
+  }
+}
+.wing {
+  transform-box: fill-box;
+  animation: wing-flap 0.9s ease-in-out infinite;
+}
+.wing-l {
+  transform-origin: right center;
+}
+.wing-r {
+  transform-origin: left center;
+}
+@keyframes wing-flap {
+  50% {
+    transform: scaleX(0.82);
+  }
+}
+.fairy-sleep .wing {
+  animation-duration: 3.5s;
+}
+.fairy-sleep .fairy-body {
+  animation-duration: 5s;
+}
+.fairy-halo {
+  animation: halo 3s ease-in-out infinite;
+}
+@keyframes halo {
+  50% {
+    opacity: 0.55;
+  }
+}
+.fairy-happy .fairy-body {
+  animation: fairy-hop 0.8s ease-in-out infinite;
+}
+@keyframes fairy-hop {
+  50% {
+    transform: translateY(-7px) rotate(-3deg);
+  }
+}
+.fairy-happy .wing {
+  animation-duration: 0.35s;
+}
+.fairy-sparkles circle {
+  animation: twinkle 1.2s ease-in-out infinite;
+}
+.fairy-sparkles circle:nth-child(2) {
+  animation-delay: 0.3s;
+}
+.fairy-sparkles circle:nth-child(3) {
+  animation-delay: 0.6s;
+}
+@keyframes twinkle {
+  50% {
+    opacity: 0.1;
+  }
+}
+.fairy-mouth-talk {
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: talk 0.28s ease-in-out infinite alternate;
+}
+@keyframes talk {
+  to {
+    transform: scaleY(0.35);
+  }
+}
+.fairy-z text {
+  animation: zz 2.4s ease-in-out infinite;
+}
+.fairy-z text:nth-child(2) {
+  animation-delay: 0.8s;
+}
+@keyframes zz {
+  0% {
+    opacity: 0;
+    transform: translateY(4px);
+  }
+  50% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+    transform: translateY(-6px);
+  }
+}
+.fairy-wand {
+  transform-box: fill-box;
+  transform-origin: left bottom;
+}
+.fairy-happy .fairy-wand,
+.fairy-talk .fairy-wand {
+  animation: wand 0.6s ease-in-out infinite alternate;
+}
+@keyframes wand {
+  to {
+    transform: rotate(-18deg);
+  }
+}
+.pet-glow {
+  animation: halo 1.4s ease-in-out infinite;
+}
+.pet-peek {
+  animation: pet-peek 0.9s ease-out both;
+}
+@keyframes pet-peek {
+  from {
+    transform: translate(40%, 60%);
+    opacity: 0;
+  }
+  to {
+    transform: translate(20%, 25%);
+    opacity: 1;
+  }
+}
+.pet-tumble {
+  animation: pet-tumble 1s ease-in-out both;
+}
+@keyframes pet-tumble {
+  0% {
+    transform: translate(20%, 25%) rotate(0);
+  }
+  60% {
+    transform: translate(-10%, -10%) rotate(-360deg);
+  }
+  100% {
+    transform: translate(0, 0) rotate(-360deg);
+  }
+}
+.pet-envelope .pet-body,
+.pet-envelope {
+  animation: pet-wiggle 1.6s ease-in-out infinite;
+  transform-origin: 50% 90%;
+}
+@keyframes pet-wiggle {
+  0%,
+  100% {
+    transform: rotate(0);
+  }
+  25% {
+    transform: rotate(-6deg);
+  }
+  75% {
+    transform: rotate(6deg);
+  }
+}
+.pet-ear-l,
+.pet-ear-r {
+  transform-box: fill-box;
+  transform-origin: bottom center;
+  animation: ear 2.2s ease-in-out infinite;
+}
+.pet-ear-r {
+  animation-delay: 0.4s;
+}
+@keyframes ear {
+  50% {
+    transform: rotate(10deg);
+  }
+}
+.fairy-dock {
+  bottom: calc(5.5rem + env(safe-area-inset-bottom));
+}
+.fairy-dock {
+  transition: bottom 0.3s ease;
+}
+.fairy-dock-up {
+  bottom: calc(10rem + env(safe-area-inset-bottom));
+}

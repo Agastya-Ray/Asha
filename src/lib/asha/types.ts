@@ -4,7 +4,9 @@ export type ConditionId = "arthritis" | "diabetes" | "pcod" | "pcos" | "heart";
 
 export type Food = "before" | "with" | "after" | "anytime";
 
-export type Tab = "today" | "meds" | "care" | "talk" | "sos" | "settings";
+export type Tab = "today" | "meds" | "care" | "talk" | "family" | "sos" | "settings";
+
+export type AppRole = "elder" | "family";
 
 export type Contact = {
   id: string;
@@ -91,6 +93,9 @@ export type Persist = {
   /** language Asha speaks and listens in */
   voiceLang: Lang;
   introSeen: boolean;
+  /** who uses this phone: the person cared for, or a family member */
+  appRole: AppRole;
+  roleChosen: boolean;
   textSize: TextSize;
   deviceId: string;
   /** Help: text every loved one automatically (Android, needs SMS permission) */

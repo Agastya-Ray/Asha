@@ -4,6 +4,7 @@ import { Card, Choice, FieldLabel, LangSwitch, SpeakField, t } from "@/component
 import { ReminderHealth } from "@/components/asha/reminder-health";
 import { CONDITIONS } from "@/lib/asha/plans";
 import { AshaNative, isNative } from "@/lib/asha/native";
+import { forgetMe, pushNativeConfig, testPush, useFamily } from "@/lib/asha/family";
 import { newId, useAsha } from "@/lib/asha/store";
 import type { Lang, TextSize } from "@/lib/asha/types";
 
@@ -193,6 +194,8 @@ export function SettingsScreen() {
         </Button>
       </div>
 
+      <FairySettings />
+
       <h2 className="mt-8 text-2xl font-bold">{t(lang, { en: "About Asha", hi: "आशा के बारे में" })}</h2>
       <div className="mt-3">
         <Button variant="quiet" onClick={() => s.replayIntro()}>
@@ -237,5 +240,105 @@ function Toggle({ on, label, onClick, lang }: { on: boolean; label: string; onCl
         {on ? (lang === "hi" ? "चालू" : "On") : lang === "hi" ? "बंद" : "Off"}
       </span>
     </button>
+  );
+}
+
+/** Family Circle and the fairy on the home screen. */
+function FairySettings() {
+  const s = useAsha();
+  const lang = s.lang;
+  const bubble = useFamily((f) => f.bubble);
+  const circles = useFamily((f) => f.circles);
+  const pushToken = useFamily((f) => f.pushToken);
+  const [note, setNote] = useState("");
+  const [confirm, setConfirm] = useState(false);
+
+  async function toggleBubble() {
+    if (bubble) {
+      await AshaNative.setBubble({ on: false }).catch(() => undefined);
+      useFamily.setState({ bubble: false });
+      return;
+    }
+    const can = await AshaNative.canDrawOverlays().catch(() => ({ ok: false }));
+    if (!can.ok) {
+      setNote(
+        t(lang, {
+          en: "A settings page opens. Find Asha and turn on 'Display over other apps', then come back and press this again.",
+          hi: "एक सेटिंग पन्ना खुलेगा. आशा ढूँढकर 'Display over other apps' चालू करें, फिर वापस आकर यह बटन दोबारा दबाएँ.",
+        }),
+      );
+      await AshaNative.openOverlaySettings().catch(() => undefined);
+      return;
+    }
+    const r = await AshaNative.setBubble({ on: true }).catch(() => ({ ok: false }));
+    useFamily.setState({ bubble: r.ok });
+    void pushNativeConfig();
+  }
+
+  return (
+    <>
+      <h2 className="mt-8 text-2xl font-bold">{t(lang, { en: "Family and the fairy", hi: "परिवार और परी" })}</h2>
+      <div className="mt-3 flex flex-col gap-2">
+        <Button variant="quiet" onClick={() => s.setTab("family")}>
+          {circles.length ? t(lang, { en: "Open my family circle", hi: "मेरा परिवार खोलें" }) : t(lang, { en: "Set up my family circle", hi: "मेरा परिवार बनाएँ" })}
+        </Button>
+        {isNative ? (
+          <>
+            <Toggle on={bubble} lang={lang} label={t(lang, { en: "Floating fairy over other apps", hi: "दूसरे ऐप्स के ऊपर तैरती परी" })} onClick={() => void toggleBubble()} />
+            <Card>
+              <p className="text-lg font-bold">{t(lang, { en: "Put the fairy on your home screen", hi: "परी को होम स्क्रीन पर रखें" })}</p>
+              <ol className="mt-2 list-decimal space-y-1 pl-5 text-base">
+                <li>{t(lang, { en: "Press and hold an empty spot on the home screen.", hi: "होम स्क्रीन की खाली जगह को दबाकर रखें." })}</li>
+                <li>{t(lang, { en: "Tap Widgets.", hi: "Widgets दबाएँ." })}</li>
+                <li>{t(lang, { en: "Find Asha, then drag the fairy onto the screen.", hi: "आशा ढूँढें, फिर परी को स्क्रीन पर खींचें." })}</li>
+              </ol>
+            </Card>
+            {circles.length ? (
+              <Button
+                variant="ghost"
+                onClick={async () => {
+                  const r = await testPush();
+                  setNote(
+                    r.ok
+                      ? t(lang, { en: "Sent! The fairy should speak in a few seconds.", hi: "भेज दिया! कुछ सेकंड में परी बोलेगी." })
+                      : pushToken
+                        ? t(lang, { en: "Couldn't deliver. Check notifications are allowed.", hi: "नहीं पहुँचा. सूचना की अनुमति देखें." })
+                        : t(lang, { en: "No instant delivery on this phone. Messages arrive every 15 minutes.", hi: "इस फ़ोन पर तुरंत संदेश नहीं. हर 15 मिनट में आएँगे." }),
+                  );
+                }}
+              >
+                {t(lang, { en: "Test: fairy brings me a message", hi: "जाँच: परी मुझे संदेश लाए" })}
+              </Button>
+            ) : null}
+          </>
+        ) : null}
+        {note ? <p className="text-base text-quiet">{note}</p> : null}
+        <Button variant="ghost" onClick={() => s.chooseRole("family")}>
+          {t(lang, { en: "This phone belongs to a family member instead", hi: "यह फ़ोन परिवार के किसी सदस्य का है" })}
+        </Button>
+        {circles.length ? (
+          confirm ? (
+            <div className="grid grid-cols-2 gap-2">
+              <Button
+                variant="sos"
+                onClick={() => {
+                  void forgetMe();
+                  setConfirm(false);
+                }}
+              >
+                {t(lang, { en: "Yes, delete", hi: "हाँ, मिटाएँ" })}
+              </Button>
+              <Button variant="quiet" onClick={() => setConfirm(false)}>
+                {t(lang, { en: "Keep", hi: "रहने दें" })}
+              </Button>
+            </div>
+          ) : (
+            <Button variant="ghost" onClick={() => setConfirm(true)}>
+              {t(lang, { en: "Delete my family circle and its messages", hi: "मेरा परिवार और उसके संदेश मिटाएँ" })}
+            </Button>
+          )
+        ) : null}
+      </div>
+    </>
   );
 }

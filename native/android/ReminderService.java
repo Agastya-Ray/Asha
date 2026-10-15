@@ -66,7 +66,7 @@ public class ReminderService extends Service {
         } else if (attempt < maxRepeats) {
             AlarmStore.scheduleFollowUp(this, t.optString("key"), attempt + 1,
                 System.currentTimeMillis() + gap * 60_000L);
-        } else if ("med".equals(t.optString("kind")) && cfg.optBoolean("familyAlert", false)) {
+        } else if ("med".equals(t.optString("kind"))) {
             alertFamily(this, t, cfg);
         }
 
@@ -154,8 +154,30 @@ public class ReminderService extends Service {
         nm.notify(AlarmStore.notificationId(key), b.build());
     }
 
-    /** Last reminder went unanswered: text the family, if the user switched this on. */
+    /**
+     * Last reminder went unanswered.
+     * 1) Family who use Asha get a free, instant alert through the app (if Maa agreed to share this).
+     * 2) If that reached nobody and "text family" is on, a normal SMS goes to her loved ones.
+     */
     static void alertFamily(Context ctx, JSONObject t, JSONObject cfg) {
+        new Thread(() -> {
+            int pushed = 0;
+            if (FamilyStore.ready(ctx) && FamilyStore.config(ctx).optBoolean("inCircle", false)) {
+                try {
+                    JSONObject body = new JSONObject();
+                    body.put("action", "alert");
+                    body.put("template", "missed");
+                    body.put("timeEn", t.optString("alertTimeEn"));
+                    body.put("timeHi", t.optString("alertTimeHi"));
+                    JSONObject out = FamilyStore.post(ctx, body);
+                    if (out != null && out.optBoolean("ok")) pushed = out.optInt("pushed", 0);
+                } catch (Exception ignored) { }
+            }
+            if (pushed == 0 && cfg.optBoolean("familyAlert", false)) smsFamily(ctx, t, cfg);
+        }).start();
+    }
+
+    static void smsFamily(Context ctx, JSONObject t, JSONObject cfg) {
         if (ctx.checkSelfPermission(Manifest.permission.SEND_SMS) != PackageManager.PERMISSION_GRANTED) return;
         JSONArray numbers = cfg.optJSONArray("familyNumbers");
         String text = t.optString("missedText");

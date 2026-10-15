@@ -1,10 +1,14 @@
 import { useCallback, useEffect, useState } from "react";
 import { App as NativeApp } from "@capacitor/app";
-import { HeartPulse, Leaf, MessageCircle, Pill, Settings, Sun } from "lucide-react";
+import { HeartHandshake, HeartPulse, Leaf, MessageCircle, Pill, Settings, Sun } from "lucide-react";
 import { CareScreen } from "@/components/asha/care";
 import { ReminderEngine } from "@/components/asha/engine";
 import { MedsScreen } from "@/components/asha/meds";
+import { FairyDock, FamilyEngine } from "@/components/asha/family-engine";
+import { FamilyHome } from "@/components/asha/family-home";
+import { FamilyScreen } from "@/components/asha/family-screen";
 import { Intro } from "@/components/asha/intro";
+import { RoleChoice } from "@/components/asha/role-choice";
 import { Onboarding } from "@/components/asha/onboarding";
 import { Splash } from "@/components/asha/splash";
 import { SettingsScreen } from "@/components/asha/settings";
@@ -40,6 +44,9 @@ function Shell() {
   const tab = useAsha((s) => s.tab);
   const lang = useAsha((s) => s.lang);
   const introSeen = useAsha((s) => s.introSeen);
+  const roleChosen = useAsha((s) => s.roleChosen);
+  const appRole = useAsha((s) => s.appRole);
+  const familyMode = introSeen && roleChosen && appRole === "family";
   const textSize = useAsha((s) => s.textSize);
   useEffect(() => {
     document.documentElement.lang = lang === "hi" ? "hi" : "en";
@@ -73,6 +80,10 @@ function Shell() {
         <main className="flex-1 px-4 pb-36">
           {!introSeen ? (
             <Intro />
+          ) : !roleChosen ? (
+            <RoleChoice />
+          ) : familyMode ? (
+            <FamilyHome />
           ) : !onboarded ? (
             <Onboarding />
           ) : tab === "meds" ? (
@@ -81,6 +92,8 @@ function Shell() {
             <CareScreen />
           ) : tab === "talk" ? (
             <TalkScreen />
+          ) : tab === "family" ? (
+            <FamilyScreen />
           ) : tab === "sos" ? (
             <SosScreen />
           ) : tab === "settings" ? (
@@ -90,7 +103,9 @@ function Shell() {
           )}
         </main>
       </div>
-      {onboarded && introSeen ? <Nav /> : null}
+      {onboarded && introSeen && roleChosen && !familyMode ? <Nav /> : null}
+      {onboarded && introSeen && roleChosen && !familyMode ? <FairyDock /> : null}
+      <FamilyEngine />
       <Speaking />
       <ReminderEngine />
     </div>
@@ -99,7 +114,8 @@ function Shell() {
 
 function Header() {
   const lang = useAsha((s) => s.lang);
-  const onboarded = useAsha((s) => s.onboarded);
+  const family = useAsha((s) => s.roleChosen && s.introSeen && s.appRole === "family");
+  const onboarded = useAsha((s) => s.onboarded) && !family;
   const tab = useAsha((s) => s.tab);
   const setTab = useAsha((s) => s.setTab);
   const openSettings = useAsha((s) => s.openSettings);
@@ -112,7 +128,7 @@ function Header() {
         </span>
         <div className="min-w-0 flex-1">
           <p className="display text-2xl leading-none">Asha</p>
-          {onboarded ? (
+          {onboarded || family ? (
             <p className="mt-1 truncate text-base text-quiet tabular-nums">
               {dateLabel(lang, now)} · {clockLabel(lang, now)}
             </p>
@@ -154,6 +170,7 @@ const TABS: { id: Tab; en: string; hi: string; icon: typeof Sun }[] = [
   { id: "today", en: "Today", hi: "आज", icon: Sun },
   { id: "meds", en: "Meds", hi: "दवा", icon: Pill },
   { id: "care", en: "Care", hi: "देखभाल", icon: HeartPulse },
+  { id: "family", en: "Family", hi: "परिवार", icon: HeartHandshake },
   { id: "talk", en: "Talk", hi: "बात", icon: MessageCircle },
 ];
 
@@ -163,7 +180,7 @@ function Nav() {
   const setTab = useAsha((s) => s.setTab);
   return (
     <nav aria-label={lang === "hi" ? "मुख्य" : "Main"} className="dock fixed inset-x-0 bottom-0 z-20 border-t border-line bg-paper">
-      <div className="mx-auto grid w-full max-w-lg grid-cols-4">
+      <div className="mx-auto grid w-full max-w-lg grid-cols-5">
         {TABS.map((item) => {
           const Icon = item.icon;
           const on = tab === item.id;

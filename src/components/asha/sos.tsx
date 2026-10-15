@@ -3,6 +3,7 @@ import { MessageSquare, Phone } from "lucide-react";
 import { Geolocation } from "@capacitor/geolocation";
 import { Button } from "@/components/ui/button";
 import { Card, t } from "@/components/asha/bits";
+import { familyAlert } from "@/lib/asha/family";
 import { AshaNative, isNative } from "@/lib/asha/native";
 import { digits, smsHref, telHref, todayCheckin } from "@/lib/asha/schedule";
 import { sosText } from "@/lib/asha/speech";
@@ -72,6 +73,9 @@ export function SosScreen() {
     const link = await whereAmI();
     setMapLink(link);
     log(link ? t(lang, { en: "Location found.", hi: "जगह मिल गई." }) : t(lang, { en: "Location not found. Sending without it.", hi: "जगह नहीं मिली. उसके बिना भेज रही हूँ." }));
+    // family who use the Asha app get an urgent alert first (free, instant)
+    const pushed = await familyAlert("sos", { where: link });
+    if (pushed > 0) log(lang === "hi" ? `परिवार ऐप पर ${pushed} लोगों को सूचना गई.` : `Alert sent to ${pushed} family phone${pushed > 1 ? "s" : ""} in Asha.`);
     const text = sosText(lang, name, link);
     const numbers = people.map((p) => p.phone);
 

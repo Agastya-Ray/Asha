@@ -15,7 +15,7 @@ import { speak, useSpeech } from "@/lib/asha/voice";
  */
 async function webTick() {
   const s = useAsha.getState();
-  if (isNative || !s.hydrated || !s.onboarded || !s.voiceOn) return;
+  if (isNative || !s.hydrated || !s.onboarded || s.appRole !== "elder" || !s.voiceOn) return;
   if (useSpeech.getState().active) return;
   const items = buildAgenda(s);
   const next = items.find((item) => shouldSpeak(item, s.reminded, s.snooze));
@@ -55,7 +55,8 @@ export function ReminderEngine() {
         state.dailyGreetings !== prev.dailyGreetings ||
         state.wakeTime !== prev.wakeTime ||
         state.sleepTime !== prev.sleepTime ||
-        state.onboarded !== prev.onboarded
+        state.onboarded !== prev.onboarded ||
+        state.appRole !== prev.appRole
       ) {
         syncReminders();
       }
@@ -105,7 +106,7 @@ export function ReminderEngine() {
     const id = window.setInterval(() => void webTick(), 15000);
     const greetTimer = window.setTimeout(() => {
       const s = useAsha.getState();
-      if (!s.onboarded || !s.voiceOn || !s.speakOnOpen) return;
+      if (!s.onboarded || s.appRole !== "elder" || !s.voiceOn || !s.speakOnOpen) return;
       if (!isNative && buildAgenda(s).some((item) => shouldSpeak(item, s.reminded, s.snooze))) {
         void webTick();
         return;
