@@ -5,7 +5,7 @@ import { Card, FieldLabel, t } from "@/components/asha/bits";
 import { CONDITIONS, planById, text } from "@/lib/asha/plans";
 import { mealNote, mealTitle } from "@/lib/asha/speech";
 import { todayCheckin } from "@/lib/asha/schedule";
-import { shiftDay, shortWeekday } from "@/lib/asha/time";
+import { minutesNow, shiftDay, shortWeekday, todayKey, toMin } from "@/lib/asha/time";
 import { AshaNative, isNative } from "@/lib/asha/native";
 import { useAsha } from "@/lib/asha/store";
 import type { ConditionId } from "@/lib/asha/types";
@@ -89,13 +89,13 @@ export function CareScreen() {
       <div className="mt-3 flex flex-col gap-3">
         {meals.map((meal) => (
           <Card key={meal.id}>
-            <p className="text-lg font-bold capitalize">{mealTitle(meal, lang)}</p>
+            <p className="text-lg font-bold first-letter:uppercase">{mealTitle(meal, lang)}</p>
             <p className="mt-1 text-base text-quiet">{mealNote(meal, lang)}</p>
             <input
               type="time"
               className="field mt-3"
               value={meal.time}
-              onChange={(e) => updateMeal(meal.id, { time: e.target.value })}
+              onChange={(e) => e.target.value && updateMeal(meal.id, { time: e.target.value })}
             />
           </Card>
         ))}
@@ -245,7 +245,13 @@ export function CareScreen() {
                     <Line
                       type="monotone"
                       dataKey={activeMetric === "bp" ? "bp" : activeMetric}
-                      name={activeMetric}
+                      name={
+                        activeMetric === "bp"
+                          ? t(lang, { en: "Blood pressure, top", hi: "रक्तचाप, ऊपर" })
+                          : activeMetric === "pain"
+                            ? t(lang, { en: "Pain", hi: "दर्द" })
+                            : t(lang, { en: "Mood", hi: "मन" })
+                      }
                       stroke="var(--color-sage)"
                       strokeWidth={3}
                       dot={{ r: 4 }}
@@ -306,13 +312,22 @@ function DoctorReport() {
       const v = xs.filter((x): x is number => typeof x === "number");
       return v.length ? Math.round(v.reduce((a, b) => a + b, 0) / v.length) : null;
     };
+    // Count a dose only from the first day that medicine was marked, and today only once its time has come.
+    // Otherwise a medicine added yesterday shows as "2 of 42" and the doctor reads it as missed doses.
+    const today = todayKey();
+    const nowMin = minutesNow();
     let planned = 0;
     let taken = 0;
-    for (const d of days) {
-      for (const m of s.meds) {
+    for (const m of s.meds) {
+      const first = s.doseLogs.filter((l) => l.medId === m.id).map((l) => l.day).sort()[0];
+      if (!first) continue;
+      for (const d of days) {
+        if (d < first) continue;
         for (const time of m.times) {
+          const log = s.doseLogs.find((l) => l.day === d && l.medId === m.id && l.time === time);
+          if (d === today && !log && toMin(time) > nowMin) continue;
           planned += 1;
-          if (s.doseLogs.some((l) => l.day === d && l.medId === m.id && l.time === time && l.status === "taken")) taken += 1;
+          if (log?.status === "taken") taken += 1;
         }
       }
     }
@@ -322,7 +337,7 @@ function DoctorReport() {
       `Name: ${s.name || "-"}`,
       `Conditions noted: ${conds}`,
       `Medicines: ${s.meds.map((m) => `${m.name} ${m.dose} (${m.times.join(", ")})`).join("; ") || "-"}`,
-      `Doses marked taken: ${taken} of ${planned}${planned ? ` (${Math.round((taken / planned) * 100)}%)` : ""}`,
+      planned ? `Doses marked taken: ${taken} of ${planned} (${Math.round((taken / planned) * 100)}%)` : "Doses marked taken: none marked yet",
     ];
     const fs = avg(rows.map((r) => r.fastingSugar));
     const as = avg(rows.map((r) => r.afterSugar));

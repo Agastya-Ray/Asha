@@ -46,7 +46,7 @@ export function MedEditor({
         <FieldLabel>{t(lang, { en: "Times", hi: "समय" })}</FieldLabel>
         <div className="flex flex-col gap-2">
           {med.times.map((time, index) => (
-            <div key={`${time}-${index}`} className="flex gap-2">
+            <div key={index} className="flex gap-2">
               <input
                 type="time"
                 className="field"
@@ -72,7 +72,10 @@ export function MedEditor({
         <button
           type="button"
           className="mt-2 min-h-12 font-bold text-sage"
-          onClick={() => setMed({ ...med, times: [...med.times, "20:00"] })}
+          onClick={() => {
+            const next = ["20:00", "13:00", "08:00", "22:00", "06:00"].find((x) => !med.times.includes(x)) ?? "12:00";
+            setMed({ ...med, times: [...med.times, next] });
+          }}
         >
           {t(lang, { en: "Add another time", hi: "एक और समय" })}
         </button>
@@ -110,7 +113,7 @@ export function MedEditor({
           value={med.pillsLeft ?? ""}
           placeholder={t(lang, { en: "Leave blank to skip", hi: "छोड़ना हो तो खाली रखें" })}
           onChange={(e) => {
-            const raw = e.target.value.trim();
+            const raw = e.target.value.replace(/\D/g, "").slice(0, 4);
             setMed({ ...med, pillsLeft: raw === "" ? null : Number(raw) });
           }}
         />
@@ -130,7 +133,8 @@ export function MedEditor({
               setHint(t(lang, { en: "Add how much. Even '1 tablet' is enough.", hi: "कितनी है यह लिखें. '1 गोली' भी काफ़ी है." }));
               return;
             }
-            const times = med.times.filter(Boolean);
+            // The same time twice would ring twice and count as two doses.
+            const times = [...new Set(med.times.filter(Boolean))].sort();
             if (!times.length) {
               setHint(t(lang, { en: "Add at least one time.", hi: "कम से कम एक समय डालें." }));
               return;
@@ -171,7 +175,7 @@ async function fileToJpeg(file: File) {
   return canvas.toDataURL("image/jpeg", 0.72);
 }
 
-type Draft = Med & { keep: boolean };
+type Draft = Med & { keep: boolean; noTime: boolean };
 
 export function MedsScreen() {
   const lang = useAsha((s) => s.lang);
@@ -180,6 +184,7 @@ export function MedsScreen() {
   const saveMeds = useAsha((s) => s.saveMeds);
   const [adding, setAdding] = useState(false);
   const [editing, setEditing] = useState<string | null>(null);
+  const [removing, setRemoving] = useState<string | null>(null);
   const [reading, setReading] = useState(false);
   const [error, setError] = useState("");
   const [drafts, setDrafts] = useState<Draft[] | null>(null);
@@ -215,7 +220,9 @@ export function MedsScreen() {
           food,
           note: [m.note, m.days > 0 ? (lang === "hi" ? `${m.days} दिन के लिए` : `For ${m.days} days`) : ""].filter(Boolean).join(" · "),
           pillsLeft: null,
-          keep: true,
+          // No time on the page usually means "only when needed" (SOS). A daily reminder would be wrong, so it starts unticked.
+          keep: times.length > 0,
+          noTime: times.length === 0,
         };
       });
       setCaution(res.caution);
@@ -284,14 +291,36 @@ export function MedsScreen() {
                     {med.pillsLeft} {t(lang, { en: "tablets left in the count", hi: "गोलियाँ गिनती में बची हैं" })}
                   </p>
                 ) : null}
-                <div className="mt-4 grid grid-cols-2 gap-2">
-                  <Button variant="quiet" onClick={() => setEditing(med.id)}>
-                    {t(lang, { en: "Change", hi: "बदलें" })}
-                  </Button>
-                  <Button variant="quiet" onClick={() => removeMed(med.id)}>
-                    {t(lang, { en: "Remove", hi: "हटाएँ" })}
-                  </Button>
-                </div>
+                {removing === med.id ? (
+                  <div className="mt-4 rounded-2xl border border-clay bg-clay-soft p-3">
+                    <p className="text-lg font-bold">
+                      {lang === "hi" ? `${med.name} को सूची से हटाएँ? इसकी याद भी बंद हो जाएगी.` : `Remove ${med.name}? Its reminders stop too.`}
+                    </p>
+                    <div className="mt-3 grid grid-cols-2 gap-2">
+                      <Button
+                        variant="sos"
+                        onClick={() => {
+                          removeMed(med.id);
+                          setRemoving(null);
+                        }}
+                      >
+                        {t(lang, { en: "Yes, remove", hi: "हाँ, हटाएँ" })}
+                      </Button>
+                      <Button variant="quiet" onClick={() => setRemoving(null)}>
+                        {t(lang, { en: "Keep it", hi: "रहने दें" })}
+                      </Button>
+                    </div>
+                  </div>
+                ) : (
+                  <div className="mt-4 grid grid-cols-2 gap-2">
+                    <Button variant="quiet" onClick={() => setEditing(med.id)}>
+                      {t(lang, { en: "Change", hi: "बदलें" })}
+                    </Button>
+                    <Button variant="quiet" onClick={() => setRemoving(med.id)}>
+                      {t(lang, { en: "Remove", hi: "हटाएँ" })}
+                    </Button>
+                  </div>
+                )}
               </Card>
             ),
           )
@@ -405,6 +434,14 @@ export function MedsScreen() {
                   {draft.times.join(" · ")} · {foodLabel(draft.food, lang)}
                 </p>
                 {draft.note ? <p className="mt-1 text-base text-quiet">{draft.note}</p> : null}
+                {draft.noTime ? (
+                  <p className="mt-2 text-base font-bold text-clay">
+                    {t(lang, {
+                      en: "No time was written, so this may be only when needed. Tick it only if it is a daily medicine, then set its time on Meds.",
+                      hi: "समय नहीं लिखा है, शायद यह सिर्फ ज़रूरत पर है. रोज़ की दवा हो तभी चुनें, फिर दवा वाले पन्ने पर समय बदलें.",
+                    })}
+                  </p>
+                ) : null}
               </Card>
             ))}
           </div>

@@ -69,19 +69,30 @@ const HI_HOURS = [
   "ग्यारह",
 ];
 
+const EN_ONES = ["", "one", "two", "three", "four", "five", "six", "seven", "eight", "nine", "ten", "eleven", "twelve", "thirteen", "fourteen", "fifteen", "sixteen", "seventeen", "eighteen", "nineteen"];
+const EN_TENS = ["", "", "twenty", "thirty", "forty", "fifty"];
+
+/** Minutes as they are said aloud: 5 -> "oh five", 15 -> "fifteen", 45 -> "forty-five". */
+function enMinutes(m: number) {
+  if (m < 10) return `oh ${EN_ONES[m]}`;
+  if (m < 20) return EN_ONES[m];
+  const ones = m % 10;
+  return ones ? `${EN_TENS[Math.floor(m / 10)]}-${EN_ONES[ones]}` : EN_TENS[Math.floor(m / 10)];
+}
+
 export function speakClock(lang: Lang, hhmm: string) {
   const [hRaw, mRaw] = hhmm.split(":").map(Number);
-  const h = hRaw ?? 0;
-  const m = mRaw ?? 0;
+  const h = Number.isFinite(hRaw) ? hRaw : 0;
+  const m = Number.isFinite(mRaw) ? mRaw : 0;
   const h12 = h % 12;
   if (lang === "hi") {
-    const p = h < 12 ? "सुबह" : h < 17 ? "दोपहर" : h < 21 ? "शाम" : "रात";
-    const min = m === 0 ? "" : m === 30 ? " तीस" : ` ${m}`;
-    return `${p} ${HI_HOURS[h12]} बजे${min}`;
+    const p = h < 4 ? "रात" : h < 12 ? "सुबह" : h < 17 ? "दोपहर" : h < 21 ? "शाम" : "रात";
+    // "सुबह आठ बजे", "सुबह आठ बजकर पाँच मिनट"
+    return m === 0 ? `${p} ${HI_HOURS[h12]} बजे` : `${p} ${HI_HOURS[h12]} बजकर ${m} मिनट`;
   }
-  const p = h < 12 ? "morning" : h < 17 ? "afternoon" : h < 21 ? "evening" : "night";
-  const min = m === 0 ? "" : m === 30 ? " thirty" : ` ${String(m).padStart(2, "0")}`;
-  return `${EN_HOURS[h12]}${min} in the ${p}`;
+  const p = h < 4 ? "at night" : h < 12 ? "in the morning" : h < 17 ? "in the afternoon" : h < 21 ? "in the evening" : "at night";
+  const min = m === 0 ? "" : ` ${enMinutes(m)}`;
+  return `${EN_HOURS[h12]}${min} ${p}`;
 }
 
 export function clockLabel(lang: Lang, d = new Date()) {
@@ -93,9 +104,9 @@ export function clockLabel(lang: Lang, d = new Date()) {
 
 export function dateLabel(lang: Lang, d = new Date()) {
   return d.toLocaleDateString(lang === "hi" ? "hi-IN" : "en-GB", {
-    weekday: "long",
+    weekday: "short",
     day: "numeric",
-    month: "long",
+    month: "short",
   });
 }
 
