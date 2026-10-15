@@ -106,7 +106,7 @@ function Shell() {
       {onboarded && introSeen && roleChosen && !familyMode ? <Nav /> : null}
       {onboarded && introSeen && roleChosen && !familyMode ? <FairyDock /> : null}
       <FamilyEngine />
-      <Speaking />
+      <Speaking docked={onboarded && introSeen && roleChosen && !familyMode} />
       <ReminderEngine />
     </div>
   );
@@ -201,12 +201,16 @@ function Nav() {
   );
 }
 
-function Speaking() {
+/**
+ * "Asha is speaking · Stop". Above the tab bar when there is one. On the intro, setup and family screens
+ * there is no tab bar and the main button sits at the bottom, so the bar goes under the header instead of covering it.
+ */
+function Speaking({ docked }: { docked: boolean }) {
   const lang = useAsha((s) => s.lang);
   const active = useSpeech((s) => s.active);
   if (!active) return null;
   return (
-    <div className="fixed inset-x-0 bottom-20 z-30 px-4">
+    <div className={cn("fixed inset-x-0 z-30 px-4", docked ? "bottom-20" : "top-[calc(env(safe-area-inset-top)+5.5rem)]")}>
       <div className="mx-auto flex w-full max-w-lg items-center justify-between gap-3 rounded-2xl bg-ink px-4 py-3 text-paper">
         <p className="text-lg">{t(lang, { en: "Asha is speaking", hi: "आशा बोल रही हैं" })}</p>
         <button type="button" onClick={() => stopSpeaking()} className="min-h-11 rounded-xl bg-paper px-4 font-bold text-ink">
