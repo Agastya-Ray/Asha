@@ -20,7 +20,7 @@ for m in re.finditer(r"<node [^>]*>", x):
         a,b,c,e=map(int,re.search(r"bounds=\"\[(\d+),(\d+)\]\[(\d+),(\d+)\]\"", n).groups()); print((a+c)//2,(b+e)//2); break
 ' "$1"
 }
-flow() { log "flow $1"; (cd "$OUT" && maestro test -e OUT="$OUT" "$FLOWS/$1" >> "$OUT/maestro.log" 2>&1) || { log "flow $1 had a failing step (see maestro.log)"; shot "fail-${1%.yaml}"; maestro hierarchy > "$OUT/hierarchy-${1%.yaml}.json" 2>/dev/null; }; }
+flow() { log "flow $1"; (cd "$OUT" && maestro test --test-output-dir "$OUT/maestro-${1%.yaml}" "$FLOWS/$1" >> "$OUT/maestro.log" 2>&1) || { log "flow $1 had a failing step (see maestro.log)"; shot "fail-${1%.yaml}"; maestro hierarchy > "$OUT/hierarchy-${1%.yaml}.json" 2>/dev/null; }; }
 setclock() { adb shell "date $1" >/dev/null; log "clock set to $(adb shell date)"; }
 
 adb root >/dev/null 2>&1; sleep 3; adb wait-for-device
@@ -88,4 +88,6 @@ shot 75-back-in-asha
 
 adb logcat -d > "$OUT/logcat-full.txt"
 grep -iE "chromium|Capacitor|Asha|TextToSpeech|tts|AndroidRuntime|FATAL" "$OUT/logcat-full.txt" > "$OUT/logcat-asha.txt" || true
+# Maestro keeps its screenshots under maestro-<flow>/; copy the named ones up beside the adb shots
+find "$OUT" -path "$OUT/maestro-*" -name "[0-9][0-9]-*.png" -exec cp {} "$OUT/" \;
 log "done"

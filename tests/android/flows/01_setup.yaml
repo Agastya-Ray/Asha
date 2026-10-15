@@ -6,7 +6,7 @@ appId: com.agastyaray.asha
 - extendedWaitUntil:
     visible: "Skip"
     timeout: 120000
-- takeScreenshot: ${OUT}/01-intro-1
+- takeScreenshot: 01-intro-1
 - repeat:
     times: 5
     commands:
@@ -14,23 +14,23 @@ appId: com.agastyaray.asha
           element: "Next"
       - tapOn: "Next"
       - waitForAnimationToEnd
-- takeScreenshot: ${OUT}/02-intro-last
+- takeScreenshot: 02-intro-last
 - scrollUntilVisible:
     element: "Let's set up.*"
 - tapOn: "Let's set up.*"
 - extendedWaitUntil:
     visible: "Who will use this phone?"
     timeout: 10000
-- takeScreenshot: ${OUT}/03-role-choice
+- takeScreenshot: 03-role-choice
 - tapOn: ".*for my own care.*"
 - extendedWaitUntil:
     visible: "Step 1 / 4"
     timeout: 10000
-- takeScreenshot: ${OUT}/04-setup-step1
+- takeScreenshot: 04-setup-step1
 - tapOn: "Meena"
 - inputText: "Kamla"
 - hideKeyboard
-- takeScreenshot: ${OUT}/05-setup-step1-typed
+- takeScreenshot: 05-setup-step1-typed
 - scrollUntilVisible:
     element: "Continue"
 - tapOn: "Continue"
@@ -40,11 +40,11 @@ appId: com.agastyaray.asha
 - scrollUntilVisible:
     element: "After a heart attack"
 - tapOn: "After a heart attack"
-- takeScreenshot: ${OUT}/06-setup-step2
+- takeScreenshot: 06-setup-step2
 - scrollUntilVisible:
     element: "Continue"
 - tapOn: "Continue"
-- takeScreenshot: ${OUT}/07-setup-step3
+- takeScreenshot: 07-setup-step3
 - tapOn: "112"
 - inputText: "112"
 - hideKeyboard
@@ -63,14 +63,14 @@ appId: com.agastyaray.asha
     optional: true
 - inputText: "Priya"
 - hideKeyboard
-- takeScreenshot: ${OUT}/08-setup-step3-typed
+- takeScreenshot: 08-setup-step3-typed
 - scrollUntilVisible:
     element: "Continue"
 - tapOn: "Continue"
 - extendedWaitUntil:
     visible: "Step 4 / 4"
     timeout: 10000
-- takeScreenshot: ${OUT}/09-setup-step4
+- takeScreenshot: 09-setup-step4
 - scrollUntilVisible:
     element: "Add one medicine now"
 - tapOn: "Add one medicine now"
@@ -82,14 +82,14 @@ appId: com.agastyaray.asha
 - tapOn: "1 tablet, 500 mg"
 - inputText: "500 mg"
 - hideKeyboard
-- takeScreenshot: ${OUT}/10-med-editor
+- takeScreenshot: 10-med-editor
 - scrollUntilVisible:
     element: "Save this medicine"
 - tapOn: "Save this medicine"
-- takeScreenshot: ${OUT}/11-med-saved
+- takeScreenshot: 11-med-saved
 - scrollUntilVisible:
     element: "Go to my day"
     direction: UP
 - tapOn: "Go to my day"
 - waitForAnimationToEnd
-- takeScreenshot: ${OUT}/12-today-first-open
+- takeScreenshot: 12-today-first-open
