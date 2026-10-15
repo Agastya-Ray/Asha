@@ -6,7 +6,7 @@ appId: com.agastyaray.asha
 - extendedWaitUntil:
     notVisible: "Opening your family circle.*"
     timeout: 20000
-- takeScreenshot: 50-family-start
+- takeScreenshot: ${OUT}/50-family-start
 - scrollUntilVisible:
     element: ".*(Start|Create|Make).*"
     optional: true
@@ -14,6 +14,6 @@ appId: com.agastyaray.asha
     text: ".*(Start|Create|Make).*"
     optional: true
 - waitForAnimationToEnd
-- takeScreenshot: 51-family-after-start
+- takeScreenshot: ${OUT}/51-family-after-start
 - scroll
-- takeScreenshot: 52-family-after-start-2
+- takeScreenshot: ${OUT}/52-family-after-start-2

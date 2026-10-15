@@ -20,10 +20,13 @@ for m in re.finditer(r"<node [^>]*>", x):
         a,b,c,e=map(int,re.search(r"bounds=\"\[(\d+),(\d+)\]\[(\d+),(\d+)\]\"", n).groups()); print((a+c)//2,(b+e)//2); break
 ' "$1"
 }
-flow() { log "flow $1"; (cd "$OUT" && maestro test "$FLOWS/$1" >> "$OUT/maestro.log" 2>&1) || log "flow $1 had a failing step (see maestro.log)"; }
+flow() { log "flow $1"; (cd "$OUT" && maestro test -e OUT="$OUT" "$FLOWS/$1" >> "$OUT/maestro.log" 2>&1) || { log "flow $1 had a failing step (see maestro.log)"; shot "fail-${1%.yaml}"; maestro hierarchy > "$OUT/hierarchy-${1%.yaml}.json" 2>/dev/null; }; }
 setclock() { adb shell "date $1" >/dev/null; log "clock set to $(adb shell date)"; }
 
 adb root >/dev/null 2>&1; sleep 3; adb wait-for-device
+sleep 40   # let the freshly booted emulator settle (avoids "Pixel Launcher isn't responding")
+adb shell settings put global hide_error_dialogs 1
+adb shell am broadcast -a android.intent.action.CLOSE_SYSTEM_DIALOGS >/dev/null
 adb shell settings put global auto_time 0
 adb shell settings put global auto_time_zone 0
 adb shell service call alarm 3 s16 Asia/Kolkata >/dev/null
@@ -52,7 +55,7 @@ shot 25-today-after-permissions
 # --- Lock-screen reminder: Metformin and breakfast are both due at 08:00 ---
 log "lock-screen reminder test"
 adb shell input keyevent KEYCODE_HOME
-setclock 101507585026.00 2>/dev/null || setclock 101507582026.50
+setclock 101507582026.40         # 07:58:40, so the 08:00 reminders ring while locked
 sleep 2; adb shell input keyevent KEYCODE_SLEEP
 sleep 95
 adb shell dumpsys notification --noredact | grep -E "pkg=$PKG|android.title=|android.text=" | grep -A2 "pkg=$PKG" > "$OUT/notifications-0800.txt" || true
