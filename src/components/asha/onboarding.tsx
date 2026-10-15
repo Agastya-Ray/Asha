@@ -29,6 +29,7 @@ export function Onboarding() {
   });
   const [emergency, setEmergencyLocal] = useState(() => useAsha.getState().emergencyNumber);
   const [adding, setAdding] = useState(false);
+  const meds = useAsha((s) => s.meds);
 
   const steps = t(lang, { en: "Step", hi: "कदम" });
 
@@ -226,6 +227,18 @@ export function Onboarding() {
               hi: "पहली दवा अभी लिख सकते हैं. या खत्म करें, और दवा वाले पन्ने पर पर्ची की फ़ोटो लें. आशा नाम पढ़ेगी और हर नाम आपकी जाँच का इंतज़ार करेगी. लिखावट आसानी से गलत पढ़ी जाती है.",
             })}
           </p>
+          {meds.length > 0 && !adding ? (
+            <div className="mt-5 rounded-3xl border border-sage bg-sage-soft p-4">
+              <p className="text-lg font-bold">{t(lang, { en: "Saved ✓", hi: "सहेज लिया ✓" })}</p>
+              <ul className="mt-2 space-y-1 text-lg">
+                {meds.map((m) => (
+                  <li key={m.id}>
+                    {m.name} · {m.dose} · {m.times.join(", ")}
+                  </li>
+                ))}
+              </ul>
+            </div>
+          ) : null}
           {adding ? (
             <div className="mt-5">
               <MedEditor
@@ -239,7 +252,9 @@ export function Onboarding() {
             <div className="mt-6 flex flex-col gap-3">
               <Button onClick={() => finish()}>{t(lang, { en: "Go to my day", hi: "मेरे दिन पर जाएँ" })}</Button>
               <Button variant="quiet" onClick={() => setAdding(true)}>
-                {t(lang, { en: "Add one medicine now", hi: "अभी एक दवा जोड़ें" })}
+                {meds.length
+                  ? t(lang, { en: "Add another medicine", hi: "एक और दवा जोड़ें" })
+                  : t(lang, { en: "Add one medicine now", hi: "अभी एक दवा जोड़ें" })}
               </Button>
               <Button variant="ghost" onClick={() => setStep(3)}>
                 {t(lang, { en: "Back", hi: "पीछे" })}

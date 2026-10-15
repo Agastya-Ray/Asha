@@ -133,7 +133,7 @@ export function TodayScreen() {
           <div className="mt-3 flex flex-col gap-2">
             {restLater.map((item) => (
               <div key={item.key} className="flex items-baseline justify-between gap-3 rounded-2xl border border-line bg-paper px-4 py-3">
-                <p className="text-lg font-bold">{item.title}</p>
+                <p className="text-lg font-bold first-letter:uppercase">{item.title}</p>
                 <p className="shrink-0 text-base tabular-nums text-quiet">{speakClock(lang, item.time)}</p>
               </div>
             ))}
@@ -230,7 +230,7 @@ export function TodayScreen() {
         </details>
       ) : null}
 
-      <details className="mt-5 rounded-3xl border border-line bg-paper px-4 py-3">
+      {coach ? null : <details className="mt-5 rounded-3xl border border-line bg-paper px-4 py-3">
         <summary className="min-h-12 cursor-pointer text-lg font-bold">
           {t(lang, { en: "How today works", hi: "आज कैसे चलता है" })}
         </summary>
@@ -250,14 +250,12 @@ export function TodayScreen() {
                 hi: "ब्राउज़र में वह तभी बोलती है जब यह पन्ना खुला हो. एंड्रॉइड ऐप फ़ोन लॉक होने पर भी बोलता है.",
               })}
         </p>
-        {!coach ? (
-          <div className="mt-4">
-            <Button variant="quiet" onClick={() => dismiss()}>
-              {t(lang, { en: "Hide this note", hi: "यह नोट छिपाएँ" })}
-            </Button>
-          </div>
-        ) : null}
-      </details>
+        <div className="mt-4">
+          <Button variant="quiet" onClick={() => dismiss()}>
+            {t(lang, { en: "Hide this note", hi: "यह नोट छिपाएँ" })}
+          </Button>
+        </div>
+      </details>}
       {isNative ? null : <Card className="mt-5">
         <p className="text-lg font-bold">{t(lang, { en: "Keep Asha on the home screen", hi: "आशा को होम स्क्रीन पर रखें" })}</p>
         <p className="mt-2 text-base text-quiet">
@@ -286,7 +284,7 @@ function AgendaCard({ item }: { item: AgendaItem }) {
         {item.kind === "med" ? t(lang, { en: "Medicine", hi: "दवा" }) : t(lang, { en: "Meal", hi: "खाना" })} ·{" "}
         {speakClock(lang, item.time)}
       </p>
-      <h3 className="display mt-1 text-3xl capitalize">{item.title}</h3>
+      <h3 className="display mt-1 text-3xl first-letter:uppercase">{item.title}</h3>
       {item.detail ? <p className="mt-1 text-base text-quiet">{item.detail}</p> : null}
       {item.state === "later" ? (
         <p className="mt-2 text-base text-quiet">
