@@ -7,12 +7,15 @@ appId: com.agastyaray.asha
     timeout: 20000
 - tapOn: "Settings"
 - waitForAnimationToEnd
+- takeScreenshot: 39a-settings-opened
 - tapOn: "हिन्दी"
 - waitForAnimationToEnd
+- takeScreenshot: 39b-settings-after-hindi
 - scrollUntilVisible:
     element: "A\\+\\+"
     direction: DOWN
     timeout: 20000
+    optional: true
 - tapOn: "A\\+\\+"
 - waitForAnimationToEnd
 - takeScreenshot: 40-settings-hindi-largest-text
