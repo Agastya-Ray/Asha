@@ -74,7 +74,7 @@ if [ -z "$xy" ]; then
   # the action buttons only show once the collapsed Asha notification is expanded
   adb exec-out cat /sdcard/ui.xml > "$OUT/shade-ui.xml"
   xy=$(center "Expand|Show more")
-  if [ -n "$xy" ]; then adb shell input tap $xy; log "expanded the Asha notification at $xy"; sleep 2; xy=$(center "Taken"); fi
+  if [ -n "$xy" ]; then adb shell input tap $xy; log "expanded the Asha notification at $xy"; sleep 3; shot 27b-notification-expanded; adb exec-out cat /sdcard/ui.xml > "$OUT/shade-expanded-ui.xml"; xy=$(center "Taken"); fi
 fi
 if [ -n "$xy" ]; then adb shell input tap $xy; log "tapped Taken on the notification at $xy"; sleep 3; else FAILED=1; log "no Taken button found in the shade"; fi
 shot 28-after-tapping-taken
