@@ -125,6 +125,8 @@ flow 05_prescription.yaml
 # --- Help: hold the red SOS button for 2.5 s ---
 flow 06_help.yaml
 # --- Hindi and the largest text, tapped by screen position (Maestro's text bounds sat under the bottom nav) ---
+# the Help flow leaves the app on Help, so relaunch to reach the Today header and its Settings button
+adb shell am force-stop $PKG; adb shell monkey -p $PKG -c android.intent.category.LAUNCHER 1 >/dev/null 2>&1; sleep 15
 xy=$(center_on_screen "^Settings$|^सेटिंग$")
 if [ -n "$xy" ]; then adb shell input tap $xy; sleep 3; shot 39a-settings-opened; fi
 adb shell input swipe 540 1500 540 900 400; sleep 2
