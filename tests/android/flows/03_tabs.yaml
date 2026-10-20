@@ -7,6 +7,12 @@ appId: com.agastyaray.asha
     timeout: 20000
 - waitForAnimationToEnd
 - takeScreenshot: 30-today-top
+- scrollUntilVisible:
+    element: "Metformin.*"
+    direction: DOWN
+    timeout: 20000
+    optional: true
+- takeScreenshot: 30c-today-metformin-dose
 - scroll
 - takeScreenshot: 31-today-scrolled
 - tapOn: "Meds"
