@@ -2,6 +2,9 @@
 appId: com.agastyaray.asha
 ---
 - launchApp
+- extendedWaitUntil:
+    visible: "Good morning.*"
+    timeout: 20000
 - waitForAnimationToEnd
 - takeScreenshot: 30-today-top
 - scroll
