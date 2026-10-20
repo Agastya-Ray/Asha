@@ -2,6 +2,7 @@
 # User-style test of Asha on an Android emulator. Writes screenshots and logs to $OUT.
 set -u
 OUT="${OUT:-$PWD/results}"
+FAILED=0   # set to 1 by any failing step; the script exits non-zero at the end
 FLOWS="$(cd "$(dirname "$0")" && pwd)/flows"
 mkdir -p "$OUT"
 export PATH="$HOME/.maestro/bin:$PATH"
@@ -20,7 +21,7 @@ for m in re.finditer(r"<node [^>]*>", x):
         a,b,c,e=map(int,re.search(r"bounds=\"\[(\d+),(\d+)\]\[(\d+),(\d+)\]\"", n).groups()); print((a+c)//2,(b+e)//2); break
 ' "$1"
 }
-flow() { log "flow $1"; (cd "$OUT" && maestro test --test-output-dir "$OUT/maestro-${1%.yaml}" "$FLOWS/$1" >> "$OUT/maestro.log" 2>&1) || { log "flow $1 had a failing step (see maestro.log)"; shot "fail-${1%.yaml}"; maestro hierarchy > "$OUT/hierarchy-${1%.yaml}.json" 2>/dev/null; }; }
+flow() { log "flow $1"; (cd "$OUT" && maestro test --test-output-dir "$OUT/maestro-${1%.yaml}" "$FLOWS/$1" >> "$OUT/maestro.log" 2>&1) || { FAILED=1; log "flow $1 had a failing step (see maestro.log)"; shot "fail-${1%.yaml}"; maestro hierarchy > "$OUT/hierarchy-${1%.yaml}.json" 2>/dev/null; }; }
 setclock() { adb shell "date $1" >/dev/null; log "clock set to $(adb shell date)"; }
 
 adb root >/dev/null 2>&1; sleep 3; adb wait-for-device
@@ -56,16 +57,20 @@ shot 25-today-after-permissions
 log "lock-screen reminder test"
 adb shell input keyevent KEYCODE_HOME
 setclock 101507582026.40         # 07:58:40, so the 08:00 reminders ring while locked
+# exact alarms are a separate switch in Settings ("2. Allow exact times"); the card only opens that page,
+# so turn the same permission on here, as the user would
+adb shell appops set $PKG SCHEDULE_EXACT_ALARM allow && log "exact alarms allowed"
 sleep 2; adb shell input keyevent KEYCODE_SLEEP
 sleep 95
 adb shell dumpsys notification --noredact | grep -E "pkg=$PKG|android.title=|android.text=" | grep -A2 "pkg=$PKG" > "$OUT/notifications-0800.txt" || true
+[ -s "$OUT/notifications-0800.txt" ] || { FAILED=1; log "no Asha notification at 08:00"; }
 adb shell input keyevent KEYCODE_WAKEUP; sleep 3
 shot 26-lockscreen-at-0800
 adb shell wm dismiss-keyguard; sleep 2
 adb shell cmd statusbar expand-notifications; sleep 2
 shot 27-notification-shade-0800
 xy=$(center "Taken")
-if [ -n "$xy" ]; then adb shell input tap $xy; log "tapped Taken on the notification at $xy"; sleep 3; else log "no Taken button found in the shade"; fi
+if [ -n "$xy" ]; then adb shell input tap $xy; log "tapped Taken on the notification at $xy"; sleep 3; else FAILED=1; log "no Taken button found in the shade"; fi
 shot 28-after-tapping-taken
 adb shell cmd statusbar collapse
 
@@ -90,4 +95,5 @@ adb logcat -d > "$OUT/logcat-full.txt"
 grep -iE "chromium|Capacitor|Asha|TextToSpeech|tts|AndroidRuntime|FATAL" "$OUT/logcat-full.txt" > "$OUT/logcat-asha.txt" || true
 # Maestro keeps its screenshots under maestro-<flow>/; copy the named ones up beside the adb shots
 find "$OUT" -path "$OUT/maestro-*" -name "[0-9][0-9]-*.png" -exec cp {} "$OUT/" \;
-log "done"
+log "done (failed steps: $FAILED)"
+exit $FAILED
