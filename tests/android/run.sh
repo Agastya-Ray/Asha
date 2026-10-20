@@ -111,6 +111,7 @@ flow 05_prescription.yaml
 
 # --- Help: hold the red SOS button for 2.5 s ---
 flow 06_help.yaml
+flow 07_hindi_bigtext.yaml
 adb emu geo fix 77.2090 28.6139 >/dev/null 2>&1
 xy=$(center "Hold for help|SOS")
 if [ -n "$xy" ]; then adb shell input swipe $xy $xy 2600; log "held SOS at $xy"; fi

@@ -1,0 +1,19 @@
+# Switch to Hindi and the largest text size in Settings, then look at Today in that state.
+appId: com.agastyaray.asha
+---
+- launchApp
+- extendedWaitUntil:
+    visible: "Good morning.*"
+    timeout: 20000
+- tapOn: "Settings"
+- waitForAnimationToEnd
+- tapOn: "हिन्दी"
+- waitForAnimationToEnd
+- tapOn: "A\\+\\+"
+- waitForAnimationToEnd
+- takeScreenshot: 40-settings-hindi-largest-text
+- back
+- waitForAnimationToEnd
+- takeScreenshot: 41-today-hindi-largest-text
+- scroll
+- takeScreenshot: 42-today-hindi-largest-text-scrolled
