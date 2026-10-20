@@ -99,6 +99,10 @@ fi
 if [ -n "$xy" ]; then adb shell input tap $xy; log "tapped Taken on the notification at $xy"; sleep 3; else FAILED=1; log "no Taken button found in the shade"; fi
 shot 28-after-tapping-taken
 adb shell cmd statusbar collapse
+# relaunch Asha so it applies any Taken pressed while closed, then show whether the dose is marked on Today
+adb shell am force-stop $PKG; adb shell monkey -p $PKG -c android.intent.category.LAUNCHER 1 >/dev/null 2>&1; sleep 15
+shot 29-today-after-taken
+adb shell input swipe 450 1500 450 700 400; sleep 2; shot 29b-today-after-taken-scrolled
 
 # --- every screen, as a user ---
 flow 03_tabs.yaml
