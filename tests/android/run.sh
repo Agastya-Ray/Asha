@@ -22,6 +22,23 @@ for m in re.finditer(r"<node [^>]*>", x):
 ' "$1"
 }
 flow() { log "flow $1"; (cd "$OUT" && maestro test --test-output-dir "$OUT/maestro-${1%.yaml}" "$FLOWS/$1" >> "$OUT/maestro.log" 2>&1) || { FAILED=1; log "flow $1 had a failing step (see maestro.log)"; shot "fail-${1%.yaml}"; maestro hierarchy > "$OUT/hierarchy-${1%.yaml}.json" 2>/dev/null; }; }
+# the Expand chevron on the row whose title starts with $1 (the group may list other reminders first)
+expand_row() {
+  adb shell uiautomator dump /sdcard/ui.xml >/dev/null 2>&1
+  adb exec-out cat /sdcard/ui.xml | python3 -c '
+import re,sys
+pat=re.compile(sys.argv[1]); x=sys.stdin.read()
+def box(n): return tuple(map(int,re.search(r"bounds=\"\[(\d+),(\d+)\]\[(\d+),(\d+)\]\"", n).groups()))
+ref=None; ex=[]
+for n in re.findall(r"<node [^>]*>", x):
+    t=re.search(r" text=\"([^\"]*)\"", n).group(1); d=re.search(r"content-desc=\"([^\"]*)\"", n).group(1)
+    if ref is None and pat.search(t): ref=box(n)
+    if d=="Expand": ex.append(box(n))
+if ref and ex:
+    cy=(ref[1]+ref[3])//2
+    a,b,c,e=min(ex,key=lambda q: abs((q[1]+q[3])//2-cy)); print((a+c)//2,(b+e)//2)
+' "$1"
+}
 setclock() { adb shell "date $1" >/dev/null; log "clock set to $(adb shell date)"; }
 
 adb root >/dev/null 2>&1; sleep 3; adb wait-for-device
@@ -76,7 +93,7 @@ if [ -z "$xy" ]; then
   xy=$(center "Expand|Show more")
   if [ -n "$xy" ]; then adb shell input tap $xy; log "expanded the Asha group at $xy"; sleep 3; shot 27b-notification-expanded; fi
   # the group lists each reminder collapsed too; expand the Metformin one to show its buttons
-  xy=$(center "Expand")
+  xy=$(expand_row "^Metformin")
   if [ -n "$xy" ]; then adb shell input tap $xy; log "expanded the Metformin reminder at $xy"; sleep 3; shot 27c-reminder-expanded; adb exec-out cat /sdcard/ui.xml > "$OUT/shade-expanded-ui.xml"; xy=$(center "Taken"); fi
 fi
 if [ -n "$xy" ]; then adb shell input tap $xy; log "tapped Taken on the notification at $xy"; sleep 3; else FAILED=1; log "no Taken button found in the shade"; fi
