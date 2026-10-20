@@ -39,6 +39,19 @@ if ref and ex:
     a,b,c,e=min(ex,key=lambda q: abs((q[1]+q[3])//2-cy)); print((a+c)//2,(b+e)//2)
 ' "$1"
 }
+# centre of the first node matching $1 (regex) that is on screen between the header and the bottom nav
+center_on_screen() {
+  adb shell uiautomator dump /sdcard/ui.xml >/dev/null 2>&1
+  adb exec-out cat /sdcard/ui.xml | python3 -c '
+import re,sys
+pat=re.compile(sys.argv[1]); x=sys.stdin.read()
+for m in re.finditer(r"<node [^>]*>", x):
+    n=m.group(0); t=re.search(r" text=\"([^\"]*)\"", n).group(1); d=re.search(r"content-desc=\"([^\"]*)\"", n).group(1)
+    if pat.search(t) or pat.search(d):
+        a,b,c,e=map(int,re.search(r"bounds=\"\[(\d+),(\d+)\]\[(\d+),(\d+)\]\"", n).groups())
+        if 250 <= (b+e)//2 <= 1700: print((a+c)//2,(b+e)//2); break
+' "$1"
+}
 setclock() { adb shell "date $1" >/dev/null; log "clock set to $(adb shell date)"; }
 
 adb root >/dev/null 2>&1; sleep 3; adb wait-for-device
@@ -111,7 +124,19 @@ flow 05_prescription.yaml
 
 # --- Help: hold the red SOS button for 2.5 s ---
 flow 06_help.yaml
-flow 07_hindi_bigtext.yaml
+# --- Hindi and the largest text, tapped by screen position (Maestro's text bounds sat under the bottom nav) ---
+xy=$(center_on_screen "^Settings$|^सेटिंग$")
+if [ -n "$xy" ]; then adb shell input tap $xy; sleep 3; shot 39a-settings-opened; fi
+adb shell input swipe 540 1500 540 900 400; sleep 2
+xy=$(center_on_screen "^हिन्दी$")
+if [ -n "$xy" ]; then adb shell input tap $xy; log "tapped Hindi at $xy"; sleep 3; else FAILED=1; log "no Hindi switch on screen"; fi
+shot 39b-settings-after-hindi
+adb shell input swipe 540 1500 540 900 400; sleep 2
+xy=$(center_on_screen "^A\\+\\+$")
+if [ -n "$xy" ]; then adb shell input tap $xy; log "tapped the largest text size at $xy"; sleep 3; else FAILED=1; log "no largest text button on screen"; fi
+shot 40-settings-hindi-largest-text
+adb shell input keyevent KEYCODE_BACK; sleep 3
+shot 41-today-hindi-largest-text
 adb emu geo fix 77.2090 28.6139 >/dev/null 2>&1
 xy=$(center "Hold for help|SOS")
 if [ -n "$xy" ]; then adb shell input swipe $xy $xy 2600; log "held SOS at $xy"; fi
