@@ -11,7 +11,7 @@ import { useSpeech } from "@/lib/asha/voice";
 
 export type FairyMood = "idle" | "happy" | "sleep" | "talk" | "sad" | "yawn";
 
-export function Fairy({ mood = "idle", className }: { mood?: FairyMood; className?: string }) {
+export function Fairy({ mood = "idle", className, look }: { mood?: FairyMood; className?: string; look?: { x: number; y: number } }) {
   const eyesClosed = mood === "sleep" || mood === "yawn";
   return (
     <svg viewBox="0 0 120 140" className={cn("fairy", `fairy-${mood}`, className)} role="img" aria-label="Asha the fairy">
@@ -72,7 +72,7 @@ export function Fairy({ mood = "idle", className }: { mood?: FairyMood; classNam
             <path d="M63 52 q4 3 8 0" />
           </g>
         ) : (
-          <g className="fairy-eyes">
+          <g className="fairy-eyes" style={look ? { transform: `translate(${look.x * 2.4}px, ${look.y * 2}px)`, transition: "transform 0.25s ease-out" } : undefined}>
             <ellipse cx="53" cy="51" rx="3.2" ry="4" fill="#2a1a12" />
             <ellipse cx="67" cy="51" rx="3.2" ry="4" fill="#2a1a12" />
             <circle cx="54.2" cy="49.6" r="1.2" fill="#fff" />
@@ -184,10 +184,31 @@ export function FairyScene({
   const speaking = useSpeech((s) => s.active);
   // while Asha is speaking, the fairy talks; otherwise good news makes her happy and late night makes her sleep
   const autoMood: FairyMood = speaking ? "talk" : mood ?? (news ? "happy" : hour >= 22 || hour < 6 ? "sleep" : "idle");
+  // she looks at whatever was just tapped, then back at you after a moment
+  const me = useRef<HTMLButtonElement>(null);
+  const [look, setLook] = useState<{ x: number; y: number } | undefined>();
+  useEffect(() => {
+    let back = 0;
+    const onTap = (e: PointerEvent) => {
+      const r = me.current?.getBoundingClientRect();
+      if (!r) return;
+      const dx = e.clientX - (r.left + r.width / 2);
+      const dy = e.clientY - (r.top + r.height / 2);
+      const d = Math.hypot(dx, dy) || 1;
+      setLook({ x: dx / d, y: dy / d });
+      window.clearTimeout(back);
+      back = window.setTimeout(() => setLook(undefined), 2500);
+    };
+    window.addEventListener("pointerdown", onTap, { passive: true });
+    return () => {
+      window.removeEventListener("pointerdown", onTap);
+      window.clearTimeout(back);
+    };
+  }, []);
   const dims = size === "sm" ? "h-20 w-20" : size === "lg" ? "h-44 w-44" : "h-28 w-28";
   return (
-    <button type="button" onClick={onTap} aria-label={label} className={cn("fairy-scene relative shrink-0 select-none", dims)}>
-      <Fairy mood={autoMood} className="absolute inset-0 h-full w-full" />
+    <button ref={me} type="button" onClick={onTap} aria-label={label} className={cn("fairy-scene relative shrink-0 select-none", dims)}>
+      <Fairy mood={autoMood} look={look} className="absolute inset-0 h-full w-full" />
       <Pet mode={pet} className={cn("absolute bottom-0", size === "lg" ? "-right-6 h-20 w-20" : size === "sm" ? "-right-3 h-10 w-10" : "-right-4 h-14 w-14")} />
     </button>
   );
