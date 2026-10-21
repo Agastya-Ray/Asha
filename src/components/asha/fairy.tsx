@@ -9,10 +9,10 @@ import { useSpeech } from "@/lib/asha/voice";
  * Everything is drawn here in SVG, so there are no pictures to download.
  */
 
-export type FairyMood = "idle" | "happy" | "sleep" | "talk";
+export type FairyMood = "idle" | "happy" | "sleep" | "talk" | "sad" | "yawn";
 
 export function Fairy({ mood = "idle", className }: { mood?: FairyMood; className?: string }) {
-  const eyesClosed = mood === "sleep";
+  const eyesClosed = mood === "sleep" || mood === "yawn";
   return (
     <svg viewBox="0 0 120 140" className={cn("fairy", `fairy-${mood}`, className)} role="img" aria-label="Asha the fairy">
       <defs>
@@ -81,7 +81,11 @@ export function Fairy({ mood = "idle", className }: { mood?: FairyMood; classNam
         )}
         <circle cx="47" cy="57" r="3.4" fill="#f08a8a" opacity="0.55" />
         <circle cx="73" cy="57" r="3.4" fill="#f08a8a" opacity="0.55" />
-        {mood === "talk" ? (
+        {mood === "sad" ? (
+          <path d="M54 63 Q 60 58 66 63" stroke="#8a3b2b" strokeWidth="2" strokeLinecap="round" fill="none" />
+        ) : mood === "yawn" ? (
+          <ellipse className="fairy-mouth-yawn" cx="60" cy="62" rx="3.6" ry="4.6" fill="#8a3b2b" />
+        ) : mood === "talk" ? (
           <ellipse className="fairy-mouth-talk" cx="60" cy="61" rx="3.4" ry="2.6" fill="#8a3b2b" />
         ) : mood === "happy" ? (
           <path d="M54 59 Q 60 66 66 59 Z" fill="#8a3b2b" />
@@ -90,6 +94,7 @@ export function Fairy({ mood = "idle", className }: { mood?: FairyMood; classNam
         )}
         <circle cx="60" cy="44" r="1.6" fill="#a34b24" />
       </g>
+      {mood === "sad" ? <circle className="fairy-tear" cx="50" cy="58" r="1.8" fill="#8cc4e8" /> : null}
       {mood === "sleep" ? (
         <g className="fairy-z" fill="#5c564c" fontFamily="Fraunces, serif" fontWeight="700">
           <text x="84" y="34" fontSize="12">z</text>

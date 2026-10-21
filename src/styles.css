@@ -461,3 +461,58 @@ html[data-size="xl"] {
 .fairy-dock-up {
   bottom: calc(10rem + env(safe-area-inset-bottom));
 }
+
+/* ---------- fairy: sad, yawn, and saying good night ---------- */
+.fairy-sad .fairy-body {
+  animation: none;
+  transform: translateY(2px);
+}
+.fairy-sad .wing {
+  animation: none;
+  opacity: 0.7;
+}
+.fairy-tear {
+  animation: fairy-tear 1.6s ease-in infinite;
+}
+@keyframes fairy-tear {
+  from {
+    transform: translateY(0);
+    opacity: 1;
+  }
+  to {
+    transform: translateY(10px);
+    opacity: 0;
+  }
+}
+.fairy-mouth-yawn {
+  transform-origin: 60px 62px;
+  animation: fairy-yawn 1.4s ease-in-out;
+}
+@keyframes fairy-yawn {
+  0%, 100% {
+    transform: scaleY(0.4);
+  }
+  50% {
+    transform: scaleY(1.2);
+  }
+}
+/* she lies down on the floor, then fades away softly */
+.fairy-goodnight {
+  animation: fairy-lie-down 1.2s ease-in forwards, fairy-vanish 1.6s ease-in 2.2s forwards;
+}
+@keyframes fairy-lie-down {
+  to {
+    transform: translateY(28px) rotate(-80deg);
+  }
+}
+@keyframes fairy-vanish {
+  to {
+    opacity: 0;
+    filter: blur(3px);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .fairy-goodnight {
+    animation: fairy-vanish 0.6s ease-in 1.2s forwards;
+  }
+}

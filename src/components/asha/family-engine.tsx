@@ -96,6 +96,9 @@ export function FairyDock() {
   const speaking = useSpeech((s) => s.active);
   const now = useNow();
   const [rested, setRested] = useState(readRest);
+  // "Don't want me around?": ask why, react, then say good night and fade away
+  const [bye, setBye] = useState<"" | "ask" | "sad" | "brave" | "yawn" | "gone">("");
+  const [awayUntil, setAwayUntil] = useState(readAway);
   const unread = unreadOf({ messages, heardLocal });
   const say = (text: string) => void speak(text, voiceLang, rich ? "warm" : "device");
 
@@ -109,6 +112,64 @@ export function FairyDock() {
   let onTap = () => {};
   let label = "";
   let kind = "";
+
+  const goodnight = (sadFirst: boolean) => {
+    const later = (ms: number, f: () => void) => window.setTimeout(f, ms);
+    if (sadFirst) {
+      setBye("sad");
+      later(1800, () => {
+        setBye("brave");
+        say(t(voiceLang, { en: `That's okay${name ? `, ${name}` : ""}. I'm still here to help you, as a tiny friend or to remind you about your medicines.`, hi: `कोई बात नहीं${name ? ` ${name} जी` : ""}. मैं फिर भी आपकी मदद के लिए यहीं हूँ, छोटी सी दोस्त बनकर या दवाइयाँ याद दिलाने के लिए.` }));
+      });
+      later(6500, () => setBye("yawn"));
+    } else {
+      setBye("yawn");
+      say(t(voiceLang, { en: `Okay, well I wanted to sleep anyway. Good night${name ? `, ${name}` : ""}! See you soon.`, hi: `ठीक है, मुझे वैसे भी नींद आ रही थी. शुभ रात्रि${name ? ` ${name} जी` : ""}! जल्दी मिलेंगे.` }));
+    }
+    later(sadFirst ? 11000 : 4500, () => {
+      const until = Date.now() + 3 * 60 * 60 * 1000;
+      saveAway(until);
+      setAwayUntil(until);
+      setBye("gone");
+    });
+  };
+
+  if (bye && bye !== "gone") {
+    const line =
+      bye === "ask"
+        ? t(lang, { en: "Don't want me around? Why?", hi: "मुझे पास नहीं रखना? क्यों?" })
+        : bye === "sad"
+          ? t(lang, { en: "Oh…", hi: "ओह…" })
+          : bye === "brave"
+            ? t(lang, { en: "I'm still here to help, as a tiny friend or for your medicines.", hi: "मैं मदद के लिए यहीं हूँ, छोटी दोस्त या दवाइयों के लिए." })
+            : t(lang, { en: "*yawn* Good night! See you soon.", hi: "*उबासी* शुभ रात्रि! जल्दी मिलेंगे." });
+    const face: FairyMood = bye === "sad" ? "sad" : bye === "brave" ? "happy" : bye === "yawn" ? "yawn" : "idle";
+    return (
+      <div data-fairy={`bye-${bye}`} className={`fairy-dock fixed right-3 z-30 flex items-end gap-2 ${speaking ? "fairy-dock-up" : ""}`}>
+        <div className="mb-6 max-w-[13rem] rounded-2xl rounded-br-sm border border-line bg-paper px-3 py-2 text-base font-bold shadow-sm">
+          <p>{line}</p>
+          {bye === "ask" ? (
+            <div className="mt-2 flex flex-col gap-2">
+              <button type="button" className="min-h-11 rounded-xl border border-line px-3 text-left" onClick={() => goodnight(false)}>
+                {t(lang, { en: "I just want some quiet", hi: "बस थोड़ा शांत रहना है" })}
+              </button>
+              <button type="button" className="min-h-11 rounded-xl border border-line px-3 text-left" onClick={() => goodnight(true)}>
+                {t(lang, { en: "You're bothering me", hi: "तुम परेशान कर रही हो" })}
+              </button>
+              <button type="button" className="min-h-11 rounded-xl px-3 text-left text-quiet" onClick={() => setBye("")}>
+                {t(lang, { en: "Stay, it's fine", hi: "रहो, ठीक है" })}
+              </button>
+            </div>
+          ) : null}
+        </div>
+        <div className={bye === "yawn" ? "fairy-goodnight" : ""}>
+          <FairyScene news={false} mood={face} size="md" label={line} />
+        </div>
+      </div>
+    );
+  }
+  // she went to sleep: only a due medicine or a family note wakes her before then
+  const away = awayUntil > now.getTime();
 
   if (unread.length) {
     kind = "news";
@@ -134,6 +195,8 @@ export function FairyDock() {
         setTab("today");
         window.scrollTo({ top: 0, behavior: "smooth" });
       };
+    } else if (away) {
+      return null;
     } else if (n.kind === "checkin" && tab !== "care" && rested !== restKey) {
       kind = "checkin";
       bubble = nudgeBubble(n, lang);
@@ -171,10 +234,35 @@ export function FairyDock() {
   const quiet = tab === "today" && (kind === "due" || kind === "missed");
   return (
     <div data-fairy={kind} className={`fairy-dock fixed right-3 z-30 flex items-end gap-2 ${speaking ? "fairy-dock-up" : ""}`}>
-      {quiet ? null : <div className="mb-6 max-w-[11rem] rounded-2xl rounded-br-sm border border-line bg-paper px-3 py-2 text-base font-bold shadow-sm">{bubble}</div>}
+      {quiet ? null : (
+        <div className="mb-6 max-w-[11rem] rounded-2xl rounded-br-sm border border-line bg-paper px-3 py-2 text-base font-bold shadow-sm">
+          {bubble}
+          {kind === "news" ? null : (
+            <button type="button" className="mt-1 block min-h-9 text-sm font-semibold text-quiet underline" onClick={() => setBye("ask")}>
+              {t(lang, { en: "Not now", hi: "अभी नहीं" })}
+            </button>
+          )}
+        </div>
+      )}
       <FairyScene news={news} mood={mood} size={quiet ? "sm" : "md"} label={quiet ? `${label}: ${bubble}` : label} onTap={onTap} />
     </div>
   );
+}
+
+const AWAY_KEY = "asha.fairy.away";
+function readAway() {
+  try {
+    return Number(localStorage.getItem(AWAY_KEY)) || 0;
+  } catch {
+    return 0;
+  }
+}
+function saveAway(until: number) {
+  try {
+    localStorage.setItem(AWAY_KEY, String(until));
+  } catch {
+    /* private mode */
+  }
 }
 
 const REST_KEY = "asha.fairy.rest";
