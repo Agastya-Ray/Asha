@@ -21,7 +21,9 @@ for m in re.finditer(r"<node [^>]*>", x):
         a,b,c,e=map(int,re.search(r"bounds=\"\[(\d+),(\d+)\]\[(\d+),(\d+)\]\"", n).groups()); print((a+c)//2,(b+e)//2); break
 ' "$1"
 }
-flow() { log "flow $1"; (cd "$OUT" && maestro test --test-output-dir "$OUT/maestro-${1%.yaml}" "$FLOWS/$1" >> "$OUT/maestro.log" 2>&1) || { FAILED=1; log "flow $1 had a failing step (see maestro.log)"; shot "fail-${1%.yaml}"; maestro hierarchy > "$OUT/hierarchy-${1%.yaml}.json" 2>/dev/null; }; }
+run_flow() { (cd "$OUT" && maestro test --test-output-dir "$OUT/maestro-${1%.yaml}" "$FLOWS/$1" >> "$OUT/maestro.log" 2>&1); }
+# one retry: the emulator sometimes misses a launch, which is not a test failure
+flow() { log "flow $1"; run_flow "$1" || { log "flow $1 had a failing step, retrying once"; run_flow "$1" || { FAILED=1; log "flow $1 had a failing step (see maestro.log)"; shot "fail-${1%.yaml}"; maestro hierarchy > "$OUT/hierarchy-${1%.yaml}.json" 2>/dev/null; }; }; }
 # the Expand chevron on the row whose title starts with $1 (the group may list other reminders first)
 expand_row() {
   adb shell uiautomator dump /sdcard/ui.xml >/dev/null 2>&1
