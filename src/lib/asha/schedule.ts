@@ -114,17 +114,22 @@ export function doseProgress(meds: Med[], logs: DoseLog[], now = new Date()) {
   return { total, marked };
 }
 
+/** Hindi keyboards and Hindi voice typing give Devanagari digits (९८७…); turn them into 0–9 before reading a number. */
+export function latinDigits(s: string) {
+  return s.replace(/[\u0966-\u096f]/g, (d) => String(d.charCodeAt(0) - 0x0966));
+}
+
 export function telHref(phone: string) {
-  return `tel:${phone.replace(/[^\d+]/g, "")}`;
+  return `tel:${latinDigits(phone).replace(/[^\d+]/g, "")}`;
 }
 
 export function smsHref(phone: string, body: string) {
-  const n = phone.replace(/[^\d+]/g, "");
+  const n = latinDigits(phone).replace(/[^\d+]/g, "");
   return `sms:${n}?body=${encodeURIComponent(body)}`;
 }
 
 export function digits(phone: string) {
-  return phone.replace(/\D/g, "");
+  return latinDigits(phone).replace(/\D/g, "");
 }
 
 export function emptyCheckin(day: string): Checkin {

@@ -19,6 +19,7 @@ import {
 import { useAsha } from "@/lib/asha/store";
 import { speak } from "@/lib/asha/voice";
 import { fill, type Preset } from "../../../supabase/functions/family/presets";
+import { digits } from "@/lib/asha/schedule";
 
 /** Friendly words for server errors. */
 export function sendError(r: CallFail, lang: "en" | "hi") {
@@ -178,7 +179,7 @@ export function PresetPicker({
   }
 
   const waText = picked ? fill(picked.text[lang], vars) : "";
-  const waHref = `https://wa.me/${(whatsappTo ?? "").replace(/\D/g, "")}?text=${encodeURIComponent(waText)}`;
+  const waHref = `https://wa.me/${digits(whatsappTo ?? "")}?text=${encodeURIComponent(waText)}`;
 
   return (
     <div>

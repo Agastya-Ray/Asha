@@ -1,5 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { cn } from "@/lib/cn";
+import { useNow } from "@/components/asha/bits";
+import { useSpeech } from "@/lib/asha/voice";
 
 /**
  * Asha's fairy (original character): a small fairy in a sage dress with leaf-shaped wings,
@@ -172,8 +174,11 @@ export function FairyScene({
     timers.current = [window.setTimeout(() => setPet("tumble"), 900), window.setTimeout(() => setPet("envelope"), 1900)];
     return () => timers.current.forEach((t) => window.clearTimeout(t));
   }, [news]);
-  const hour = new Date().getHours();
-  const autoMood: FairyMood = mood ?? (news ? "happy" : hour >= 22 || hour < 6 ? "sleep" : "idle");
+  // re-checked every 30 s, so she falls asleep at night and wakes up without a reload
+  const hour = useNow().getHours();
+  const speaking = useSpeech((s) => s.active);
+  // while Asha is speaking, the fairy talks; otherwise good news makes her happy and late night makes her sleep
+  const autoMood: FairyMood = speaking ? "talk" : mood ?? (news ? "happy" : hour >= 22 || hour < 6 ? "sleep" : "idle");
   const dims = size === "sm" ? "h-20 w-20" : size === "lg" ? "h-44 w-44" : "h-28 w-28";
   return (
     <button type="button" onClick={onTap} aria-label={label} className={cn("fairy-scene relative shrink-0 select-none", dims)}>

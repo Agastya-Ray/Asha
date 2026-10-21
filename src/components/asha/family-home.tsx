@@ -21,6 +21,7 @@ import { isNative } from "@/lib/asha/native";
 import { useAsha } from "@/lib/asha/store";
 import { speak } from "@/lib/asha/voice";
 import { GROUPS_TO_ELDER, TO_ELDER } from "../../../supabase/functions/family/presets";
+import { latinDigits } from "@/lib/asha/schedule";
 
 /** The whole app for a son / daughter / husband: Maa's updates and sending love. */
 export function FamilyHome() {
@@ -96,7 +97,7 @@ function Join() {
           inputMode="numeric"
           maxLength={6}
           value={code}
-          onChange={(e) => setCode(e.target.value.replace(/\D/g, "").slice(0, 6))}
+          onChange={(e) => setCode(latinDigits(e.target.value).replace(/\D/g, "").slice(0, 6))}
           placeholder="••••••"
         />
       </div>

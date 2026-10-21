@@ -6,9 +6,17 @@ appId: com.agastyaray.asha
 - extendedWaitUntil:
     visible: "Good morning.*"
     timeout: 30000
-# the Family tab, tapped by position on the bottom bar (its label can match text further up the page)
+# the app reopens on the last tab (Care, after flow 03), so go to Today first, then open Family by its position on the bottom bar
+- tapOn:
+    point: "10%,92%"
+- extendedWaitUntil:
+    visible: "Good morning.*"
+    timeout: 15000
 - tapOn:
     point: "70%,92%"
+- extendedWaitUntil:
+    visible: "Your family circle.*"
+    timeout: 20000
 - extendedWaitUntil:
     notVisible: "Opening your family circle.*"
     timeout: 20000
@@ -40,4 +48,7 @@ appId: com.agastyaray.asha
 - tapOn:
     text: "Make an invite code"
     optional: true
+- extendedWaitUntil:
+    visible: "Their code.*"
+    timeout: 20000
 - takeScreenshot: 53-family-invite-code

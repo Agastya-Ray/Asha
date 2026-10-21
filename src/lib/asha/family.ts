@@ -81,10 +81,34 @@ const empty = (): Saved => ({
 
 export const useFamily = create<FamilyState>(() => ({ ...empty(), hydrated: false, syncing: false, online: true, delivering: null }));
 
+/** A damaged saved copy must never blank the app: keep what is usable, reset the rest. */
+function sanitize(raw: unknown): Saved {
+  const base = empty();
+  if (!raw || typeof raw !== "object" || Array.isArray(raw)) return base;
+  const r = raw as Partial<Record<keyof Saved, unknown>>;
+  const str = (v: unknown, d: string) => (typeof v === "string" ? v : d);
+  const list = <T,>(v: unknown, ok: (x: unknown) => boolean) => (Array.isArray(v) ? (v.filter(ok) as T[]) : []);
+  const isObj = (x: unknown) => !!x && typeof x === "object";
+  const caps = isObj(r.caps) ? (r.caps as Saved["caps"]) : base.caps;
+  return {
+    deviceId: str(r.deviceId, ""),
+    secret: str(r.secret, ""),
+    role: r.role === "elder" || r.role === "family" ? r.role : "",
+    circles: list<CircleInfo>(r.circles, (c) => isObj(c) && typeof (c as CircleInfo).id === "string"),
+    members: list<Member>(r.members, isObj),
+    messages: list<FamilyMsg>(r.messages, (m) => isObj(m) && typeof (m as FamilyMsg).id === "number"),
+    heardLocal: list<number>(r.heardLocal, (n) => typeof n === "number"),
+    sent: list<string>(r.sent, (s) => typeof s === "string"),
+    caps: { ai: Boolean(caps.ai), push: Boolean(caps.push) },
+    pushToken: str(r.pushToken, ""),
+    bubble: r.bubble === true,
+  };
+}
+
 function load() {
   try {
     const raw = localStorage.getItem(KEY);
-    const data = raw ? ({ ...empty(), ...(JSON.parse(raw) as Partial<Saved>) } as Saved) : empty();
+    const data = raw ? sanitize(JSON.parse(raw) as unknown) : empty();
     useFamily.setState({ ...data, hydrated: true });
   } catch {
     useFamily.setState({ hydrated: true });
@@ -184,7 +208,8 @@ export async function ensureDevice(): Promise<boolean> {
     const r = await call<{ deviceId: string; secret: string }>("register", { role, ...profile(), fcmToken: s.pushToken || undefined });
     if (!r.ok) return false;
     useFamily.setState({ deviceId: r.deviceId, secret: r.secret, role });
-    await pushNativeConfig();
+    // not awaited: the circle request does not need the native config, and a native call that never returns would hold the create button
+    void pushNativeConfig();
     return true;
   }
   if (s.role !== role) {
@@ -327,8 +352,11 @@ export async function voiceUrl(id: number) {
 export type Consent = { shareMeds: boolean; shareMeals: boolean; shareMood: boolean; shareMissed: boolean; digest: boolean; nudge: boolean };
 
 export async function saveCircle(consent: Partial<Consent> & { label?: string }) {
+  console.info("[family] create: checking device");
   if (!(await ensureDevice())) return { ok: false as const, error: "offline" };
+  console.info("[family] create: sending circle");
   const r = await call<{ circle: CircleInfo }>("circle", consent);
+  console.info(`[family] create: circle returned ok=${r.ok}`);
   if (r.ok) {
     await refreshState();
     void pushNativeConfig();

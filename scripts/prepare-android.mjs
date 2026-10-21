@@ -67,6 +67,7 @@ if (!manifest.includes(MARK)) {
     "android.permission.WAKE_LOCK",
     "android.permission.VIBRATE",
     "android.permission.FOREGROUND_SERVICE",
+    "android.permission.FOREGROUND_SERVICE_SPECIAL_USE",
     "android.permission.RECORD_AUDIO",
     "android.permission.SEND_SMS",
     "android.permission.CALL_PHONE",
@@ -100,7 +101,9 @@ if (!manifest.includes(MARK)) {
                 <action android:name="com.google.firebase.MESSAGING_EVENT" />
             </intent-filter>
         </service>
-        <service android:name=".FairyBubbleService" android:exported="false" />
+        <service android:name=".FairyBubbleService" android:exported="false" android:foregroundServiceType="specialUse">
+            <property android:name="android.app.PROPERTY_SPECIAL_USE_FGS_SUBTYPE" android:value="Floating companion fairy the user turned on; stays on screen over other apps" />
+        </service>
         <receiver android:name=".FairyWidget" android:exported="false" android:label="Asha fairy">
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />

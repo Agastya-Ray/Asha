@@ -1,7 +1,12 @@
 package com.agastyaray.asha;
 
 import android.annotation.SuppressLint;
+import android.app.Notification;
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.app.Service;
+import android.content.pm.ServiceInfo;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.PixelFormat;
@@ -18,6 +23,8 @@ import android.widget.ImageView;
  * The floating fairy that sits on top of other apps (off by default).
  * Drag her anywhere; tap her to open Asha. She glows when a family message arrives.
  * Needs the "Display over other apps" permission.
+ * Runs as a foreground service with a quiet notification: Android does not let a plain background
+ * service start after a restart, and stops one about a minute after Asha leaves the screen.
  */
 public class FairyBubbleService extends Service {
     private static FairyBubbleService running;
@@ -32,7 +39,9 @@ public class FairyBubbleService extends Service {
     public static boolean start(Context ctx) {
         if (!canDraw(ctx)) return false;
         try {
-            ctx.startService(new Intent(ctx, FairyBubbleService.class));
+            Intent i = new Intent(ctx, FairyBubbleService.class);
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) ctx.startForegroundService(i);
+            else ctx.startService(i);
             return true;
         } catch (Exception e) {
             return false;
@@ -54,8 +63,9 @@ public class FairyBubbleService extends Service {
     @SuppressLint("ClickableViewAccessibility")
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
+        goForeground();
         if (view != null) return START_STICKY;
-        if (!canDraw(this)) { stopSelf(); return START_NOT_STICKY; }
+        if (!canDraw(this) || !FamilyStore.bubbleOn(this)) { stopSelf(); return START_NOT_STICKY; }
         wm = (WindowManager) getSystemService(WINDOW_SERVICE);
         view = new ImageView(this);
         view.setImageResource(FairyWidget.drawableFor(this, FamilyStore.mood(this)));
@@ -113,6 +123,38 @@ public class FairyBubbleService extends Service {
             return START_NOT_STICKY;
         }
         return START_STICKY;
+    }
+
+    static final String CHANNEL = "asha_fairy";
+    private static final int NOTE_ID = 7200;
+
+    /** The quiet "fairy is on your screen" notification that keeps her alive. Tap it to open Asha. */
+    private void goForeground() {
+        NotificationManager nm = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
+        Notification.Builder b;
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            if (nm != null && nm.getNotificationChannel(CHANNEL) == null) {
+                NotificationChannel ch = new NotificationChannel(CHANNEL, "Floating fairy", NotificationManager.IMPORTANCE_MIN);
+                ch.setShowBadge(false);
+                nm.createNotificationChannel(ch);
+            }
+            b = new Notification.Builder(this, CHANNEL);
+        } else {
+            b = new Notification.Builder(this).setPriority(Notification.PRIORITY_MIN);
+        }
+        boolean hi = "hi".equals(FamilyStore.config(this).optString("lang"));
+        Intent open = getPackageManager().getLaunchIntentForPackage(getPackageName());
+        if (open != null) b.setContentIntent(PendingIntent.getActivity(this, 7201, open, PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE));
+        Notification n = b
+            .setSmallIcon(android.R.drawable.star_on)
+            .setContentTitle(hi ? "परी आपकी स्क्रीन पर है" : "The fairy is on your screen")
+            .setContentText(hi ? "छूकर आशा खोलें. Settings में बंद कर सकते हैं." : "Tap to open Asha. Turn her off in Settings.")
+            .setOngoing(true)
+            .build();
+        try {
+            if (Build.VERSION.SDK_INT >= 34) startForeground(NOTE_ID, n, ServiceInfo.FOREGROUND_SERVICE_TYPE_SPECIAL_USE);
+            else startForeground(NOTE_ID, n);
+        } catch (Exception ignored) { }
     }
 
     @Override
