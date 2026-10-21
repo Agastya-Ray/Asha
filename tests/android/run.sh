@@ -95,7 +95,7 @@ adb shell settings put system screen_off_timeout 600000
 adb install -r -g "${APK:-Asha.apk}" >/dev/null && log "installed (all permissions pre-granted: no)" || true
 # reinstall without auto-grant so the user sees the real permission prompts
 adb uninstall $PKG >/dev/null; adb install -r "${APK:-Asha.apk}" && log "installed Asha"
-adb logcat -c
+adb logcat -c; adb logcat -G 16M 2>/dev/null || true  # a bigger buffer keeps the family calls from the start of the run
 
 # a prescription photo in the gallery for the photo-reading test
 if command -v convert >/dev/null; then
