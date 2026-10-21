@@ -162,6 +162,9 @@ if [ -n "$xy" ]; then adb shell input tap $xy; log "tapped the largest text size
 shot 40-settings-hindi-largest-text
 adb shell input keyevent KEYCODE_BACK; sleep 3
 shot 41-today-hindi-largest-text
+# Meds and Care in Hindi, tapped from the bottom nav by position
+xy=$(center_webview "^दवा$"); [ -n "$xy" ] && { adb shell input tap $xy; sleep 3; shot 43-meds-hindi-largest-text; } || { FAILED=1; log "no Hindi Meds tab"; }
+xy=$(center_webview "^देखभाल$"); [ -n "$xy" ] && { adb shell input tap $xy; sleep 3; shot 44-care-hindi-largest-text; } || { FAILED=1; log "no Hindi Care tab"; }
 adb emu geo fix 77.2090 28.6139 >/dev/null 2>&1
 xy=$(center "Hold for help|SOS")
 if [ -n "$xy" ]; then adb shell input swipe $xy $xy 2600; log "held SOS at $xy"; fi

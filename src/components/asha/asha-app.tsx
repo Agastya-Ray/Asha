@@ -129,7 +129,7 @@ function Header() {
         <div className="min-w-0 flex-1">
           <p className="display text-2xl leading-none">Asha</p>
           {onboarded || family ? (
-            <p className="mt-1 truncate text-base text-quiet tabular-nums">
+            <p className="mt-1 text-base text-quiet tabular-nums">
               {dateLabel(lang, now)} · {clockLabel(lang, now)}
             </p>
           ) : (
