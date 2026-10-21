@@ -203,6 +203,7 @@ adb logcat -d > "$OUT/logcat-full.txt"
 sed -i -E 's/"secret":"[^"]*"/"secret":"REDACTED"/g; s/"x-device-secret":"[^"]*"/"x-device-secret":"REDACTED"/g' "$OUT/logcat-full.txt"
 grep -iE "chromium|Capacitor|Asha|TextToSpeech|tts|AndroidRuntime|FATAL" "$OUT/logcat-full.txt" > "$OUT/logcat-asha.txt" || true
 # Maestro keeps its screenshots under maestro-<flow>/; copy the named ones up beside the adb shots
-find "$OUT" -path "$OUT/maestro-*" -name "[0-9][0-9]-*.png" -exec cp {} "$OUT/" \;
+# a retried flow leaves an earlier attempt's screenshots beside the newer ones; the sorted paths put the newest attempt last, so its copy wins
+find "$OUT" -path "$OUT/maestro-*" -name "[0-9][0-9]*.png" | sort | while read -r f; do cp "$f" "$OUT/"; done
 log "done (failed steps: $FAILED)"
 exit $FAILED
