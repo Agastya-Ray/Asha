@@ -17,8 +17,10 @@ appId: com.agastyaray.asha
 - takeScreenshot: 51-family-after-start
 - scroll
 - takeScreenshot: 52-family-after-start-2
-- extendedWaitUntil:
-    visible: "Make an invite code|Make a new code|Their code.*"
+# the invite section sits below the circle's settings, so scroll down to it
+- scrollUntilVisible:
+    element: "Make an invite code|Make a new code|Their code.*"
+    direction: DOWN
     timeout: 45000
 - tapOn:
     text: "Make an invite code"
