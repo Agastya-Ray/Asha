@@ -14,9 +14,25 @@ export const useTalkHandoff = create<{ text: string; set: (text: string) => void
 }));
 
 const HELP = /\b(help|emergency|ambulance|sos)\b|मदद|बचाओ|एम्बुलेंस|इमरजेंसी/i;
-const TAKEN = /\b(took|taken|take[n]? it|done|finished)\b|ले ली|ले लिया|ले ली है|ली है|खा ली|ले चुकी|ले चुका/i;
+const TAKEN = /\b(took|taken|done|finished)\b|ले ली|ले लिया|ले ली है|ली है|खा ली|ले चुकी|ले चुका/i;
 const ATE = /\b(ate|eaten|had (my )?(breakfast|lunch|dinner|food))\b|खा लिया|खाना खा|नाश्ता कर/i;
 const WATER = /\b(water|glass)\b|पानी/i;
+// "I haven't taken it", "remind me later", "दवा नहीं ली": never mark these as done
+const NOT_YET = /n't\b|\b(not|never|yet|later|remind|forgot|forget|skip)\b|नहीं|नही\b|भूल|बाद में|याद दिला/i;
+
+export type Heard = "help" | "taken" | "ate" | "not-yet" | "water" | "other";
+
+/** What a short spoken sentence asks for. Help wins; a "not yet" stops a dose or meal being marked. */
+export function intentOf(said: string): Heard {
+  if (HELP.test(said)) return "help";
+  const taken = TAKEN.test(said) && !ATE.test(said);
+  const ate = ATE.test(said);
+  if ((taken || ate) && NOT_YET.test(said)) return "not-yet";
+  if (taken) return "taken";
+  if (ate) return "ate";
+  if (WATER.test(said)) return "water";
+  return "other";
+}
 
 /**
  * One big "Tell Asha" microphone on Today. Understands simple things without internet:
@@ -46,12 +62,17 @@ export function VoiceCommand() {
     setHeard(`“${said}”`);
     const open = buildAgenda(s).filter((i) => i.state === "now" || i.state === "open" || i.state === "snoozed");
 
-    if (HELP.test(said)) {
+    const want = intentOf(said);
+    if (want === "not-yet") {
+      reply("Okay, I have not marked it. I will remind you again.", "ठीक है, मैंने अभी नहीं लिखा. मैं फिर याद दिलाऊँगी.");
+      return;
+    }
+    if (want === "help") {
       s.setTab("sos");
       reply("Opening Help.", "मदद खोल रही हूँ.");
       return;
     }
-    if (TAKEN.test(said) && !ATE.test(said)) {
+    if (want === "taken") {
       const med = open.find((i) => i.kind === "med");
       if (med) {
         s.logDose(med.id, med.time, "taken");
@@ -59,7 +80,7 @@ export function VoiceCommand() {
       } else reply("There is no medicine waiting right now. You're all caught up.", "अभी कोई दवा बाकी नहीं है. सब हो गया.");
       return;
     }
-    if (ATE.test(said)) {
+    if (want === "ate") {
       const meal = open.find((i) => i.kind === "meal");
       if (meal) {
         s.logMeal(meal.id);
@@ -67,7 +88,7 @@ export function VoiceCommand() {
       } else reply("Good. No meal is waiting right now.", "अच्छा. अभी कोई खाना बाकी नहीं.");
       return;
     }
-    if (WATER.test(said)) {
+    if (want === "water") {
       s.addWater();
       reply("One more glass of water. Good.", "एक गिलास पानी और. बढ़िया.");
       return;
