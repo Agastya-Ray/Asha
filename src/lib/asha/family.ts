@@ -81,10 +81,34 @@ const empty = (): Saved => ({
 
 export const useFamily = create<FamilyState>(() => ({ ...empty(), hydrated: false, syncing: false, online: true, delivering: null }));
 
+/** A damaged saved copy must never blank the app: keep what is usable, reset the rest. */
+function sanitize(raw: unknown): Saved {
+  const base = empty();
+  if (!raw || typeof raw !== "object" || Array.isArray(raw)) return base;
+  const r = raw as Partial<Record<keyof Saved, unknown>>;
+  const str = (v: unknown, d: string) => (typeof v === "string" ? v : d);
+  const list = <T,>(v: unknown, ok: (x: unknown) => boolean) => (Array.isArray(v) ? (v.filter(ok) as T[]) : []);
+  const isObj = (x: unknown) => !!x && typeof x === "object";
+  const caps = isObj(r.caps) ? (r.caps as Saved["caps"]) : base.caps;
+  return {
+    deviceId: str(r.deviceId, ""),
+    secret: str(r.secret, ""),
+    role: r.role === "elder" || r.role === "family" ? r.role : "",
+    circles: list<CircleInfo>(r.circles, (c) => isObj(c) && typeof (c as CircleInfo).id === "string"),
+    members: list<Member>(r.members, isObj),
+    messages: list<FamilyMsg>(r.messages, (m) => isObj(m) && typeof (m as FamilyMsg).id === "number"),
+    heardLocal: list<number>(r.heardLocal, (n) => typeof n === "number"),
+    sent: list<string>(r.sent, (s) => typeof s === "string"),
+    caps: { ai: Boolean(caps.ai), push: Boolean(caps.push) },
+    pushToken: str(r.pushToken, ""),
+    bubble: r.bubble === true,
+  };
+}
+
 function load() {
   try {
     const raw = localStorage.getItem(KEY);
-    const data = raw ? ({ ...empty(), ...(JSON.parse(raw) as Partial<Saved>) } as Saved) : empty();
+    const data = raw ? sanitize(JSON.parse(raw) as unknown) : empty();
     useFamily.setState({ ...data, hydrated: true });
   } catch {
     useFamily.setState({ hydrated: true });

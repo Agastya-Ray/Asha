@@ -154,8 +154,12 @@ function sanitize(raw: unknown): Persist {
     roleChosen: typeof r.roleChosen === "boolean" ? r.roleChosen : Boolean(r.onboarded),
     conditions: Array.isArray(r.conditions) ? r.conditions.filter(Boolean) : [],
     contacts: Array.isArray(r.contacts) ? r.contacts : [],
-    meds: Array.isArray(r.meds) ? r.meds : [],
-    meals: Array.isArray(r.meals) && r.meals.length ? r.meals : defaultMeals(),
+    meds: Array.isArray(r.meds)
+      ? r.meds
+          .filter((m) => m && typeof m === "object" && typeof m.id === "string")
+          .map((m) => ({ ...m, name: String(m.name ?? ""), dose: String(m.dose ?? ""), times: Array.isArray(m.times) ? m.times.filter((t) => typeof t === "string") : [] }))
+      : [],
+    meals: Array.isArray(r.meals) && r.meals.some((m) => m && typeof m.time === "string") ? r.meals.filter((m) => m && typeof m.time === "string") : defaultMeals(),
     doseLogs: Array.isArray(r.doseLogs) ? r.doseLogs : [],
     mealLogs: Array.isArray(r.mealLogs) ? r.mealLogs : [],
     checkins: Array.isArray(r.checkins) ? r.checkins : [],
