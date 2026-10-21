@@ -1,5 +1,7 @@
 import { useEffect, useState, type ReactNode } from "react";
 import { App } from "@capacitor/app";
+import { cn } from "@/lib/cn";
+import type { Lang } from "@/lib/asha/types";
 import { t, useNow } from "@/components/asha/bits";
 import { FairyScene, type FairyMood } from "@/components/asha/fairy";
 import { awake, checkinQuestion, companionNudge, nudgeBubble } from "@/lib/asha/companion";
@@ -121,14 +123,19 @@ export function FairyDock() {
   // a greeting makes her peek out shyly from under her leaf first, then beam
   // woken at night she rubs her eyes first
   const hello = () => {
-    setEar(awake(wakeTime, sleepTime, new Date()) ? "shy" : "wake");
-    later(1300, () => setEar("hello"));
-    say(t(voiceLang, { en: `Hello${name ? ` ${name}` : ""}! I'm right here with you.`, hi: `नमस्ते${name ? ` ${name} जी` : ""}! मैं यहीं आपके पास हूँ.` }));
-    later(4500, () => setEar(""));
+    const day = awake(wakeTime, sleepTime, new Date());
+    setEar(day ? "shy" : "wake");
+    later(day ? 1300 : 1800, () => setEar("hello"));
+    say(
+      day
+        ? t(voiceLang, { en: `Hello${name ? ` ${name}` : ""}! I'm right here with you.`, hi: `नमस्ते${name ? ` ${name} जी` : ""}! मैं यहीं आपके पास हूँ.` })
+        : t(voiceLang, { en: `Mmm… hello${name ? `, ${name}` : ""}! I was just napping. I'm here if you need me.`, hi: `हम्म… नमस्ते${name ? ` ${name} जी` : ""}! मैं ज़रा सो रही थी. ज़रूरत हो तो मैं यहीं हूँ.` }),
+    );
+    later(5000, () => setEar(""));
   };
   const blush = () => {
     setEar("blush");
-    say(t(voiceLang, { en: "Aww, stop it! You're making me shy.", hi: "अरे, बस करिए! मुझे शर्म आ रही है." }));
+    say(t(voiceLang, { en: "Aww, stop it! You're making me blush.", hi: "अरे, बस करिए! मुझे शर्म आ रही है." }));
     later(4000, () => setEar(""));
   };
   const askWhy = () => {
@@ -193,11 +200,11 @@ export function FairyDock() {
       bye === "ask"
         ? t(lang, { en: "Don't want me around? Why?", hi: "मुझे पास नहीं रखना? क्यों?" })
         : bye === "sad"
-          ? t(lang, { en: "Oh…", hi: "ओह…" })
+          ? t(lang, { en: "Oh… *sniff*", hi: "ओह… *सुबक*" })
           : bye === "brave"
             ? t(lang, { en: "I'm still here to help, as a tiny friend or for your medicines.", hi: "मैं मदद के लिए यहीं हूँ, छोटी दोस्त या दवाइयों के लिए." })
             : t(lang, { en: "*yawn* Good night! See you soon.", hi: "*उबासी* शुभ रात्रि! जल्दी मिलेंगे." });
-    const face: FairyMood = bye === "sad" ? "sad" : bye === "brave" ? "happy" : bye === "yawn" ? "yawn" : "idle";
+    const face: FairyMood = bye === "ask" ? "asking" : bye === "sad" ? "sad" : bye === "brave" ? "happy" : "yawn";
     return (
       <div data-fairy={`bye-${bye}`} className={`fairy-dock fixed right-3 z-30 flex items-end gap-2 ${speaking ? "fairy-dock-up" : ""}`}>
         <div className="mb-6 max-w-[13rem] rounded-2xl rounded-br-sm border border-line bg-paper px-3 py-2 text-base font-bold shadow-sm">
@@ -228,7 +235,12 @@ export function FairyDock() {
     news = true;
     // she brings the family's love notes in her little bag
     mood = "bag";
-    bubble = lang === "hi" ? `${unread.length} प्यार भरा संदेश! मुझे छुएँ` : `${unread.length} love note${unread.length > 1 ? "s" : ""}! Tap me`;
+    bubble =
+      lang === "hi"
+        ? `आपके लिए ${unread.length} प्यार भरा संदेश लाई हूँ! मुझे छुएँ`
+        : unread.length > 1
+          ? `I brought you ${unread.length} love notes! Tap me`
+          : "I brought you a love note! Tap me";
     label = t(lang, { en: "Hear family messages", hi: "परिवार के संदेश सुनें" });
     onTap = () => {
       say([...unread].reverse().map((m) => textOf(m, voiceLang)).join(" ... "));
@@ -255,7 +267,7 @@ export function FairyDock() {
     } else if (n.kind === "checkin" && tab !== "care" && rested !== restKey) {
       kind = "checkin";
       bubble = nudgeBubble(n, lang);
-      mood = "happy";
+      mood = "asking";
       label = t(lang, { en: "Tell Asha how you feel", hi: "आशा को बताएँ आप कैसी हैं" });
       onTap = () => {
         say(checkinQuestion(voiceLang, name));
@@ -293,6 +305,8 @@ export function FairyDock() {
       const sinceWake = (m - toMins(wakeTime || "07:00") + 1440) % 1440;
       const toBed = (toMins(sleepTime || "21:30") - m + 1440) % 1440;
       mood = night ? "sleep" : sinceWake < 60 ? "stretch" : toBed <= 60 ? "tired" : undefined;
+      if (mood === "stretch") bubble = t(lang, { en: `*stretch* Good morning${name ? `, ${name}` : ""}!`, hi: `*अंगड़ाई* सुप्रभात${name ? ` ${name} जी` : ""}!` });
+      if (mood === "tired") bubble = t(lang, { en: "*yawn* Getting sleepy… almost bedtime.", hi: "*उबासी* नींद आ रही है… सोने का समय होने वाला है." });
       label = night
         ? t(lang, { en: "The fairy is asleep. Tap to wake her", hi: "परी सो रही है. जगाने के लिए छुएँ" })
         : t(lang, { en: "Talk to the fairy", hi: "परी से बात करें" });
@@ -308,17 +322,19 @@ export function FairyDock() {
           ? t(lang, { en: "Hmm, let me see…", hi: "हम्म, देखती हूँ…" })
           : ear === "missed"
             ? t(lang, { en: "I didn't catch that. Tap me and say it again?", hi: "सुनाई नहीं दिया. मुझे छूकर फिर बोलें?" })
-            : ear === "shy" || ear === "blush"
-              ? t(lang, { en: "Hee hee… aww.", hi: "ही ही… अरे." })
-              : ear === "wake"
-                ? t(lang, { en: "*rubs eyes* Hmm? I'm up!", hi: "*आँखें मलती है* हम्म? जाग गई!" })
+            : ear === "shy"
+              ? t(lang, { en: "Oh! Hi… hee hee.", hi: "अरे! नमस्ते… ही ही." })
+              : ear === "blush"
+                ? t(lang, { en: "Aww, stop it! You're making me blush.", hi: "अरे, बस करिए! मुझे शर्म आ रही है." })
+                : ear === "wake"
+                  ? t(lang, { en: "*rubs eyes* Hmm? I'm up!", hi: "*आँखें मलती है* हम्म? जाग गई!" })
               : t(lang, { en: "Hello! I'm right here.", hi: "नमस्ते! मैं यहीं हूँ." });
     mood = ear === "listening" ? "asking" : ear === "thinking" ? "thinking" : ear === "missed" ? "sad" : ear === "shy" ? "shy" : ear === "blush" ? "blush" : ear === "wake" ? "wakeup" : "wave";
   }
 
   // on Today the reminder card already says it, so she stays small and quiet there and does not cover it;
   // with nothing to say she is small and quiet everywhere
-  const quiet = !ear && ((tab === "today" && (kind === "due" || kind === "missed")) || kind === "idle" || kind === "sleep");
+  const quiet = !ear && ((tab === "today" && (kind === "due" || kind === "missed")) || (kind === "idle" && !bubble) || kind === "sleep");
   return (
     <div data-fairy={kind} className={`fairy-dock fixed right-3 z-30 flex items-end gap-2 ${kind === "sleep" && !ear ? "fairy-dock-floor" : speaking ? "fairy-dock-up" : ""}`}>
       {quiet ? null : (
@@ -331,7 +347,7 @@ export function FairyDock() {
           )}
         </div>
       )}
-      <Flitter on={kind === "idle" && !ear}>
+      <Flitter on={kind === "idle" && !ear && !bubble} lang={lang}>
         {(pose) => (
           <FairyScene news={news} mood={pose || mood} size={quiet ? "sm" : "md"} floor={kind === "sleep"} label={quiet && bubble ? `${label}: ${bubble}` : label} onTap={onTap} />
         )}
@@ -345,7 +361,15 @@ const PASTIMES: Pastime[] = ["flyside", "flyside", "sit", "book", "butterfly", "
 
 /** With nothing to do, every half minute or so she finds something to do: flies a loop around the screen,
  * sits for a rest, reads her book, watches a butterfly, or just stands with her hands behind her back. */
-function Flitter({ on, children }: { on: boolean; children: (pose: Pastime | undefined) => ReactNode }) {
+const PASTIME_LINE: Record<Pastime, { en: string; hi: string }> = {
+  flyside: { en: "Wheee!", hi: "वीईई!" },
+  sit: { en: "Just resting my wings.", hi: "बस पंखों को आराम दे रही हूँ." },
+  book: { en: "Shh… a good story.", hi: "श्श… अच्छी कहानी है." },
+  butterfly: { en: "Ooh, a butterfly!", hi: "अरे, तितली!" },
+  behind: { en: "La la la…", hi: "ला ला ला…" },
+};
+
+function Flitter({ on, lang, children }: { on: boolean; lang: Lang; children: (pose: Pastime | undefined) => ReactNode }) {
   const [pose, setPose] = useState<Pastime | undefined>();
   useEffect(() => {
     if (!on) return setPose(undefined);
@@ -367,7 +391,17 @@ function Flitter({ on, children }: { on: boolean; children: (pose: Pastime | und
     next();
     return () => window.clearTimeout(t);
   }, [on]);
-  return <div className={pose === "flyside" ? "fairy-flit" : undefined}>{children(pose)}</div>;
+  // a few words for what she is doing, shown for a moment and never spoken
+  return (
+    <div className={cn("relative", pose === "flyside" ? "fairy-flit" : undefined)}>
+      {pose ? (
+        <span data-pastime={pose} className="fairy-pastime pointer-events-none absolute bottom-full right-0 mb-1 whitespace-nowrap rounded-full border border-line bg-paper px-2.5 py-1 text-sm font-bold shadow-sm">
+          {t(lang, PASTIME_LINE[pose])}
+        </span>
+      ) : null}
+      {children(pose)}
+    </div>
+  );
 }
 
 const GO_AWAY = /\b(go away|leave me|bye|go to sleep|not now|stop)\b|चली जाओ|जाओ|बाय|सो जाओ|अभी नहीं/i;

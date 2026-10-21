@@ -84,7 +84,8 @@ export function FairyScene({
   const hour = useNow().getHours();
   const speaking = useSpeech((s) => s.active);
   // while Asha is speaking, the fairy talks; otherwise good news makes her happy and late night makes her sleep
-  const autoMood: FairyMood = speaking && mood !== "sleep" ? "talk" : mood ?? (news ? "happy" : hour >= 22 || hour < 6 ? "sleep" : "idle");
+  // while Asha speaks she talks along, unless she is in the middle of a gesture (waving, blushing, pointing…)
+  const autoMood: FairyMood = speaking && (!mood || mood === "idle") ? "talk" : mood ?? (news ? "happy" : hour >= 22 || hour < 6 ? "sleep" : "idle");
 
   const me = useRef<HTMLButtonElement>(null);
   const [look, setLook] = useState<{ x: number; y: number } | undefined>();
