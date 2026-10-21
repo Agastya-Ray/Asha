@@ -328,8 +328,11 @@ export async function voiceUrl(id: number) {
 export type Consent = { shareMeds: boolean; shareMeals: boolean; shareMood: boolean; shareMissed: boolean; digest: boolean; nudge: boolean };
 
 export async function saveCircle(consent: Partial<Consent> & { label?: string }) {
+  console.info("[family] create: checking device");
   if (!(await ensureDevice())) return { ok: false as const, error: "offline" };
+  console.info("[family] create: sending circle");
   const r = await call<{ circle: CircleInfo }>("circle", consent);
+  console.info(`[family] create: circle returned ok=${r.ok}`);
   if (r.ok) {
     await refreshState();
     void pushNativeConfig();

@@ -142,6 +142,7 @@ function StartCircle() {
         <Button
           disabled={busy}
           onClick={async () => {
+            console.info("[family] create tapped");
             setBusy(true);
             setSlow(false);
             setError("");
