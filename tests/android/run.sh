@@ -52,6 +52,27 @@ for m in re.finditer(r"<node [^>]*>", x):
         if 150 <= (b+e)//2 <= 1700: print((a+c)//2,(b+e)//2); break
 ' "$1"
 }
+# centre of the first on-screen node matching $1 (regex) in Maestro's hierarchy, which also sees WebView text
+center_webview() {
+  maestro hierarchy > "$OUT/hierarchy-now.json" 2>/dev/null
+  python3 -c '
+import json,re,sys
+pat=re.compile(sys.argv[1]); data=json.load(open(sys.argv[2]))
+def walk(n):
+    if isinstance(n,list):
+        for c in n: yield from walk(c)
+        return
+    a=n.get("attributes",{})
+    if pat.search(a.get("text","")) or pat.search(a.get("accessibilityText","")):
+        yield a.get("bounds","")
+    for c in n.get("children",[]): yield from walk(c)
+for b in walk(data):
+    m=re.match(r"\[(\d+),(\d+)\]\[(\d+),(\d+)\]", b)
+    if not m: continue
+    a,y1,c,y2=map(int,m.groups())
+    if 150 <= (y1+y2)//2 <= 1700: print((a+c)//2,(y1+y2)//2); break
+' "$1" "$OUT/hierarchy-now.json"
+}
 setclock() { adb shell "date $1" >/dev/null; log "clock set to $(adb shell date)"; }
 
 adb root >/dev/null 2>&1; sleep 3; adb wait-for-device
@@ -127,16 +148,16 @@ flow 06_help.yaml
 # --- Hindi and the largest text, tapped by screen position (Maestro's text bounds sat under the bottom nav) ---
 # the Help flow leaves the app on Help, so relaunch to reach the Today header and its Settings button
 adb shell am force-stop $PKG; adb shell monkey -p $PKG -c android.intent.category.LAUNCHER 1 >/dev/null 2>&1; sleep 15
-xy=$(center_on_screen "^Settings$|^सेटिंग$")
+xy=$(center_webview "^Settings$|^सेटिंग$")
 if [ -z "$xy" ]; then log "Settings not found in the dump; using the header gear position"; xy="758 228"; fi
 adb shell input tap $xy; sleep 3; shot 39a-settings-opened
 adb shell input swipe 540 1500 540 900 400; sleep 2
 adb exec-out cat /sdcard/ui.xml > "$OUT/settings-ui.xml"
-xy=$(center_on_screen "^हिन्दी$")
+xy=$(center_webview "^हिन्दी$")
 if [ -n "$xy" ]; then adb shell input tap $xy; log "tapped Hindi at $xy"; sleep 3; else FAILED=1; log "no Hindi switch on screen"; fi
 shot 39b-settings-after-hindi
 adb shell input swipe 540 1500 540 900 400; sleep 2
-xy=$(center_on_screen "^A\\+\\+$")
+xy=$(center_webview "^A\\+\\+$")
 if [ -n "$xy" ]; then adb shell input tap $xy; log "tapped the largest text size at $xy"; sleep 3; else FAILED=1; log "no largest text button on screen"; fi
 shot 40-settings-hindi-largest-text
 adb shell input keyevent KEYCODE_BACK; sleep 3
