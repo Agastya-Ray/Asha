@@ -99,7 +99,9 @@ export function FairyDock() {
   const unread = unreadOf({ messages, heardLocal });
   const say = (text: string) => void speak(text, voiceLang, rich ? "warm" : "device");
 
-  if (tab === "family" || tab === "sos") return null;
+  // Settings and Talk have controls along the bottom edge; she would sit on top of them
+  if (tab === "family" || tab === "sos" || tab === "settings") return null;
+  if (tab === "talk" && !unread.length) return null;
 
   let bubble = "";
   let mood: FairyMood | undefined;
