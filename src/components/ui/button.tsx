@@ -2,9 +2,9 @@ import type { ButtonHTMLAttributes } from "react";
 import { cn } from "@/lib/cn";
 
 const styles = {
-  primary: "bg-sage text-paper",
+  primary: "btn-primary bg-sage text-paper",
   quiet: "border border-line bg-paper text-ink",
-  sos: "bg-sos text-paper",
+  sos: "btn-sos bg-sos text-paper",
   ghost: "bg-transparent text-ink",
 } as const;
 

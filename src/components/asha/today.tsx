@@ -50,10 +50,12 @@ export function TodayScreen() {
 
   return (
     <div className="py-5">
-      <h1 className="display text-4xl leading-tight">{hello.title}</h1>
-      <p className="mt-3 text-lg text-quiet">{hello.line}</p>
-      <div className="mt-4">
-        <Hear say={`${helloSay.title} ${helloSay.line}`} label={t(lang, { en: "Hear this", hi: "इसे सुनें" })} />
+      <div className="hero">
+        <h1 className="display text-4xl leading-tight">{hello.title}</h1>
+        <p className="mt-3 text-lg text-quiet">{hello.line}</p>
+        <div className="mt-4">
+          <Hear say={`${helloSay.title} ${helloSay.line}`} label={t(lang, { en: "Hear this", hi: "इसे सुनें" })} />
+        </div>
       </div>
 
       <ReminderHealth />
@@ -119,8 +121,8 @@ export function TodayScreen() {
         <p className="mt-4 text-base text-quiet">
           <span className="font-bold text-clay">{t(lang, { en: "Sample. ", hi: "नमूना. " })}</span>
           {t(lang, {
-            en: "Practice data for Meena, not a real prescription. Erase it in Settings before you use her real list.",
-            hi: "मीना का अभ्यास है, असली पर्ची नहीं. असली सूची से पहले सेटिंग में मिटा दें.",
+            en: "Practice medicines, not a real prescription. Erase them in Settings before you add your real list.",
+            hi: "ये अभ्यास की दवाइयाँ हैं, असली पर्ची नहीं. असली सूची से पहले सेटिंग में मिटा दें.",
           })}
         </p>
       ) : null}

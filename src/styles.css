@@ -461,3 +461,326 @@ html[data-size="xl"] {
 .fairy-dock-up {
   bottom: calc(10rem + env(safe-area-inset-bottom));
 }
+
+/* ---------- fairy: sad, yawn, and saying good night ---------- */
+.fairy-sad .fairy-body {
+  animation: none;
+  transform: translateY(2px);
+}
+.fairy-sad .wing {
+  animation: none;
+  opacity: 0.7;
+}
+.fairy-tear {
+  animation: fairy-tear 1.6s ease-in infinite;
+}
+@keyframes fairy-tear {
+  from {
+    transform: translateY(0);
+    opacity: 1;
+  }
+  to {
+    transform: translateY(10px);
+    opacity: 0;
+  }
+}
+.fairy-mouth-yawn {
+  transform-origin: 60px 62px;
+  animation: fairy-yawn 1.4s ease-in-out;
+}
+@keyframes fairy-yawn {
+  0%, 100% {
+    transform: scaleY(0.4);
+  }
+  50% {
+    transform: scaleY(1.2);
+  }
+}
+/* asleep on the floor after saying good night, she fades away softly */
+.fairy-vanish-soft {
+  animation: fairy-vanish 1.8s ease-in 1.6s forwards;
+}
+@keyframes fairy-vanish {
+  to {
+    opacity: 0;
+    filter: blur(3px);
+  }
+}
+
+/* asleep she lies right on top of the tab bar: the "floor" of the screen */
+.fairy-dock-floor {
+  bottom: calc(4rem + env(safe-area-inset-bottom) - 6px);
+}
+
+/* ---------- look: warm, soft depth ---------- */
+body {
+  background:
+    radial-gradient(60rem 30rem at 0% -10%, #fde7d3 0%, transparent 60%),
+    radial-gradient(50rem 28rem at 110% 10%, #dff0e4 0%, transparent 55%),
+    var(--color-linen);
+  background-attachment: fixed;
+}
+/* cards float on the page instead of sitting flat with a hard outline */
+.rounded-3xl.bg-paper,
+.rounded-2xl.border-line.bg-paper {
+  box-shadow:
+    0 1px 2px rgb(60 40 20 / 0.05),
+    0 8px 24px -10px rgb(60 40 20 / 0.14);
+}
+.btn-primary {
+  background-image: linear-gradient(180deg, #2a8a5b 0%, var(--color-sage) 100%);
+  box-shadow:
+    inset 0 1px 0 rgb(255 255 255 / 0.18),
+    0 6px 16px -6px rgb(29 107 69 / 0.55);
+}
+.btn-sos {
+  background-image: linear-gradient(180deg, #b0304a 0%, var(--color-sos) 100%);
+  box-shadow: 0 6px 16px -6px rgb(143 29 50 / 0.5);
+}
+.hero {
+  border-radius: 2rem;
+  padding: 1.25rem;
+  background: linear-gradient(135deg, #fff6ec 0%, #fffdf8 45%, #eaf6ee 100%);
+  box-shadow: 0 10px 30px -14px rgb(60 40 20 / 0.22);
+}
+.logo-badge {
+  background: linear-gradient(145deg, #34a06c, var(--color-sage));
+  box-shadow: 0 4px 12px -4px rgb(29 107 69 / 0.6);
+}
+.rounded-3xl.border-line.bg-paper,
+.rounded-2xl.border-line.bg-paper {
+  border-color: rgb(228 216 198 / 0.55);
+}
+/* tab bar floats as a rounded pill above the bottom edge; the open tab gets a soft pill */
+.nav-float {
+  border-radius: 1.75rem;
+  background: rgb(255 253 248 / 0.92);
+  backdrop-filter: blur(10px);
+  box-shadow:
+    0 1px 0 rgb(255 255 255 / 0.8) inset,
+    0 12px 32px -12px rgb(60 40 20 / 0.3);
+  border: 1px solid rgb(228 216 198 / 0.6);
+}
+.tab-on {
+  background: var(--color-sage-soft);
+  border-radius: 1.25rem;
+}
+
+/* ---------- the pixie (pixie.tsx) ---------- */
+.pixie-glow {
+  background: radial-gradient(closest-side, rgb(255 246 200 / 0.75), rgb(255 246 200 / 0));
+  animation: pixie-glow 2.8s ease-in-out infinite;
+}
+@keyframes pixie-glow {
+  0%,
+  100% {
+    opacity: 0.6;
+  }
+  50% {
+    opacity: 1;
+  }
+}
+.pixie-lean {
+  transition: transform 0.35s ease-out;
+}
+/* hovering: a gentle bob with a soft breath */
+.pixie-art {
+  transform-origin: 50% 100%;
+  animation: pixie-bob 3.2s ease-in-out infinite;
+}
+@keyframes pixie-bob {
+  0%,
+  100% {
+    transform: translateY(0) scale(1, 1);
+  }
+  50% {
+    transform: translateY(-5%) scale(1.01, 0.99);
+  }
+}
+.pixie-wave .pixie-art {
+  animation: pixie-sway 1.2s ease-in-out infinite;
+}
+.pixie-fly .pixie-art {
+  animation: pixie-bob 0.9s ease-in-out infinite;
+}
+.pixie-point .pixie-art {
+  animation: pixie-nudge 1.4s ease-in-out infinite;
+}
+@keyframes pixie-nudge {
+  0%,
+  100% {
+    transform: translateX(0);
+  }
+  50% {
+    transform: translateX(-4%) rotate(-2deg);
+  }
+}
+.pixie-flyside .pixie-art,
+.pixie-flyup .pixie-art {
+  animation: pixie-bob 0.8s ease-in-out infinite;
+}
+.pixie-stretch .pixie-art,
+.pixie-wakeup .pixie-art,
+.pixie-tired .pixie-art {
+  animation: pixie-stretch 2.4s ease-in-out infinite;
+}
+.pixie-blush .pixie-art,
+.pixie-behind .pixie-art,
+.pixie-butterfly .pixie-art,
+.pixie-flower .pixie-art {
+  animation: pixie-sway 2.6s ease-in-out infinite;
+}
+.pixie-book .pixie-art,
+.pixie-sit .pixie-art {
+  animation: pixie-breathe 3.4s ease-in-out infinite;
+}
+.pixie-happy .pixie-art,
+.pixie-jump .pixie-art {
+  animation: pixie-hop 0.9s ease-in-out infinite;
+}
+@keyframes pixie-hop {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  40% {
+    transform: translateY(-9%) rotate(3deg);
+  }
+}
+.pixie-talk .pixie-art {
+  animation: pixie-chatter 0.5s ease-in-out infinite alternate;
+}
+@keyframes pixie-chatter {
+  from {
+    transform: translateY(0) rotate(-1deg);
+  }
+  to {
+    transform: translateY(-2%) rotate(1.5deg);
+  }
+}
+.pixie-thinking .pixie-art,
+.pixie-shy .pixie-art {
+  animation: pixie-sway 2.6s ease-in-out infinite;
+}
+@keyframes pixie-sway {
+  0%,
+  100% {
+    transform: rotate(-2.5deg);
+  }
+  50% {
+    transform: rotate(2.5deg) translateY(-2%);
+  }
+}
+.pixie-sad .pixie-art {
+  animation: pixie-bob 5s ease-in-out infinite;
+  filter: saturate(0.85);
+}
+.pixie-yawn .pixie-art {
+  animation: pixie-stretch 2.4s ease-in-out infinite;
+}
+@keyframes pixie-stretch {
+  0%,
+  100% {
+    transform: scale(1, 1);
+  }
+  45% {
+    transform: scale(0.98, 1.03);
+  }
+}
+/* asleep on the floor: slow breathing, no hovering */
+.pixie-sleep .pixie-art {
+  animation: pixie-breathe 3.4s ease-in-out infinite;
+}
+@keyframes pixie-breathe {
+  0%,
+  100% {
+    transform: scale(1, 1);
+  }
+  50% {
+    transform: scale(1.01, 1.03);
+  }
+}
+.pixie-sparkles path {
+  animation: pixie-twinkle 1.1s ease-in-out infinite;
+  transform-box: fill-box;
+  transform-origin: center;
+}
+@keyframes pixie-twinkle {
+  0%,
+  100% {
+    opacity: 0.3;
+    scale: 0.6;
+  }
+  50% {
+    opacity: 1;
+    scale: 1.2;
+  }
+}
+.pixie-thought circle,
+.pixie-q {
+  animation: pixie-glow 1.6s ease-in-out infinite;
+}
+.pixie-z text {
+  animation: pixie-z 3s ease-out infinite;
+}
+.pixie-z text:nth-child(2) {
+  animation-delay: 0.8s;
+}
+.pixie-z text:nth-child(3) {
+  animation-delay: 1.6s;
+}
+@keyframes pixie-z {
+  0% {
+    opacity: 0;
+    transform: translate(0, 6px);
+  }
+  30% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+    transform: translate(10px, -12px);
+  }
+}
+/* she flies a loop around the screen and comes back to her spot */
+.fairy-flit {
+  animation: fairy-flit 6s ease-in-out;
+}
+@keyframes fairy-flit {
+  0% {
+    transform: translate(0, 0) rotate(0deg);
+  }
+  18% {
+    transform: translate(-22vw, -26vh) rotate(-10deg);
+  }
+  40% {
+    transform: translate(-58vw, -40vh) rotate(-4deg);
+  }
+  60% {
+    transform: translate(-64vw, -14vh) rotate(8deg);
+  }
+  80% {
+    transform: translate(-28vw, -4vh) rotate(6deg);
+  }
+  100% {
+    transform: translate(0, 0) rotate(0deg);
+  }
+}
+/* the few words for what she is doing pop up, then fade */
+.fairy-pastime {
+  animation: fairy-pastime 3.6s ease-out forwards;
+}
+@keyframes fairy-pastime {
+  0% {
+    opacity: 0;
+    transform: translateY(4px);
+  }
+  12%,
+  75% {
+    opacity: 1;
+    transform: none;
+  }
+  100% {
+    opacity: 0;
+  }
+}

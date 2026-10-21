@@ -123,7 +123,7 @@ function Header() {
   return (
     <header className="safe-top sticky top-0 z-20 border-b border-line bg-linen/95 px-4 py-3 backdrop-blur-sm">
       <div className="mx-auto flex w-full max-w-lg items-center gap-3">
-        <span className="inline-flex size-11 shrink-0 items-center justify-center rounded-full bg-sage text-paper">
+        <span className="inline-flex size-11 shrink-0 items-center justify-center logo-badge rounded-full bg-sage text-paper">
           <Leaf className="size-5" aria-hidden />
         </span>
         <div className="min-w-0 flex-1">
@@ -179,8 +179,8 @@ function Nav() {
   const tab = useAsha((s) => s.tab);
   const setTab = useAsha((s) => s.setTab);
   return (
-    <nav aria-label={lang === "hi" ? "मुख्य" : "Main"} className="dock fixed inset-x-0 bottom-0 z-20 border-t border-line bg-paper">
-      <div className="mx-auto grid w-full max-w-lg grid-cols-5">
+    <nav aria-label={lang === "hi" ? "मुख्य" : "Main"} className="dock fixed inset-x-0 bottom-0 z-20 px-3">
+      <div className="nav-float mx-auto grid w-full max-w-lg grid-cols-5 p-1.5">
         {TABS.map((item) => {
           const Icon = item.icon;
           const on = tab === item.id;
@@ -189,7 +189,7 @@ function Nav() {
               key={item.id}
               type="button"
               onClick={() => setTab(item.id)}
-              className={cn("flex min-h-16 flex-col items-center justify-center gap-1 text-sm font-bold", on ? "text-sage" : "text-quiet")}
+              className={cn("flex min-h-14 flex-col items-center justify-center gap-0.5 text-sm font-bold transition-colors", on ? "tab-on text-sage" : "text-quiet")}
             >
               <Icon className="size-5" aria-hidden />
               {lang === "hi" ? item.hi : item.en}

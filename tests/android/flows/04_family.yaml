@@ -23,6 +23,8 @@ appId: com.agastyaray.asha
 - takeScreenshot: 50-family-start
 - scrollUntilVisible:
     element: ".*(Start|Create|Make).*"
+    # centre it, so the floating tab bar and the fairy never sit on top of the button
+    centerElement: true
     optional: true
 - tapOn:
     text: ".*(Start|Create|Make).*"
@@ -44,6 +46,7 @@ appId: com.agastyaray.asha
     element: "Make an invite code|Make a new code|Their code.*"
     direction: DOWN
     timeout: 45000
+    centerElement: true
     optional: true
 - tapOn:
     text: "Make an invite code"

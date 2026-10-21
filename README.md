@@ -151,6 +151,9 @@ voice, Talk (Pro) and prescription reading.
    - `SCHEDULE_EXACT_ALARM` — medicine reminders must ring on time.
    - Foreground service (short) — to speak the reminder.
 6. Health apps also need the **Health apps declaration** in Play Console.
+7. **Fairy artwork**: the fairy pictures (`src/assets/fairy/`, shown by `src/components/asha/pixie.tsx`) were cut from an
+   AI-generated character sheet made for this personal, non-commercial app, styled after stock chibi-fairy pictures. Before selling Asha or publishing it commercially, have her design
+   reviewed (or redrawn by an illustrator) so she is clearly original.
 
 ---
 

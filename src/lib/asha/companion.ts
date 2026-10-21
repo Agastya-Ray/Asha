@@ -52,8 +52,8 @@ export function nudgeBubble(n: Nudge, lang: Lang): string {
     return n.late ? (hi ? `${what} हो गया? मुझे छुएँ` : `Had your ${what.toLowerCase()}? Tap me`) : hi ? `${what} का समय! मुझे छुएँ` : `${what} time! Tap me`;
   }
   if (n.kind === "checkin") return hi ? "आज आप कैसा महसूस कर रही हैं?" : "How are you feeling today?";
-  if (n.kind === "comfort") return hi ? "मैं यहीं हूँ. परिवार को संदेश भेजें?" : "I'm here with you. Send family a note?";
-  if (n.kind === "cheer") return hi ? "शाबाश! अब तक की सब दवाइयाँ ले लीं" : "Well done! All doses so far taken";
+  if (n.kind === "comfort") return hi ? "आपके लिए एक फूल लाई हूँ. मैं यहीं हूँ. परिवार को संदेश भेजें?" : "I brought you a flower. I'm here with you. Send family a note?";
+  if (n.kind === "cheer") return hi ? "याय! शाबाश! अब तक की सब दवाइयाँ ले लीं" : "Yay! Well done! All doses so far taken";
   return "";
 }
 

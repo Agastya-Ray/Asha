@@ -327,7 +327,7 @@ export const useAsha = create<State>((set) => ({
   pushChat: (turn) => set((s) => ({ chat: [...s.chat, turn].slice(-24) })),
   dismissCoach: () => set({ coachDismissed: true }),
   finishSetup: () => set({ onboarded: true, setupStep: 4, sample: false }),
-  loadSample: () => set((s) => ({ ...sampleDay(), deviceId: s.deviceId, introSeen: true, roleChosen: true, appRole: "elder", lang: s.lang, voiceLang: s.voiceLang })),
+  loadSample: () => set((s) => ({ ...sampleDay(), name: s.name.trim(), deviceId: s.deviceId, introSeen: true, roleChosen: true, appRole: "elder", lang: s.lang, voiceLang: s.voiceLang })),
   eraseAll: () => set((s) => ({ ...initialPersist(), deviceId: s.deviceId, introSeen: true, hydrated: true, tab: "today" })),
 }));
 
@@ -378,7 +378,7 @@ function sampleDay(): Partial<State> {
     hydrated: true,
     onboarded: true,
     setupStep: 4,
-    name: "Meena",
+    name: "",
     lang: "en",
     conditions: ["diabetes", "arthritis"],
     contacts: [{ id: "sample-priya", name: "Priya", relation: "Daughter", phone: "" }],
