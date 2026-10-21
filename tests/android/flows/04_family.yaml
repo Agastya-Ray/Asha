@@ -2,7 +2,9 @@
 appId: com.agastyaray.asha
 ---
 - launchApp
-- tapOn: "Family"
+# the Family tab, tapped by position on the bottom bar (its label can match text further up the page)
+- tapOn:
+    point: "70%,92%"
 - extendedWaitUntil:
     notVisible: "Opening your family circle.*"
     timeout: 20000
