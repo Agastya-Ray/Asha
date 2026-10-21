@@ -128,8 +128,10 @@ flow 06_help.yaml
 # the Help flow leaves the app on Help, so relaunch to reach the Today header and its Settings button
 adb shell am force-stop $PKG; adb shell monkey -p $PKG -c android.intent.category.LAUNCHER 1 >/dev/null 2>&1; sleep 15
 xy=$(center_on_screen "^Settings$|^सेटिंग$")
-if [ -n "$xy" ]; then adb shell input tap $xy; sleep 3; shot 39a-settings-opened; fi
+if [ -z "$xy" ]; then log "Settings not found in the dump; using the header gear position"; xy="758 228"; fi
+adb shell input tap $xy; sleep 3; shot 39a-settings-opened
 adb shell input swipe 540 1500 540 900 400; sleep 2
+adb exec-out cat /sdcard/ui.xml > "$OUT/settings-ui.xml"
 xy=$(center_on_screen "^हिन्दी$")
 if [ -n "$xy" ]; then adb shell input tap $xy; log "tapped Hindi at $xy"; sleep 3; else FAILED=1; log "no Hindi switch on screen"; fi
 shot 39b-settings-after-hindi
