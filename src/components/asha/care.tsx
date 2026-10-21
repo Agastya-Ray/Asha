@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Card, FieldLabel, t } from "@/components/asha/bits";
 import { CONDITIONS, planById, text } from "@/lib/asha/plans";
 import { mealNote, mealTitle } from "@/lib/asha/speech";
-import { todayCheckin } from "@/lib/asha/schedule";
+import { latinDigits, todayCheckin } from "@/lib/asha/schedule";
 import { minutesNow, shiftDay, shortWeekday, todayKey, toMin } from "@/lib/asha/time";
 import { AshaNative, isNative } from "@/lib/asha/native";
 import { useAsha } from "@/lib/asha/store";
@@ -59,7 +59,7 @@ export function CareScreen() {
       setSaved(t(lang, { en: "Saved for today.", hi: "आज के लिए सहेजा." }));
       return;
     }
-    const n = Number(trimmed);
+    const n = Number(latinDigits(trimmed));
     if (!Number.isFinite(n) || n < min || n > max) {
       setSaved("");
       setError(t(lang, { en: "That number looks unlikely. Check it, or leave it blank.", hi: "यह आँकड़ा अटपटा है. जाँचें, या खाली छोड़ दें." }));

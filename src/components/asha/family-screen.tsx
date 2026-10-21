@@ -21,6 +21,7 @@ import { AshaNative, isNative } from "@/lib/asha/native";
 import { useAsha } from "@/lib/asha/store";
 import { speak } from "@/lib/asha/voice";
 import { FROM_ELDER, GROUPS_FROM_ELDER } from "../../../supabase/functions/family/presets";
+import { digits } from "@/lib/asha/schedule";
 
 const APK = "https://github.com/Agastya-Ray/Asha/releases/latest";
 
@@ -197,7 +198,7 @@ function ElderCircle() {
   if (!circle) return null;
   const label = circle.label || "Maa";
   const invite = circle.invite;
-  const firstPhone = contacts.find((c) => c.phone.replace(/\D/g, "").length >= 8)?.phone ?? "";
+  const firstPhone = contacts.find((c) => digits(c.phone).length >= 8)?.phone ?? "";
 
   function readNew() {
     if (!unread.length) {

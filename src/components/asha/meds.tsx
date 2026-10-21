@@ -5,6 +5,7 @@ import { apiReadPrescription } from "@/lib/asha/api";
 import { normTime } from "@/lib/asha/time";
 import { newId, useAsha } from "@/lib/asha/store";
 import type { Food, Med } from "@/lib/asha/types";
+import { latinDigits } from "@/lib/asha/schedule";
 
 const FOODS: Food[] = ["before", "with", "after", "anytime"];
 
@@ -113,7 +114,7 @@ export function MedEditor({
           value={med.pillsLeft ?? ""}
           placeholder={t(lang, { en: "Leave blank to skip", hi: "छोड़ना हो तो खाली रखें" })}
           onChange={(e) => {
-            const raw = e.target.value.replace(/\D/g, "").slice(0, 4);
+            const raw = latinDigits(e.target.value).replace(/\D/g, "").slice(0, 4);
             setMed({ ...med, pillsLeft: raw === "" ? null : Number(raw) });
           }}
         />

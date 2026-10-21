@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Card, t } from "@/components/asha/bits";
 import { familyAlert } from "@/lib/asha/family";
 import { AshaNative, isNative } from "@/lib/asha/native";
-import { digits, smsHref, telHref, todayCheckin } from "@/lib/asha/schedule";
+import { digits, latinDigits, smsHref, telHref, todayCheckin } from "@/lib/asha/schedule";
 import { sosText } from "@/lib/asha/speech";
 import { useAsha } from "@/lib/asha/store";
 import { speak } from "@/lib/asha/voice";
@@ -29,7 +29,7 @@ async function whereAmI(): Promise<string> {
 async function callNumber(number: string) {
   if (isNative) {
     try {
-      await AshaNative.call({ number });
+      await AshaNative.call({ number: latinDigits(number) });
       return;
     } catch {
       /* fall back to link */
@@ -77,7 +77,7 @@ export function SosScreen() {
     const pushed = await familyAlert("sos", { where: link });
     if (pushed > 0) log(lang === "hi" ? `परिवार ऐप पर ${pushed} लोगों को सूचना गई.` : `Alert sent to ${pushed} family phone${pushed > 1 ? "s" : ""} in Asha.`);
     const text = sosText(lang, name, link);
-    const numbers = people.map((p) => p.phone);
+    const numbers = people.map((p) => latinDigits(p.phone));
 
     if (numbers.length && isNative && autoSms) {
       try {

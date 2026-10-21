@@ -1,7 +1,7 @@
 // Hands the day's reminders to Android, so Asha speaks even when the app is closed or the phone is locked.
 import { AshaNative, isNative, type NativeReminder } from "@/lib/asha/native";
 import { timeWords } from "@/lib/asha/family";
-import { digits } from "@/lib/asha/schedule";
+import { digits, latinDigits } from "@/lib/asha/schedule";
 import { againSentence, doseSentence, mealNote, mealSentence, mealTitle, missedText, morningLine, nightLine } from "@/lib/asha/speech";
 import { useAsha } from "@/lib/asha/store";
 import { speakClock, todayKey, toMin } from "@/lib/asha/time";
@@ -119,7 +119,7 @@ export function syncReminders(force = false) {
       snoozeMinutes: 10,
       rate: 0.92,
       familyAlert: s.familyAlert,
-      familyNumbers: s.contacts.map((c) => c.phone).filter((p) => digits(p).length >= 6),
+      familyNumbers: s.contacts.map((c) => latinDigits(c.phone)).filter((p) => digits(p).length >= 6),
     };
     const payload = JSON.stringify({ items, config });
     if (!force && payload === lastSent) return;

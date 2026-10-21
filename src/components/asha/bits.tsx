@@ -7,6 +7,7 @@ import type { Lang } from "@/lib/asha/types";
 import { canListen, listenOnce } from "@/lib/asha/listen";
 import { useAsha } from "@/lib/asha/store";
 import { speak } from "@/lib/asha/voice";
+import { latinDigits } from "@/lib/asha/schedule";
 
 export function useNow() {
   const [now, setNow] = useState(() => new Date());
@@ -108,7 +109,7 @@ export function SpeakField({
         inputMode={inputMode}
         autoComplete={autoComplete}
       />
-      <MicButton onText={(said) => onChange(inputMode === "tel" ? said.replace(/[^\d+]/g, "") : said)} />
+      <MicButton onText={(said) => onChange(inputMode === "tel" ? latinDigits(said).replace(/[^\d+]/g, "") : said)} />
     </div>
   );
 }
