@@ -102,7 +102,7 @@ export function FairyDock() {
   const [bye, setBye] = useState<"" | "ask" | "sad" | "brave" | "yawn" | "lie" | "gone">("");
   const [awayUntil, setAwayUntil] = useState(readAway);
   // she listens when tapped: what you say goes to the same helper as "Tell Asha"
-  const [ear, setEar] = useState<"" | "listening" | "thinking" | "hello" | "shy" | "missed">("");
+  const [ear, setEar] = useState<"" | "listening" | "thinking" | "hello" | "shy" | "blush" | "wake" | "missed">("");
   const unread = unreadOf({ messages, heardLocal });
   const say = (text: string) => void speak(text, voiceLang, rich ? "warm" : "device");
 
@@ -119,14 +119,15 @@ export function FairyDock() {
 
   const later = (ms: number, f: () => void) => window.setTimeout(f, ms);
   // a greeting makes her peek out shyly from under her leaf first, then beam
+  // woken at night she rubs her eyes first
   const hello = () => {
-    setEar("shy");
+    setEar(awake(wakeTime, sleepTime, new Date()) ? "shy" : "wake");
     later(1300, () => setEar("hello"));
     say(t(voiceLang, { en: `Hello${name ? ` ${name}` : ""}! I'm right here with you.`, hi: `नमस्ते${name ? ` ${name} जी` : ""}! मैं यहीं आपके पास हूँ.` }));
     later(4500, () => setEar(""));
   };
   const blush = () => {
-    setEar("shy");
+    setEar("blush");
     say(t(voiceLang, { en: "Aww, stop it! You're making me shy.", hi: "अरे, बस करिए! मुझे शर्म आ रही है." }));
     later(4000, () => setEar(""));
   };
@@ -225,6 +226,8 @@ export function FairyDock() {
   if (unread.length) {
     kind = "news";
     news = true;
+    // she brings the family's love notes in her little bag
+    mood = "bag";
     bubble = lang === "hi" ? `${unread.length} प्यार भरा संदेश! मुझे छुएँ` : `${unread.length} love note${unread.length > 1 ? "s" : ""}! Tap me`;
     label = t(lang, { en: "Hear family messages", hi: "परिवार के संदेश सुनें" });
     onTap = () => {
@@ -261,7 +264,8 @@ export function FairyDock() {
     } else if (n.kind === "comfort" && rested !== restKey) {
       kind = "comfort";
       bubble = nudgeBubble(n, lang);
-      mood = "idle";
+      // she brings a flower
+      mood = "flower";
       label = t(lang, { en: "Talk to family", hi: "परिवार से बात करें" });
       onTap = () => {
         say(bubble);
@@ -283,7 +287,12 @@ export function FairyDock() {
       // nothing to say: she is simply there, watching what you tap; at night she sleeps on the floor
       const night = !awake(wakeTime, sleepTime, now);
       kind = night ? "sleep" : "idle";
-      mood = night ? "sleep" : undefined;
+      // she stretches for the first hour after waking, and grows sleepy in the last hour before bed
+      const m = now.getHours() * 60 + now.getMinutes();
+      const toMins = (hhmm: string) => Number(hhmm.split(":")[0]) * 60 + Number(hhmm.split(":")[1]);
+      const sinceWake = (m - toMins(wakeTime || "07:00") + 1440) % 1440;
+      const toBed = (toMins(sleepTime || "21:30") - m + 1440) % 1440;
+      mood = night ? "sleep" : sinceWake < 60 ? "stretch" : toBed <= 60 ? "tired" : undefined;
       label = night
         ? t(lang, { en: "The fairy is asleep. Tap to wake her", hi: "परी सो रही है. जगाने के लिए छुएँ" })
         : t(lang, { en: "Talk to the fairy", hi: "परी से बात करें" });
@@ -299,10 +308,12 @@ export function FairyDock() {
           ? t(lang, { en: "Hmm, let me see…", hi: "हम्म, देखती हूँ…" })
           : ear === "missed"
             ? t(lang, { en: "I didn't catch that. Tap me and say it again?", hi: "सुनाई नहीं दिया. मुझे छूकर फिर बोलें?" })
-            : ear === "shy"
+            : ear === "shy" || ear === "blush"
               ? t(lang, { en: "Hee hee… aww.", hi: "ही ही… अरे." })
+              : ear === "wake"
+                ? t(lang, { en: "*rubs eyes* Hmm? I'm up!", hi: "*आँखें मलती है* हम्म? जाग गई!" })
               : t(lang, { en: "Hello! I'm right here.", hi: "नमस्ते! मैं यहीं हूँ." });
-    mood = ear === "listening" ? "asking" : ear === "thinking" ? "thinking" : ear === "missed" ? "sad" : ear === "shy" ? "shy" : "wave";
+    mood = ear === "listening" ? "asking" : ear === "thinking" ? "thinking" : ear === "missed" ? "sad" : ear === "shy" ? "shy" : ear === "blush" ? "blush" : ear === "wake" ? "wakeup" : "wave";
   }
 
   // on Today the reminder card already says it, so she stays small and quiet there and does not cover it;
@@ -329,16 +340,21 @@ export function FairyDock() {
   );
 }
 
-/** With nothing to do, every half minute or so she either flies a loop around the screen or sits down for a rest. */
-function Flitter({ on, children }: { on: boolean; children: (pose: "fly" | "sit" | undefined) => ReactNode }) {
-  const [pose, setPose] = useState<"fly" | "sit" | undefined>();
+type Pastime = "flyside" | "sit" | "book" | "butterfly" | "behind";
+const PASTIMES: Pastime[] = ["flyside", "flyside", "sit", "book", "butterfly", "behind"];
+
+/** With nothing to do, every half minute or so she finds something to do: flies a loop around the screen,
+ * sits for a rest, reads her book, watches a butterfly, or just stands with her hands behind her back. */
+function Flitter({ on, children }: { on: boolean; children: (pose: Pastime | undefined) => ReactNode }) {
+  const [pose, setPose] = useState<Pastime | undefined>();
   useEffect(() => {
     if (!on) return setPose(undefined);
     let t = 0;
     const next = () => {
       t = window.setTimeout(() => {
-        const fly = Math.random() < 0.6;
-        setPose(fly ? "fly" : "sit");
+        const p = PASTIMES[Math.floor(Math.random() * PASTIMES.length)];
+        const fly = p === "flyside";
+        setPose(p);
         t = window.setTimeout(
           () => {
             setPose(undefined);
@@ -351,7 +367,7 @@ function Flitter({ on, children }: { on: boolean; children: (pose: "fly" | "sit"
     next();
     return () => window.clearTimeout(t);
   }, [on]);
-  return <div className={pose === "fly" ? "fairy-flit" : undefined}>{children(pose)}</div>;
+  return <div className={pose === "flyside" ? "fairy-flit" : undefined}>{children(pose)}</div>;
 }
 
 const GO_AWAY = /\b(go away|leave me|bye|go to sleep|not now|stop)\b|चली जाओ|जाओ|बाय|सो जाओ|अभी नहीं/i;
