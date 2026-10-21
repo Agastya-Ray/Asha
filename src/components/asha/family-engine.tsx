@@ -25,6 +25,7 @@ import {
 import { AshaNative, isNative } from "@/lib/asha/native";
 import { useAsha } from "@/lib/asha/store";
 import { speak, useSpeech } from "@/lib/asha/voice";
+import { fairySound, fairySoundOnce, type Sfx } from "@/lib/asha/sfx";
 
 /** Keeps the Family Circle in sync: on open, on return to the app, and when a push arrives. */
 export function FamilyEngine() {
@@ -125,7 +126,11 @@ export function FairyDock() {
   const hello = () => {
     const day = awake(wakeTime, sleepTime, new Date());
     setEar(day ? "shy" : "wake");
-    later(day ? 1300 : 1800, () => setEar("hello"));
+    if (day) fairySound("giggle");
+    later(day ? 1300 : 1800, () => {
+      setEar("hello");
+      fairySound("chime");
+    });
     say(
       day
         ? t(voiceLang, { en: `Hello${name ? ` ${name}` : ""}! I'm right here with you.`, hi: `नमस्ते${name ? ` ${name} जी` : ""}! मैं यहीं आपके पास हूँ.` })
@@ -135,6 +140,7 @@ export function FairyDock() {
   };
   const blush = () => {
     setEar("blush");
+    fairySound("giggle");
     say(t(voiceLang, { en: "Aww, stop it! You're making me blush.", hi: "अरे, बस करिए! मुझे शर्म आ रही है." }));
     later(4000, () => setEar(""));
   };
@@ -168,14 +174,20 @@ export function FairyDock() {
   const goodnight = (sadFirst: boolean) => {
     if (sadFirst) {
       setBye("sad");
+      fairySound("sad");
       later(1800, () => {
         setBye("brave");
+        fairySound("chime");
         say(t(voiceLang, { en: `That's okay${name ? `, ${name}` : ""}. I'm still here to help you, as a tiny friend or to remind you about your medicines.`, hi: `कोई बात नहीं${name ? ` ${name} जी` : ""}. मैं फिर भी आपकी मदद के लिए यहीं हूँ, छोटी सी दोस्त बनकर या दवाइयाँ याद दिलाने के लिए.` }));
       });
-      later(6500, () => setBye("yawn"));
+      later(6500, () => {
+        setBye("yawn");
+        fairySound("yawn");
+      });
       later(8800, () => setBye("lie"));
     } else {
       setBye("yawn");
+      fairySound("yawn");
       later(2300, () => setBye("lie"));
       say(t(voiceLang, { en: `Okay, well I wanted to sleep anyway. Good night${name ? `, ${name}` : ""}! See you soon.`, hi: `ठीक है, मुझे वैसे भी नींद आ रही थी. शुभ रात्रि${name ? ` ${name} जी` : ""}! जल्दी मिलेंगे.` }));
     }
@@ -347,6 +359,7 @@ export function FairyDock() {
           )}
         </div>
       )}
+      <SoundOnce moment={kind === "cheer" ? `cheer|${todayKey(now)}|${bubble}` : ""} sound="chime" />
       <Flitter on={kind === "idle" && !ear && !bubble} lang={lang}>
         {(pose) => (
           <FairyScene news={news} mood={pose || mood} size={quiet ? "sm" : "md"} floor={kind === "sleep"} label={quiet && bubble ? `${label}: ${bubble}` : label} onTap={onTap} />
@@ -354,6 +367,15 @@ export function FairyDock() {
       </Flitter>
     </div>
   );
+}
+
+/** Plays a sound once per moment (she jumps for joy with a sparkle when all doses are taken). If it could not
+ * play yet (no touch since the app opened), it tries again on the next redraw. */
+function SoundOnce({ moment, sound }: { moment: string; sound: Sfx }) {
+  useEffect(() => {
+    if (moment) fairySoundOnce(sound, moment);
+  });
+  return null;
 }
 
 type Pastime = "flyside" | "sit" | "book" | "butterfly" | "behind";
@@ -379,6 +401,7 @@ function Flitter({ on, lang, children }: { on: boolean; lang: Lang; children: (p
         const p = PASTIMES[Math.floor(Math.random() * PASTIMES.length)];
         const fly = p === "flyside";
         setPose(p);
+        if (fly) fairySound("flutter");
         t = window.setTimeout(
           () => {
             setPose(undefined);

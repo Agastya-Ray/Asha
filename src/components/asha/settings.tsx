@@ -100,6 +100,7 @@ export function SettingsScreen() {
       <div className="mt-3 flex flex-col gap-2">
         <Toggle on={s.voiceOn} lang={lang} label={t(lang, { en: "Speak reminders and greetings", hi: "याद और अभिवादन बोलें" })} onClick={() => s.setPrefs({ voiceOn: !s.voiceOn })} />
         <Toggle on={s.richVoice} lang={lang} label={t(lang, { en: "Use the warmer voice when online", hi: "ऑनलाइन होने पर ज़्यादा प्यारी आवाज़" })} onClick={() => s.setPrefs({ richVoice: !s.richVoice })} />
+        <Toggle on={s.fairySounds} lang={lang} label={t(lang, { en: "Little fairy sounds (quiet at night)", hi: "परी की छोटी आवाज़ें (रात में चुप)" })} onClick={() => s.setPrefs({ fairySounds: !s.fairySounds })} />
         <Toggle on={s.speakOnOpen} lang={lang} label={t(lang, { en: "Greet me when I open Asha", hi: "आशा खुलते ही अभिवादन" })} onClick={() => s.setPrefs({ speakOnOpen: !s.speakOnOpen })} />
         <Toggle on={s.dailyGreetings} lang={lang} label={t(lang, { en: "Good morning and good night", hi: "सुप्रभात और शुभ रात्रि" })} onClick={() => s.setPrefs({ dailyGreetings: !s.dailyGreetings })} />
         {s.dailyGreetings ? (
