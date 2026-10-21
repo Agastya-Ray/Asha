@@ -567,96 +567,99 @@ body {
 }
 
 /* ---------- the pixie (pixie.tsx) ---------- */
-.pixie * {
-  transform-box: view-box;
-}
-.pixie-fly {
-  animation: pixie-bob 3.2s ease-in-out infinite;
-}
-@keyframes pixie-bob {
-  0%,
-  100% {
-    transform: translateY(0) rotate(0deg);
-  }
-  50% {
-    transform: translateY(-7px) rotate(-1.5deg);
-  }
-}
-.pixie-wing-up,
-.pixie-wing-low {
-  transform-origin: 100px 152px;
-  animation: pixie-flutter 0.42s ease-in-out infinite alternate;
-}
-.pixie-wing-low {
-  animation-delay: -0.12s;
-}
-@keyframes pixie-flutter {
-  from {
-    transform: rotate(4deg) scaleX(1);
-  }
-  to {
-    transform: rotate(-7deg) scaleX(0.72);
-  }
-}
-.pixie-happy .pixie-wing-up,
-.pixie-happy .pixie-wing-low {
-  animation-duration: 0.22s;
-}
-.pixie-sad .pixie-wing-up,
-.pixie-sad .pixie-wing-low {
-  animation-duration: 1.4s;
-}
-.pixie-sheen {
-  animation: pixie-sheen 3.6s ease-in-out infinite;
-}
-@keyframes pixie-sheen {
-  0%,
-  100% {
-    opacity: 0.1;
-  }
-  50% {
-    opacity: 0.75;
-  }
-}
-.pixie-eye {
-  animation: pixie-blink 4.6s infinite;
-}
-@keyframes pixie-blink {
-  0%,
-  93%,
-  100% {
-    transform: scaleY(1);
-  }
-  96% {
-    transform: scaleY(0.08);
-  }
-}
 .pixie-glow {
+  background: radial-gradient(closest-side, rgb(255 246 200 / 0.75), rgb(255 246 200 / 0));
   animation: pixie-glow 2.8s ease-in-out infinite;
 }
 @keyframes pixie-glow {
   0%,
   100% {
-    opacity: 0.75;
+    opacity: 0.6;
   }
   50% {
     opacity: 1;
   }
 }
-.pixie-dust circle {
-  animation: pixie-dust 2s ease-in infinite;
+.pixie-lean {
+  transition: transform 0.35s ease-out;
 }
-@keyframes pixie-dust {
-  0% {
-    transform: translateY(-14px);
-    opacity: 0;
-  }
-  30% {
-    opacity: 1;
-  }
+/* hovering: a gentle bob with a soft breath */
+.pixie-art {
+  transform-origin: 50% 100%;
+  animation: pixie-bob 3.2s ease-in-out infinite;
+}
+@keyframes pixie-bob {
+  0%,
   100% {
-    transform: translateY(10px);
-    opacity: 0;
+    transform: translateY(0) scale(1, 1);
+  }
+  50% {
+    transform: translateY(-5%) scale(1.01, 0.99);
+  }
+}
+.pixie-happy .pixie-art {
+  animation: pixie-hop 0.9s ease-in-out infinite;
+}
+@keyframes pixie-hop {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  40% {
+    transform: translateY(-9%) rotate(3deg);
+  }
+}
+.pixie-talk .pixie-art {
+  animation: pixie-chatter 0.5s ease-in-out infinite alternate;
+}
+@keyframes pixie-chatter {
+  from {
+    transform: translateY(0) rotate(-1deg);
+  }
+  to {
+    transform: translateY(-2%) rotate(1.5deg);
+  }
+}
+.pixie-thinking .pixie-art,
+.pixie-shy .pixie-art {
+  animation: pixie-sway 2.6s ease-in-out infinite;
+}
+@keyframes pixie-sway {
+  0%,
+  100% {
+    transform: rotate(-2.5deg);
+  }
+  50% {
+    transform: rotate(2.5deg) translateY(-2%);
+  }
+}
+.pixie-sad .pixie-art {
+  animation: pixie-bob 5s ease-in-out infinite;
+  filter: saturate(0.85);
+}
+.pixie-yawn .pixie-art {
+  animation: pixie-stretch 2.4s ease-in-out infinite;
+}
+@keyframes pixie-stretch {
+  0%,
+  100% {
+    transform: scale(1, 1);
+  }
+  45% {
+    transform: scale(0.98, 1.03);
+  }
+}
+/* asleep on the floor: slow breathing, no hovering */
+.pixie-sleep .pixie-art {
+  animation: pixie-breathe 3.4s ease-in-out infinite;
+}
+@keyframes pixie-breathe {
+  0%,
+  100% {
+    transform: scale(1, 1);
+  }
+  50% {
+    transform: scale(1.01, 1.03);
   }
 }
 .pixie-sparkles path {
@@ -675,70 +678,9 @@ body {
     scale: 1.2;
   }
 }
-.pixie-mouth-talk {
-  transform-origin: 100px 123.5px;
-  animation: pixie-talk 0.28s ease-in-out infinite alternate;
-}
-@keyframes pixie-talk {
-  from {
-    transform: scaleY(0.35);
-  }
-  to {
-    transform: scaleY(1.1);
-  }
-}
-.pixie-mouth-yawn {
-  transform-origin: 100px 124px;
-  animation: pixie-talk 1.2s ease-in-out infinite alternate;
-}
-.pixie-happy .pixie-fly {
-  animation: pixie-hop 0.9s ease-in-out infinite;
-}
-@keyframes pixie-hop {
-  0%,
-  100% {
-    transform: translateY(0);
-  }
-  40% {
-    transform: translateY(-14px) rotate(3deg);
-  }
-}
-.pixie-thinking .pixie-head {
-  transform-origin: 100px 140px;
-  animation: pixie-tilt 3s ease-in-out infinite;
-}
-@keyframes pixie-tilt {
-  0%,
-  100% {
-    transform: rotate(0deg);
-  }
-  50% {
-    transform: rotate(6deg);
-  }
-}
-.pixie-asking .pixie-head {
-  transform-origin: 100px 140px;
-  transform: rotate(-7deg);
-}
 .pixie-thought circle,
 .pixie-q {
   animation: pixie-glow 1.6s ease-in-out infinite;
-}
-.pixie-tear {
-  animation: fairy-tear 1.8s ease-in infinite;
-}
-.pixie-breathe {
-  transform-origin: 130px 154px;
-  animation: pixie-breathe 3.4s ease-in-out infinite;
-}
-@keyframes pixie-breathe {
-  0%,
-  100% {
-    transform: scale(1, 1);
-  }
-  50% {
-    transform: scale(1.012, 1.035);
-  }
 }
 .pixie-z text {
   animation: pixie-z 3s ease-out infinite;
@@ -784,45 +726,5 @@ body {
   }
   100% {
     transform: translate(0, 0) rotate(0deg);
-  }
-}
-/* sleepy or shy, she pulls the big leaf down over her head and peeks out */
-.pixie-leaf {
-  transform-origin: 135px 138px;
-  animation: pixie-leaf-up 0.7s ease-out both;
-}
-.pixie-shy .pixie-leaf {
-  animation: pixie-leaf-shy 0.7s ease-out both;
-}
-@keyframes pixie-leaf-up {
-  from {
-    transform: translateY(30px) rotate(10deg);
-    opacity: 0;
-  }
-  to {
-    transform: translateY(8px);
-    opacity: 1;
-  }
-}
-@keyframes pixie-leaf-shy {
-  from {
-    transform: translateY(-10px) rotate(6deg);
-    opacity: 0;
-  }
-  to {
-    transform: translateY(24px) rotate(7deg);
-    opacity: 1;
-  }
-}
-.pixie-shy .pixie-fly {
-  animation: pixie-sway 2.4s ease-in-out infinite;
-}
-@keyframes pixie-sway {
-  0%,
-  100% {
-    transform: rotate(-2deg);
-  }
-  50% {
-    transform: rotate(2deg) translateY(-3px);
   }
 }
