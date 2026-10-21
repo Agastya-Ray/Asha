@@ -184,7 +184,8 @@ export async function ensureDevice(): Promise<boolean> {
     const r = await call<{ deviceId: string; secret: string }>("register", { role, ...profile(), fcmToken: s.pushToken || undefined });
     if (!r.ok) return false;
     useFamily.setState({ deviceId: r.deviceId, secret: r.secret, role });
-    await pushNativeConfig();
+    // not awaited: the circle request does not need the native config, and a native call that never returns would hold the create button
+    void pushNativeConfig();
     return true;
   }
   if (s.role !== role) {
