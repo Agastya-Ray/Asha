@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, type ReactNode } from "react";
 import { App } from "@capacitor/app";
 import { t, useNow } from "@/components/asha/bits";
 import { FairyScene, type FairyMood } from "@/components/asha/fairy";
@@ -99,7 +99,7 @@ export function FairyDock() {
   const now = useNow();
   const [rested, setRested] = useState(readRest);
   // "Don't want me around?": ask why, react, then say good night and fade away
-  const [bye, setBye] = useState<"" | "ask" | "sad" | "brave" | "yawn" | "gone">("");
+  const [bye, setBye] = useState<"" | "ask" | "sad" | "brave" | "yawn" | "lie" | "gone">("");
   const [awayUntil, setAwayUntil] = useState(readAway);
   // she listens when tapped: what you say goes to the same helper as "Tell Asha"
   const [ear, setEar] = useState<"" | "listening" | "thinking" | "hello" | "missed">("");
@@ -157,11 +157,13 @@ export function FairyDock() {
         say(t(voiceLang, { en: `That's okay${name ? `, ${name}` : ""}. I'm still here to help you, as a tiny friend or to remind you about your medicines.`, hi: `कोई बात नहीं${name ? ` ${name} जी` : ""}. मैं फिर भी आपकी मदद के लिए यहीं हूँ, छोटी सी दोस्त बनकर या दवाइयाँ याद दिलाने के लिए.` }));
       });
       later(6500, () => setBye("yawn"));
+      later(8800, () => setBye("lie"));
     } else {
       setBye("yawn");
+      later(2300, () => setBye("lie"));
       say(t(voiceLang, { en: `Okay, well I wanted to sleep anyway. Good night${name ? `, ${name}` : ""}! See you soon.`, hi: `ठीक है, मुझे वैसे भी नींद आ रही थी. शुभ रात्रि${name ? ` ${name} जी` : ""}! जल्दी मिलेंगे.` }));
     }
-    later(sadFirst ? 11000 : 4500, () => {
+    later(sadFirst ? 12500 : 6000, () => {
       const until = Date.now() + 3 * 60 * 60 * 1000;
       saveAway(until);
       setAwayUntil(until);
@@ -169,6 +171,14 @@ export function FairyDock() {
     });
   };
 
+  // after the yawn she curls up on the floor of the screen, sleeps a moment, then fades away softly
+  if (bye === "lie") {
+    return (
+      <div data-fairy="bye-lie" className="fairy-dock fairy-dock-floor fairy-vanish-soft pointer-events-none fixed right-3 z-30">
+        <FairyScene news={false} mood="sleep" floor size="md" label={t(lang, { en: "Asha is asleep", hi: "आशा सो रही है" })} />
+      </div>
+    );
+  }
   if (bye && bye !== "gone") {
     const line =
       bye === "ask"
@@ -197,9 +207,7 @@ export function FairyDock() {
             </div>
           ) : null}
         </div>
-        <div className={bye === "yawn" ? "fairy-goodnight" : ""}>
-          <FairyScene news={false} mood={face} size="md" label={line} />
-        </div>
+        <FairyScene news={false} mood={face} size="md" label={line} />
       </div>
     );
   }
@@ -301,9 +309,32 @@ export function FairyDock() {
           )}
         </div>
       )}
-      <FairyScene news={news} mood={mood} size={quiet ? "sm" : "md"} floor={kind === "sleep"} label={quiet && bubble ? `${label}: ${bubble}` : label} onTap={onTap} />
+      <Flitter on={kind === "idle" && !ear}>
+        <FairyScene news={news} mood={mood} size={quiet ? "sm" : "md"} floor={kind === "sleep"} label={quiet && bubble ? `${label}: ${bubble}` : label} onTap={onTap} />
+      </Flitter>
     </div>
   );
+}
+
+/** With nothing to do, every half minute or so she takes off and flies a loop around the screen, then settles back. */
+function Flitter({ on, children }: { on: boolean; children: ReactNode }) {
+  const [flying, setFlying] = useState(false);
+  useEffect(() => {
+    if (!on) return setFlying(false);
+    let t = 0;
+    const next = () => {
+      t = window.setTimeout(() => {
+        setFlying(true);
+        t = window.setTimeout(() => {
+          setFlying(false);
+          next();
+        }, 6000);
+      }, 20000 + Math.random() * 15000);
+    };
+    next();
+    return () => window.clearTimeout(t);
+  }, [on]);
+  return <div className={flying ? "fairy-flit" : undefined}>{children}</div>;
 }
 
 const GO_AWAY = /\b(go away|leave me|bye|go to sleep|not now|stop)\b|चली जाओ|जाओ|बाय|सो जाओ|अभी नहीं/i;

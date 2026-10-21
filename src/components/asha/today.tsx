@@ -121,8 +121,8 @@ export function TodayScreen() {
         <p className="mt-4 text-base text-quiet">
           <span className="font-bold text-clay">{t(lang, { en: "Sample. ", hi: "नमूना. " })}</span>
           {t(lang, {
-            en: "Practice data for Meena, not a real prescription. Erase it in Settings before you use her real list.",
-            hi: "मीना का अभ्यास है, असली पर्ची नहीं. असली सूची से पहले सेटिंग में मिटा दें.",
+            en: "Practice medicines, not a real prescription. Erase them in Settings before you add your real list.",
+            hi: "ये अभ्यास की दवाइयाँ हैं, असली पर्ची नहीं. असली सूची से पहले सेटिंग में मिटा दें.",
           })}
         </p>
       ) : null}

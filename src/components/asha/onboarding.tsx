@@ -54,7 +54,7 @@ export function Onboarding() {
           </div>
           <div className="mt-6">
             <FieldLabel>{t(lang, { en: "What should Asha call you?", hi: "आशा आपको क्या कहे?" })}</FieldLabel>
-            <SpeakField value={name} onChange={setName} placeholder={t(lang, { en: "Meena", hi: "मीना" })} autoComplete="given-name" />
+            <SpeakField value={name} onChange={setName} placeholder={t(lang, { en: "Your first name", hi: "आपका पहला नाम" })} autoComplete="given-name" />
             <p className="mt-2 text-base text-quiet">
               {t(lang, {
                 en: "A first name is enough. She will use it when she speaks.",

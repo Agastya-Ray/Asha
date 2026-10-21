@@ -2,117 +2,14 @@ import { useEffect, useRef, useState } from "react";
 import { cn } from "@/lib/cn";
 import { useNow } from "@/components/asha/bits";
 import { useSpeech } from "@/lib/asha/voice";
-import type { FairyStage } from "@/components/asha/fairy3d";
+import { Pixie, type PixieMood } from "@/components/asha/pixie";
 
 /**
- * Asha's fairy (original character): a small fairy in a sage dress with leaf-shaped wings,
- * and her mischievous pet "Chintu" — a fluffy round puff with floppy ears and a firefly tail.
- * Everything is drawn here in SVG, so there are no pictures to download.
+ * Asha's fairy (the pixie, drawn in pixie.tsx) and her mischievous pet "Chintu" —
+ * a fluffy round puff with floppy ears and a firefly tail.
  */
 
-export type FairyMood = "idle" | "happy" | "sleep" | "talk" | "sad" | "yawn" | "thinking" | "asking";
-
-export function Fairy({ mood = "idle", className, look }: { mood?: FairyMood; className?: string; look?: { x: number; y: number } }) {
-  const eyesClosed = mood === "sleep" || mood === "yawn";
-  return (
-    <svg viewBox="0 0 120 140" className={cn("fairy", `fairy-${mood}`, className)} role="img" aria-label="Asha the fairy">
-      <defs>
-        <radialGradient id="fg-glow" cx="50%" cy="50%" r="50%">
-          <stop offset="0%" stopColor="#fff6c9" stopOpacity="0.9" />
-          <stop offset="100%" stopColor="#fff6c9" stopOpacity="0" />
-        </radialGradient>
-        <linearGradient id="fg-wing" x1="0" y1="0" x2="1" y2="1">
-          <stop offset="0%" stopColor="#e6f6ec" stopOpacity="0.95" />
-          <stop offset="100%" stopColor="#9fd3b4" stopOpacity="0.75" />
-        </linearGradient>
-        <linearGradient id="fg-dress" x1="0" y1="0" x2="0" y2="1">
-          <stop offset="0%" stopColor="#2f8a5c" />
-          <stop offset="100%" stopColor="#1d6b45" />
-        </linearGradient>
-      </defs>
-      <circle className="fairy-halo" cx="60" cy="70" r="56" fill="url(#fg-glow)" />
-      {/* wings: two leaf shapes on each side */}
-      <g className="fairy-wings">
-        <g className="wing wing-l">
-          <path d="M52 66 C 26 40, 8 52, 14 72 C 20 88, 40 84, 52 72 Z" fill="url(#fg-wing)" stroke="#7bbf98" strokeWidth="1.2" />
-          <path d="M50 76 C 32 84, 22 100, 32 106 C 42 110, 50 96, 52 80 Z" fill="url(#fg-wing)" stroke="#7bbf98" strokeWidth="1.2" />
-          <path d="M50 70 Q 30 62 18 70" stroke="#7bbf98" strokeWidth="1" fill="none" />
-        </g>
-        <g className="wing wing-r">
-          <path d="M68 66 C 94 40, 112 52, 106 72 C 100 88, 80 84, 68 72 Z" fill="url(#fg-wing)" stroke="#7bbf98" strokeWidth="1.2" />
-          <path d="M70 76 C 88 84, 98 100, 88 106 C 78 110, 70 96, 68 80 Z" fill="url(#fg-wing)" stroke="#7bbf98" strokeWidth="1.2" />
-          <path d="M70 70 Q 90 62 102 70" stroke="#7bbf98" strokeWidth="1" fill="none" />
-        </g>
-      </g>
-      <g className="fairy-body">
-        {/* dress */}
-        <path d="M60 70 C 50 72, 44 96, 40 112 C 52 118, 68 118, 80 112 C 76 96, 70 72, 60 70 Z" fill="url(#fg-dress)" />
-        <path d="M42 108 Q 50 114 60 112 Q 70 114 78 108" stroke="#e4f2ea" strokeWidth="1.5" fill="none" strokeDasharray="2 3" />
-        {/* arms */}
-        <path className="fairy-arm-l" d="M53 78 Q 44 88 46 96" stroke="#c98f6b" strokeWidth="4" strokeLinecap="round" fill="none" />
-        <path className="fairy-arm-r" d="M67 78 Q 78 84 84 78" stroke="#c98f6b" strokeWidth="4" strokeLinecap="round" fill="none" />
-        {/* wand */}
-        <g className="fairy-wand">
-          <path d="M84 78 L 92 64" stroke="#a37a3a" strokeWidth="2" strokeLinecap="round" />
-          <path d="M92 56 l2.4 5 5.4.6 -4 3.6 1.2 5.3 -5-2.8 -5 2.8 1.2-5.3 -4-3.6 5.4-.6z" fill="#f4c64e" />
-        </g>
-        {/* legs */}
-        <path d="M54 114 L 52 124 M66 114 L 68 124" stroke="#c98f6b" strokeWidth="3.4" strokeLinecap="round" />
-        <ellipse cx="51" cy="126" rx="4" ry="2.4" fill="#a34b24" />
-        <ellipse cx="69" cy="126" rx="4" ry="2.4" fill="#a34b24" />
-        {/* head */}
-        <circle cx="60" cy="50" r="20" fill="#d9a07c" />
-        {/* hair */}
-        <path d="M40 50 C 38 30, 54 24, 62 26 C 76 26, 84 38, 80 52 C 76 42, 70 38, 60 38 C 50 38, 44 44, 40 50 Z" fill="#3a2418" />
-        <circle cx="60" cy="25" r="8" fill="#3a2418" />
-        <path d="M66 20 C 74 12, 84 16, 80 24 C 76 26, 70 24, 66 20 Z" fill="#6aa57f" />
-        {/* face */}
-        {eyesClosed ? (
-          <g stroke="#2a1a12" strokeWidth="2" strokeLinecap="round" fill="none">
-            <path d="M49 52 q4 3 8 0" />
-            <path d="M63 52 q4 3 8 0" />
-          </g>
-        ) : (
-          <g className="fairy-eyes" style={look ? { transform: `translate(${look.x * 2.4}px, ${look.y * 2}px)`, transition: "transform 0.25s ease-out" } : undefined}>
-            <ellipse cx="53" cy="51" rx="3.2" ry="4" fill="#2a1a12" />
-            <ellipse cx="67" cy="51" rx="3.2" ry="4" fill="#2a1a12" />
-            <circle cx="54.2" cy="49.6" r="1.2" fill="#fff" />
-            <circle cx="68.2" cy="49.6" r="1.2" fill="#fff" />
-          </g>
-        )}
-        <circle cx="47" cy="57" r="3.4" fill="#f08a8a" opacity="0.55" />
-        <circle cx="73" cy="57" r="3.4" fill="#f08a8a" opacity="0.55" />
-        {mood === "sad" ? (
-          <path d="M54 63 Q 60 58 66 63" stroke="#8a3b2b" strokeWidth="2" strokeLinecap="round" fill="none" />
-        ) : mood === "yawn" ? (
-          <ellipse className="fairy-mouth-yawn" cx="60" cy="62" rx="3.6" ry="4.6" fill="#8a3b2b" />
-        ) : mood === "talk" ? (
-          <ellipse className="fairy-mouth-talk" cx="60" cy="61" rx="3.4" ry="2.6" fill="#8a3b2b" />
-        ) : mood === "happy" ? (
-          <path d="M54 59 Q 60 66 66 59 Z" fill="#8a3b2b" />
-        ) : (
-          <path d="M55 60 Q 60 64 65 60" stroke="#8a3b2b" strokeWidth="2" strokeLinecap="round" fill="none" />
-        )}
-        <circle cx="60" cy="44" r="1.6" fill="#a34b24" />
-      </g>
-      {mood === "sad" ? <circle className="fairy-tear" cx="50" cy="58" r="1.8" fill="#8cc4e8" /> : null}
-      {mood === "sleep" ? (
-        <g className="fairy-z" fill="#5c564c" fontFamily="Fraunces, serif" fontWeight="700">
-          <text x="84" y="34" fontSize="12">z</text>
-          <text x="92" y="24" fontSize="9">z</text>
-        </g>
-      ) : null}
-      {mood === "happy" ? (
-        <g className="fairy-sparkles" fill="#f4c64e">
-          <circle cx="18" cy="30" r="2.4" />
-          <circle cx="104" cy="28" r="2" />
-          <circle cx="12" cy="96" r="1.8" />
-          <circle cx="108" cy="100" r="2.2" />
-        </g>
-      ) : null}
-    </svg>
-  );
-}
+export type FairyMood = PixieMood;
 
 export type PetMode = "hidden" | "peek" | "tumble" | "envelope";
 
@@ -189,40 +86,16 @@ export function FairyScene({
   // while Asha is speaking, the fairy talks; otherwise good news makes her happy and late night makes her sleep
   const autoMood: FairyMood = speaking && mood !== "sleep" ? "talk" : mood ?? (news ? "happy" : hour >= 22 || hour < 6 ? "sleep" : "idle");
 
-  // the 3D fairy (three.js, loaded only when a fairy is on screen); the flat drawing stays as a fallback
   const me = useRef<HTMLButtonElement>(null);
-  const canvas = useRef<HTMLCanvasElement>(null);
-  const stage = useRef<FairyStage | null>(null);
-  const [three, setThree] = useState<"loading" | "on" | "off">("loading");
   const [look, setLook] = useState<{ x: number; y: number } | undefined>();
-  useEffect(() => {
-    let dead = false;
-    void import("@/components/asha/fairy3d")
-      .then((m) => {
-        if (dead || !canvas.current) return;
-        if (!m.webglOk()) return setThree("off");
-        stage.current = new m.FairyStage(canvas.current);
-        setThree("on");
-      })
-      .catch(() => setThree("off"));
-    return () => {
-      dead = true;
-      stage.current?.dispose();
-      stage.current = null;
-    };
-  }, []);
-  useEffect(() => {
-    if (stage.current) stage.current.rig.mood = autoMood;
-  }, [autoMood, three]);
   // she looks at whatever was just tapped, then back at you after a moment
   useEffect(() => {
     let back = 0;
     const onDown = (e: PointerEvent) => {
-      if (stage.current) return stage.current.lookAtClient(e.clientX, e.clientY);
       const r = me.current?.getBoundingClientRect();
       if (!r) return;
       const dx = e.clientX - (r.left + r.width / 2);
-      const dy = e.clientY - (r.top + r.height / 2);
+      const dy = e.clientY - (r.top + r.height * 0.3);
       const d = Math.hypot(dx, dy) || 1;
       setLook({ x: dx / d, y: dy / d });
       window.clearTimeout(back);
@@ -245,13 +118,8 @@ export function FairyScene({
       data-mood={autoMood}
       className={cn("fairy-scene relative shrink-0 select-none", asleepOnFloor ? (size === "sm" ? "h-20 w-36" : "h-24 w-44") : dims)}
     >
-      <canvas ref={canvas} className={cn("absolute inset-0 h-full w-full", three === "on" ? "" : "invisible")} />
-      {three === "off" ? <Fairy mood={toFlat(autoMood)} look={look} className="absolute inset-0 h-full w-full" /> : null}
+      <Pixie mood={autoMood} look={look} className="absolute inset-0 h-full w-full overflow-visible" />
       <Pet mode={pet} className={cn("absolute bottom-0", size === "lg" ? "-right-6 h-20 w-20" : size === "sm" ? "-right-3 h-10 w-10" : "-right-4 h-14 w-14")} />
     </button>
   );
-}
-
-function toFlat(m: FairyMood): FairyMood {
-  return m === "thinking" || m === "asking" ? "idle" : m;
 }
