@@ -75,6 +75,12 @@ for b in walk(data):
     if 150 <= (y1+y2)//2 <= 1700: print((a+c)//2,(y1+y2)//2); break
 ' "$1" "$OUT/hierarchy-now.json"
 }
+# centre_webview, retried for a few seconds while the page settles
+find_webview() {
+  local xy=""
+  for i in 1 2 3 4; do xy=$(center_webview "$1"); [ -n "$xy" ] && break; sleep 2; done
+  echo "$xy"
+}
 setclock() { adb shell "date $1" >/dev/null; log "clock set to $(adb shell date)"; }
 
 adb root >/dev/null 2>&1; sleep 3; adb wait-for-device
@@ -155,18 +161,18 @@ if [ -z "$xy" ]; then log "Settings not found in the dump; using the header gear
 adb shell input tap $xy; sleep 3; shot 39a-settings-opened
 adb shell input swipe 540 1500 540 900 400; sleep 2
 adb exec-out cat /sdcard/ui.xml > "$OUT/settings-ui.xml"
-xy=$(center_webview "^हिन्दी$")
+xy=$(find_webview "^हिन्दी$")
 if [ -n "$xy" ]; then adb shell input tap $xy; log "tapped Hindi at $xy"; sleep 3; else FAILED=1; log "no Hindi switch on screen"; fi
 shot 39b-settings-after-hindi
 adb shell input swipe 540 1500 540 900 400; sleep 2
-xy=$(center_webview "^A\\+\\+$")
+xy=$(find_webview "^A\\+\\+$")
 if [ -n "$xy" ]; then adb shell input tap $xy; log "tapped the largest text size at $xy"; sleep 3; else FAILED=1; log "no largest text button on screen"; fi
 shot 40-settings-hindi-largest-text
 adb shell input keyevent KEYCODE_BACK; sleep 3
 shot 41-today-hindi-largest-text
 # Meds and Care in Hindi, tapped from the bottom nav by position
-xy=$(center_webview "^दवा$"); [ -n "$xy" ] && { adb shell input tap $xy; sleep 3; shot 43-meds-hindi-largest-text; } || { FAILED=1; log "no Hindi Meds tab"; }
-xy=$(center_webview "^देखभाल$"); [ -n "$xy" ] && { adb shell input tap $xy; sleep 3; shot 44-care-hindi-largest-text; } || { FAILED=1; log "no Hindi Care tab"; }
+xy=$(find_webview "^दवा$"); [ -n "$xy" ] && { adb shell input tap $xy; sleep 3; shot 43-meds-hindi-largest-text; } || { FAILED=1; log "no Hindi Meds tab"; }
+xy=$(find_webview "^देखभाल$"); [ -n "$xy" ] && { adb shell input tap $xy; sleep 3; shot 44-care-hindi-largest-text; } || { FAILED=1; log "no Hindi Care tab"; }
 adb emu geo fix 77.2090 28.6139 >/dev/null 2>&1
 xy=$(center "Hold for help|SOS")
 if [ -n "$xy" ]; then adb shell input swipe $xy $xy 2600; log "held SOS at $xy"; fi
