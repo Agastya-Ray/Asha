@@ -210,10 +210,13 @@ export const useAsha = create<State>((set) => ({
         if (a.action !== "taken") continue;
         if (kind === "med" && id && time) {
           const had = doseLogs.find((l) => l.day === day && l.medId === id && l.time === time);
-          doseLogs = [...doseLogs.filter((l) => !(l.day === day && l.medId === id && l.time === time)), { medId: id, time, day, status: "taken" }];
+          let counted = had?.status === "taken" ? had.counted : false;
           if (had?.status !== "taken") {
-            meds = meds.map((m) => (m.id === id && m.pillsLeft !== null ? { ...m, pillsLeft: Math.max(0, m.pillsLeft - 1) } : m));
+            const med = meds.find((m) => m.id === id);
+            counted = !!med && med.pillsLeft !== null && med.pillsLeft > 0;
+            if (counted) meds = meds.map((m) => (m.id === id && m.pillsLeft !== null ? { ...m, pillsLeft: m.pillsLeft - 1 } : m));
           }
+          doseLogs = [...doseLogs.filter((l) => !(l.day === day && l.medId === id && l.time === time)), { medId: id, time, day, status: "taken", counted }];
         } else if (kind === "meal" && id && !mealLogs.some((l) => l.day === day && l.mealId === id)) {
           mealLogs = [...mealLogs, { mealId: id, day }];
         }
@@ -261,16 +264,17 @@ export const useAsha = create<State>((set) => ({
     set((s) => {
       const day = todayKey();
       const prev = s.doseLogs.find((l) => l.day === day && l.medId === medId && l.time === time);
+      let meds = s.meds;
+      let counted = status === "taken" && prev?.status === "taken" ? prev.counted : false;
+      if (status === "taken" && prev?.status !== "taken") {
+        const med = s.meds.find((m) => m.id === medId);
+        counted = !!med && med.pillsLeft !== null && med.pillsLeft > 0;
+        if (counted) meds = s.meds.map((m) => (m.id === medId && m.pillsLeft !== null ? { ...m, pillsLeft: m.pillsLeft - 1 } : m));
+      }
       const doseLogs = [
         ...s.doseLogs.filter((l) => !(l.day === day && l.medId === medId && l.time === time)),
-        { medId, time, day, status },
+        { medId, time, day, status, counted },
       ];
-      let meds = s.meds;
-      if (status === "taken" && prev?.status !== "taken") {
-        meds = s.meds.map((m) =>
-          m.id === medId && m.pillsLeft !== null ? { ...m, pillsLeft: Math.max(0, m.pillsLeft - 1) } : m,
-        );
-      }
       return { doseLogs, meds };
     }),
   undoDose: (medId, time) =>
@@ -279,7 +283,8 @@ export const useAsha = create<State>((set) => ({
       const prev = s.doseLogs.find((l) => l.day === day && l.medId === medId && l.time === time);
       const doseLogs = s.doseLogs.filter((l) => !(l.day === day && l.medId === medId && l.time === time));
       let meds = s.meds;
-      if (prev?.status === "taken") {
+      // older logs have no "counted" mark: keep the old behaviour for them
+      if (prev?.status === "taken" && prev.counted !== false) {
         meds = s.meds.map((m) => (m.id === medId && m.pillsLeft !== null ? { ...m, pillsLeft: m.pillsLeft + 1 } : m));
       }
       return { doseLogs, meds };

@@ -40,6 +40,8 @@ export type DoseLog = {
   time: string;
   day: string;
   status: "taken" | "skipped";
+  /** a pill was taken off "tablets left" for this dose (not when the count was already 0), so Undo puts back only that one */
+  counted?: boolean;
 };
 
 export type MealLog = {
