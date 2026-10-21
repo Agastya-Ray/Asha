@@ -151,8 +151,18 @@ flow 03_tabs.yaml
 flow 04_family.yaml
 flow 05_prescription.yaml
 
-# --- Help: hold the red SOS button for 2.5 s ---
+# --- Help: hold the red SOS button for 2.5 s, while the flow has left the app on Help ---
 flow 06_help.yaml
+adb emu geo fix 77.2090 28.6139 >/dev/null 2>&1
+xy=$(center "Hold for help|SOS")
+if [ -n "$xy" ]; then adb shell input swipe $xy $xy 2600; log "held SOS at $xy"; else FAILED=1; log "no SOS hold button on the Help screen"; fi
+sleep 3; shot 71-help-after-hold
+xy=$(center "Allow|While using the app|Only this time"); [ -n "$xy" ] && { shot 72-help-location-prompt; adb shell input tap $xy; sleep 8; }
+shot 73-help-after-location
+sleep 5; shot 74-help-call
+adb shell input keyevent KEYCODE_ENDCALL; adb shell input keyevent KEYCODE_BACK; sleep 2
+shot 75-back-in-asha
+
 # --- Hindi and the largest text, tapped by screen position (Maestro's text bounds sat under the bottom nav) ---
 # the Help flow leaves the app on Help, so relaunch to reach the Today header and its Settings button
 adb shell am force-stop $PKG; adb shell monkey -p $PKG -c android.intent.category.LAUNCHER 1 >/dev/null 2>&1; sleep 15
@@ -173,16 +183,6 @@ shot 41-today-hindi-largest-text
 # Meds and Care in Hindi, tapped from the bottom nav by position
 xy=$(find_webview "^दवा$"); [ -n "$xy" ] && { adb shell input tap $xy; sleep 3; shot 43-meds-hindi-largest-text; } || { FAILED=1; log "no Hindi Meds tab"; }
 xy=$(find_webview "^देखभाल$"); [ -n "$xy" ] && { adb shell input tap $xy; sleep 3; shot 44-care-hindi-largest-text; } || { FAILED=1; log "no Hindi Care tab"; }
-adb emu geo fix 77.2090 28.6139 >/dev/null 2>&1
-xy=$(center "Hold for help|SOS")
-if [ -n "$xy" ]; then adb shell input swipe $xy $xy 2600; log "held SOS at $xy"; fi
-sleep 3; shot 71-help-after-hold
-xy=$(center "Allow|While using the app|Only this time"); [ -n "$xy" ] && { shot 72-help-location-prompt; adb shell input tap $xy; sleep 8; }
-shot 73-help-after-location
-sleep 5; shot 74-help-call
-adb shell input keyevent KEYCODE_ENDCALL; adb shell input keyevent KEYCODE_BACK; sleep 2
-shot 75-back-in-asha
-
 adb logcat -d > "$OUT/logcat-full.txt"
 # the app logs its family-circle config, including a secret; keep it out of the published results
 sed -i -E 's/"secret":"[^"]*"/"secret":"REDACTED"/g; s/"x-device-secret":"[^"]*"/"x-device-secret":"REDACTED"/g' "$OUT/logcat-full.txt"
