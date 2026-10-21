@@ -99,12 +99,22 @@ adb logcat -c
 
 # a prescription photo in the gallery for the photo-reading test
 if command -v convert >/dev/null; then
-  # larger type, a slight blur and grain so it looks like a phone photo of a paper slip
-  convert -size 900x1200 xc:white -font DejaVu-Sans -pointsize 46 -fill black \
-    -annotate +60+120 "Dr. R. Sharma, MBBS, MD" -annotate +60+180 "Patient: Kamla Devi   Age 68" \
-    -annotate +60+300 "Rx" -annotate +60+380 "1. Tab Metformin 500 mg   1-0-1   after food" \
-    -annotate +60+460 "2. Tab Amlodipine 5 mg   OD   morning" -annotate +60+540 "3. Tab Paracetamol 650 mg   SOS for pain" \
-    -annotate +60+640 "x 30 days" -annotate +60+1000 "Sign: R. Sharma" -blur 0x0.6 -attenuate 0.2 +noise Gaussian /tmp/rx.jpg
+  # a printed-style slip on a wide canvas, so every line fits, then a slight tilt and grain like a phone photo
+  convert -size 1200x1500 xc:'#f7f4ea' -font DejaVu-Sans -fill '#1b2a4a' \
+    -pointsize 44 -annotate +60+120 "Sharma Clinic, Sector 14" \
+    -pointsize 30 -annotate +60+180 "Dr. R. Sharma, MBBS, MD  |  Reg. 45821" \
+    -annotate +60+230 "Date: 20/10/2026" \
+    -stroke '#1b2a4a' -strokewidth 3 -draw "line 60,270 1140,270" -stroke none \
+    -pointsize 34 -annotate +60+340 "Patient: Kamla Devi    Age: 68    Wt: 62 kg" \
+    -pointsize 52 -annotate +60+450 "Rx" \
+    -pointsize 36 -annotate +60+560 "1. Tab Metformin 500 mg    1-0-1    after food" \
+    -annotate +60+640 "2. Tab Amlodipine 5 mg    1-0-0    morning" \
+    -annotate +60+720 "3. Tab Paracetamol 650 mg    SOS for pain" \
+    -annotate +60+800 "4. Tab Atorvastatin 10 mg    0-0-1    at night" \
+    -annotate +60+900 "Review after 30 days. Check sugar fasting." \
+    -annotate +60+1200 "Signature: R. Sharma" \
+    -rotate 1.5 -background '#e4dfd0' -gravity center -extent 1300x1600 \
+    -blur 0x0.5 -attenuate 0.15 +noise Gaussian -quality 88 /tmp/rx.jpg
   adb push /tmp/rx.jpg /sdcard/Pictures/prescription.jpg >/dev/null
   adb shell am broadcast -a android.intent.action.MEDIA_SCANNER_SCAN_FILE -d file:///sdcard/Pictures/prescription.jpg >/dev/null
 fi
