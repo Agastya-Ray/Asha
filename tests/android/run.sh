@@ -303,7 +303,7 @@ adb shell svc wifi enable; adb shell svc data enable; log "stress: phone online 
 
 # 7. rapid taps: 15 quick taps on the fairy in the app, then on the floating fairy over the home screen
 relaunch
-xy=$(find_webview "^(Chintu|Hear the reminder|Tell Asha how you feel|Talk to the fairy|Talk to family|Hear family messages|Well done|याद दिलाना सुनें|आशा को बताएँ आप कैसी हैं|परी से बात करें|परिवार से बात करें|परिवार के संदेश सुनें|शाबाश)$")
+xy=$(find_webview "^(Chintu$|Hear the reminder|Tell Asha how you feel|Talk to the fairy|Talk to family|Hear family messages|Well done|याद दिलाना सुनें|आशा को बताएँ आप कैसी हैं|परी से बात करें|परिवार से बात करें|परिवार के संदेश सुनें|शाबाश)")
 if [ -n "$xy" ]; then for i in $(seq 15); do adb shell input tap $xy; done; sleep 3; shot s7a-after-rapid-taps-app; log "stress 7: tapped the fairy 15 times at $xy"
 else log "stress 7: fairy not found in the app (she may be away)"; shot s7a-no-fairy; fi
 alive 7a-rapid-taps-app

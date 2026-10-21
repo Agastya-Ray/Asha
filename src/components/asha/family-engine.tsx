@@ -105,7 +105,7 @@ export function FairyDock() {
   const [bye, setBye] = useState<"" | "ask" | "sad" | "brave" | "yawn" | "lie" | "gone">("");
   const [awayUntil, setAwayUntil] = useState(readAway);
   // she listens when tapped: what you say goes to the same helper as "Tell Asha"
-  const [ear, setEar] = useState<"" | "listening" | "thinking" | "hello" | "shy" | "blush" | "wake" | "missed">("");
+  const [ear, setEar] = useState<"" | "listening" | "thinking" | "hello" | "shy" | "blush" | "wake" | "missed" | "nomic">("");
   const unread = unreadOf({ messages, heardLocal });
   const say = (text: string) => void speak(text, voiceLang, rich ? "warm" : "device");
 
@@ -154,8 +154,9 @@ export function FairyDock() {
     const r = await listenOnce(voiceLang);
     const said = r.text.trim();
     if (!said) {
-      setEar("missed");
-      later(2500, () => setEar(""));
+      // with the microphone refused she says so, instead of asking to hear it again
+      setEar(r.problem === "denied" ? "nomic" : "missed");
+      later(r.problem === "denied" ? 5000 : 2500, () => setEar(""));
       return;
     }
     if (GO_AWAY.test(said)) {
@@ -334,6 +335,8 @@ export function FairyDock() {
           ? t(lang, { en: "Hmm, let me see…", hi: "हम्म, देखती हूँ…" })
           : ear === "missed"
             ? t(lang, { en: "I didn't catch that. Tap me and say it again?", hi: "सुनाई नहीं दिया. मुझे छूकर फिर बोलें?" })
+            : ear === "nomic"
+              ? t(lang, { en: "I can't hear you. Please allow the microphone for Asha in phone settings.", hi: "मुझे सुनाई नहीं देता. फ़ोन सेटिंग में आशा को माइक की अनुमति दें." })
             : ear === "shy"
               ? t(lang, { en: "Oh! Hi… hee hee.", hi: "अरे! नमस्ते… ही ही." })
               : ear === "blush"
@@ -341,7 +344,7 @@ export function FairyDock() {
                 : ear === "wake"
                   ? t(lang, { en: "*rubs eyes* Hmm? I'm up!", hi: "*आँखें मलती है* हम्म? जाग गई!" })
               : t(lang, { en: "Hello! I'm right here.", hi: "नमस्ते! मैं यहीं हूँ." });
-    mood = ear === "listening" ? "asking" : ear === "thinking" ? "thinking" : ear === "missed" ? "sad" : ear === "shy" ? "shy" : ear === "blush" ? "blush" : ear === "wake" ? "wakeup" : "wave";
+    mood = ear === "listening" ? "asking" : ear === "thinking" ? "thinking" : ear === "missed" || ear === "nomic" ? "sad" : ear === "shy" ? "shy" : ear === "blush" ? "blush" : ear === "wake" ? "wakeup" : "wave";
   }
 
   // on Today the reminder card already says it, so she stays small and quiet there and does not cover it;
