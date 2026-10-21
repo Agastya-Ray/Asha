@@ -141,6 +141,17 @@ export function FairyDock() {
         say(checkinQuestion(voiceLang, name));
         setTab("care");
       };
+    } else if (n.kind === "comfort" && rested !== restKey) {
+      kind = "comfort";
+      bubble = nudgeBubble(n, lang);
+      mood = "idle";
+      label = t(lang, { en: "Talk to family", hi: "परिवार से बात करें" });
+      onTap = () => {
+        say(bubble);
+        saveRest(restKey);
+        setRested(restKey);
+        setTab("family");
+      };
     } else if (n.kind === "cheer" && rested !== restKey) {
       kind = "cheer";
       bubble = nudgeBubble(n, lang);

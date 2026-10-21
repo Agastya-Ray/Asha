@@ -4,11 +4,12 @@ import { minutesNow, todayKey, toMin } from "@/lib/asha/time";
 /**
  * What the fairy on the elder's phone is doing right now, most important first:
  * a family note to deliver, a medicine or meal that is due or missed, a daily "how are you?",
- * a little cheer once every dose of the day is marked, or nothing (asleep at night).
+ * comfort after a low mood, a little cheer once every dose so far is marked, or nothing (asleep at night).
  */
 export type Nudge =
   | { kind: "due"; item: AgendaItem; late: boolean }
   | { kind: "checkin" }
+  | { kind: "comfort" }
   | { kind: "cheer" }
   | { kind: "none" };
 
@@ -34,6 +35,8 @@ export function companionNudge(
   // check in once a day, from two hours after waking
   const today = checkins.find((c) => c.day === todayKey(now));
   if (!today?.mood && minutesNow(now) >= toMin(wakeTime || "07:00") + 120) return { kind: "checkin" };
+  // a low mood today: she stays close and offers to reach family
+  if (today?.mood && today.mood <= 2) return { kind: "comfort" };
   const meds = agenda.filter((i) => i.kind === "med");
   if (meds.length && meds.every((i) => i.state === "taken" || i.state === "skipped" || i.state === "later") && meds.some((i) => i.state === "taken")) {
     return { kind: "cheer" };
@@ -49,6 +52,7 @@ export function nudgeBubble(n: Nudge, lang: Lang): string {
     return n.late ? (hi ? `${what} हो गया? मुझे छुएँ` : `Had your ${what.toLowerCase()}? Tap me`) : hi ? `${what} का समय! मुझे छुएँ` : `${what} time! Tap me`;
   }
   if (n.kind === "checkin") return hi ? "आज आप कैसा महसूस कर रही हैं?" : "How are you feeling today?";
+  if (n.kind === "comfort") return hi ? "मैं यहीं हूँ. परिवार को संदेश भेजें?" : "I'm here with you. Send family a note?";
   if (n.kind === "cheer") return hi ? "शाबाश! अब तक की सब दवाइयाँ ले लीं" : "Well done! All doses so far taken";
   return "";
 }
