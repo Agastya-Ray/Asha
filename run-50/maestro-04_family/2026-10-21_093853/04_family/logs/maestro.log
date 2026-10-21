@@ -1,0 +1,160 @@
+09:38:59.970 [ INFO] maestro.cli.runner.MaestroCommandRunner.runCommands$lambda$0: Define variables RUNNING
+09:38:59.977 [ INFO] maestro.cli.runner.MaestroCommandRunner.runCommands$lambda$11: Define variables metadata CommandMetadata(numberOfRuns=null, evaluatedCommand=MaestroCommand(defineVariablesCommand=DefineVariablesCommand(env={MAESTRO_FILENAME=04_family, MAESTRO_DEVICE_UDID=emulator-5554, MAESTRO_SHARD_ID=1, MAESTRO_SHARD_INDEX=0}, label=null, optional=false)), logMessages=[], insight=Insight(message=, level=NONE), aiReasoning=null, labeledCommand=null)
+09:38:59.979 [ INFO] maestro.cli.runner.MaestroCommandRunner.runCommands$lambda$2: Define variables COMPLETED
+09:38:59.980 [ INFO] maestro.cli.runner.MaestroCommandRunner.runCommands$lambda$0: Apply configuration RUNNING
+09:38:59.982 [ INFO] maestro.cli.runner.MaestroCommandRunner.runCommands$lambda$11: Apply configuration metadata CommandMetadata(numberOfRuns=null, evaluatedCommand=MaestroCommand(applyConfigurationCommand=ApplyConfigurationCommand(config=MaestroConfig(appId=com.agastyaray.asha, name=null, tags=[], ext={}, onFlowStart=null, onFlowComplete=null, properties={}), label=null, optional=false)), logMessages=[], insight=Insight(message=, level=NONE), aiReasoning=null, labeledCommand=null)
+09:38:59.982 [ INFO] maestro.cli.runner.MaestroCommandRunner.runCommands$lambda$2: Apply configuration COMPLETED
+09:38:59.983 [ INFO] maestro.cli.runner.MaestroCommandRunner.runCommands$lambda$0: Launch app "com.agastyaray.asha" RUNNING
+09:38:59.986 [ INFO] maestro.cli.runner.MaestroCommandRunner.runCommands$lambda$11: Launch app "com.agastyaray.asha" metadata CommandMetadata(numberOfRuns=null, evaluatedCommand=MaestroCommand(launchAppCommand=LaunchAppCommand(appId=com.agastyaray.asha, clearState=null, clearKeychain=null, stopApp=null, permissions=null, launchArguments=null, label=null, optional=false)), logMessages=[], insight=Insight(message=, level=NONE), aiReasoning=null, labeledCommand=null)
+09:39:00.437 [ INFO] maestro.Maestro.launchApp$lambda$5: Launching app com.agastyaray.asha
+09:39:00.438 [ INFO] maestro.Maestro.launchApp$lambda$5: Stopping com.agastyaray.asha app during launch
+09:39:01.121 [ INFO] maestro.cli.runner.MaestroCommandRunner.runCommands$lambda$2: Launch app "com.agastyaray.asha" COMPLETED
+09:39:01.122 [ INFO] maestro.cli.runner.MaestroCommandRunner.runCommands$lambda$0: Assert that "Good morning.*" is visible RUNNING
+09:39:01.141 [ INFO] maestro.cli.runner.MaestroCommandRunner.runCommands$lambda$11: Assert that "Good morning.*" is visible metadata CommandMetadata(numberOfRuns=null, evaluatedCommand=MaestroCommand(assertConditionCommand=AssertConditionCommand(condition=Condition(platform=null, visible=ElementSelector(textRegex=Good morning.*, idRegex=null, size=null, below=null, above=null, leftOf=null, rightOf=null, containsChild=null, containsDescendants=null, traits=null, index=null, enabled=null, optional=false, selected=null, checked=null, focused=null, childOf=null, css=null), notVisible=null, scriptCondition=null, label=null), timeout=30000, label=null, optional=false)), logMessages=[], insight=Insight(message=, level=NONE), aiReasoning=null, labeledCommand=null)
+09:39:05.720 [ INFO] maestro.cli.runner.MaestroCommandRunner.runCommands$lambda$2: Assert that "Good morning.*" is visible COMPLETED
+09:39:05.721 [ INFO] maestro.cli.runner.MaestroCommandRunner.runCommands$lambda$0: Tap on point (70%,92%) RUNNING
+09:39:05.726 [ INFO] maestro.cli.runner.MaestroCommandRunner.runCommands$lambda$11: Tap on point (70%,92%) metadata CommandMetadata(numberOfRuns=null, evaluatedCommand=MaestroCommand(tapOnPointV2Command=TapOnPointV2Command(point=70%,92%, retryIfNoChange=false, longPress=false, repeat=null, waitToSettleTimeoutMs=null, label=null, optional=false)), logMessages=[], insight=Insight(message=, level=NONE), aiReasoning=null, labeledCommand=null)
+09:39:05.739 [ INFO] maestro.Maestro.hierarchyBasedTap-ogj28Uc: Tapping at (756, 2208) using hierarchy based logic for wait
+09:39:07.268 [ INFO] maestro.Maestro.hierarchyBasedTap-ogj28Uc: Something has changed in the UI judging by view hierarchy. Proceed.
+09:39:07.268 [ INFO] maestro.cli.runner.MaestroCommandRunner.runCommands$lambda$2: Tap on point (70%,92%) COMPLETED
+09:39:07.268 [ INFO] maestro.cli.runner.MaestroCommandRunner.runCommands$lambda$0: Assert that "Opening your family circle.*" is not visible RUNNING
+09:39:07.269 [ INFO] maestro.cli.runner.MaestroCommandRunner.runCommands$lambda$11: Assert that "Opening your family circle.*" is not visible metadata CommandMetadata(numberOfRuns=null, evaluatedCommand=MaestroCommand(assertConditionCommand=AssertConditionCommand(condition=Condition(platform=null, visible=null, notVisible=ElementSelector(textRegex=Opening your family circle.*, idRegex=null, size=null, below=null, above=null, leftOf=null, rightOf=null, containsChild=null, containsDescendants=null, traits=null, index=null, enabled=null, optional=false, selected=null, checked=null, focused=null, childOf=null, css=null), scriptCondition=null, label=null), timeout=20000, label=null, optional=false)), logMessages=[], insight=Insight(message=, level=NONE), aiReasoning=null, labeledCommand=null)
+09:39:09.865 [ INFO] maestro.cli.runner.MaestroCommandRunner.runCommands$lambda$2: Assert that "Opening your family circle.*" is not visible COMPLETED
+09:39:09.865 [ INFO] maestro.cli.runner.MaestroCommandRunner.runCommands$lambda$0: Take screenshot 50-family-start RUNNING
+09:39:09.866 [ INFO] maestro.cli.runner.MaestroCommandRunner.runCommands$lambda$11: Take screenshot 50-family-start metadata CommandMetadata(numberOfRuns=null, evaluatedCommand=MaestroCommand(takeScreenshotCommand=TakeScreenshotCommand(path=50-family-start, cropOn=null, label=null, optional=false)), logMessages=[], insight=Insight(message=, level=NONE), aiReasoning=null, labeledCommand=null)
+09:39:09.868 [ INFO] maestro.Maestro.takeScreenshot: Taking screenshot
+09:39:09.869 [TRACE] maestro.utils.ScreenshotUtils.takeScreenshot: Taking screenshot to output sink
+09:39:10.192 [ INFO] maestro.cli.runner.MaestroCommandRunner.runCommands$lambda$2: Take screenshot 50-family-start COMPLETED
+09:39:10.192 [ INFO] maestro.cli.runner.MaestroCommandRunner.runCommands$lambda$0: Scrolling DOWN until ".*(Start|Create|Make).*" is visible with speed 40, visibility percentage 100%, timeout 20000 ms, with centering disabled RUNNING
+09:39:10.195 [ INFO] maestro.cli.runner.MaestroCommandRunner.runCommands$lambda$11: Scrolling DOWN until ".*(Start|Create|Make).*" is visible with speed 40, visibility percentage 100%, timeout 20000 ms, with centering disabled metadata CommandMetadata(numberOfRuns=null, evaluatedCommand=MaestroCommand(scrollUntilVisibleCommand=ScrollUntilVisibleCommand(selector=ElementSelector(textRegex=.*(Start|Create|Make).*, idRegex=null, size=null, below=null, above=null, leftOf=null, rightOf=null, containsChild=null, containsDescendants=null, traits=null, index=null, enabled=null, optional=false, selected=null, checked=null, focused=null, childOf=null, css=null), direction=DOWN, scrollDuration=601, visibilityPercentage=100, timeout=20000, waitToSettleTimeoutMs=null, centerElement=false, originalSpeedValue=40, label=null, optional=true)), logMessages=[], insight=Insight(message=, level=NONE), aiReasoning=null, labeledCommand=null)
+09:39:10.909 [ WARN] maestro.orchestra.Orchestra.scrollUntilVisible: Error: maestro.MaestroException$ElementNotFound: Element not found: Text matching regex: .*(Start|Create|Make).*
+09:39:10.917 [ INFO] maestro.Maestro.swipeFromCenter: Swiping UP from center
+09:39:12.683 [ INFO] maestro.orchestra.Orchestra.scrollUntilVisible: Scrolling try count: 0, DeviceWidth: 1080, DeviceWidth: 2400
+09:39:12.685 [ INFO] maestro.orchestra.Orchestra.scrollUntilVisible: Element bounds: Bounds(x=42, y=2162, width=1000, height=150)
+09:39:12.685 [ INFO] maestro.orchestra.Orchestra.scrollUntilVisible: Visibility Percent: 1.0
+09:39:12.685 [ INFO] maestro.orchestra.Orchestra.scrollUntilVisible: Command centerElement: ScrollUntilVisibleCommand(selector=ElementSelector(textRegex=.*(Start|Create|Make).*, idRegex=null, size=null, below=null, above=null, leftOf=null, rightOf=null, containsChild=null, containsDescendants=null, traits=null, index=null, enabled=null, optional=false, selected=null, checked=null, focused=null, childOf=null, css=null), direction=DOWN, scrollDuration=601, visibilityPercentage=100, timeout=20000, waitToSettleTimeoutMs=null, centerElement=false, originalSpeedValue=40, label=null, optional=true).centerElement
+09:39:12.686 [ INFO] maestro.orchestra.Orchestra.scrollUntilVisible: visibilityPercentageNormalized: 1.0
+09:39:12.686 [ INFO] maestro.cli.runner.MaestroCommandRunner.runCommands$lambda$2: Scrolling DOWN until ".*(Start|Create|Make).*" is visible with speed 40, visibility percentage 100%, timeout 20000 ms, with centering disabled COMPLETED
+09:39:12.686 [ INFO] maestro.cli.runner.MaestroCommandRunner.runCommands$lambda$0: Tap on (Optional) ".*(Start|Create|Make).*" RUNNING
+09:39:12.688 [ INFO] maestro.cli.runner.MaestroCommandRunner.runCommands$lambda$11: Tap on (Optional) ".*(Start|Create|Make).*" metadata CommandMetadata(numberOfRuns=null, evaluatedCommand=MaestroCommand(tapOnElementCommand=TapOnElementCommand(selector=ElementSelector(textRegex=.*(Start|Create|Make).*, idRegex=null, size=null, below=null, above=null, leftOf=null, rightOf=null, containsChild=null, containsDescendants=null, traits=null, index=null, enabled=null, optional=true, selected=null, checked=null, focused=null, childOf=null, css=null), retryIfNoChange=false, waitUntilVisible=false, longPress=false, repeat=null, waitToSettleTimeoutMs=null, relativePoint=null, label=null, optional=true)), logMessages=[], insight=Insight(message=, level=NONE), aiReasoning=null, labeledCommand=null)
+09:39:12.788 [ INFO] maestro.Maestro.tap-HgV9Ck0: Tapping on element:  UiElement(treeNode=TreeNode(attributes={text=Create my family circle, accessibilityText=, hintText=, ignoreBoundsFiltering=false, resource-id=, clickable=true, bounds=[42,2162][1042,2312], enabled=true, focused=false, checked=false, scrollable=false, selected=false, class=android.widget.Button, important-for-accessibility=false, error=}, children=[], clickable=true, enabled=true, focused=false, checked=false, selected=false), bounds=Bounds(x=42, y=2162, width=1000, height=150))
+09:39:14.100 [ INFO] maestro.Maestro.tap-HgV9Ck0: Tap aimed via settled hierarchy
+09:39:14.101 [ INFO] maestro.Maestro.hierarchyBasedTap-ogj28Uc: Tapping at (542, 2237) using hierarchy based logic for wait
+09:39:16.018 [ INFO] maestro.Maestro.hierarchyBasedTap-ogj28Uc: Something has changed in the UI judging by view hierarchy. Proceed.
+09:39:16.019 [ INFO] maestro.cli.runner.MaestroCommandRunner.runCommands$lambda$2: Tap on (Optional) ".*(Start|Create|Make).*" COMPLETED
+09:39:16.019 [ INFO] maestro.cli.runner.MaestroCommandRunner.runCommands$lambda$0: Wait for animation to end RUNNING
+09:39:16.020 [ INFO] maestro.cli.runner.MaestroCommandRunner.runCommands$lambda$11: Wait for animation to end metadata CommandMetadata(numberOfRuns=null, evaluatedCommand=MaestroCommand(waitForAnimationToEndCommand=WaitForAnimationToEndCommand(timeout=null, label=null, optional=false)), logMessages=[], insight=Insight(message=, level=NONE), aiReasoning=null, labeledCommand=null)
+09:39:16.022 [ INFO] maestro.Maestro.waitForAnimationToEnd$lambda$53: Waiting for animation to end with timeout 15000
+09:39:16.023 [TRACE] maestro.utils.ScreenshotUtils.takeScreenshot: Taking screenshot to byte array
+09:39:16.023 [TRACE] maestro.utils.ScreenshotUtils.takeScreenshot: Taking screenshot to output sink
+09:39:16.330 [TRACE] maestro.utils.ScreenshotUtils.takeScreenshot: Taking screenshot to byte array
+09:39:16.331 [TRACE] maestro.utils.ScreenshotUtils.takeScreenshot: Taking screenshot to output sink
+09:39:16.816 [ INFO] maestro.cli.runner.MaestroCommandRunner.runCommands$lambda$2: Wait for animation to end COMPLETED
+09:39:16.818 [ INFO] maestro.cli.runner.MaestroCommandRunner.runCommands$lambda$0: Take screenshot 51-family-after-start RUNNING
+09:39:16.818 [ INFO] maestro.cli.runner.MaestroCommandRunner.runCommands$lambda$11: Take screenshot 51-family-after-start metadata CommandMetadata(numberOfRuns=null, evaluatedCommand=MaestroCommand(takeScreenshotCommand=TakeScreenshotCommand(path=51-family-after-start, cropOn=null, label=null, optional=false)), logMessages=[], insight=Insight(message=, level=NONE), aiReasoning=null, labeledCommand=null)
+09:39:16.819 [ INFO] maestro.Maestro.takeScreenshot: Taking screenshot
+09:39:16.820 [TRACE] maestro.utils.ScreenshotUtils.takeScreenshot: Taking screenshot to output sink
+09:39:16.995 [ INFO] maestro.cli.runner.MaestroCommandRunner.runCommands$lambda$2: Take screenshot 51-family-after-start COMPLETED
+09:39:16.996 [ INFO] maestro.cli.runner.MaestroCommandRunner.runCommands$lambda$0: Scroll vertically RUNNING
+09:39:16.997 [ INFO] maestro.cli.runner.MaestroCommandRunner.runCommands$lambda$11: Scroll vertically metadata CommandMetadata(numberOfRuns=null, evaluatedCommand=MaestroCommand(scrollCommand=ScrollCommand()), logMessages=[], insight=Insight(message=, level=NONE), aiReasoning=null, labeledCommand=null)
+09:39:16.998 [ INFO] maestro.Maestro.scrollVertical: Scrolling vertically
+09:39:18.897 [ INFO] maestro.cli.runner.MaestroCommandRunner.runCommands$lambda$2: Scroll vertically COMPLETED
+09:39:18.898 [ INFO] maestro.cli.runner.MaestroCommandRunner.runCommands$lambda$0: Take screenshot 52-family-after-start-2 RUNNING
+09:39:18.898 [ INFO] maestro.cli.runner.MaestroCommandRunner.runCommands$lambda$11: Take screenshot 52-family-after-start-2 metadata CommandMetadata(numberOfRuns=null, evaluatedCommand=MaestroCommand(takeScreenshotCommand=TakeScreenshotCommand(path=52-family-after-start-2, cropOn=null, label=null, optional=false)), logMessages=[], insight=Insight(message=, level=NONE), aiReasoning=null, labeledCommand=null)
+09:39:18.899 [ INFO] maestro.Maestro.takeScreenshot: Taking screenshot
+09:39:18.900 [TRACE] maestro.utils.ScreenshotUtils.takeScreenshot: Taking screenshot to output sink
+09:39:19.060 [ INFO] maestro.cli.runner.MaestroCommandRunner.runCommands$lambda$2: Take screenshot 52-family-after-start-2 COMPLETED
+09:39:19.061 [ INFO] maestro.cli.runner.MaestroCommandRunner.runCommands$lambda$0: Scroll vertically RUNNING
+09:39:19.061 [ INFO] maestro.cli.runner.MaestroCommandRunner.runCommands$lambda$11: Scroll vertically metadata CommandMetadata(numberOfRuns=null, evaluatedCommand=MaestroCommand(scrollCommand=ScrollCommand()), logMessages=[], insight=Insight(message=, level=NONE), aiReasoning=null, labeledCommand=null)
+09:39:19.061 [ INFO] maestro.Maestro.scrollVertical: Scrolling vertically
+09:39:21.014 [ INFO] maestro.cli.runner.MaestroCommandRunner.runCommands$lambda$2: Scroll vertically COMPLETED
+09:39:21.015 [ INFO] maestro.cli.runner.MaestroCommandRunner.runCommands$lambda$0: Take screenshot 52b-family-scrolled-more RUNNING
+09:39:21.015 [ INFO] maestro.cli.runner.MaestroCommandRunner.runCommands$lambda$11: Take screenshot 52b-family-scrolled-more metadata CommandMetadata(numberOfRuns=null, evaluatedCommand=MaestroCommand(takeScreenshotCommand=TakeScreenshotCommand(path=52b-family-scrolled-more, cropOn=null, label=null, optional=false)), logMessages=[], insight=Insight(message=, level=NONE), aiReasoning=null, labeledCommand=null)
+09:39:21.015 [ INFO] maestro.Maestro.takeScreenshot: Taking screenshot
+09:39:21.016 [TRACE] maestro.utils.ScreenshotUtils.takeScreenshot: Taking screenshot to output sink
+09:39:21.193 [ INFO] maestro.cli.runner.MaestroCommandRunner.runCommands$lambda$2: Take screenshot 52b-family-scrolled-more COMPLETED
+09:39:21.194 [ INFO] maestro.cli.runner.MaestroCommandRunner.runCommands$lambda$0: Scroll vertically RUNNING
+09:39:21.194 [ INFO] maestro.cli.runner.MaestroCommandRunner.runCommands$lambda$11: Scroll vertically metadata CommandMetadata(numberOfRuns=null, evaluatedCommand=MaestroCommand(scrollCommand=ScrollCommand()), logMessages=[], insight=Insight(message=, level=NONE), aiReasoning=null, labeledCommand=null)
+09:39:21.194 [ INFO] maestro.Maestro.scrollVertical: Scrolling vertically
+09:39:22.820 [ INFO] maestro.cli.runner.MaestroCommandRunner.runCommands$lambda$2: Scroll vertically COMPLETED
+09:39:22.821 [ INFO] maestro.cli.runner.MaestroCommandRunner.runCommands$lambda$0: Take screenshot 52c-family-scrolled-more RUNNING
+09:39:22.821 [ INFO] maestro.cli.runner.MaestroCommandRunner.runCommands$lambda$11: Take screenshot 52c-family-scrolled-more metadata CommandMetadata(numberOfRuns=null, evaluatedCommand=MaestroCommand(takeScreenshotCommand=TakeScreenshotCommand(path=52c-family-scrolled-more, cropOn=null, label=null, optional=false)), logMessages=[], insight=Insight(message=, level=NONE), aiReasoning=null, labeledCommand=null)
+09:39:22.822 [ INFO] maestro.Maestro.takeScreenshot: Taking screenshot
+09:39:22.823 [TRACE] maestro.utils.ScreenshotUtils.takeScreenshot: Taking screenshot to output sink
+09:39:23.016 [ INFO] maestro.cli.runner.MaestroCommandRunner.runCommands$lambda$2: Take screenshot 52c-family-scrolled-more COMPLETED
+09:39:23.016 [ INFO] maestro.cli.runner.MaestroCommandRunner.runCommands$lambda$0: Scroll vertically RUNNING
+09:39:23.017 [ INFO] maestro.cli.runner.MaestroCommandRunner.runCommands$lambda$11: Scroll vertically metadata CommandMetadata(numberOfRuns=null, evaluatedCommand=MaestroCommand(scrollCommand=ScrollCommand()), logMessages=[], insight=Insight(message=, level=NONE), aiReasoning=null, labeledCommand=null)
+09:39:23.017 [ INFO] maestro.Maestro.scrollVertical: Scrolling vertically
+09:39:24.621 [ INFO] maestro.cli.runner.MaestroCommandRunner.runCommands$lambda$2: Scroll vertically COMPLETED
+09:39:24.621 [ INFO] maestro.cli.runner.MaestroCommandRunner.runCommands$lambda$0: Take screenshot 52d-family-scrolled-more RUNNING
+09:39:24.622 [ INFO] maestro.cli.runner.MaestroCommandRunner.runCommands$lambda$11: Take screenshot 52d-family-scrolled-more metadata CommandMetadata(numberOfRuns=null, evaluatedCommand=MaestroCommand(takeScreenshotCommand=TakeScreenshotCommand(path=52d-family-scrolled-more, cropOn=null, label=null, optional=false)), logMessages=[], insight=Insight(message=, level=NONE), aiReasoning=null, labeledCommand=null)
+09:39:24.623 [ INFO] maestro.Maestro.takeScreenshot: Taking screenshot
+09:39:24.623 [TRACE] maestro.utils.ScreenshotUtils.takeScreenshot: Taking screenshot to output sink
+09:39:24.802 [ INFO] maestro.cli.runner.MaestroCommandRunner.runCommands$lambda$2: Take screenshot 52d-family-scrolled-more COMPLETED
+09:39:24.803 [ INFO] maestro.cli.runner.MaestroCommandRunner.runCommands$lambda$0: Scrolling DOWN until "Make an invite code|Make a new code|Their code.*" is visible with speed 40, visibility percentage 100%, timeout 45000 ms, with centering disabled RUNNING
+09:39:24.803 [ INFO] maestro.cli.runner.MaestroCommandRunner.runCommands$lambda$11: Scrolling DOWN until "Make an invite code|Make a new code|Their code.*" is visible with speed 40, visibility percentage 100%, timeout 45000 ms, with centering disabled metadata CommandMetadata(numberOfRuns=null, evaluatedCommand=MaestroCommand(scrollUntilVisibleCommand=ScrollUntilVisibleCommand(selector=ElementSelector(textRegex=Make an invite code|Make a new code|Their code.*, idRegex=null, size=null, below=null, above=null, leftOf=null, rightOf=null, containsChild=null, containsDescendants=null, traits=null, index=null, enabled=null, optional=false, selected=null, checked=null, focused=null, childOf=null, css=null), direction=DOWN, scrollDuration=601, visibilityPercentage=100, timeout=45000, waitToSettleTimeoutMs=null, centerElement=false, originalSpeedValue=40, label=null, optional=true)), logMessages=[], insight=Insight(message=, level=NONE), aiReasoning=null, labeledCommand=null)
+09:39:25.550 [ WARN] maestro.orchestra.Orchestra.scrollUntilVisible: Error: maestro.MaestroException$ElementNotFound: Element not found: Text matching regex: Make an invite code|Make a new code|Their code.*
+09:39:25.593 [ INFO] maestro.Maestro.swipeFromCenter: Swiping UP from center
+09:39:28.394 [ WARN] maestro.orchestra.Orchestra.scrollUntilVisible: Error: maestro.MaestroException$ElementNotFound: Element not found: Text matching regex: Make an invite code|Make a new code|Their code.*
+09:39:28.437 [ INFO] maestro.Maestro.swipeFromCenter: Swiping UP from center
+09:39:30.976 [ WARN] maestro.orchestra.Orchestra.scrollUntilVisible: Error: maestro.MaestroException$ElementNotFound: Element not found: Text matching regex: Make an invite code|Make a new code|Their code.*
+09:39:30.981 [ INFO] maestro.Maestro.swipeFromCenter: Swiping UP from center
+09:39:33.518 [ WARN] maestro.orchestra.Orchestra.scrollUntilVisible: Error: maestro.MaestroException$ElementNotFound: Element not found: Text matching regex: Make an invite code|Make a new code|Their code.*
+09:39:33.562 [ INFO] maestro.Maestro.swipeFromCenter: Swiping UP from center
+09:39:36.060 [ WARN] maestro.orchestra.Orchestra.scrollUntilVisible: Error: maestro.MaestroException$ElementNotFound: Element not found: Text matching regex: Make an invite code|Make a new code|Their code.*
+09:39:36.066 [ INFO] maestro.Maestro.swipeFromCenter: Swiping UP from center
+09:39:38.882 [ WARN] maestro.orchestra.Orchestra.scrollUntilVisible: Error: maestro.MaestroException$ElementNotFound: Element not found: Text matching regex: Make an invite code|Make a new code|Their code.*
+09:39:38.924 [ INFO] maestro.Maestro.swipeFromCenter: Swiping UP from center
+09:39:41.112 [ WARN] maestro.orchestra.Orchestra.scrollUntilVisible: Error: maestro.MaestroException$ElementNotFound: Element not found: Text matching regex: Make an invite code|Make a new code|Their code.*
+09:39:41.119 [ INFO] maestro.Maestro.swipeFromCenter: Swiping UP from center
+09:39:42.829 [ WARN] maestro.orchestra.Orchestra.scrollUntilVisible: Error: maestro.MaestroException$ElementNotFound: Element not found: Text matching regex: Make an invite code|Make a new code|Their code.*
+09:39:42.872 [ INFO] maestro.Maestro.swipeFromCenter: Swiping UP from center
+09:39:44.445 [ WARN] maestro.orchestra.Orchestra.scrollUntilVisible: Error: maestro.MaestroException$ElementNotFound: Element not found: Text matching regex: Make an invite code|Make a new code|Their code.*
+09:39:44.489 [ INFO] maestro.Maestro.swipeFromCenter: Swiping UP from center
+09:39:46.156 [ WARN] maestro.orchestra.Orchestra.scrollUntilVisible: Error: maestro.MaestroException$ElementNotFound: Element not found: Text matching regex: Make an invite code|Make a new code|Their code.*
+09:39:46.163 [ INFO] maestro.Maestro.swipeFromCenter: Swiping UP from center
+09:39:47.873 [ WARN] maestro.orchestra.Orchestra.scrollUntilVisible: Error: maestro.MaestroException$ElementNotFound: Element not found: Text matching regex: Make an invite code|Make a new code|Their code.*
+09:39:47.915 [ INFO] maestro.Maestro.swipeFromCenter: Swiping UP from center
+09:39:49.572 [ WARN] maestro.orchestra.Orchestra.scrollUntilVisible: Error: maestro.MaestroException$ElementNotFound: Element not found: Text matching regex: Make an invite code|Make a new code|Their code.*
+09:39:49.577 [ INFO] maestro.Maestro.swipeFromCenter: Swiping UP from center
+09:39:51.234 [ WARN] maestro.orchestra.Orchestra.scrollUntilVisible: Error: maestro.MaestroException$ElementNotFound: Element not found: Text matching regex: Make an invite code|Make a new code|Their code.*
+09:39:51.278 [ INFO] maestro.Maestro.swipeFromCenter: Swiping UP from center
+09:39:52.923 [ WARN] maestro.orchestra.Orchestra.scrollUntilVisible: Error: maestro.MaestroException$ElementNotFound: Element not found: Text matching regex: Make an invite code|Make a new code|Their code.*
+09:39:52.929 [ INFO] maestro.Maestro.swipeFromCenter: Swiping UP from center
+09:39:54.597 [ WARN] maestro.orchestra.Orchestra.scrollUntilVisible: Error: maestro.MaestroException$ElementNotFound: Element not found: Text matching regex: Make an invite code|Make a new code|Their code.*
+09:39:54.640 [ INFO] maestro.Maestro.swipeFromCenter: Swiping UP from center
+09:39:56.304 [ WARN] maestro.orchestra.Orchestra.scrollUntilVisible: Error: maestro.MaestroException$ElementNotFound: Element not found: Text matching regex: Make an invite code|Make a new code|Their code.*
+09:39:56.308 [ INFO] maestro.Maestro.swipeFromCenter: Swiping UP from center
+09:39:57.977 [ WARN] maestro.orchestra.Orchestra.scrollUntilVisible: Error: maestro.MaestroException$ElementNotFound: Element not found: Text matching regex: Make an invite code|Make a new code|Their code.*
+09:39:58.020 [ INFO] maestro.Maestro.swipeFromCenter: Swiping UP from center
+09:39:59.668 [ WARN] maestro.orchestra.Orchestra.scrollUntilVisible: Error: maestro.MaestroException$ElementNotFound: Element not found: Text matching regex: Make an invite code|Make a new code|Their code.*
+09:39:59.674 [ INFO] maestro.Maestro.swipeFromCenter: Swiping UP from center
+09:40:01.310 [ WARN] maestro.orchestra.Orchestra.scrollUntilVisible: Error: maestro.MaestroException$ElementNotFound: Element not found: Text matching regex: Make an invite code|Make a new code|Their code.*
+09:40:01.351 [ INFO] maestro.Maestro.swipeFromCenter: Swiping UP from center
+09:40:03.681 [ WARN] maestro.orchestra.Orchestra.scrollUntilVisible: Error: maestro.MaestroException$ElementNotFound: Element not found: Text matching regex: Make an invite code|Make a new code|Their code.*
+09:40:03.723 [ INFO] maestro.Maestro.swipeFromCenter: Swiping UP from center
+09:40:05.350 [ WARN] maestro.orchestra.Orchestra.scrollUntilVisible: Error: maestro.MaestroException$ElementNotFound: Element not found: Text matching regex: Make an invite code|Make a new code|Their code.*
+09:40:05.397 [ INFO] maestro.Maestro.swipeFromCenter: Swiping UP from center
+09:40:07.025 [ WARN] maestro.orchestra.Orchestra.scrollUntilVisible: Error: maestro.MaestroException$ElementNotFound: Element not found: Text matching regex: Make an invite code|Make a new code|Their code.*
+09:40:07.068 [ INFO] maestro.Maestro.swipeFromCenter: Swiping UP from center
+09:40:08.680 [ WARN] maestro.orchestra.Orchestra.scrollUntilVisible: Error: maestro.MaestroException$ElementNotFound: Element not found: Text matching regex: Make an invite code|Make a new code|Their code.*
+09:40:08.685 [ INFO] maestro.Maestro.swipeFromCenter: Swiping UP from center
+09:40:10.782 [ WARN] maestro.orchestra.Orchestra.scrollUntilVisible: Error: maestro.MaestroException$ElementNotFound: Element not found: Text matching regex: Make an invite code|Make a new code|Their code.*
+09:40:10.825 [ INFO] maestro.Maestro.swipeFromCenter: Swiping UP from center
+09:40:11.955 [ INFO] maestro.orchestra.Orchestra.executeCommands: [Command execution] CommandWarned: No visible element found: "Make an invite code|Make a new code|Their code.*"
+09:40:11.956 [ INFO] maestro.cli.runner.MaestroCommandRunner.runCommands$lambda$11: Scrolling DOWN until "Make an invite code|Make a new code|Their code.*" is visible with speed 40, visibility percentage 100%, timeout 45000 ms, with centering disabled metadata CommandMetadata(numberOfRuns=null, evaluatedCommand=MaestroCommand(scrollUntilVisibleCommand=ScrollUntilVisibleCommand(selector=ElementSelector(textRegex=Make an invite code|Make a new code|Their code.*, idRegex=null, size=null, below=null, above=null, leftOf=null, rightOf=null, containsChild=null, containsDescendants=null, traits=null, index=null, enabled=null, optional=false, selected=null, checked=null, focused=null, childOf=null, css=null), direction=DOWN, scrollDuration=601, visibilityPercentage=100, timeout=45000, waitToSettleTimeoutMs=null, centerElement=false, originalSpeedValue=40, label=null, optional=true)), logMessages=[], insight=Insight(message=No visible element found: "Make an invite code|Make a new code|Their code.*", level=WARNING), aiReasoning=null, labeledCommand=null)
+09:40:12.266 [ INFO] maestro.Maestro.takeScreenshot: Taking screenshot
+09:40:12.267 [TRACE] maestro.utils.ScreenshotUtils.takeScreenshot: Taking screenshot to output sink
+09:40:12.433 [ INFO] maestro.cli.runner.MaestroCommandRunner.runCommands$lambda$6: Scrolling DOWN until "Make an invite code|Make a new code|Their code.*" is visible with speed 40, visibility percentage 100%, timeout 45000 ms, with centering disabled WARNED
+09:40:12.434 [ INFO] maestro.cli.runner.MaestroCommandRunner.runCommands$lambda$0: Tap on (Optional) "Make an invite code" RUNNING
+09:40:12.434 [ INFO] maestro.cli.runner.MaestroCommandRunner.runCommands$lambda$11: Tap on (Optional) "Make an invite code" metadata CommandMetadata(numberOfRuns=null, evaluatedCommand=MaestroCommand(tapOnElementCommand=TapOnElementCommand(selector=ElementSelector(textRegex=Make an invite code, idRegex=null, size=null, below=null, above=null, leftOf=null, rightOf=null, containsChild=null, containsDescendants=null, traits=null, index=null, enabled=null, optional=true, selected=null, checked=null, focused=null, childOf=null, css=null), retryIfNoChange=false, waitUntilVisible=false, longPress=false, repeat=null, waitToSettleTimeoutMs=null, relativePoint=null, label=null, optional=true)), logMessages=[], insight=Insight(message=, level=NONE), aiReasoning=null, labeledCommand=null)
+09:40:12.800 [ INFO] maestro.orchestra.Orchestra.executeCommands: [Command execution] CommandWarned: Element not found: Text matching regex: Make an invite code
+09:40:12.800 [ INFO] maestro.cli.runner.MaestroCommandRunner.runCommands$lambda$11: Tap on (Optional) "Make an invite code" metadata CommandMetadata(numberOfRuns=null, evaluatedCommand=MaestroCommand(tapOnElementCommand=TapOnElementCommand(selector=ElementSelector(textRegex=Make an invite code, idRegex=null, size=null, below=null, above=null, leftOf=null, rightOf=null, containsChild=null, containsDescendants=null, traits=null, index=null, enabled=null, optional=true, selected=null, checked=null, focused=null, childOf=null, css=null), retryIfNoChange=false, waitUntilVisible=false, longPress=false, repeat=null, waitToSettleTimeoutMs=null, relativePoint=null, label=null, optional=true)), logMessages=[], insight=Insight(message=Element not found: Text matching regex: Make an invite code, level=WARNING), aiReasoning=null, labeledCommand=null)
+09:40:12.940 [ INFO] maestro.Maestro.takeScreenshot: Taking screenshot
+09:40:12.941 [TRACE] maestro.utils.ScreenshotUtils.takeScreenshot: Taking screenshot to output sink
+09:40:13.142 [ INFO] maestro.cli.runner.MaestroCommandRunner.runCommands$lambda$6: Tap on (Optional) "Make an invite code" WARNED
+09:40:13.143 [ INFO] maestro.cli.runner.MaestroCommandRunner.runCommands$lambda$0: Take screenshot 53-family-invite-code RUNNING
+09:40:13.143 [ INFO] maestro.cli.runner.MaestroCommandRunner.runCommands$lambda$11: Take screenshot 53-family-invite-code metadata CommandMetadata(numberOfRuns=null, evaluatedCommand=MaestroCommand(takeScreenshotCommand=TakeScreenshotCommand(path=53-family-invite-code, cropOn=null, label=null, optional=false)), logMessages=[], insight=Insight(message=, level=NONE), aiReasoning=null, labeledCommand=null)
+09:40:13.143 [ INFO] maestro.Maestro.takeScreenshot: Taking screenshot
+09:40:13.144 [TRACE] maestro.utils.ScreenshotUtils.takeScreenshot: Taking screenshot to output sink
+09:40:13.348 [ INFO] maestro.cli.runner.MaestroCommandRunner.runCommands$lambda$2: Take screenshot 53-family-invite-code COMPLETED
