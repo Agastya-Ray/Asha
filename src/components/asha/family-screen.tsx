@@ -147,11 +147,17 @@ function StartCircle() {
             setError("");
             // the server can take a while on a slow connection; say so instead of looking stuck
             const slowTimer = setTimeout(() => setSlow(true), 8000);
-            const r = await saveCircle({ ...consent, label: label.trim() || name });
-            clearTimeout(slowTimer);
-            setBusy(false);
-            setSlow(false);
-            if (!r.ok) setError(sendError({ ok: false, error: r.error, status: 0 }, lang));
+            try {
+              const r = await saveCircle({ ...consent, label: label.trim() || name });
+              if (!r.ok) setError(sendError({ ok: false, error: r.error, status: 0 }, lang));
+            } catch {
+              // a throw here used to leave the button on "Creating…" for good
+              setError(t(lang, { en: "Something went wrong. Try again.", hi: "कुछ गड़बड़ हुई. फिर कोशिश करें." }));
+            } finally {
+              clearTimeout(slowTimer);
+              setBusy(false);
+              setSlow(false);
+            }
           }}
         >
           {busy ? t(lang, { en: "Creating…", hi: "बना रहे…" }) : t(lang, { en: "Create my family circle", hi: "मेरा परिवार बनाएँ" })}
