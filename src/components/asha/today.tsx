@@ -106,8 +106,8 @@ export function TodayScreen() {
       ) : null}
       {active.length > 0 ? (
         <div className="mt-3 flex flex-col gap-3">
-          {active.map((item) => (
-            <AgendaCard key={item.key} item={item} />
+          {active.map((item, i) => (
+            <AgendaCard key={item.key} item={item} perch={i === active.findIndex((a) => a.state === "now" || a.state === "open")} />
           ))}
         </div>
       ) : null}
@@ -271,7 +271,7 @@ export function TodayScreen() {
   );
 }
 
-function AgendaCard({ item }: { item: AgendaItem }) {
+function AgendaCard({ item, perch = false }: { item: AgendaItem; perch?: boolean }) {
   const lang = useAsha((s) => s.lang);
   const logDose = useAsha((s) => s.logDose);
   const logMeal = useAsha((s) => s.logMeal);
@@ -282,6 +282,8 @@ function AgendaCard({ item }: { item: AgendaItem }) {
       : t(lang, { en: "I have eaten", hi: "खा लिया" });
   return (
     <Card className={item.state === "now" ? "border-sage" : undefined}>
+      {/* the fairy perches in this corner (FairyDock), and the words flow around her */}
+      {perch ? <div data-fairy-perch className="fairy-perch" /> : null}
       <p className="text-base font-bold text-sage">
         {item.kind === "med" ? t(lang, { en: "Medicine", hi: "दवा" }) : t(lang, { en: "Meal", hi: "खाना" })} ·{" "}
         {speakClock(lang, item.time)}
