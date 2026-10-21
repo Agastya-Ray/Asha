@@ -201,6 +201,35 @@ shot 41-today-hindi-largest-text
 # Meds and Care in Hindi, tapped from the bottom nav by position
 xy=$(find_webview "^दवा$"); [ -n "$xy" ] && { adb shell input tap $xy; sleep 3; shot 43-meds-hindi-largest-text; } || { FAILED=1; log "no Hindi Meds tab"; }
 xy=$(find_webview "^देखभाल$"); [ -n "$xy" ] && { adb shell input tap $xy; sleep 3; shot 44-care-hindi-largest-text; } || { FAILED=1; log "no Hindi Care tab"; }
+# ---- the floating fairy: she must come back after a reboot, after Android kills Asha, after a long idle, and sleep at night ----
+fairy_check() {
+  local name=$1
+  adb shell dumpsys activity services $PKG > "$OUT/fairy-$name-services.txt" 2>/dev/null
+  adb shell dumpsys window windows > "$OUT/fairy-$name-windows.txt" 2>/dev/null
+  shot "fairy-$name"
+  if grep -q "FairyBubbleService" "$OUT/fairy-$name-services.txt" && grep -q "APPLICATION_OVERLAY" "$OUT/fairy-$name-windows.txt"; then log "fairy $name: floating fairy is on screen"
+  else FAILED=1; log "fairy $name: floating fairy is MISSING"; fi
+}
+adb shell appops set $PKG SYSTEM_ALERT_WINDOW allow && log "fairy: display over other apps allowed"
+adb shell input keyevent KEYCODE_HOME; sleep 2
+adb shell am force-stop $PKG
+# turn the floating fairy on the way the Settings switch does (it saves bubble=true in the app's family prefs)
+PREFS=/data/data/$PKG/shared_prefs/asha_family.xml
+adb shell "[ -f $PREFS ] || printf '<?xml version=\"1.0\" encoding=\"utf-8\" standalone=\"yes\" ?>\n<map>\n</map>\n' > $PREFS"
+adb shell "sed -i '/name=\"bubble\"/d; s#</map>#    <boolean name=\"bubble\" value=\"true\" />\n</map>#' $PREFS"
+adb shell "chown \$(stat -c %u:%g /data/data/$PKG) $PREFS; chmod 660 $PREFS"
+# a phone restart: Android sends BOOT_COMPLETED to an app that is not force-stopped (-f 0x20 stands in for that here)
+adb shell am broadcast -f 0x20 -a android.intent.action.BOOT_COMPLETED -n $PKG/.BootReceiver >/dev/null
+sleep 8; fairy_check 1-after-reboot
+# Android kills the app in the background (low memory): the floating fairy should come back by herself
+pid=$(adb shell pidof $PKG | tr -d '\r'); [ -n "$pid" ] && adb shell kill -9 $pid && log "fairy: killed Asha (pid $pid)"
+sleep 25; fairy_check 2-after-kill
+# long idle with Asha in the background (Android stops idle background services after about a minute)
+sleep 90; fairy_check 3-after-idle
+# late at night with no new message she sleeps: clock to 23:10, then the time-change broadcast Android sends
+setclock 101523102026.00
+adb shell am broadcast -f 0x20 -a android.intent.action.TIME_SET -n $PKG/.BootReceiver >/dev/null
+sleep 5; fairy_check 4-night
 kill $CONSOLE_PID 2>/dev/null || true
 adb logcat -d > "$OUT/logcat-full.txt"
 # the app logs its family-circle config, including a secret; keep it out of the published results
