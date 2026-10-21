@@ -49,7 +49,7 @@ for m in re.finditer(r"<node [^>]*>", x):
     n=m.group(0); t=re.search(r" text=\"([^\"]*)\"", n).group(1); d=re.search(r"content-desc=\"([^\"]*)\"", n).group(1)
     if pat.search(t) or pat.search(d):
         a,b,c,e=map(int,re.search(r"bounds=\"\[(\d+),(\d+)\]\[(\d+),(\d+)\]\"", n).groups())
-        if 250 <= (b+e)//2 <= 1700: print((a+c)//2,(b+e)//2); break
+        if 150 <= (b+e)//2 <= 1700: print((a+c)//2,(b+e)//2); break
 ' "$1"
 }
 setclock() { adb shell "date $1" >/dev/null; log "clock set to $(adb shell date)"; }
