@@ -50,10 +50,12 @@ export function TodayScreen() {
 
   return (
     <div className="py-5">
-      <h1 className="display text-4xl leading-tight">{hello.title}</h1>
-      <p className="mt-3 text-lg text-quiet">{hello.line}</p>
-      <div className="mt-4">
-        <Hear say={`${helloSay.title} ${helloSay.line}`} label={t(lang, { en: "Hear this", hi: "इसे सुनें" })} />
+      <div className="hero">
+        <h1 className="display text-4xl leading-tight">{hello.title}</h1>
+        <p className="mt-3 text-lg text-quiet">{hello.line}</p>
+        <div className="mt-4">
+          <Hear say={`${helloSay.title} ${helloSay.line}`} label={t(lang, { en: "Hear this", hi: "इसे सुनें" })} />
+        </div>
       </div>
 
       <ReminderHealth />

@@ -521,3 +521,57 @@ html[data-size="xl"] {
 .fairy-dock-floor {
   bottom: calc(4rem + env(safe-area-inset-bottom) - 6px);
 }
+
+/* ---------- look: warm, soft depth ---------- */
+body {
+  background:
+    radial-gradient(60rem 30rem at 0% -10%, #fde7d3 0%, transparent 60%),
+    radial-gradient(50rem 28rem at 110% 10%, #dff0e4 0%, transparent 55%),
+    var(--color-linen);
+  background-attachment: fixed;
+}
+/* cards float on the page instead of sitting flat with a hard outline */
+.rounded-3xl.bg-paper,
+.rounded-2xl.border-line.bg-paper {
+  box-shadow:
+    0 1px 2px rgb(60 40 20 / 0.05),
+    0 8px 24px -10px rgb(60 40 20 / 0.14);
+}
+.btn-primary {
+  background-image: linear-gradient(180deg, #2a8a5b 0%, var(--color-sage) 100%);
+  box-shadow:
+    inset 0 1px 0 rgb(255 255 255 / 0.18),
+    0 6px 16px -6px rgb(29 107 69 / 0.55);
+}
+.btn-sos {
+  background-image: linear-gradient(180deg, #b0304a 0%, var(--color-sos) 100%);
+  box-shadow: 0 6px 16px -6px rgb(143 29 50 / 0.5);
+}
+.hero {
+  border-radius: 2rem;
+  padding: 1.25rem;
+  background: linear-gradient(135deg, #fff6ec 0%, #fffdf8 45%, #eaf6ee 100%);
+  box-shadow: 0 10px 30px -14px rgb(60 40 20 / 0.22);
+}
+.logo-badge {
+  background: linear-gradient(145deg, #34a06c, var(--color-sage));
+  box-shadow: 0 4px 12px -4px rgb(29 107 69 / 0.6);
+}
+.rounded-3xl.border-line.bg-paper,
+.rounded-2xl.border-line.bg-paper {
+  border-color: rgb(228 216 198 / 0.55);
+}
+/* tab bar floats as a rounded pill above the bottom edge; the open tab gets a soft pill */
+.nav-float {
+  border-radius: 1.75rem;
+  background: rgb(255 253 248 / 0.92);
+  backdrop-filter: blur(10px);
+  box-shadow:
+    0 1px 0 rgb(255 255 255 / 0.8) inset,
+    0 12px 32px -12px rgb(60 40 20 / 0.3);
+  border: 1px solid rgb(228 216 198 / 0.6);
+}
+.tab-on {
+  background: var(--color-sage-soft);
+  border-radius: 1.25rem;
+}
