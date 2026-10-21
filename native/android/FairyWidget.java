@@ -13,6 +13,8 @@ public class FairyWidget extends AppWidgetProvider {
     @Override
     public void onUpdate(Context ctx, AppWidgetManager mgr, int[] ids) {
         for (int id : ids) mgr.updateAppWidget(id, views(ctx));
+        // the same half-hourly tick lets the floating fairy fall asleep at night and wake in the morning
+        FairyBubbleService.refresh(ctx);
     }
 
     public static void refreshAll(Context ctx) {
