@@ -96,6 +96,9 @@ adb install -r -g "${APK:-Asha.apk}" >/dev/null && log "installed (all permissio
 # reinstall without auto-grant so the user sees the real permission prompts
 adb uninstall $PKG >/dev/null; adb install -r "${APK:-Asha.apk}" && log "installed Asha"
 adb logcat -c; adb logcat -G 16M 2>/dev/null || true  # a bigger buffer keeps the family calls from the start of the run
+# the app's console (family call timings) in its own file, so the system logs cannot push it out of the buffer
+adb logcat -v time Capacitor/Console:I '*:S' > "$OUT/logcat-console.txt" 2>/dev/null &
+CONSOLE_PID=$!
 
 # a prescription photo in the gallery for the photo-reading test
 if command -v convert >/dev/null; then
@@ -198,6 +201,7 @@ shot 41-today-hindi-largest-text
 # Meds and Care in Hindi, tapped from the bottom nav by position
 xy=$(find_webview "^दवा$"); [ -n "$xy" ] && { adb shell input tap $xy; sleep 3; shot 43-meds-hindi-largest-text; } || { FAILED=1; log "no Hindi Meds tab"; }
 xy=$(find_webview "^देखभाल$"); [ -n "$xy" ] && { adb shell input tap $xy; sleep 3; shot 44-care-hindi-largest-text; } || { FAILED=1; log "no Hindi Care tab"; }
+kill $CONSOLE_PID 2>/dev/null || true
 adb logcat -d > "$OUT/logcat-full.txt"
 # the app logs its family-circle config, including a secret; keep it out of the published results
 sed -i -E 's/"secret":"[^"]*"/"secret":"REDACTED"/g; s/"x-device-secret":"[^"]*"/"x-device-secret":"REDACTED"/g' "$OUT/logcat-full.txt"
