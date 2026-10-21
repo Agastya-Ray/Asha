@@ -45,11 +45,7 @@ export function VoiceCommand() {
   if (!canListen()) return null;
 
   async function run() {
-    const s = useAsha.getState();
-    const v = s.voiceLang;
-    const reply = (en: string, hi: string) => {
-      void speak(v === "hi" ? hi : en, v, s.richVoice ? "warm" : "device");
-    };
+    const v = useAsha.getState().voiceLang;
     setBusy(true);
     setHeard("");
     const r = await listenOnce(v);
@@ -60,48 +56,7 @@ export function VoiceCommand() {
       return;
     }
     setHeard(`“${said}”`);
-    const open = buildAgenda(s).filter((i) => i.state === "now" || i.state === "open" || i.state === "snoozed");
-
-    const want = intentOf(said);
-    if (want === "not-yet") {
-      reply("Okay, I have not marked it. I will remind you again.", "ठीक है, मैंने अभी नहीं लिखा. मैं फिर याद दिलाऊँगी.");
-      return;
-    }
-    if (want === "help") {
-      s.setTab("sos");
-      reply("Opening Help.", "मदद खोल रही हूँ.");
-      return;
-    }
-    if (want === "taken") {
-      const med = open.find((i) => i.kind === "med");
-      if (med) {
-        s.logDose(med.id, med.time, "taken");
-        reply(`Well done. I've marked ${med.title} as taken.`, `बहुत अच्छा. ${med.title} ले ली, मैंने लिख लिया.`);
-      } else reply("There is no medicine waiting right now. You're all caught up.", "अभी कोई दवा बाकी नहीं है. सब हो गया.");
-      return;
-    }
-    if (want === "ate") {
-      const meal = open.find((i) => i.kind === "meal");
-      if (meal) {
-        s.logMeal(meal.id);
-        reply(`Lovely. I've marked ${meal.title}.`, `बढ़िया. ${meal.title} मैंने लिख लिया.`);
-      } else reply("Good. No meal is waiting right now.", "अच्छा. अभी कोई खाना बाकी नहीं.");
-      return;
-    }
-    if (want === "water") {
-      s.addWater();
-      reply("One more glass of water. Good.", "एक गिलास पानी और. बढ़िया.");
-      return;
-    }
-    if (s.pro) {
-      useTalkHandoff.getState().set(said);
-      s.setTab("talk");
-      return;
-    }
-    reply(
-      "I can mark a medicine or a meal, count water, or open Help. Free talking is part of Pro.",
-      "मैं दवा या खाना लिख सकती हूँ, पानी गिन सकती हूँ, या मदद खोल सकती हूँ. खुलकर बातें करना प्रो में है.",
-    );
+    actOnSpoken(said);
   }
 
   return (
@@ -122,5 +77,56 @@ export function VoiceCommand() {
           })}
       </p>
     </div>
+  );
+}
+
+/** Does what a short spoken sentence asks: mark a dose or meal, count water, open Help, or hand over to Talk. Used by "Tell Asha" and by the fairy. */
+export function actOnSpoken(said: string) {
+  const s = useAsha.getState();
+  const v = s.voiceLang;
+  const reply = (en: string, hi: string) => {
+    void speak(v === "hi" ? hi : en, v, s.richVoice ? "warm" : "device");
+  };
+  const open = buildAgenda(s).filter((i) => i.state === "now" || i.state === "open" || i.state === "snoozed");
+
+  const want = intentOf(said);
+  if (want === "not-yet") {
+    reply("Okay, I have not marked it. I will remind you again.", "ठीक है, मैंने अभी नहीं लिखा. मैं फिर याद दिलाऊँगी.");
+    return;
+  }
+  if (want === "help") {
+    s.setTab("sos");
+    reply("Opening Help.", "मदद खोल रही हूँ.");
+    return;
+  }
+  if (want === "taken") {
+    const med = open.find((i) => i.kind === "med");
+    if (med) {
+      s.logDose(med.id, med.time, "taken");
+      reply(`Well done. I've marked ${med.title} as taken.`, `बहुत अच्छा. ${med.title} ले ली, मैंने लिख लिया.`);
+    } else reply("There is no medicine waiting right now. You're all caught up.", "अभी कोई दवा बाकी नहीं है. सब हो गया.");
+    return;
+  }
+  if (want === "ate") {
+    const meal = open.find((i) => i.kind === "meal");
+    if (meal) {
+      s.logMeal(meal.id);
+      reply(`Lovely. I've marked ${meal.title}.`, `बढ़िया. ${meal.title} मैंने लिख लिया.`);
+    } else reply("Good. No meal is waiting right now.", "अच्छा. अभी कोई खाना बाकी नहीं.");
+    return;
+  }
+  if (want === "water") {
+    s.addWater();
+    reply("One more glass of water. Good.", "एक गिलास पानी और. बढ़िया.");
+    return;
+  }
+  if (s.pro) {
+    useTalkHandoff.getState().set(said);
+    s.setTab("talk");
+    return;
+  }
+  reply(
+    "I can mark a medicine or a meal, count water, or open Help. Free talking is part of Pro.",
+    "मैं दवा या खाना लिख सकती हूँ, पानी गिन सकती हूँ, या मदद खोल सकती हूँ. खुलकर बातें करना प्रो में है.",
   );
 }

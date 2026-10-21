@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import { cn } from "@/lib/cn";
 import { useNow } from "@/components/asha/bits";
 import { useSpeech } from "@/lib/asha/voice";
+import type { FairyStage } from "@/components/asha/fairy3d";
 
 /**
  * Asha's fairy (original character): a small fairy in a sage dress with leaf-shaped wings,
@@ -9,7 +10,7 @@ import { useSpeech } from "@/lib/asha/voice";
  * Everything is drawn here in SVG, so there are no pictures to download.
  */
 
-export type FairyMood = "idle" | "happy" | "sleep" | "talk" | "sad" | "yawn";
+export type FairyMood = "idle" | "happy" | "sleep" | "talk" | "sad" | "yawn" | "thinking" | "asking";
 
 export function Fairy({ mood = "idle", className, look }: { mood?: FairyMood; className?: string; look?: { x: number; y: number } }) {
   const eyesClosed = mood === "sleep" || mood === "yawn";
@@ -160,12 +161,15 @@ export function FairyScene({
   size = "md",
   onTap,
   label,
+  floor = false,
 }: {
   news: boolean;
   mood?: FairyMood;
   size?: "sm" | "md" | "lg";
   onTap?: () => void;
   label?: string;
+  /** asleep, she lies on the bottom edge (the "floor") instead of floating */
+  floor?: boolean;
 }) {
   const [pet, setPet] = useState<PetMode>(news ? "envelope" : "hidden");
   const timers = useRef<number[]>([]);
@@ -183,13 +187,38 @@ export function FairyScene({
   const hour = useNow().getHours();
   const speaking = useSpeech((s) => s.active);
   // while Asha is speaking, the fairy talks; otherwise good news makes her happy and late night makes her sleep
-  const autoMood: FairyMood = speaking ? "talk" : mood ?? (news ? "happy" : hour >= 22 || hour < 6 ? "sleep" : "idle");
-  // she looks at whatever was just tapped, then back at you after a moment
+  const autoMood: FairyMood = speaking && mood !== "sleep" ? "talk" : mood ?? (news ? "happy" : hour >= 22 || hour < 6 ? "sleep" : "idle");
+
+  // the 3D fairy (three.js, loaded only when a fairy is on screen); the flat drawing stays as a fallback
   const me = useRef<HTMLButtonElement>(null);
+  const canvas = useRef<HTMLCanvasElement>(null);
+  const stage = useRef<FairyStage | null>(null);
+  const [three, setThree] = useState<"loading" | "on" | "off">("loading");
   const [look, setLook] = useState<{ x: number; y: number } | undefined>();
   useEffect(() => {
+    let dead = false;
+    void import("@/components/asha/fairy3d")
+      .then((m) => {
+        if (dead || !canvas.current) return;
+        if (!m.webglOk()) return setThree("off");
+        stage.current = new m.FairyStage(canvas.current);
+        setThree("on");
+      })
+      .catch(() => setThree("off"));
+    return () => {
+      dead = true;
+      stage.current?.dispose();
+      stage.current = null;
+    };
+  }, []);
+  useEffect(() => {
+    if (stage.current) stage.current.rig.mood = autoMood;
+  }, [autoMood, three]);
+  // she looks at whatever was just tapped, then back at you after a moment
+  useEffect(() => {
     let back = 0;
-    const onTap = (e: PointerEvent) => {
+    const onDown = (e: PointerEvent) => {
+      if (stage.current) return stage.current.lookAtClient(e.clientX, e.clientY);
       const r = me.current?.getBoundingClientRect();
       if (!r) return;
       const dx = e.clientX - (r.left + r.width / 2);
@@ -199,17 +228,30 @@ export function FairyScene({
       window.clearTimeout(back);
       back = window.setTimeout(() => setLook(undefined), 2500);
     };
-    window.addEventListener("pointerdown", onTap, { passive: true });
+    window.addEventListener("pointerdown", onDown, { passive: true });
     return () => {
-      window.removeEventListener("pointerdown", onTap);
+      window.removeEventListener("pointerdown", onDown);
       window.clearTimeout(back);
     };
   }, []);
-  const dims = size === "sm" ? "h-20 w-20" : size === "lg" ? "h-44 w-44" : "h-28 w-28";
+  const dims = size === "sm" ? "h-24 w-20" : size === "lg" ? "h-52 w-44" : "h-32 w-28";
+  const asleepOnFloor = floor && autoMood === "sleep";
   return (
-    <button ref={me} type="button" onClick={onTap} aria-label={label} className={cn("fairy-scene relative shrink-0 select-none", dims)}>
-      <Fairy mood={autoMood} look={look} className="absolute inset-0 h-full w-full" />
+    <button
+      ref={me}
+      type="button"
+      onClick={onTap}
+      aria-label={label}
+      data-mood={autoMood}
+      className={cn("fairy-scene relative shrink-0 select-none", asleepOnFloor ? (size === "sm" ? "h-20 w-36" : "h-24 w-44") : dims)}
+    >
+      <canvas ref={canvas} className={cn("absolute inset-0 h-full w-full", three === "on" ? "" : "invisible")} />
+      {three === "off" ? <Fairy mood={toFlat(autoMood)} look={look} className="absolute inset-0 h-full w-full" /> : null}
       <Pet mode={pet} className={cn("absolute bottom-0", size === "lg" ? "-right-6 h-20 w-20" : size === "sm" ? "-right-3 h-10 w-10" : "-right-4 h-14 w-14")} />
     </button>
   );
+}
+
+function toFlat(m: FairyMood): FairyMood {
+  return m === "thinking" || m === "asking" ? "idle" : m;
 }
