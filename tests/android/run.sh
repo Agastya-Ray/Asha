@@ -72,13 +72,13 @@ for b in walk(data):
     m=re.match(r"\[(\d+),(\d+)\]\[(\d+),(\d+)\]", b)
     if not m: continue
     a,y1,c,y2=map(int,m.groups())
-    if 150 <= (y1+y2)//2 <= 1700: print((a+c)//2,(y1+y2)//2); break
+    if 150 <= (y1+y2)//2 <= 2300: print((a+c)//2,(y1+y2)//2); break
 ' "$1" "$OUT/hierarchy-now.json"
 }
-# centre_webview, retried for a few seconds while the page settles
+# centre_webview, retried while the page settles and scrolls the control into view
 find_webview() {
   local xy=""
-  for i in 1 2 3 4; do xy=$(center_webview "$1"); [ -n "$xy" ] && break; sleep 2; done
+  for i in 1 2 3 4; do xy=$(center_webview "$1"); [ -n "$xy" ] && break; adb shell input swipe 540 1500 540 900 400; sleep 2; done
   echo "$xy"
 }
 setclock() { adb shell "date $1" >/dev/null; log "clock set to $(adb shell date)"; }
