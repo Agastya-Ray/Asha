@@ -166,8 +166,9 @@ adb shell am force-stop com.google.android.dialer; sleep 2
 shot 75-back-in-asha
 
 # --- Hindi and the largest text, tapped by screen position (Maestro's text bounds sat under the bottom nav) ---
-# the Help flow leaves the app on Help, so relaunch to reach the Today header and its Settings button
+# the Help flow leaves the app on Help, and a relaunch reopens Help, so go back to Today for its Settings button
 adb shell am force-stop $PKG; adb shell monkey -p $PKG -c android.intent.category.LAUNCHER 1 >/dev/null 2>&1; sleep 15
+if [ -n "$(center_webview "^Hold for help$")" ]; then adb shell input keyevent KEYCODE_BACK; log "went back from Help to Today"; sleep 3; fi
 xy=$(center_webview "^Settings$|^सेटिंग$")
 if [ -z "$xy" ]; then log "Settings not found in the dump; using the header gear position"; xy="758 228"; fi
 adb shell input tap $xy; sleep 3; shot 39a-settings-opened
