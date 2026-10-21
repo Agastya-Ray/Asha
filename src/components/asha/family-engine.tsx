@@ -1,4 +1,5 @@
-import { useEffect, useState, type ReactNode } from "react";
+import { useEffect, useRef, useState, type ReactNode } from "react";
+import { createPortal } from "react-dom";
 import { App } from "@capacitor/app";
 import { cn } from "@/lib/cn";
 import type { Lang } from "@/lib/asha/types";
@@ -105,6 +106,18 @@ export function FairyDock() {
   const [awayUntil, setAwayUntil] = useState(readAway);
   // she listens when tapped: what you say goes to the same helper as "Tell Asha"
   const [ear, setEar] = useState<"" | "listening" | "thinking" | "hello" | "shy" | "blush" | "wake" | "missed" | "nomic">("");
+  // on Today the reminder card keeps a corner free for her (data-fairy-perch), so she sits there instead of over its text
+  const [perch, setPerch] = useState<HTMLElement | null>(null);
+  useEffect(() => {
+    const el = document.querySelector<HTMLElement>("[data-fairy-perch]");
+    if (el !== perch) setPerch(el);
+  });
+  // while her bubble is up, the page gets extra room at the bottom so the last card can scroll clear of it
+  const talking = useRef(false);
+  talking.current = false;
+  useEffect(() => {
+    document.documentElement.classList.toggle("fairy-talking", talking.current);
+  });
   const unread = unreadOf({ messages, heardLocal });
   // she always speaks in her own little voice, never the grown-up warm voice Asha uses
   const say = (text: string) => void speak(text, voiceLang, "fairy");
@@ -350,6 +363,15 @@ export function FairyDock() {
   // on Today the reminder card already says it, so she stays small and quiet there and does not cover it;
   // with nothing to say she is small and quiet everywhere
   const quiet = !ear && ((tab === "today" && (kind === "due" || kind === "missed")) || (kind === "idle" && !bubble) || kind === "sleep");
+  talking.current = !quiet;
+  if (quiet && perch && tab === "today" && (kind === "due" || kind === "missed")) {
+    return createPortal(
+      <div data-fairy={kind} className="fairy-perched">
+        <FairyScene news={news} mood={mood} size="sm" label={bubble ? `${label}: ${bubble}` : label} onTap={onTap} />
+      </div>,
+      perch,
+    );
+  }
   return (
     <div data-fairy={kind} className={`fairy-dock fixed right-3 z-30 flex items-end gap-2 ${kind === "sleep" && !ear ? "fairy-dock-floor" : speaking ? "fairy-dock-up" : ""}`}>
       {quiet ? null : (
