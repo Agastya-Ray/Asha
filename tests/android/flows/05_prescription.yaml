@@ -1,0 +1,18 @@
+# Read a prescription photo from the gallery.
+appId: com.agastyaray.asha
+---
+- launchApp
+- tapOn: "Meds"
+- tapOn: "Choose from gallery"
+- waitForAnimationToEnd
+- takeScreenshot: 60-gallery-picker
+- tapOn:
+    point: "18%,30%"
+- waitForAnimationToEnd
+- takeScreenshot: 61-after-pick
+- extendedWaitUntil:
+    visible: "Check these names|.*could not be read.*|.*No internet.*|.*rest.*"
+    timeout: 60000
+- takeScreenshot: 62-prescription-result
+- scroll
+- takeScreenshot: 63-prescription-result-2

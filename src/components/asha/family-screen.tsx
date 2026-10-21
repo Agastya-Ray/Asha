@@ -109,6 +109,7 @@ function StartCircle() {
   const [label, setLabel] = useState(lang === "hi" ? "माँ" : "Maa");
   const [consent, setConsent] = useState<Consent>({ shareMeds: true, shareMeals: true, shareMood: true, shareMissed: true, digest: false, nudge: true });
   const [busy, setBusy] = useState(false);
+  const [slow, setSlow] = useState(false);
   const [error, setError] = useState("");
   return (
     <div className="py-5">
@@ -142,14 +143,30 @@ function StartCircle() {
           disabled={busy}
           onClick={async () => {
             setBusy(true);
+            setSlow(false);
             setError("");
-            const r = await saveCircle({ ...consent, label: label.trim() || name });
-            setBusy(false);
-            if (!r.ok) setError(sendError({ ok: false, error: r.error, status: 0 }, lang));
+            // the server can take a while on a slow connection; say so instead of looking stuck
+            const slowTimer = setTimeout(() => setSlow(true), 8000);
+            try {
+              const r = await saveCircle({ ...consent, label: label.trim() || name });
+              if (!r.ok) setError(sendError({ ok: false, error: r.error, status: 0 }, lang));
+            } catch {
+              // a throw here used to leave the button on "Creating…" for good
+              setError(t(lang, { en: "Something went wrong. Try again.", hi: "कुछ गड़बड़ हुई. फिर कोशिश करें." }));
+            } finally {
+              clearTimeout(slowTimer);
+              setBusy(false);
+              setSlow(false);
+            }
           }}
         >
           {busy ? t(lang, { en: "Creating…", hi: "बना रहे…" }) : t(lang, { en: "Create my family circle", hi: "मेरा परिवार बनाएँ" })}
         </Button>
+        {busy && slow ? (
+          <p className="mt-3 text-base text-quiet">
+            {t(lang, { en: "Still working. This can take up to a minute on a slow connection.", hi: "अभी भी चल रहा है. धीमे इंटरनेट पर एक मिनट तक लग सकता है." })}
+          </p>
+        ) : null}
       </div>
     </div>
   );

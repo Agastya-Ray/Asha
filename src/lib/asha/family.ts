@@ -131,6 +131,7 @@ async function call<T>(action: string, body: Record<string, unknown> = {}, timeo
   const s = useFamily.getState();
   const ctrl = new AbortController();
   const timer = setTimeout(() => ctrl.abort(), timeoutMs);
+  const started = performance.now();
   try {
     const res = await fetch(FAMILY_URL, {
       method: "POST",
@@ -139,6 +140,8 @@ async function call<T>(action: string, body: Record<string, unknown> = {}, timeo
       signal: ctrl.signal,
     });
     const data = (await res.json().catch(() => ({}))) as Record<string, unknown>;
+    // how long each family call takes, so a slow run shows which call it was
+    console.info(`[family] ${action} http ${res.status} in ${Math.round(performance.now() - started)} ms`);
     useFamily.setState({ online: true });
     if (!res.ok || !data.ok) {
       if (res.status === 401 && action !== "register") {
@@ -149,6 +152,7 @@ async function call<T>(action: string, body: Record<string, unknown> = {}, timeo
     }
     return data as T & { ok: true };
   } catch {
+    console.info(`[family] ${action} failed after ${Math.round(performance.now() - started)} ms`);
     useFamily.setState({ online: false });
     return { ok: false, error: "network", status: 0 };
   } finally {

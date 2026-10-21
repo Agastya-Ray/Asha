@@ -1,0 +1,70 @@
+# Walk every tab like a user would, scrolling each.
+appId: com.agastyaray.asha
+---
+- launchApp
+- extendedWaitUntil:
+    visible: "Good morning.*"
+    timeout: 20000
+- waitForAnimationToEnd
+- takeScreenshot: 30-today-top
+- scrollUntilVisible:
+    element: "Metformin.*"
+    direction: DOWN
+    timeout: 20000
+    optional: true
+- takeScreenshot: 30c-today-metformin-dose
+- scroll
+- takeScreenshot: 31-today-scrolled
+- tapOn: "Meds"
+- takeScreenshot: 32-meds
+- tapOn: "Care"
+- takeScreenshot: 33-care-top
+- scrollUntilVisible:
+    element: "Okay"
+    direction: DOWN
+    timeout: 20000
+- tapOn: "Okay"
+- scrollUntilVisible:
+    element: "Fasting sugar"
+    direction: DOWN
+    timeout: 20000
+- tapOn: "Fasting sugar"
+- tapOn:
+    below: "Fasting sugar"
+    optional: true
+- inputText: "132"
+- hideKeyboard
+- scroll
+- takeScreenshot: 34-care-checkin
+- scroll
+- takeScreenshot: 35-care-chart
+- scroll
+- takeScreenshot: 36-care-plate
+- tapOn: "Family"
+- extendedWaitUntil:
+    notVisible: "Opening your family circle.*"
+    timeout: 20000
+- takeScreenshot: 37-family
+- scroll
+- takeScreenshot: 38-family-scrolled
+- tapOn: "Talk"
+- takeScreenshot: 39-talk
+- tapOn:
+    text: "Turn on Pro on this phone"
+    optional: true
+- tapOn: "Or type here"
+- inputText: "Hello Asha. My knees hurt a little today."
+- hideKeyboard
+- tapOn: "Send"
+- extendedWaitUntil:
+    notVisible: "Asha is thinking.*"
+    timeout: 40000
+- takeScreenshot: 40-talk-reply
+- tapOn: "Settings"
+- takeScreenshot: 41-settings
+- scroll
+- takeScreenshot: 42-settings-2
+- scroll
+- takeScreenshot: 43-settings-3
+- scroll
+- takeScreenshot: 44-settings-4

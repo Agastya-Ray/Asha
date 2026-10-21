@@ -1,0 +1,23 @@
+# The orange "So Asha never misses a reminder" card on Today.
+appId: com.agastyaray.asha
+---
+- launchApp
+- waitForAnimationToEnd
+- takeScreenshot: 20-today-reminder-card
+- tapOn:
+    text: "1. Allow reminders on screen"
+    optional: true
+- takeScreenshot: 21-notification-permission-dialog
+- tapOn:
+    text: "Allow"
+    optional: true
+- waitForAnimationToEnd
+- takeScreenshot: 22-after-allow-notifications
+- tapOn:
+    text: "2. Allow exact times"
+    optional: true
+- waitForAnimationToEnd
+- takeScreenshot: 23-exact-alarm-settings
+- back
+- waitForAnimationToEnd
+- takeScreenshot: 24-back-from-exact-alarm
