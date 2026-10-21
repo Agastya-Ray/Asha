@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import { cn } from "@/lib/cn";
 import { useNow } from "@/components/asha/bits";
 import { useSpeech } from "@/lib/asha/voice";
+import { fairySound } from "@/lib/asha/sfx";
 import { Pixie, type PixieMood } from "@/components/asha/pixie";
 
 /**
@@ -77,7 +78,10 @@ export function FairyScene({
       return;
     }
     setPet("peek");
-    timers.current = [window.setTimeout(() => setPet("tumble"), 900), window.setTimeout(() => setPet("envelope"), 1900)];
+    timers.current = [window.setTimeout(() => {
+        setPet("tumble");
+        fairySound("pop");
+      }, 900), window.setTimeout(() => setPet("envelope"), 1900)];
     return () => timers.current.forEach((t) => window.clearTimeout(t));
   }, [news]);
   // re-checked every 30 s, so she falls asleep at night and wakes up without a reload

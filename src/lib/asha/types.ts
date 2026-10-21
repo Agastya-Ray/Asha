@@ -119,6 +119,7 @@ export type Persist = {
   pro: boolean;
   voiceOn: boolean;
   richVoice: boolean;
+  fairySounds: boolean;
   speakOnOpen: boolean;
   keepAwake: boolean;
   reminded: string[];

@@ -44,6 +44,7 @@ export const initialPersist = (): Persist => ({
   pro: false,
   voiceOn: true,
   richVoice: true,
+  fairySounds: true,
   speakOnOpen: true,
   keepAwake: false,
   reminded: [],
@@ -93,7 +94,7 @@ type State = Persist & {
     patch: Partial<
       Pick<
         Persist,
-        "voiceOn" | "richVoice" | "speakOnOpen" | "keepAwake" | "pro" | "sosAutoSms" | "familyAlert" | "dailyGreetings" | "wakeTime" | "sleepTime"
+        "voiceOn" | "richVoice" | "fairySounds" | "speakOnOpen" | "keepAwake" | "pro" | "sosAutoSms" | "familyAlert" | "dailyGreetings" | "wakeTime" | "sleepTime"
       >
     >,
   ) => void;
