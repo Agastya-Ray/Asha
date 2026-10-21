@@ -99,11 +99,12 @@ adb logcat -c
 
 # a prescription photo in the gallery for the photo-reading test
 if command -v convert >/dev/null; then
-  convert -size 900x1200 xc:white -font DejaVu-Sans -pointsize 38 -fill black \
+  # larger type, a slight blur and grain so it looks like a phone photo of a paper slip
+  convert -size 900x1200 xc:white -font DejaVu-Sans -pointsize 46 -fill black \
     -annotate +60+120 "Dr. R. Sharma, MBBS, MD" -annotate +60+180 "Patient: Kamla Devi   Age 68" \
     -annotate +60+300 "Rx" -annotate +60+380 "1. Tab Metformin 500 mg   1-0-1   after food" \
     -annotate +60+460 "2. Tab Amlodipine 5 mg   OD   morning" -annotate +60+540 "3. Tab Paracetamol 650 mg   SOS for pain" \
-    -annotate +60+640 "x 30 days" -annotate +60+1000 "Sign: R. Sharma" /tmp/rx.jpg
+    -annotate +60+640 "x 30 days" -annotate +60+1000 "Sign: R. Sharma" -blur 0x0.6 -attenuate 0.2 +noise Gaussian /tmp/rx.jpg
   adb push /tmp/rx.jpg /sdcard/Pictures/prescription.jpg >/dev/null
   adb shell am broadcast -a android.intent.action.MEDIA_SCANNER_SCAN_FILE -d file:///sdcard/Pictures/prescription.jpg >/dev/null
 fi
@@ -168,7 +169,8 @@ shot 75-back-in-asha
 # --- Hindi and the largest text, tapped by screen position (Maestro's text bounds sat under the bottom nav) ---
 # the Help flow leaves the app on Help, and a relaunch reopens Help, so go back to Today for its Settings button
 adb shell am force-stop $PKG; adb shell monkey -p $PKG -c android.intent.category.LAUNCHER 1 >/dev/null 2>&1; sleep 15
-if [ -n "$(center_webview "^Hold for help$")" ]; then adb shell input keyevent KEYCODE_BACK; log "went back from Help to Today"; sleep 3; fi
+xy=$(find_webview "^Today$")
+if [ -n "$xy" ]; then adb shell input tap $xy; log "tapped the Today tab at $xy"; sleep 3; else log "no Today tab in the dump; trying Settings anyway"; fi
 xy=$(center_webview "^Settings$|^सेटिंग$")
 if [ -z "$xy" ]; then log "Settings not found in the dump; using the header gear position"; xy="758 228"; fi
 adb shell input tap $xy; sleep 3; shot 39a-settings-opened
