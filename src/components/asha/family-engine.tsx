@@ -239,7 +239,8 @@ export function FairyDock() {
     if (n.kind === "due") {
       kind = n.late ? "missed" : "due";
       bubble = nudgeBubble(n, lang);
-      mood = "idle";
+      // she points at the reminder
+      mood = "point";
       label = t(lang, { en: "Hear the reminder", hi: "याद दिलाना सुनें" });
       onTap = () => {
         say(n.item.say);
@@ -271,7 +272,7 @@ export function FairyDock() {
     } else if (n.kind === "cheer" && rested !== restKey) {
       kind = "cheer";
       bubble = nudgeBubble(n, lang);
-      mood = "happy";
+      mood = "jump";
       label = t(lang, { en: "Well done", hi: "शाबाश" });
       onTap = () => {
         say(bubble);
@@ -301,7 +302,7 @@ export function FairyDock() {
             : ear === "shy"
               ? t(lang, { en: "Hee hee… aww.", hi: "ही ही… अरे." })
               : t(lang, { en: "Hello! I'm right here.", hi: "नमस्ते! मैं यहीं हूँ." });
-    mood = ear === "listening" ? "asking" : ear === "thinking" ? "thinking" : ear === "missed" ? "sad" : ear === "shy" ? "shy" : "happy";
+    mood = ear === "listening" ? "asking" : ear === "thinking" ? "thinking" : ear === "missed" ? "sad" : ear === "shy" ? "shy" : "wave";
   }
 
   // on Today the reminder card already says it, so she stays small and quiet there and does not cover it;
@@ -320,31 +321,37 @@ export function FairyDock() {
         </div>
       )}
       <Flitter on={kind === "idle" && !ear}>
-        <FairyScene news={news} mood={mood} size={quiet ? "sm" : "md"} floor={kind === "sleep"} label={quiet && bubble ? `${label}: ${bubble}` : label} onTap={onTap} />
+        {(pose) => (
+          <FairyScene news={news} mood={pose || mood} size={quiet ? "sm" : "md"} floor={kind === "sleep"} label={quiet && bubble ? `${label}: ${bubble}` : label} onTap={onTap} />
+        )}
       </Flitter>
     </div>
   );
 }
 
-/** With nothing to do, every half minute or so she takes off and flies a loop around the screen, then settles back. */
-function Flitter({ on, children }: { on: boolean; children: ReactNode }) {
-  const [flying, setFlying] = useState(false);
+/** With nothing to do, every half minute or so she either flies a loop around the screen or sits down for a rest. */
+function Flitter({ on, children }: { on: boolean; children: (pose: "fly" | "sit" | undefined) => ReactNode }) {
+  const [pose, setPose] = useState<"fly" | "sit" | undefined>();
   useEffect(() => {
-    if (!on) return setFlying(false);
+    if (!on) return setPose(undefined);
     let t = 0;
     const next = () => {
       t = window.setTimeout(() => {
-        setFlying(true);
-        t = window.setTimeout(() => {
-          setFlying(false);
-          next();
-        }, 6000);
+        const fly = Math.random() < 0.6;
+        setPose(fly ? "fly" : "sit");
+        t = window.setTimeout(
+          () => {
+            setPose(undefined);
+            next();
+          },
+          fly ? 6000 : 12000,
+        );
       }, 20000 + Math.random() * 15000);
     };
     next();
     return () => window.clearTimeout(t);
   }, [on]);
-  return <div className={flying ? "fairy-flit" : undefined}>{children}</div>;
+  return <div className={pose === "fly" ? "fairy-flit" : undefined}>{children(pose)}</div>;
 }
 
 const GO_AWAY = /\b(go away|leave me|bye|go to sleep|not now|stop)\b|चली जाओ|जाओ|बाय|सो जाओ|अभी नहीं/i;

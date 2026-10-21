@@ -9,17 +9,37 @@ import sad from "@/assets/fairy/sad.webp";
 import shy from "@/assets/fairy/shy.webp";
 import yawn from "@/assets/fairy/yawn.webp";
 import sleep from "@/assets/fairy/sleep.webp";
+import wave from "@/assets/fairy/wave.webp";
+import jump from "@/assets/fairy/jump.webp";
+import fly from "@/assets/fairy/fly.webp";
+import point from "@/assets/fairy/point.webp";
+import sit from "@/assets/fairy/sit.webp";
 
 /**
  * Asha's fairy: a chibi girl with big teal eyes, long golden hair, a flower crown, a red dress and
- * teal butterfly wings, one picture per mood (cut from Agastya's character sheet). Sleepy or shy she
+ * teal butterfly wings, one picture per mood or pose (cut from Agastya's character sheets): waving hello,
+ * flying, pointing at a reminder, jumping for joy, sitting down to rest. Sleepy or shy she
  * hides under a big leaf; asleep she lies on the floor under it. Motion (bobbing, leaning toward a tap,
  * sparkles, z's) is added on top in CSS.
  */
 
-export type PixieMood = "idle" | "happy" | "sleep" | "talk" | "sad" | "yawn" | "thinking" | "asking" | "shy";
+export type PixieMood =
+  | "idle"
+  | "happy"
+  | "sleep"
+  | "talk"
+  | "sad"
+  | "yawn"
+  | "thinking"
+  | "asking"
+  | "shy"
+  | "wave"
+  | "jump"
+  | "fly"
+  | "point"
+  | "sit";
 
-const ART: Record<PixieMood, string> = { idle, happy, thinking, asking, talk, sad, shy, yawn, sleep };
+const ART: Record<PixieMood, string> = { idle, happy, thinking, asking, talk, sad, shy, yawn, sleep, wave, jump, fly, point, sit };
 
 type Look = { x: number; y: number } | undefined;
 
@@ -40,10 +60,10 @@ export function Pixie({ mood = "idle", look, className, style }: { mood?: PixieM
 /** Little extras around her: sparkles when happy, a thought bubble, a question mark, falling z's. */
 function Extras({ mood }: { mood: PixieMood }) {
   const star = "M0 -6 L1.4 -1.4 L6 0 L1.4 1.4 L0 6 L-1.4 1.4 L-6 0 L-1.4 -1.4 Z";
-  if (mood === "happy" || mood === "shy")
+  if (mood === "happy" || mood === "jump" || mood === "shy")
     return (
       <svg viewBox="0 0 100 120" className="pixie-sparkles pointer-events-none absolute inset-0 h-full w-full overflow-visible">
-        {(mood === "happy"
+        {(mood !== "shy"
           ? [
               [8, 30, 1],
               [92, 26, 0.8],

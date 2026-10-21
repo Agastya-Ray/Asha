@@ -597,7 +597,29 @@ body {
     transform: translateY(-5%) scale(1.01, 0.99);
   }
 }
-.pixie-happy .pixie-art {
+.pixie-wave .pixie-art {
+  animation: pixie-sway 1.2s ease-in-out infinite;
+}
+.pixie-fly .pixie-art {
+  animation: pixie-bob 0.9s ease-in-out infinite;
+}
+.pixie-point .pixie-art {
+  animation: pixie-nudge 1.4s ease-in-out infinite;
+}
+@keyframes pixie-nudge {
+  0%,
+  100% {
+    transform: translateX(0);
+  }
+  50% {
+    transform: translateX(-4%) rotate(-2deg);
+  }
+}
+.pixie-sit .pixie-art {
+  animation: pixie-breathe 3.4s ease-in-out infinite;
+}
+.pixie-happy .pixie-art,
+.pixie-jump .pixie-art {
   animation: pixie-hop 0.9s ease-in-out infinite;
 }
 @keyframes pixie-hop {
