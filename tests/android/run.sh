@@ -161,9 +161,9 @@ sleep 3; shot 71-help-after-hold
 xy=$(center "Allow|While using the app|Only this time"); [ -n "$xy" ] && { shot 72-help-location-prompt; adb shell input tap $xy; sleep 8; }
 shot 73-help-after-location
 sleep 5; shot 74-help-call
-adb shell input keyevent KEYCODE_ENDCALL; adb shell input keyevent KEYCODE_BACK; sleep 2
-# the emergency call leaves the dialer in front; stop it so the Hindi block starts from Asha
-adb shell am force-stop com.google.android.dialer; sleep 2
+# KEYCODE_ENDCALL with no call active turns the screen off, so wake it again after closing the dialer
+adb shell input keyevent KEYCODE_BACK; sleep 2
+adb shell am force-stop com.google.android.dialer; adb shell input keyevent KEYCODE_WAKEUP; sleep 2
 shot 75-back-in-asha
 
 # --- Hindi and the largest text, tapped by screen position (Maestro's text bounds sat under the bottom nav) ---
