@@ -17,3 +17,13 @@ appId: com.agastyaray.asha
 - takeScreenshot: 51-family-after-start
 - scroll
 - takeScreenshot: 52-family-after-start-2
+- extendedWaitUntil:
+    visible: "Make an invite code|Make a new code|Their code.*"
+    timeout: 45000
+- tapOn:
+    text: "Make an invite code"
+    optional: true
+- extendedWaitUntil:
+    visible: "Their code.*"
+    timeout: 30000
+- takeScreenshot: 53-family-invite-code
