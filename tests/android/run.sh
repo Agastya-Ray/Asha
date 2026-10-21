@@ -308,7 +308,8 @@ if [ -n "$xy" ]; then for i in $(seq 15); do adb shell input tap $xy; done; slee
 else log "stress 7: fairy not found in the app (she may be away)"; shot s7a-no-fairy; fi
 alive 7a-rapid-taps-app
 adb shell appops set $PKG SYSTEM_ALERT_WINDOW allow
-adb shell input keyevent KEYCODE_HOME; sleep 8
+adb shell input keyevent KEYCODE_HOME
+adb shell am broadcast -f 0x20 -a android.intent.action.BOOT_COMPLETED -n $PKG/.BootReceiver >/dev/null; sleep 8
 adb shell dumpsys window windows > "$OUT/stress-windows.txt" 2>/dev/null
 xy=$(awk -v p="$PKG" '/^  Window #/{inw=index($0, p "}")>0; o=0} inw&&/ty=APPLICATION_OVERLAY/{o=1} inw&&o&&match($0,/[Ff]rame=\[[0-9]+,[0-9]+\]\[[0-9]+,[0-9]+\]/){f=substr($0,RSTART,RLENGTH); sub(/^[^[]*\[/,"",f); split(f,a,/[^0-9]+/); print int((a[1]+a[3])/2), int((a[2]+a[4])/2); exit}' "$OUT/stress-windows.txt")
 if [ -n "$xy" ]; then for i in $(seq 15); do adb shell input tap $xy; done; sleep 4; shot s7b-after-rapid-taps-floating; log "stress 7: tapped the floating fairy 15 times at $xy"
