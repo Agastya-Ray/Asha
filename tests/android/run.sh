@@ -231,6 +231,86 @@ sleep 90; fairy_check 3-after-idle
 setclock 101523102026.00
 adb shell am broadcast -f 0x20 -a android.intent.action.TIME_SET -n $PKG/.BootReceiver >/dev/null
 sleep 5; fairy_check 4-night
+
+# ---- stress: the user says no to permissions, goes offline, and taps the fairy over and over ----
+# Asha must keep running (no crash, no blank screen) and say what is missing in plain words
+fatal_count() { adb logcat -d | grep -A3 "FATAL EXCEPTION" | grep -c "Process: $PKG" || true; }
+FATAL0=$(fatal_count)
+alive() {
+  local now; now=$(fatal_count)
+  if [ "$now" != "$FATAL0" ]; then FAILED=1; log "stress $1: Asha CRASHED (see logcat-full.txt)"; FATAL0=$now
+  elif [ -z "$(adb shell pidof $PKG | tr -d '\r')" ]; then FAILED=1; log "stress $1: Asha is NOT running"
+  else log "stress $1: Asha still running"; fi
+}
+relaunch() { adb shell am force-stop $PKG; adb shell monkey -p $PKG -c android.intent.category.LAUNCHER 1 >/dev/null 2>&1; sleep 15; }
+# a morning again, with the floating fairy off so she cannot sit on the controls
+setclock 101608302026.00
+adb shell "sed -i '/name=\"bubble\"/d' $PREFS"
+adb shell am force-stop $PKG
+
+# 1. notifications refused
+adb shell pm revoke $PKG android.permission.POST_NOTIFICATIONS && log "stress: notifications refused"
+relaunch; shot s1-no-notifications
+[ -n "$(center_webview 'Allow reminders on screen')" ] && log "stress 1: Today asks again to allow reminders" || { FAILED=1; log "stress 1: no 'Allow reminders on screen' step on Today"; }
+alive 1-no-notifications
+
+# 2. exact alarms refused
+adb shell appops set $PKG SCHEDULE_EXACT_ALARM deny && log "stress: exact alarms refused"
+relaunch; shot s2-no-exact-alarms
+[ -n "$(center_webview 'Allow exact times')" ] && log "stress 2: Today asks for exact times" || { FAILED=1; log "stress 2: no 'Allow exact times' step on Today"; }
+alive 2-no-exact-alarms
+
+# 3. microphone refused: tap Tell Asha, answer "Don't allow" in the system prompt
+adb shell pm revoke $PKG android.permission.RECORD_AUDIO && log "stress: microphone permission reset"
+xy=$(find_webview "^Tell Asha$")
+if [ -n "$xy" ]; then
+  adb shell input tap $xy; sleep 3; shot s3a-mic-prompt
+  xy=$(center "(?i)don.t allow"); [ -n "$xy" ] && { adb shell input tap $xy; log "stress 3: said Don't allow to the microphone"; } || log "stress 3: no microphone prompt shown"
+  sleep 3; shot s3b-after-mic-refused
+  # and again: Android stops asking after two refusals, so the app must explain it by itself
+  xy=$(find_webview "^Tell Asha$"); [ -n "$xy" ] && adb shell input tap $xy; sleep 3
+  xy=$(center "(?i)don.t allow"); [ -n "$xy" ] && adb shell input tap $xy
+  sleep 3; shot s3c-mic-refused-twice
+else FAILED=1; log "stress 3: no Tell Asha button"; fi
+alive 3-no-microphone
+
+# 4. location refused: open Help (the SOS button itself is not pressed here)
+adb shell pm revoke $PKG android.permission.ACCESS_FINE_LOCATION 2>/dev/null; adb shell pm revoke $PKG android.permission.ACCESS_COARSE_LOCATION 2>/dev/null
+log "stress: location refused"
+relaunch
+xy=$(center_webview "^Help$"); [ -n "$xy" ] && adb shell input tap $xy; sleep 4; shot s4-help-no-location
+alive 4-no-location
+
+# 5. "display over other apps" refused while the floating fairy is switched on
+adb shell input keyevent KEYCODE_HOME; adb shell am force-stop $PKG
+adb shell "sed -i 's#</map>#    <boolean name=\"bubble\" value=\"true\" />\n</map>#' $PREFS"
+adb shell appops set $PKG SYSTEM_ALERT_WINDOW deny && log "stress: display over other apps refused"
+adb shell am broadcast -f 0x20 -a android.intent.action.BOOT_COMPLETED -n $PKG/.BootReceiver >/dev/null; sleep 8
+shot s5-no-overlay-home
+relaunch; shot s5-no-overlay-app
+alive 5-no-overlay
+
+# 6. offline: no Wi-Fi, no mobile data
+adb shell svc wifi disable; adb shell svc data disable; log "stress: phone offline"
+relaunch; shot s6a-offline-today
+xy=$(find_webview "^Family$"); [ -n "$xy" ] && { adb shell input tap $xy; sleep 4; shot s6b-offline-family; }
+xy=$(find_webview "^Talk$"); [ -n "$xy" ] && { adb shell input tap $xy; sleep 3; shot s6c-offline-talk; }
+alive 6-offline
+adb shell svc wifi enable; adb shell svc data enable; log "stress: phone online again"
+
+# 7. rapid taps: 15 quick taps on the fairy in the app, then on the floating fairy over the home screen
+relaunch
+xy=$(find_webview "^Chintu$")
+if [ -n "$xy" ]; then for i in $(seq 15); do adb shell input tap $xy; done; sleep 3; shot s7a-after-rapid-taps-app; log "stress 7: tapped the fairy 15 times at $xy"
+else log "stress 7: fairy not found in the app (she may be away)"; shot s7a-no-fairy; fi
+alive 7a-rapid-taps-app
+adb shell appops set $PKG SYSTEM_ALERT_WINDOW allow
+adb shell input keyevent KEYCODE_HOME; sleep 8
+adb shell dumpsys window windows > "$OUT/stress-windows.txt" 2>/dev/null
+xy=$(awk -v p="$PKG" '/^  Window #/{inw=index($0, p "}")>0; o=0} inw&&/ty=APPLICATION_OVERLAY/{o=1} inw&&o&&match($0,/[Ff]rame=\[[0-9]+,[0-9]+\]\[[0-9]+,[0-9]+\]/){f=substr($0,RSTART,RLENGTH); sub(/^[^[]*\[/,"",f); split(f,a,/[^0-9]+/); print int((a[1]+a[3])/2), int((a[2]+a[4])/2); exit}' "$OUT/stress-windows.txt")
+if [ -n "$xy" ]; then for i in $(seq 15); do adb shell input tap $xy; done; sleep 4; shot s7b-after-rapid-taps-floating; log "stress 7: tapped the floating fairy 15 times at $xy"
+else log "stress 7: floating fairy window not found"; shot s7b-no-floating-fairy; fi
+alive 7b-rapid-taps-floating
 kill $CONSOLE_PID 2>/dev/null || true
 adb logcat -d > "$OUT/logcat-full.txt"
 # the app logs its family-circle config, including a secret; keep it out of the published results
