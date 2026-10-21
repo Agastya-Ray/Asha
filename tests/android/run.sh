@@ -207,7 +207,8 @@ fairy_check() {
   adb shell dumpsys activity services $PKG > "$OUT/fairy-$name-services.txt" 2>/dev/null
   adb shell dumpsys window windows > "$OUT/fairy-$name-windows.txt" 2>/dev/null
   shot "fairy-$name"
-  if grep -q "FairyBubbleService" "$OUT/fairy-$name-services.txt" && grep -q "APPLICATION_OVERLAY" "$OUT/fairy-$name-windows.txt"; then log "fairy $name: floating fairy is on screen"
+  # Asha's own overlay window, actually drawn (other apps' overlays, like the system's ShellDropTarget, do not count)
+  if awk -v p="$PKG" '/^  Window #/{inw=index($0, p "}")>0} inw&&/ty=APPLICATION_OVERLAY/{o=1} inw&&o&&/isReadyForDisplay\(\)=true/{ok=1} END{exit !ok}' "$OUT/fairy-$name-windows.txt"; then log "fairy $name: floating fairy is on screen"
   else FAILED=1; log "fairy $name: floating fairy is MISSING"; fi
 }
 adb shell appops set $PKG SYSTEM_ALERT_WINDOW allow && log "fairy: display over other apps allowed"
