@@ -102,7 +102,7 @@ export function FairyDock() {
   const [bye, setBye] = useState<"" | "ask" | "sad" | "brave" | "yawn" | "lie" | "gone">("");
   const [awayUntil, setAwayUntil] = useState(readAway);
   // she listens when tapped: what you say goes to the same helper as "Tell Asha"
-  const [ear, setEar] = useState<"" | "listening" | "thinking" | "hello" | "missed">("");
+  const [ear, setEar] = useState<"" | "listening" | "thinking" | "hello" | "shy" | "missed">("");
   const unread = unreadOf({ messages, heardLocal });
   const say = (text: string) => void speak(text, voiceLang, rich ? "warm" : "device");
 
@@ -118,10 +118,17 @@ export function FairyDock() {
   let kind = "";
 
   const later = (ms: number, f: () => void) => window.setTimeout(f, ms);
+  // a greeting makes her peek out shyly from under her leaf first, then beam
   const hello = () => {
-    setEar("hello");
+    setEar("shy");
+    later(1300, () => setEar("hello"));
     say(t(voiceLang, { en: `Hello${name ? ` ${name}` : ""}! I'm right here with you.`, hi: `नमस्ते${name ? ` ${name} जी` : ""}! मैं यहीं आपके पास हूँ.` }));
-    later(3500, () => setEar(""));
+    later(4500, () => setEar(""));
+  };
+  const blush = () => {
+    setEar("shy");
+    say(t(voiceLang, { en: "Aww, stop it! You're making me shy.", hi: "अरे, बस करिए! मुझे शर्म आ रही है." }));
+    later(4000, () => setEar(""));
   };
   const askWhy = () => {
     setBye("ask");
@@ -142,6 +149,7 @@ export function FairyDock() {
       return askWhy();
     }
     if (GREETING.test(said)) return hello();
+    if (SWEET.test(said)) return blush();
     setEar("thinking");
     later(700, () => {
       setEar("");
@@ -290,8 +298,10 @@ export function FairyDock() {
           ? t(lang, { en: "Hmm, let me see…", hi: "हम्म, देखती हूँ…" })
           : ear === "missed"
             ? t(lang, { en: "I didn't catch that. Tap me and say it again?", hi: "सुनाई नहीं दिया. मुझे छूकर फिर बोलें?" })
-            : t(lang, { en: "Hello! I'm right here.", hi: "नमस्ते! मैं यहीं हूँ." });
-    mood = ear === "listening" ? "asking" : ear === "thinking" ? "thinking" : ear === "missed" ? "sad" : "happy";
+            : ear === "shy"
+              ? t(lang, { en: "Hee hee… aww.", hi: "ही ही… अरे." })
+              : t(lang, { en: "Hello! I'm right here.", hi: "नमस्ते! मैं यहीं हूँ." });
+    mood = ear === "listening" ? "asking" : ear === "thinking" ? "thinking" : ear === "missed" ? "sad" : ear === "shy" ? "shy" : "happy";
   }
 
   // on Today the reminder card already says it, so she stays small and quiet there and does not cover it;
@@ -338,6 +348,7 @@ function Flitter({ on, children }: { on: boolean; children: ReactNode }) {
 }
 
 const GO_AWAY = /\b(go away|leave me|bye|go to sleep|not now|stop)\b|चली जाओ|जाओ|बाय|सो जाओ|अभी नहीं/i;
+const SWEET = /\b(cute|pretty|beautiful|sweet|love you|thank you|thanks)\b|प्यारी|सुंदर|धन्यवाद|शुक्रिया/i;
 const GREETING = /\b(hello|hi|hey|how are you|good morning|good evening)\b|नमस्ते|हेलो|कैसी हो/i;
 
 const AWAY_KEY = "asha.fairy.away";

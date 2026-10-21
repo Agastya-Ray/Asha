@@ -584,7 +584,7 @@ body {
 }
 .pixie-wing-up,
 .pixie-wing-low {
-  transform-origin: 99px 128px;
+  transform-origin: 100px 152px;
   animation: pixie-flutter 0.42s ease-in-out infinite alternate;
 }
 .pixie-wing-low {
@@ -618,8 +618,7 @@ body {
     opacity: 0.75;
   }
 }
-.pixie-eyes {
-  transform-origin: 100px 84px;
+.pixie-eye {
   animation: pixie-blink 4.6s infinite;
 }
 @keyframes pixie-blink {
@@ -677,7 +676,7 @@ body {
   }
 }
 .pixie-mouth-talk {
-  transform-origin: 100px 102px;
+  transform-origin: 100px 123.5px;
   animation: pixie-talk 0.28s ease-in-out infinite alternate;
 }
 @keyframes pixie-talk {
@@ -689,7 +688,7 @@ body {
   }
 }
 .pixie-mouth-yawn {
-  transform-origin: 100px 103px;
+  transform-origin: 100px 124px;
   animation: pixie-talk 1.2s ease-in-out infinite alternate;
 }
 .pixie-happy .pixie-fly {
@@ -705,7 +704,7 @@ body {
   }
 }
 .pixie-thinking .pixie-head {
-  transform-origin: 100px 110px;
+  transform-origin: 100px 140px;
   animation: pixie-tilt 3s ease-in-out infinite;
 }
 @keyframes pixie-tilt {
@@ -718,7 +717,7 @@ body {
   }
 }
 .pixie-asking .pixie-head {
-  transform-origin: 100px 110px;
+  transform-origin: 100px 140px;
   transform: rotate(-7deg);
 }
 .pixie-thought circle,
@@ -729,7 +728,7 @@ body {
   animation: fairy-tear 1.8s ease-in infinite;
 }
 .pixie-breathe {
-  transform-origin: 130px 144px;
+  transform-origin: 130px 154px;
   animation: pixie-breathe 3.4s ease-in-out infinite;
 }
 @keyframes pixie-breathe {
@@ -785,5 +784,45 @@ body {
   }
   100% {
     transform: translate(0, 0) rotate(0deg);
+  }
+}
+/* sleepy or shy, she pulls the big leaf down over her head and peeks out */
+.pixie-leaf {
+  transform-origin: 135px 138px;
+  animation: pixie-leaf-up 0.7s ease-out both;
+}
+.pixie-shy .pixie-leaf {
+  animation: pixie-leaf-shy 0.7s ease-out both;
+}
+@keyframes pixie-leaf-up {
+  from {
+    transform: translateY(30px) rotate(10deg);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(8px);
+    opacity: 1;
+  }
+}
+@keyframes pixie-leaf-shy {
+  from {
+    transform: translateY(-10px) rotate(6deg);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(24px) rotate(7deg);
+    opacity: 1;
+  }
+}
+.pixie-shy .pixie-fly {
+  animation: pixie-sway 2.4s ease-in-out infinite;
+}
+@keyframes pixie-sway {
+  0%,
+  100% {
+    transform: rotate(-2deg);
+  }
+  50% {
+    transform: rotate(2deg) translateY(-3px);
   }
 }
