@@ -88,6 +88,7 @@ export function FairyDock() {
   const tab = useAsha((s) => s.tab);
   const setTab = useAsha((s) => s.setTab);
   const name = useAsha((s) => s.name);
+  const fairyName = useAsha((s) => s.fairyName);
   const meds = useAsha((s) => s.meds);
   const meals = useAsha((s) => s.meals);
   const doseLogs = useAsha((s) => s.doseLogs);
@@ -217,7 +218,7 @@ export function FairyDock() {
   if (bye === "lie") {
     return (
       <div data-fairy="bye-lie" className="fairy-dock fairy-dock-floor fairy-vanish-soft pointer-events-none fixed right-3 z-30">
-        <FairyScene news={false} mood="sleep" floor size="md" label={t(lang, { en: "Asha is asleep", hi: "आशा सो रही है" })} />
+        <FairyScene news={false} mood="sleep" floor size="md" label={fairyName ? t(lang, { en: `${fairyName} is asleep`, hi: `${fairyName} सो रही है` }) : t(lang, { en: "Your fairy is asleep", hi: "आपकी परी सो रही है" })} />
       </div>
     );
   }
@@ -229,7 +230,7 @@ export function FairyDock() {
           ? t(lang, { en: "Oh… *sniff*", hi: "ओह… *सुबक*" })
           : bye === "brave"
             ? t(lang, { en: "I'm still here to help, as a tiny friend or for your medicines.", hi: "मैं मदद के लिए यहीं हूँ, छोटी दोस्त या दवाइयों के लिए." })
-            : t(lang, { en: "*yawn* Good night! See you soon.", hi: "*उबासी* शुभ रात्रि! जल्दी मिलेंगे." });
+            : t(lang, { en: `*yawn* Good night${name ? `, ${name}` : ""}! See you soon.`, hi: `*उबासी* शुभ रात्रि${name ? ` ${name} जी` : ""}! जल्दी मिलेंगे.` });
     const face: FairyMood = bye === "ask" ? "asking" : bye === "sad" ? "sad" : bye === "brave" ? "happy" : "yawn";
     return (
       <div data-fairy={`bye-${bye}`} className={`fairy-dock fixed right-3 z-30 flex items-end gap-2 ${speaking ? "fairy-dock-up" : ""}`}>

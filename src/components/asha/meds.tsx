@@ -49,13 +49,19 @@ function oftenOf(med: Med): Often {
 }
 
 /** The whole plan in one plain sentence, so a person can check it at a glance. */
-export function medSummary(med: Med, lang: "en" | "hi") {
-  const often = oftenOf(med);
+export function medSummary(med: Med, lang: "en" | "hi", chosen?: Often) {
+  const often = chosen ?? oftenOf(med);
   const amount = med.dose.trim();
   if (often === "asNeeded") return t(lang, { en: `${amount}, only when needed.`, hi: `${amount}, सिर्फ़ ज़रूरत होने पर.` });
   const days = (med.days ?? []).slice().sort().map((d) => t(lang, WEEKDAYS[d].long));
-  const when = often === "daily" ? t(lang, { en: "every day", hi: "रोज़" }) : t(lang, { en: `on ${days.join(", ")}`, hi: `${days.join(", ")} को` });
-  const times = [...med.times].sort().map((x) => speakClock(lang, x));
+  const when =
+    often === "daily"
+      ? t(lang, { en: "every day", hi: "रोज़" })
+      : days.length
+        ? t(lang, { en: `on ${days.join(", ")}`, hi: `${days.join(", ")} को` })
+        : t(lang, { en: "on the days you tap", hi: "जिन दिनों पर टैप करें" });
+  // an emptied time box is not "twelve at night"
+  const times = [...new Set(med.times.filter(Boolean))].sort().map((x) => speakClock(lang, x));
   const at = times.join(t(lang, { en: " and ", hi: " और " }));
   return lang === "hi" ? `${amount}, ${when}, ${at}, ${foodLabel(med.food, lang)}.` : `${amount}, ${when}, at ${at}, ${foodLabel(med.food, lang).toLowerCase()}.`;
 }
@@ -231,10 +237,10 @@ export function MedEditor({
           {t(lang, { en: "Asha mentions a refill when 7 or fewer are left.", hi: "7 या कम बचें तो आशा रिफिल कहेगी." })}
         </p>
       </div>
-      {med.dose.trim() && (often === "asNeeded" || med.times.length) ? (
+      {med.dose.trim() && (often === "asNeeded" || med.times.some(Boolean)) ? (
         <p className="mt-5 rounded-2xl bg-sage-soft p-4 text-lg text-sage">
           {t(lang, { en: "So: ", hi: "यानी: " })}
-          {medSummary(med, lang)}
+          {medSummary(med, lang, often)}
         </p>
       ) : null}
       {hint ? <p className="mt-4 text-lg text-clay">{hint}</p> : null}
@@ -335,7 +341,7 @@ export function MedsScreen() {
         return {
           id: newId(),
           name: m.name,
-          dose: m.dose || (lang === "hi" ? "खुराक लिखें" : "Add the dose"),
+          dose: m.dose || "",
           times: times.length ? times : ["08:00"],
           food,
           note: [m.note, m.days > 0 ? (lang === "hi" ? `${m.days} दिन के लिए` : `For ${m.days} days`) : ""].filter(Boolean).join(" · "),
@@ -543,6 +549,7 @@ export function MedsScreen() {
                 <input
                   className="field mt-2"
                   value={draft.dose}
+                  placeholder={t(lang, { en: "How much? e.g. 1 tablet", hi: "कितनी? जैसे 1 गोली" })}
                   onChange={(e) =>
                     setDrafts((list) => list?.map((d) => (d.id === draft.id ? { ...d, dose: e.target.value } : d)) ?? null)
                   }
@@ -570,11 +577,20 @@ export function MedsScreen() {
                   setError(t(lang, { en: "Tick at least one medicine, or cancel.", hi: "कम से कम एक दवा चुनें, या रद्द करें." }));
                   return;
                 }
+                const noDose = chosen.find((d) => !d.dose.trim());
+                if (noDose) {
+                  setError(
+                    lang === "hi"
+                      ? `${noDose.name.trim()} कितनी लेनी है, यह लिखें. '1 गोली' भी काफ़ी है.`
+                      : `Write how much ${noDose.name.trim()} to take. Even '1 tablet' is enough.`,
+                  );
+                  return;
+                }
                 saveMeds(
                 chosen.map((d) => ({
                   id: d.id,
                   name: d.name.trim(),
-                  dose: d.dose,
+                  dose: d.dose.trim(),
                   times: d.times,
                   food: d.food,
                   note: d.note,
