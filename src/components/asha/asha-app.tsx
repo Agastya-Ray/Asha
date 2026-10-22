@@ -7,7 +7,7 @@ import { MedsScreen } from "@/components/asha/meds";
 import { FairyDock, FamilyEngine } from "@/components/asha/family-engine";
 import { FamilyHome } from "@/components/asha/family-home";
 import { FamilyScreen } from "@/components/asha/family-screen";
-import { Intro } from "@/components/asha/intro";
+import { FairyIntro } from "@/components/asha/fairy-intro";
 import { RoleChoice } from "@/components/asha/role-choice";
 import { Onboarding } from "@/components/asha/onboarding";
 import { Splash } from "@/components/asha/splash";
@@ -79,7 +79,7 @@ function Shell() {
         <Header />
         <main className="flex-1 px-4 pb-36">
           {!introSeen ? (
-            <Intro />
+            <FairyIntro />
           ) : !roleChosen ? (
             <RoleChoice />
           ) : familyMode ? (

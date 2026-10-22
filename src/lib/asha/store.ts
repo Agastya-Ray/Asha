@@ -24,6 +24,7 @@ export const initialPersist = (): Persist => ({
   lang: "en",
   voiceLang: "en",
   introSeen: false,
+  fairyName: "",
   appRole: "elder",
   roleChosen: false,
   textSize: "normal",
@@ -69,6 +70,7 @@ type State = Persist & {
   finishIntro: () => void;
   chooseRole: (role: AppRole) => void;
   replayIntro: () => void;
+  setFairyName: (name: string) => void;
   applyNativeActions: (actions: { key: string; action: string; at: number }[]) => void;
   setName: (name: string) => void;
   toggleCondition: (id: ConditionId) => void;
@@ -150,6 +152,7 @@ function sanitize(raw: unknown): Persist {
     deviceId: typeof r.deviceId === "string" && r.deviceId ? r.deviceId : uid(),
     // people who used the older version already know Asha
     introSeen: typeof r.introSeen === "boolean" ? r.introSeen : Boolean(r.onboarded),
+    fairyName: typeof r.fairyName === "string" ? r.fairyName.slice(0, 24) : "",
     appRole: r.appRole === "family" ? "family" : "elder",
     // people who already set up meds are the person cared for
     roleChosen: typeof r.roleChosen === "boolean" ? r.roleChosen : Boolean(r.onboarded),
@@ -158,7 +161,7 @@ function sanitize(raw: unknown): Persist {
     meds: Array.isArray(r.meds)
       ? r.meds
           .filter((m) => m && typeof m === "object" && typeof m.id === "string")
-          .map((m) => ({ ...m, name: String(m.name ?? ""), dose: String(m.dose ?? ""), times: Array.isArray(m.times) ? m.times.filter((t) => typeof t === "string") : [] }))
+          .map((m) => ({ ...m, name: String(m.name ?? ""), dose: String(m.dose ?? ""), times: Array.isArray(m.times) ? m.times.filter((t) => typeof t === "string") : [], days: Array.isArray(m.days) ? m.days.filter((d) => Number.isInteger(d) && d >= 0 && d <= 6) : undefined, asNeeded: m.asNeeded === true }))
       : [],
     meals: Array.isArray(r.meals) && r.meals.some((m) => m && typeof m.time === "string") ? r.meals.filter((m) => m && typeof m.time === "string") : defaultMeals(),
     doseLogs: Array.isArray(r.doseLogs) ? r.doseLogs : [],
@@ -196,6 +199,7 @@ export const useAsha = create<State>((set) => ({
   finishIntro: () => set({ introSeen: true }),
   chooseRole: (appRole) => set({ appRole, roleChosen: true, tab: appRole === "family" ? "family" : "today" }),
   replayIntro: () => set({ introSeen: false }),
+  setFairyName: (fairyName) => set({ fairyName: fairyName.trim().slice(0, 24) }),
   applyNativeActions: (actions) =>
     set((s) => {
       // Buttons pressed on the lock-screen card while the app was closed.

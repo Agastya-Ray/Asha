@@ -784,3 +784,72 @@ body {
     opacity: 0;
   }
 }
+
+/* ---------- fairy intro (fairy-intro.tsx) ---------- */
+.fi-night {
+  background: radial-gradient(circle at 50% 35%, #5b4f86 0, #34305a 60%, #25223f 100%);
+}
+.fi-sky {
+  background: radial-gradient(circle at 50% 25%, #fff6e0 0, #fde3ea 45%, #e9e2f7 100%);
+}
+.fi-oval {
+  width: min(82vw, 320px);
+  aspect-ratio: 4 / 5;
+  border-radius: 50% 50% 48% 48% / 46% 46% 54% 54%;
+  overflow: hidden;
+  background: linear-gradient(#cbd9f5 0, #f2d9e8 55%, #fbe9d8 78%);
+  box-shadow: 0 0 0 6px #ffffff22, 0 0 60px 10px #ffd9ec44;
+}
+.fi-moon {
+  position: absolute;
+  right: 18%;
+  top: 12%;
+  width: 14%;
+  aspect-ratio: 1;
+  border-radius: 50%;
+  background: #fff6d5;
+  box-shadow: 0 0 24px 6px #fff6d588;
+}
+.fi-hill {
+  position: absolute;
+  left: -10%;
+  right: -10%;
+  bottom: -12%;
+  height: 40%;
+  border-radius: 50% 50% 0 0;
+  background: linear-gradient(#a8d8a0, #7fbf7a);
+}
+.fi-sleeper {
+  position: absolute !important;
+  left: 8%;
+  right: 8%;
+  bottom: 18%;
+  height: 34%;
+}
+.fi-waker {
+  position: absolute !important;
+  left: 22%;
+  right: 22%;
+  bottom: 14%;
+  height: 58%;
+  animation: fi-rise 0.9s ease-out both;
+}
+@keyframes fi-rise {
+  from { opacity: 0; transform: translateY(14px) scale(0.96); }
+  to { opacity: 1; transform: none; }
+}
+.fi-hand {
+  animation: fi-poke 1.2s ease-in-out infinite;
+}
+@keyframes fi-poke {
+  50% { transform: translateY(-8px) scale(1.08); }
+}
+.fi-bubble {
+  animation: fi-rise 0.4s ease-out both;
+}
+.fi-row {
+  animation: fi-rise 0.5s ease-out both;
+}
+@media (prefers-reduced-motion: reduce) {
+  .fi-waker, .fi-hand, .fi-bubble, .fi-row { animation: none; }
+}
