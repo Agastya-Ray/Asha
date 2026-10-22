@@ -52,7 +52,14 @@ export function VoiceCommand() {
     setBusy(false);
     const said = r.text.trim();
     if (!said) {
-      setHeard(t(lang, { en: "I didn't catch that. Press and try again.", hi: "सुनाई नहीं दिया. दबाकर फिर बोलें." }));
+      setHeard(
+        r.problem === "denied"
+          ? t(lang, {
+              en: "Asha needs the microphone to hear you. Allow it in phone Settings → Apps → Asha → Permissions.",
+              hi: "सुनने के लिए आशा को माइक चाहिए. फ़ोन की सेटिंग → ऐप → आशा → अनुमतियाँ में माइक चालू करें.",
+            })
+          : t(lang, { en: "I didn't catch that. Press and try again.", hi: "सुनाई नहीं दिया. दबाकर फिर बोलें." }),
+      );
       return;
     }
     setHeard(`“${said}”`);

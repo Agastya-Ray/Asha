@@ -3,6 +3,14 @@ appId: com.agastyaray.asha
 ---
 - launchApp
 - tapOn: "Meds"
+# while Asha speaks the fairy rises, and her bubble sits over this part of the page; let her finish first
+- extendedWaitUntil:
+    notVisible: "Asha is speaking"
+    timeout: 30000
+- scrollUntilVisible:
+    element: "Choose from gallery"
+    # centre it, so the fairy and her bubble never sit on top of the button
+    centerElement: true
 - tapOn: "Choose from gallery"
 - waitForAnimationToEnd
 - takeScreenshot: 60-gallery-picker
