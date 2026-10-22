@@ -1,0 +1,176 @@
+Anonymous analytics enabled. To opt out, set MAESTRO_CLI_NO_ANALYTICS environment variable to any value before running Maestro.
+
+
+Command failed (shell,v2,raw:pm list packages --user 0 dev.mobile.maestro): closed
+
+The stack trace was:
+java.io.IOException: Command failed (shell,v2,raw:pm list packages --user 0 dev.mobile.maestro): closed
+	at dadb.adbserver.AdbServer.send$dadb(AdbServer.kt:103)
+	at dadb.adbserver.AdbServerDadb.open(AdbServer.kt:149)
+	at dadb.Dadb$DefaultImpls.openShell(Dadb.kt:42)
+	at dadb.adbserver.AdbServerDadb.openShell(AdbServer.kt:122)
+	at dadb.Dadb$DefaultImpls.shell(Dadb.kt:35)
+	at dadb.adbserver.AdbServerDadb.shell(AdbServer.kt:122)
+	at maestro.android.AndroidDeviceConnection.shell(AndroidDeviceConnection.kt:153)
+	at maestro.drivers.AndroidDriver.shell(AndroidDriver.kt:1352)
+	at maestro.drivers.AndroidDriver.isPackageInstalled(AndroidDriver.kt:1335)
+	at maestro.drivers.AndroidDriver.bestEffortUninstall(AndroidDriver.kt:1310)
+	at maestro.drivers.AndroidDriver.uninstallMaestroDriverApp$lambda$89(AndroidDriver.kt:1296)
+	at maestro.utils.Metrics.measured(Metrics.kt:48)
+	at maestro.drivers.AndroidDriver.uninstallMaestroDriverApp(AndroidDriver.kt:1295)
+	at maestro.drivers.AndroidDriver.installMaestroDriverApp$lambda$87(AndroidDriver.kt:1246)
+	at maestro.utils.Metrics.measured(Metrics.kt:48)
+	at maestro.drivers.AndroidDriver.installMaestroDriverApp(AndroidDriver.kt:1244)
+	at maestro.drivers.AndroidDriver.installMaestroApks(AndroidDriver.kt:1290)
+	at maestro.drivers.AndroidDriver.open(AndroidDriver.kt:113)
+	at maestro.Maestro$Companion.android(Maestro.kt:809)
+	at maestro.cli.session.MaestroSessionManager.createAndroid(MaestroSessionManager.kt:348)
+	at maestro.cli.session.MaestroSessionManager.createMaestro(MaestroSessionManager.kt:211)
+	at maestro.cli.session.MaestroSessionManager.newSession(MaestroSessionManager.kt:106)
+	at maestro.cli.session.MaestroSessionManager.newSession$default(MaestroSessionManager.kt:64)
+	at maestro.cli.command.TestCommand.runShardSuite(TestCommand.kt:477)
+	at maestro.cli.command.TestCommand.access$runShardSuite(TestCommand.kt:81)
+	at maestro.cli.command.TestCommand$handleSessions$1$results$1$1.invokeSuspend(TestCommand.kt:438)
+	at kotlin.coroutines.jvm.internal.BaseContinuationImpl.resumeWith(ContinuationImpl.kt:34)
+	at kotlinx.coroutines.DispatchedTask.run(DispatchedTask.kt:100)
+	at kotlinx.coroutines.internal.LimitedDispatcher$Worker.run(LimitedDispatcher.kt:124)
+	at kotlinx.coroutines.scheduling.TaskImpl.run(Tasks.kt:89)
+	at kotlinx.coroutines.scheduling.CoroutineScheduler.runSafely(CoroutineScheduler.kt:586)
+	at kotlinx.coroutines.scheduling.CoroutineScheduler$Worker.executeTask(CoroutineScheduler.kt:820)
+	at kotlinx.coroutines.scheduling.CoroutineScheduler$Worker.runWorker(CoroutineScheduler.kt:717)
+	at kotlinx.coroutines.scheduling.CoroutineScheduler$Worker.run(CoroutineScheduler.kt:704)
+
+Running on emulator-5554
+ > Flow 01_setup
+
+==== Debug output (logs & screenshots) ====
+
+/home/runner/work/Asha/Asha/results/maestro-01_setup/2026-10-22_193247
+Running on emulator-5554
+ > Flow 02_permissions
+
+==== Debug output (logs & screenshots) ====
+
+/home/runner/work/Asha/Asha/results/maestro-02_permissions/2026-10-22_193257
+Running on emulator-5554
+ > Flow 02_permissions
+
+==== Debug output (logs & screenshots) ====
+
+/home/runner/work/Asha/Asha/results/maestro-02_permissions/2026-10-22_193302
+
+Command failed (shell,v2,raw:pm list packages --user 0 dev.mobile.maestro): closed
+
+The stack trace was:
+java.io.IOException: Command failed (shell,v2,raw:pm list packages --user 0 dev.mobile.maestro): closed
+	at dadb.adbserver.AdbServer.send$dadb(AdbServer.kt:103)
+	at dadb.adbserver.AdbServerDadb.open(AdbServer.kt:149)
+	at dadb.Dadb$DefaultImpls.openShell(Dadb.kt:42)
+	at dadb.adbserver.AdbServerDadb.openShell(AdbServer.kt:122)
+	at dadb.Dadb$DefaultImpls.shell(Dadb.kt:35)
+	at dadb.adbserver.AdbServerDadb.shell(AdbServer.kt:122)
+	at maestro.android.AndroidDeviceConnection.shell(AndroidDeviceConnection.kt:153)
+	at maestro.drivers.AndroidDriver.shell(AndroidDriver.kt:1352)
+	at maestro.drivers.AndroidDriver.isPackageInstalled(AndroidDriver.kt:1335)
+	at maestro.drivers.AndroidDriver.bestEffortUninstall(AndroidDriver.kt:1310)
+	at maestro.drivers.AndroidDriver.uninstallMaestroDriverApp$lambda$89(AndroidDriver.kt:1296)
+	at maestro.utils.Metrics.measured(Metrics.kt:48)
+	at maestro.drivers.AndroidDriver.uninstallMaestroDriverApp(AndroidDriver.kt:1295)
+	at maestro.drivers.AndroidDriver.installMaestroDriverApp$lambda$87(AndroidDriver.kt:1246)
+	at maestro.utils.Metrics.measured(Metrics.kt:48)
+	at maestro.drivers.AndroidDriver.installMaestroDriverApp(AndroidDriver.kt:1244)
+	at maestro.drivers.AndroidDriver.installMaestroApks(AndroidDriver.kt:1290)
+	at maestro.drivers.AndroidDriver.open(AndroidDriver.kt:113)
+	at maestro.Maestro$Companion.android(Maestro.kt:809)
+	at maestro.cli.session.MaestroSessionManager.createAndroid(MaestroSessionManager.kt:348)
+	at maestro.cli.session.MaestroSessionManager.createMaestro(MaestroSessionManager.kt:211)
+	at maestro.cli.session.MaestroSessionManager.newSession(MaestroSessionManager.kt:106)
+	at maestro.cli.session.MaestroSessionManager.newSession$default(MaestroSessionManager.kt:64)
+	at maestro.cli.command.TestCommand.runShardSuite(TestCommand.kt:477)
+	at maestro.cli.command.TestCommand.access$runShardSuite(TestCommand.kt:81)
+	at maestro.cli.command.TestCommand$handleSessions$1$results$1$1.invokeSuspend(TestCommand.kt:438)
+	at kotlin.coroutines.jvm.internal.BaseContinuationImpl.resumeWith(ContinuationImpl.kt:34)
+	at kotlinx.coroutines.DispatchedTask.run(DispatchedTask.kt:100)
+	at kotlinx.coroutines.internal.LimitedDispatcher$Worker.run(LimitedDispatcher.kt:124)
+	at kotlinx.coroutines.scheduling.TaskImpl.run(Tasks.kt:89)
+	at kotlinx.coroutines.scheduling.CoroutineScheduler.runSafely(CoroutineScheduler.kt:586)
+	at kotlinx.coroutines.scheduling.CoroutineScheduler$Worker.executeTask(CoroutineScheduler.kt:820)
+	at kotlinx.coroutines.scheduling.CoroutineScheduler$Worker.runWorker(CoroutineScheduler.kt:717)
+	at kotlinx.coroutines.scheduling.CoroutineScheduler$Worker.run(CoroutineScheduler.kt:704)
+
+Running on emulator-5554
+ > Flow 03_tabs
+
+==== Debug output (logs & screenshots) ====
+
+/home/runner/work/Asha/Asha/results/maestro-03_tabs/2026-10-22_193526
+Running on emulator-5554
+ > Flow 04_family
+
+==== Debug output (logs & screenshots) ====
+
+/home/runner/work/Asha/Asha/results/maestro-04_family/2026-10-22_193536
+Running on emulator-5554
+ > Flow 04_family
+
+==== Debug output (logs & screenshots) ====
+
+/home/runner/work/Asha/Asha/results/maestro-04_family/2026-10-22_193541
+Running on emulator-5554
+ > Flow 05_prescription
+
+==== Debug output (logs & screenshots) ====
+
+/home/runner/work/Asha/Asha/results/maestro-05_prescription/2026-10-22_193550
+Running on emulator-5554
+ > Flow 05_prescription
+
+==== Debug output (logs & screenshots) ====
+
+/home/runner/work/Asha/Asha/results/maestro-05_prescription/2026-10-22_193556
+Running on emulator-5554
+ > Flow 06_help
+
+==== Debug output (logs & screenshots) ====
+
+/home/runner/work/Asha/Asha/results/maestro-06_help/2026-10-22_193605
+
+Command failed (shell,v2,raw:pm list packages --user 0 dev.mobile.maestro): closed
+
+The stack trace was:
+java.io.IOException: Command failed (shell,v2,raw:pm list packages --user 0 dev.mobile.maestro): closed
+	at dadb.adbserver.AdbServer.send$dadb(AdbServer.kt:103)
+	at dadb.adbserver.AdbServerDadb.open(AdbServer.kt:149)
+	at dadb.Dadb$DefaultImpls.openShell(Dadb.kt:42)
+	at dadb.adbserver.AdbServerDadb.openShell(AdbServer.kt:122)
+	at dadb.Dadb$DefaultImpls.shell(Dadb.kt:35)
+	at dadb.adbserver.AdbServerDadb.shell(AdbServer.kt:122)
+	at maestro.android.AndroidDeviceConnection.shell(AndroidDeviceConnection.kt:153)
+	at maestro.drivers.AndroidDriver.shell(AndroidDriver.kt:1352)
+	at maestro.drivers.AndroidDriver.isPackageInstalled(AndroidDriver.kt:1335)
+	at maestro.drivers.AndroidDriver.bestEffortUninstall(AndroidDriver.kt:1310)
+	at maestro.drivers.AndroidDriver.uninstallMaestroDriverApp$lambda$89(AndroidDriver.kt:1296)
+	at maestro.utils.Metrics.measured(Metrics.kt:48)
+	at maestro.drivers.AndroidDriver.uninstallMaestroDriverApp(AndroidDriver.kt:1295)
+	at maestro.drivers.AndroidDriver.installMaestroDriverApp$lambda$87(AndroidDriver.kt:1246)
+	at maestro.utils.Metrics.measured(Metrics.kt:48)
+	at maestro.drivers.AndroidDriver.installMaestroDriverApp(AndroidDriver.kt:1244)
+	at maestro.drivers.AndroidDriver.installMaestroApks(AndroidDriver.kt:1290)
+	at maestro.drivers.AndroidDriver.open(AndroidDriver.kt:113)
+	at maestro.Maestro$Companion.android(Maestro.kt:809)
+	at maestro.cli.session.MaestroSessionManager.createAndroid(MaestroSessionManager.kt:348)
+	at maestro.cli.session.MaestroSessionManager.createMaestro(MaestroSessionManager.kt:211)
+	at maestro.cli.session.MaestroSessionManager.newSession(MaestroSessionManager.kt:106)
+	at maestro.cli.session.MaestroSessionManager.newSession$default(MaestroSessionManager.kt:64)
+	at maestro.cli.command.TestCommand.runShardSuite(TestCommand.kt:477)
+	at maestro.cli.command.TestCommand.access$runShardSuite(TestCommand.kt:81)
+	at maestro.cli.command.TestCommand$handleSessions$1$results$1$1.invokeSuspend(TestCommand.kt:438)
+	at kotlin.coroutines.jvm.internal.BaseContinuationImpl.resumeWith(ContinuationImpl.kt:34)
+	at kotlinx.coroutines.DispatchedTask.run(DispatchedTask.kt:100)
+	at kotlinx.coroutines.internal.LimitedDispatcher$Worker.run(LimitedDispatcher.kt:124)
+	at kotlinx.coroutines.scheduling.TaskImpl.run(Tasks.kt:89)
+	at kotlinx.coroutines.scheduling.CoroutineScheduler.runSafely(CoroutineScheduler.kt:586)
+	at kotlinx.coroutines.scheduling.CoroutineScheduler$Worker.executeTask(CoroutineScheduler.kt:820)
+	at kotlinx.coroutines.scheduling.CoroutineScheduler$Worker.runWorker(CoroutineScheduler.kt:717)
+	at kotlinx.coroutines.scheduling.CoroutineScheduler$Worker.run(CoroutineScheduler.kt:704)
+
