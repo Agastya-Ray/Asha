@@ -10,6 +10,9 @@ on:
       api:
         description: "Android API level of the emulator (23 = Android 6, the oldest Asha supports)"
         default: "34"
+      gpu:
+        description: "Emulator GPU mode (swiftshader_indirect, or guest to render inside the emulator)"
+        default: "swiftshader_indirect"
 
 permissions:
   contents: write
@@ -59,7 +62,7 @@ jobs:
           arch: x86_64
           profile: pixel_6
           disable-animations: true
-          emulator-options: -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim -camera-back none
+          emulator-options: -no-window -gpu ${{ inputs.gpu || 'swiftshader_indirect' }} -noaudio -no-boot-anim -camera-back none
           script: OUT=$PWD/results APK=$PWD/Asha.apk bash tests/android/run.sh
       - name: Keep the results
         if: always()
