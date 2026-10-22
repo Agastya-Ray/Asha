@@ -8,6 +8,7 @@ import { FairyDock, FamilyEngine } from "@/components/asha/family-engine";
 import { FamilyHome } from "@/components/asha/family-home";
 import { FamilyScreen } from "@/components/asha/family-screen";
 import { FairyIntro } from "@/components/asha/fairy-intro";
+import { FairyTour } from "@/components/asha/fairy-guide";
 import { RoleChoice } from "@/components/asha/role-choice";
 import { Onboarding } from "@/components/asha/onboarding";
 import { Splash } from "@/components/asha/splash";
@@ -45,6 +46,7 @@ function Shell() {
   const lang = useAsha((s) => s.lang);
   const introSeen = useAsha((s) => s.introSeen);
   const roleChosen = useAsha((s) => s.roleChosen);
+  const tourDone = useAsha((s) => s.tourDone);
   const appRole = useAsha((s) => s.appRole);
   const familyMode = introSeen && roleChosen && appRole === "family";
   const textSize = useAsha((s) => s.textSize);
@@ -104,7 +106,8 @@ function Shell() {
         </main>
       </div>
       {onboarded && introSeen && roleChosen && !familyMode ? <Nav /> : null}
-      {onboarded && introSeen && roleChosen && !familyMode ? <FairyDock /> : null}
+      {onboarded && introSeen && roleChosen && !familyMode && tourDone ? <FairyDock /> : null}
+      {onboarded && introSeen && roleChosen && !familyMode && !tourDone && tab === "today" ? <FairyTour /> : null}
       <FamilyEngine />
       <Speaking docked={onboarded && introSeen && roleChosen && !familyMode} />
       <ReminderEngine />
@@ -151,6 +154,7 @@ function Header() {
             </button>
             <button
               type="button"
+              data-tour="help"
               onClick={() => setTab("sos")}
               className={cn(
                 "min-h-12 rounded-full px-4 text-lg font-bold",
@@ -179,7 +183,7 @@ function Nav() {
   const tab = useAsha((s) => s.tab);
   const setTab = useAsha((s) => s.setTab);
   return (
-    <nav aria-label={lang === "hi" ? "मुख्य" : "Main"} className="dock fixed inset-x-0 bottom-0 z-20 px-3">
+    <nav data-tour="nav" aria-label={lang === "hi" ? "मुख्य" : "Main"} className="dock fixed inset-x-0 bottom-0 z-20 px-3">
       <div className="nav-float mx-auto grid w-full max-w-lg grid-cols-5 p-1.5">
         {TABS.map((item) => {
           const Icon = item.icon;

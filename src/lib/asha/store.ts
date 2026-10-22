@@ -25,6 +25,7 @@ export const initialPersist = (): Persist => ({
   voiceLang: "en",
   introSeen: false,
   fairyName: "",
+  tourDone: false,
   appRole: "elder",
   roleChosen: false,
   textSize: "normal",
@@ -71,6 +72,7 @@ type State = Persist & {
   chooseRole: (role: AppRole) => void;
   replayIntro: () => void;
   setFairyName: (name: string) => void;
+  finishTour: () => void;
   applyNativeActions: (actions: { key: string; action: string; at: number }[]) => void;
   setName: (name: string) => void;
   toggleCondition: (id: ConditionId) => void;
@@ -153,6 +155,7 @@ function sanitize(raw: unknown): Persist {
     // people who used the older version already know Asha
     introSeen: typeof r.introSeen === "boolean" ? r.introSeen : Boolean(r.onboarded),
     fairyName: typeof r.fairyName === "string" ? r.fairyName.slice(0, 24) : "",
+    tourDone: typeof r.tourDone === "boolean" ? r.tourDone : Boolean(r.onboarded),
     appRole: r.appRole === "family" ? "family" : "elder",
     // people who already set up meds are the person cared for
     roleChosen: typeof r.roleChosen === "boolean" ? r.roleChosen : Boolean(r.onboarded),
@@ -200,6 +203,7 @@ export const useAsha = create<State>((set) => ({
   chooseRole: (appRole) => set({ appRole, roleChosen: true, tab: appRole === "family" ? "family" : "today" }),
   replayIntro: () => set({ introSeen: false }),
   setFairyName: (fairyName) => set({ fairyName: fairyName.trim().slice(0, 24) }),
+  finishTour: () => set({ tourDone: true }),
   applyNativeActions: (actions) =>
     set((s) => {
       // Buttons pressed on the lock-screen card while the app was closed.

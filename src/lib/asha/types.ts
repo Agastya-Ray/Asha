@@ -101,6 +101,8 @@ export type Persist = {
   introSeen: boolean;
   /** the name the person gave the fairy during the intro ("" until then) */
   fairyName: string;
+  /** the fairy has shown the person round Today once */
+  tourDone: boolean;
   /** who uses this phone: the person cared for, or a family member */
   appRole: AppRole;
   roleChosen: boolean;

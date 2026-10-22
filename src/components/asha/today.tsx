@@ -94,6 +94,7 @@ export function TodayScreen() {
       ) : null}
 
       <h2 className="mt-6 text-xl font-bold">{t(lang, { en: "Right now", hi: "अभी" })}</h2>
+      <section data-tour="now">
       {active.length === 0 && !featuredLater ? (
         <Card className="mt-3">
           <p className="text-lg">
@@ -116,6 +117,7 @@ export function TodayScreen() {
           <AgendaCard item={featuredLater} />
         </div>
       ) : null}
+      </section>
 
       {sample ? (
         <p className="mt-4 text-base text-quiet">

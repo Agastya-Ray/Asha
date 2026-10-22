@@ -1,5 +1,5 @@
 import { Card, t } from "@/components/asha/bits";
-import { FairyScene } from "@/components/asha/fairy";
+import { FairyGuide } from "@/components/asha/fairy-guide";
 import { useAsha } from "@/lib/asha/store";
 
 /** Right after the introduction: is this phone for the person cared for, or for family? */
@@ -8,9 +8,7 @@ export function RoleChoice() {
   const choose = useAsha((s) => s.chooseRole);
   return (
     <div className="py-6">
-      <div className="flex justify-center">
-        <FairyScene news={false} mood="happy" size="lg" />
-      </div>
+      <FairyGuide mood="asking" line={{ en: "First, let me get to know you. Is this phone for you?", hi: "पहले, मैं आपको जान लूँ. क्या यह फ़ोन आपके लिए है?" }} />
       <h1 className="display mt-4 text-center text-4xl leading-tight">{t(lang, { en: "Who will use this phone?", hi: "यह फ़ोन कौन इस्तेमाल करेगा?" })}</h1>
       <div className="mt-6 flex flex-col gap-3">
         <button type="button" onClick={() => choose("elder")} className="text-left">
