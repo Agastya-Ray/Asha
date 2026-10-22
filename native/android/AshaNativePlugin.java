@@ -152,8 +152,9 @@ public class AshaNativePlugin extends Plugin {
         String text = call.getString("text", "");
         String lang = call.getString("lang", "en");
         float rate = call.getFloat("rate", 0.92f);
+        float pitch = call.getFloat("pitch", 1.0f);
         if (text == null || text.trim().isEmpty()) { call.resolve(ok(true)); return; }
-        Speaker.get(getContext()).speak(text, lang, rate, done -> call.resolve(ok(done)));
+        Speaker.get(getContext()).speak(text, lang, rate, pitch, done -> call.resolve(ok(done)));
     }
 
     @PluginMethod

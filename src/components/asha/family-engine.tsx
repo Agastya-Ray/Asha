@@ -84,7 +84,6 @@ export function FamilyEngine() {
 export function FairyDock() {
   const lang = useAsha((s) => s.lang);
   const voiceLang = useAsha((s) => s.voiceLang);
-  const rich = useAsha((s) => s.richVoice);
   const tab = useAsha((s) => s.tab);
   const setTab = useAsha((s) => s.setTab);
   const name = useAsha((s) => s.name);
@@ -107,7 +106,8 @@ export function FairyDock() {
   // she listens when tapped: what you say goes to the same helper as "Tell Asha"
   const [ear, setEar] = useState<"" | "listening" | "thinking" | "hello" | "shy" | "blush" | "wake" | "missed" | "nomic">("");
   const unread = unreadOf({ messages, heardLocal });
-  const say = (text: string) => void speak(text, voiceLang, rich ? "warm" : "device");
+  // she always speaks in her own little voice, never the grown-up warm voice Asha uses
+  const say = (text: string) => void speak(text, voiceLang, "fairy");
 
   // Settings and Talk have controls along the bottom edge; she would sit on top of them
   if (tab === "family" || tab === "sos" || tab === "settings") return null;

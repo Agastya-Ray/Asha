@@ -101,11 +101,14 @@ function pickWebVoice(lang: Lang) {
   return [...voices].sort((a, b) => score(b) - score(a))[0];
 }
 
-function phoneVoice(text: string, lang: Lang, mine: number) {
+/** The fairy has her own voice: the phone's voice, pitched up and a little quicker, like a small bright girl. */
+const FAIRY = { rate: 1.0, pitch: 1.6 };
+
+function phoneVoice(text: string, lang: Lang, mine: number, fairy = false) {
   return new Promise<void>((resolve) => {
     if (isNative) {
       set({ active: true, lastSaid: text, source: "phone", failed: false });
-      AshaNative.speak({ text, lang, rate: 0.92 })
+      AshaNative.speak(fairy ? { text, lang, ...FAIRY } : { text, lang, rate: 0.92 })
         .then((r) => {
           if (mine === generation) set({ active: false, failed: !r.ok });
         })
@@ -122,7 +125,8 @@ function phoneVoice(text: string, lang: Lang, mine: number) {
     }
     const u = new SpeechSynthesisUtterance(text);
     u.lang = lang === "hi" ? "hi-IN" : "en-IN";
-    u.rate = 0.92;
+    u.rate = fairy ? FAIRY.rate : 0.92;
+    if (fairy) u.pitch = FAIRY.pitch;
     const v = pickWebVoice(lang);
     if (v) u.voice = v;
     u.onend = () => {
@@ -139,7 +143,7 @@ function phoneVoice(text: string, lang: Lang, mine: number) {
   });
 }
 
-export async function speak(text: string, lang: Lang, prefer: "warm" | "device") {
+export async function speak(text: string, lang: Lang, prefer: "warm" | "device" | "fairy") {
   const clean = text.replace(/\s+/g, " ").trim();
   if (!clean) return;
   const mine = ++generation;
@@ -165,5 +169,5 @@ export async function speak(text: string, lang: Lang, prefer: "warm" | "device")
       if (mine !== generation) return;
     }
   }
-  await phoneVoice(clean, lang, mine);
+  await phoneVoice(clean, lang, mine, prefer === "fairy");
 }
