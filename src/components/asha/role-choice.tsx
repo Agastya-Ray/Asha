@@ -24,7 +24,7 @@ export function RoleChoice() {
             <p className="text-2xl font-bold">💛 {t(lang, { en: "I'm family", hi: "मैं परिवार से हूँ" })}</p>
             <p className="mt-2 text-lg text-quiet">
               {t(lang, {
-                en: "Son, daughter, husband, wife… Join with her 6-digit code, see how her day is going, and send her love.",
+                en: "Son, daughter, husband, wife… Join with their 6-digit code, see how their day is going, and send them love.",
                 hi: "बेटा, बेटी, पति, पत्नी… उनके 6 अंकों के कोड से जुड़ें, उनका दिन देखें और प्यार भेजें.",
               })}
             </p>
