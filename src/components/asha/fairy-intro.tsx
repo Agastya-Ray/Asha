@@ -1,7 +1,14 @@
 import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { FieldLabel, LangSwitch, SpeakField, t } from "@/components/asha/bits";
-import { FairyFlipbook, HELLO, SLEEP, WAKE, type Frame } from "@/components/asha/fairy-flipbook";
+import {
+  FairyFlipbook,
+  HELLO,
+  JOY,
+  SLEEP,
+  WAKE,
+  type Frame,
+} from "@/components/asha/fairy-flipbook";
 import { Pixie, type PixieMood } from "@/components/asha/pixie";
 import type { Localized } from "@/lib/asha/plans";
 import { useAsha } from "@/lib/asha/store";
@@ -55,10 +62,7 @@ const MOOD: Record<Step, PixieMood> = {
 const KEYFRAMES: Partial<Record<Step, Frame[]>> = {
   hello: HELLO,
   shy: [["blush", 1000]],
-  loves: [
-    ["20-hop", 350],
-    ["19-arms-wide", 350],
-  ],
+  loves: JOY,
   invite: [["17-standing", 1000]],
 };
 
