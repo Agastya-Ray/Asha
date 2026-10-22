@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { FieldLabel, LangSwitch, SpeakField, t } from "@/components/asha/bits";
+import { FairyFlipbook, HELLO, SLEEP, WAKE, type Frame } from "@/components/asha/fairy-flipbook";
 import { Pixie, type PixieMood } from "@/components/asha/pixie";
 import type { Localized } from "@/lib/asha/plans";
 import { useAsha } from "@/lib/asha/store";
@@ -9,7 +10,7 @@ import { speak, stopSpeaking, unlockAudio } from "@/lib/asha/voice";
 /**
  * First run: the fairy is asleep in a little meadow. A tap wakes her; she says hello, asks the person to name her,
  * says she likes them and invites them into her home (Asha), then shows what Asha does. Every step waits for a tap.
- * Her wake-up animation will come from drawn frames; until then she uses her existing poses.
+ * She sleeps, wakes and says hello in drawn keyframes (fairy-flipbook.tsx).
  */
 
 type Step = "asleep" | "waking" | "hello" | "shy" | "naming" | "loves" | "invite" | "home";
@@ -48,6 +49,17 @@ const MOOD: Record<Step, PixieMood> = {
   loves: "happy",
   invite: "flower",
   home: "wave",
+};
+
+/** Steps drawn from her real keyframes; the rest use her single poses until their keyframes are drawn. */
+const KEYFRAMES: Partial<Record<Step, Frame[]>> = {
+  hello: HELLO,
+  shy: [["blush", 1000]],
+  loves: [
+    ["20-hop", 350],
+    ["19-arms-wide", 350],
+  ],
+  invite: [["17-standing", 1000]],
 };
 
 const HOME_ROWS: { icon: string; text: Localized }[] = [
@@ -110,7 +122,6 @@ export function FairyIntro() {
   const wake = () => {
     unlockAudio();
     setStep("waking");
-    window.setTimeout(() => setStep("hello"), 1800);
   };
 
   const saveName = () => {
@@ -161,7 +172,14 @@ export function FairyIntro() {
               <span>z</span>
             </span>
           ) : null}
-          <Pixie mood={MOOD[step]} className={step === "asleep" ? "fi-sleeper" : "fi-waker"} />
+          <FairyFlipbook
+            key={step}
+            frames={step === "asleep" ? SLEEP : WAKE}
+            loop={step === "asleep"}
+            height={300}
+            onDone={() => setStep("hello")}
+            className="fi-flip"
+          />
         </button>
       </div>
     );
@@ -180,6 +198,14 @@ export function FairyIntro() {
           </div>
           <Pixie mood={MOOD[step]} className="h-24 w-20 shrink-0" />
         </div>
+      ) : KEYFRAMES[step] ? (
+        <FairyFlipbook
+          key={step}
+          frames={KEYFRAMES[step]!}
+          loop={step === "loves"}
+          height={256}
+          className="mx-auto mt-4"
+        />
       ) : (
         <Pixie mood={MOOD[step]} className="mx-auto mt-4 h-64 w-56" />
       )}

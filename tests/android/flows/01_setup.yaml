@@ -9,9 +9,10 @@ appId: com.agastyaray.asha
     timeout: 120000
 - takeScreenshot: 01-intro-asleep
 - tapOn: ".*Tap her gently to wake her up.*"
+# Her wake-up animation (eyes, sitting up, yawn, grin) takes about 10 seconds.
 - extendedWaitUntil:
     visible: "Hello!"
-    timeout: 10000
+    timeout: 30000
 - takeScreenshot: 01-intro-hello
 - tapOn: "Hello!"
 - extendedWaitUntil:
