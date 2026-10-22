@@ -122,6 +122,9 @@ if command -v convert >/dev/null; then
   adb shell am broadcast -a android.intent.action.MEDIA_SCANNER_SCAN_FILE -d file:///sdcard/Pictures/prescription.jpg >/dev/null
 fi
 
+# watch the emulator itself: if it vanishes mid-run, this shows when, and how much memory the runner had left
+( while true; do echo "$(date +%T) $(adb devices | grep -c 'device$') dev | $(free -m | awk '/Mem:/{print "free " $7 " MB"}') | $(pgrep -f qemu-system >/dev/null && echo qemu up || echo qemu GONE)"; sleep 5; done ) > "$OUT/watch.log" 2>&1 &
+WATCH_PID=$!
 flow 01_setup.yaml
 flow 02_permissions.yaml
 shot 25-today-after-permissions
@@ -315,7 +318,7 @@ xy=$(awk -v p="$PKG" '/^  Window #/{inw=index($0, p "}")>0; o=0} inw&&/ty=APPLIC
 if [ -n "$xy" ]; then for i in $(seq 15); do adb shell input tap $xy; done; sleep 4; shot s7b-after-rapid-taps-floating; log "stress 7: tapped the floating fairy 15 times at $xy"
 else log "stress 7: floating fairy window not found"; shot s7b-no-floating-fairy; fi
 alive 7b-rapid-taps-floating
-kill $CONSOLE_PID 2>/dev/null || true
+kill $CONSOLE_PID $WATCH_PID 2>/dev/null || true
 adb logcat -d > "$OUT/logcat-full.txt"
 # the app logs its family-circle config, including a secret; keep it out of the published results
 sed -i -E 's/"secret":"[^"]*"/"secret":"REDACTED"/g; s/"x-device-secret":"[^"]*"/"x-device-secret":"REDACTED"/g' "$OUT/logcat-full.txt"
