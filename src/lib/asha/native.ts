@@ -42,7 +42,7 @@ export type NativeStatus = {
 };
 
 interface AshaNativePlugin {
-  speak(o: { text: string; lang: Lang; rate?: number }): Promise<{ ok: boolean }>;
+  speak(o: { text: string; lang: Lang; rate?: number; pitch?: number }): Promise<{ ok: boolean }>;
   stopSpeaking(): Promise<void>;
   listen(o: { lang: Lang }): Promise<{ text: string; error?: number }>;
   stopListening(): Promise<void>;

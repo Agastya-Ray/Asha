@@ -53,6 +53,11 @@ public final class Speaker {
     }
 
     public void speak(String text, String lang, float rate, Done done) {
+        speak(text, lang, rate, 1.0f, done);
+    }
+
+    /** pitch 1.0 is the phone's own voice; the fairy speaks higher */
+    public void speak(String text, String lang, float rate, float pitch, Done done) {
         ensure(() -> {
             if (!ready || tts == null) { if (done != null) done.done(false); return; }
             Locale locale = "hi".equals(lang) ? new Locale("hi", "IN") : new Locale("en", "IN");
@@ -61,6 +66,7 @@ public final class Speaker {
                 tts.setLanguage("hi".equals(lang) ? new Locale("hi") : Locale.ENGLISH);
             }
             tts.setSpeechRate(rate > 0 ? rate : 0.92f);
+            tts.setPitch(pitch > 0 ? pitch : 1.0f);
             final String id = "asha-" + System.nanoTime();
             tts.setOnUtteranceProgressListener(new UtteranceProgressListener() {
                 @Override public void onStart(String utteranceId) { }
