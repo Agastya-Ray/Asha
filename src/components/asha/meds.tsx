@@ -2,7 +2,7 @@ import { useRef, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, FieldLabel, SpeakField, t } from "@/components/asha/bits";
 import { apiReadPrescription } from "@/lib/asha/api";
-import { normTime } from "@/lib/asha/time";
+import { normTime, speakClock } from "@/lib/asha/time";
 import { newId, useAsha } from "@/lib/asha/store";
 import type { Food, Med } from "@/lib/asha/types";
 import { latinDigits } from "@/lib/asha/schedule";
@@ -17,6 +17,47 @@ function foodLabel(food: Food, lang: "en" | "hi") {
     anytime: { en: "With or without", hi: "खाने से फर्क नहीं" },
   };
   return t(lang, map[food]);
+}
+
+type Often = "daily" | "some" | "weekly" | "asNeeded";
+const OFTEN: { id: Often; en: string; hi: string }[] = [
+  { id: "daily", en: "Every day", hi: "रोज़" },
+  { id: "some", en: "Some days", hi: "कुछ दिन" },
+  { id: "weekly", en: "Once a week", hi: "हफ़्ते में एक बार" },
+  { id: "asNeeded", en: "Only when needed", hi: "ज़रूरत होने पर" },
+];
+const WEEKDAYS: { en: string; hi: string; long: { en: string; hi: string } }[] = [
+  { en: "Sun", hi: "रवि", long: { en: "Sunday", hi: "रविवार" } },
+  { en: "Mon", hi: "सोम", long: { en: "Monday", hi: "सोमवार" } },
+  { en: "Tue", hi: "मंगल", long: { en: "Tuesday", hi: "मंगलवार" } },
+  { en: "Wed", hi: "बुध", long: { en: "Wednesday", hi: "बुधवार" } },
+  { en: "Thu", hi: "गुरु", long: { en: "Thursday", hi: "गुरुवार" } },
+  { en: "Fri", hi: "शुक्र", long: { en: "Friday", hi: "शुक्रवार" } },
+  { en: "Sat", hi: "शनि", long: { en: "Saturday", hi: "शनिवार" } },
+];
+const AMOUNTS: { en: string; hi: string }[] = [
+  { en: "½ tablet", hi: "आधी गोली" },
+  { en: "1 tablet", hi: "1 गोली" },
+  { en: "2 tablets", hi: "2 गोलियाँ" },
+  { en: "1 spoon", hi: "1 चम्मच" },
+];
+
+function oftenOf(med: Med): Often {
+  if (med.asNeeded) return "asNeeded";
+  const n = med.days?.length ?? 0;
+  return n === 0 || n === 7 ? "daily" : n === 1 ? "weekly" : "some";
+}
+
+/** The whole plan in one plain sentence, so a person can check it at a glance. */
+export function medSummary(med: Med, lang: "en" | "hi") {
+  const often = oftenOf(med);
+  const amount = med.dose.trim();
+  if (often === "asNeeded") return t(lang, { en: `${amount}, only when needed.`, hi: `${amount}, सिर्फ़ ज़रूरत होने पर.` });
+  const days = (med.days ?? []).slice().sort().map((d) => t(lang, WEEKDAYS[d].long));
+  const when = often === "daily" ? t(lang, { en: "every day", hi: "रोज़" }) : t(lang, { en: `on ${days.join(", ")}`, hi: `${days.join(", ")} को` });
+  const times = [...med.times].sort().map((x) => speakClock(lang, x));
+  const at = times.join(t(lang, { en: " and ", hi: " और " }));
+  return lang === "hi" ? `${amount}, ${when}, ${at}, ${foodLabel(med.food, lang)}.` : `${amount}, ${when}, at ${at}, ${foodLabel(med.food, lang).toLowerCase()}.`;
 }
 
 export function MedEditor({
@@ -34,17 +75,85 @@ export function MedEditor({
   const saveMed = useAsha((s) => s.saveMed);
   const [med, setMed] = useState(initial);
   const [hint, setHint] = useState("");
+  const [often, setOften] = useState<Often>(oftenOf(initial));
 
   return (
     <Card>
       <FieldLabel>{t(lang, { en: "Medicine name", hi: "दवा का नाम" })}</FieldLabel>
       <SpeakField value={med.name} onChange={(v) => setMed({ ...med, name: v })} placeholder={t(lang, { en: "Metformin", hi: "मेटफॉर्मिन" })} />
       <div className="mt-4">
-        <FieldLabel>{t(lang, { en: "How much", hi: "कितनी" })}</FieldLabel>
+        <FieldLabel>{t(lang, { en: "How much each time?", hi: "हर बार कितनी?" })}</FieldLabel>
+        <p className="mb-2 text-base text-quiet">{t(lang, { en: "Tap one, or write it: tablets, spoons or drops.", hi: "एक चुनें, या लिखें: गोली, चम्मच या बूँद." })}</p>
+        <div className="mb-2 flex flex-wrap gap-2">
+          {AMOUNTS.map((a) => {
+            const label = t(lang, a);
+            return (
+              <button
+                key={a.en}
+                type="button"
+                aria-pressed={med.dose === label}
+                onClick={() => setMed({ ...med, dose: label })}
+                className={`min-h-12 rounded-2xl border px-4 text-base font-bold ${med.dose === label ? "border-sage bg-sage-soft" : "border-line bg-linen"}`}
+              >
+                {label}
+              </button>
+            );
+          })}
+        </div>
         <SpeakField value={med.dose} onChange={(v) => setMed({ ...med, dose: v })} placeholder={t(lang, { en: "1 tablet, 500 mg", hi: "1 गोली, 500 mg" })} />
       </div>
       <div className="mt-4">
-        <FieldLabel>{t(lang, { en: "Times", hi: "समय" })}</FieldLabel>
+        <FieldLabel>{t(lang, { en: "How often?", hi: "कितनी बार?" })}</FieldLabel>
+        <div className="grid grid-cols-2 gap-2">
+          {OFTEN.map((o) => (
+            <button
+              key={o.id}
+              type="button"
+              aria-pressed={often === o.id}
+              onClick={() => {
+                setOften(o.id);
+                if (o.id === "daily") setMed({ ...med, days: undefined, asNeeded: false });
+                else if (o.id === "asNeeded") setMed({ ...med, days: undefined, asNeeded: true });
+                else if (o.id === "weekly") setMed({ ...med, days: [med.days?.[0] ?? new Date().getDay()], asNeeded: false });
+                else setMed({ ...med, days: med.days?.length ? med.days : [], asNeeded: false });
+              }}
+              className={`min-h-12 rounded-2xl border px-3 text-base font-bold ${often === o.id ? "border-sage bg-sage-soft" : "border-line bg-linen"}`}
+            >
+              {t(lang, o)}
+            </button>
+          ))}
+        </div>
+        {often === "some" || often === "weekly" ? (
+          <>
+            <p className="mb-2 mt-3 text-base text-quiet">
+              {often === "weekly" ? t(lang, { en: "Which day?", hi: "किस दिन?" }) : t(lang, { en: "Tap every day you take it.", hi: "जिन दिनों लेते हैं, सब पर टैप करें." })}
+            </p>
+            <div className="flex flex-wrap gap-2">
+              {WEEKDAYS.map((w, d) => {
+                const on = med.days?.includes(d) ?? false;
+                return (
+                  <button
+                    key={w.en}
+                    type="button"
+                    aria-pressed={on}
+                    aria-label={t(lang, w.long)}
+                    onClick={() => {
+                      const days = often === "weekly" ? [d] : on ? (med.days ?? []).filter((x) => x !== d) : [...(med.days ?? []), d].sort();
+                      setMed({ ...med, days });
+                    }}
+                    className={`min-h-12 min-w-14 rounded-2xl border px-2 text-base font-bold ${on ? "border-sage bg-sage-soft" : "border-line bg-linen"}`}
+                  >
+                    {t(lang, w)}
+                  </button>
+                );
+              })}
+            </div>
+          </>
+        ) : null}
+      </div>
+      <div className={`mt-4 ${often === "asNeeded" ? "hidden" : ""}`}>
+        <FieldLabel>{t(lang, { en: "At what time?", hi: "किस समय?" })}</FieldLabel>
+        <p className="mb-2 text-base text-quiet">{t(lang, { en: "One box for each time you take it.", hi: "जितनी बार लेते हैं, उतने समय." })}</p>
         <div className="flex flex-col gap-2">
           {med.times.map((time, index) => (
             <div key={index} className="flex gap-2">
@@ -122,6 +231,12 @@ export function MedEditor({
           {t(lang, { en: "Asha mentions a refill when 7 or fewer are left.", hi: "7 या कम बचें तो आशा रिफिल कहेगी." })}
         </p>
       </div>
+      {med.dose.trim() && (often === "asNeeded" || med.times.length) ? (
+        <p className="mt-5 rounded-2xl bg-sage-soft p-4 text-lg text-sage">
+          {t(lang, { en: "So: ", hi: "यानी: " })}
+          {medSummary(med, lang)}
+        </p>
+      ) : null}
       {hint ? <p className="mt-4 text-lg text-clay">{hint}</p> : null}
       <div className="mt-5 flex flex-col gap-2">
         <Button
@@ -136,7 +251,11 @@ export function MedEditor({
             }
             // The same time twice would ring twice and count as two doses.
             const times = [...new Set(med.times.filter(Boolean))].sort();
-            if (!times.length) {
+            if ((often === "some" || often === "weekly") && !med.days?.length) {
+              setHint(t(lang, { en: "Tap the days you take it.", hi: "जिन दिनों लेते हैं, उन पर टैप करें." }));
+              return;
+            }
+            if (!times.length && often !== "asNeeded") {
               setHint(t(lang, { en: "Add at least one time.", hi: "कम से कम एक समय डालें." }));
               return;
             }
@@ -282,10 +401,7 @@ export function MedsScreen() {
             ) : (
               <Card key={med.id}>
                 <p className="text-2xl font-bold">{med.name}</p>
-                <p className="mt-1 text-lg">{med.dose}</p>
-                <p className="mt-1 text-base text-quiet">
-                  {med.times.join(" · ")} · {foodLabel(med.food, lang)}
-                </p>
+                <p className="mt-1 text-lg">{medSummary(med, lang)}</p>
                 {med.note ? <p className="mt-2 text-base text-quiet">{med.note}</p> : null}
                 {med.pillsLeft !== null ? (
                   <p className="mt-2 text-base font-bold text-clay">

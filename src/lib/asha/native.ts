@@ -6,6 +6,8 @@ export type NativeReminder = {
   key: string;
   hour: number;
   minute: number;
+  /** Calendar.DAY_OF_WEEK values (1 = Sunday) it rings on; missing means every day */
+  days?: number[];
   kind: "med" | "meal" | "greet";
   title: string;
   body: string;

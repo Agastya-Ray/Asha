@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
-import { Choice, FieldLabel, LangSwitch, SpeakField, t } from "@/components/asha/bits";
+import { Choice, FieldLabel, SpeakField, t } from "@/components/asha/bits";
+import { FairyGuide } from "@/components/asha/fairy-guide";
 import { MedEditor } from "@/components/asha/meds";
 import { CONDITIONS } from "@/lib/asha/plans";
 import { digits } from "@/lib/asha/schedule";
@@ -12,9 +13,6 @@ export function Onboarding() {
   const step = useAsha((s) => s.setupStep);
   const name = useAsha((s) => s.name);
   const conditions = useAsha((s) => s.conditions);
-  const voiceLang = useAsha((s) => s.voiceLang);
-  const setLang = useAsha((s) => s.setLang);
-  const setBoth = useAsha((s) => s.setBothLangs);
   const setName = useAsha((s) => s.setName);
   const toggle = useAsha((s) => s.toggleCondition);
   const setStep = useAsha((s) => s.setSetupStep);
@@ -38,27 +36,29 @@ export function Onboarding() {
       <p className="text-base font-bold text-sage">
         {steps} {step} / 4
       </p>
+      {step === 1 ? <FairyGuide mood="asking" line={{ en: "What should I call you?", hi: "मैं आपको क्या कहकर बुलाऊँ?" }} /> : null}
+      {step === 2 ? (
+        <FairyGuide
+          mood="thinking"
+          line={{
+            en: "Do you have any of these? Tap the ones that are yours. It's okay to tap none. It helps me choose good food for you.",
+            hi: "क्या इनमें से कुछ आपको है? जो हैं, उन पर टैप करें. कोई न हो तो भी ठीक है. इससे मैं आपके लिए अच्छा खाना चुन पाऊँगी.",
+          }}
+        />
+      ) : null}
+      {step === 3 ? <FairyGuide mood="talk" line={{ en: "If you ever feel unwell, who should I call?", hi: "कभी तबीयत ठीक न लगे, तो मैं किसे फ़ोन करूँ?" }} /> : null}
+      {step === 4 ? (
+        <FairyGuide mood="point" line={{ en: "Now your medicines. Write each name the way it is printed on the strip.", hi: "अब आपकी दवाएँ. हर नाम वैसे ही लिखिए जैसे पत्ते पर छपा है." }} />
+      ) : null}
       {step === 1 && (
         <div className="mt-3">
-          <h1 className="display text-5xl leading-tight">
-            {t(lang, { en: "A calm voice for the day.", hi: "दिन के लिए एक शांत आवाज़." })}
-          </h1>
-          <p className="mt-4 text-lg text-quiet">
-            {t(lang, {
-              en: "Four short steps: your name, your health, your people, your medicines. You can press the microphone instead of typing.",
-              hi: "चार छोटे कदम: आपका नाम, आपकी सेहत, आपके लोग, आपकी दवाएँ. लिखने की जगह माइक दबा सकते हैं.",
-            })}
-          </p>
-          <div className="mt-6">
-            <LangSwitch value={lang} onChange={(l) => (lang === voiceLang ? setBoth(l) : setLang(l))} />
-          </div>
-          <div className="mt-6">
-            <FieldLabel>{t(lang, { en: "What should Asha call you?", hi: "आशा आपको क्या कहे?" })}</FieldLabel>
+          <div className="mt-2">
+            <FieldLabel>{t(lang, { en: "Your name", hi: "आपका नाम" })}</FieldLabel>
             <SpeakField value={name} onChange={setName} placeholder={t(lang, { en: "Your first name", hi: "आपका पहला नाम" })} autoComplete="given-name" />
             <p className="mt-2 text-base text-quiet">
               {t(lang, {
-                en: "A first name is enough. She will use it when she speaks.",
-                hi: "पहला नाम काफ़ी है. बोलते समय वही नाम आएगा.",
+                en: "A first name or a nickname is enough. Type it, or press the microphone and say it.",
+                hi: "पहला नाम या घर का नाम काफ़ी है. लिखिए, या माइक दबाकर बोलिए.",
               })}
             </p>
           </div>

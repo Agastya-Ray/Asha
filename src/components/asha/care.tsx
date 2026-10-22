@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Card, FieldLabel, t } from "@/components/asha/bits";
 import { CONDITIONS, planById, text } from "@/lib/asha/plans";
 import { mealNote, mealTitle } from "@/lib/asha/speech";
-import { latinDigits, todayCheckin } from "@/lib/asha/schedule";
+import { latinDigits, medDueOn, todayCheckin } from "@/lib/asha/schedule";
 import { minutesNow, shiftDay, shortWeekday, todayKey, toMin } from "@/lib/asha/time";
 import { AshaNative, isNative } from "@/lib/asha/native";
 import { useAsha } from "@/lib/asha/store";
@@ -322,7 +322,7 @@ function DoctorReport() {
       const first = s.doseLogs.filter((l) => l.medId === m.id).map((l) => l.day).sort()[0];
       if (!first) continue;
       for (const d of days) {
-        if (d < first) continue;
+        if (d < first || !medDueOn(m, new Date(`${d}T12:00`))) continue;
         for (const time of m.times) {
           const log = s.doseLogs.find((l) => l.day === d && l.medId === m.id && l.time === time);
           if (d === today && !log && toMin(time) > nowMin) continue;

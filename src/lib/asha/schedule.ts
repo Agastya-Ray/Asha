@@ -12,6 +12,12 @@ export function defaultMeals(): Meal[] {
   ];
 }
 
+/** Is this medicine due on the given day? (As-needed medicines never are; a weekday list limits the days.) */
+export function medDueOn(med: Med, date = new Date()) {
+  if (med.asNeeded) return false;
+  return !med.days?.length || med.days.includes(date.getDay());
+}
+
 export function buildAgenda(
   state: Pick<Persist, "name" | "lang" | "voiceLang" | "meds" | "meals" | "doseLogs" | "mealLogs" | "snooze">,
   now = new Date(),
@@ -22,6 +28,7 @@ export function buildAgenda(
   const items: AgendaItem[] = [];
 
   for (const med of state.meds) {
+    if (!medDueOn(med, now)) continue;
     for (const time of med.times) {
       const key = `${day}|med|${med.id}|${time}`;
       const log = state.doseLogs.find((l) => l.day === day && l.medId === med.id && l.time === time);
@@ -105,6 +112,7 @@ export function doseProgress(meds: Med[], logs: DoseLog[], now = new Date()) {
   let total = 0;
   let marked = 0;
   for (const med of meds) {
+    if (!medDueOn(med, now)) continue;
     for (const time of med.times) {
       total += 1;
       const log = logs.find((l) => l.day === day && l.medId === med.id && l.time === time);

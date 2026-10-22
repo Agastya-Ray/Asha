@@ -784,3 +784,124 @@ body {
     opacity: 0;
   }
 }
+
+/* ---------- fairy intro (fairy-intro.tsx) ---------- */
+.fi-night {
+  background: radial-gradient(circle at 50% 35%, #5b4f86 0, #34305a 60%, #25223f 100%);
+}
+.fi-sky {
+  background: radial-gradient(circle at 50% 25%, #fff6e0 0, #fde3ea 45%, #e9e2f7 100%);
+}
+.fi-room {
+  position: relative;
+  overflow: hidden;
+  isolation: isolate;
+}
+.fi-moon {
+  position: absolute;
+  right: 12%;
+  top: 18%;
+  width: 56px;
+  aspect-ratio: 1;
+  border-radius: 50%;
+  background: #fff6d5;
+  box-shadow: 0 0 40px 10px #fff6d566;
+}
+.fi-stars {
+  position: absolute;
+  inset: 0 0 40% 0;
+  background:
+    radial-gradient(2px 2px at 14% 22%, #fff 50%, transparent 51%),
+    radial-gradient(2px 2px at 32% 12%, #fffbe8 50%, transparent 51%),
+    radial-gradient(1.5px 1.5px at 58% 26%, #fff 50%, transparent 51%),
+    radial-gradient(2px 2px at 72% 34%, #ffeef6 50%, transparent 51%),
+    radial-gradient(1.5px 1.5px at 22% 44%, #fff 50%, transparent 51%),
+    radial-gradient(2px 2px at 86% 52%, #fff 50%, transparent 51%),
+    radial-gradient(1.5px 1.5px at 46% 50%, #fffbe8 50%, transparent 51%);
+  animation: fi-twinkle 3.2s ease-in-out infinite alternate;
+}
+@keyframes fi-twinkle {
+  from { opacity: 0.55; }
+  to { opacity: 1; }
+}
+/* The floor of the screen: a soft rug of light she sleeps on. */
+.fi-floor {
+  position: relative;
+  z-index: 1;
+  width: calc(100% + 2rem);
+  height: 120px;
+  margin-top: 24px;
+  border-radius: 50% 50% 0 0 / 40% 40% 0 0;
+  background: linear-gradient(#f5d7e3, #e8c6d8);
+  box-shadow: 0 -10px 50px 6px #ffd9ec55;
+}
+.fi-sleeper {
+  position: absolute !important;
+  z-index: 2;
+  left: 50%;
+  bottom: 28px;
+  width: min(64vw, 270px);
+  height: min(36vw, 150px);
+  transform: translateX(-50%);
+  animation: fi-breathe 3.6s ease-in-out infinite;
+}
+@keyframes fi-breathe {
+  50% { transform: translateX(-50%) scale(1.015, 1.03); }
+}
+.fi-zzz {
+  position: absolute;
+  z-index: 3;
+  left: 62%;
+  bottom: 170px;
+  font-size: 26px;
+  font-weight: 700;
+  color: #fff6d5;
+  animation: fi-float 2.8s ease-in-out infinite;
+}
+.fi-zzz span {
+  display: inline-block;
+  margin-left: 2px;
+  font-size: 1.25em;
+  transform: translateY(-10px);
+}
+.fi-zzz span + span {
+  font-size: 1.5em;
+  transform: translateY(-24px);
+}
+@keyframes fi-float {
+  0% { opacity: 0; transform: translateY(8px); }
+  30%, 70% { opacity: 1; }
+  100% { opacity: 0; transform: translateY(-16px); }
+}
+.fi-waker {
+  position: absolute !important;
+  z-index: 2;
+  left: 50%;
+  bottom: 40px;
+  width: min(50vw, 200px);
+  height: min(62vw, 250px);
+  margin-left: max(-25vw, -100px);
+  animation: fi-rise 0.9s ease-out both;
+}
+@keyframes fi-rise {
+  from { opacity: 0; transform: translateY(14px) scale(0.96); }
+  to { opacity: 1; transform: none; }
+}
+.fi-hand {
+  animation: fi-poke 1.2s ease-in-out infinite;
+}
+@keyframes fi-poke {
+  50% { transform: translateY(-8px) scale(1.08); }
+}
+.fi-bubble {
+  animation: fi-rise 0.4s ease-out both;
+}
+.fi-row {
+  animation: fi-rise 0.5s ease-out both;
+}
+@media (prefers-reduced-motion: reduce) {
+  .fi-waker, .fi-hand, .fi-bubble, .fi-row, .fi-sleeper, .fi-stars, .fi-zzz { animation: none; }
+}
+.fi-moon, .fi-stars, .fi-zzz {
+  pointer-events: none;
+}

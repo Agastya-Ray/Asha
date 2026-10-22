@@ -23,6 +23,10 @@ export type Med = {
   food: Food;
   note: string;
   pillsLeft: number | null;
+  /** weekdays it is taken on (0 = Sunday … 6 = Saturday); missing or empty means every day */
+  days?: number[];
+  /** taken only when needed: no reminders, no dose on Today */
+  asNeeded?: boolean;
 };
 
 export type MealPreset = "breakfast" | "lunch" | "snack" | "dinner";
@@ -95,6 +99,10 @@ export type Persist = {
   /** language Asha speaks and listens in */
   voiceLang: Lang;
   introSeen: boolean;
+  /** the name the person gave the fairy during the intro ("" until then) */
+  fairyName: string;
+  /** the fairy has shown the person round Today once */
+  tourDone: boolean;
   /** who uses this phone: the person cared for, or a family member */
   appRole: AppRole;
   roleChosen: boolean;

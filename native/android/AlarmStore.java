@@ -92,7 +92,17 @@ public final class AlarmStore {
             c.add(Calendar.DAY_OF_YEAR, 1);
         }
         while (c.getTimeInMillis() <= skipUntil) c.add(Calendar.DAY_OF_YEAR, 1);
+        // Medicines taken only on some weekdays: move on to the next of those days.
+        JSONArray days = t.optJSONArray("days");
+        if (days != null && days.length() > 0) {
+            for (int i = 0; i < 7 && !hasDay(days, c.get(Calendar.DAY_OF_WEEK)); i++) c.add(Calendar.DAY_OF_YEAR, 1);
+        }
         setAlarm(ctx, t.optString("key"), c.getTimeInMillis(), 0, false);
+    }
+
+    private static boolean hasDay(JSONArray days, int day) {
+        for (int i = 0; i < days.length(); i++) if (days.optInt(i) == day) return true;
+        return false;
     }
 
     /** A follow-up ("are you sure you took it?") some minutes after the first reminder. */

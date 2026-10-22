@@ -26,6 +26,7 @@ export function buildReminders(s: S): NativeReminder[] {
   const againLabel = lang === "hi" ? "दोबारा याद" : "Gentle reminder";
 
   for (const med of s.meds) {
+    if (med.asNeeded) continue;
     for (const time of med.times) {
       const m = toMin(time);
       const done = s.doseLogs.some((l) => l.day === day && l.medId === med.id && l.time === time);
@@ -36,6 +37,8 @@ export function buildReminders(s: S): NativeReminder[] {
         key: `med|${med.id}|${time}`,
         hour: Math.floor(m / 60),
         minute: m % 60,
+        // Android counts weekdays from 1 (Sunday)
+        days: med.days?.length ? med.days.map((d) => d + 1) : undefined,
         kind: "med",
         title: `${med.name} · ${med.dose}`,
         body: doseSentence(lang, s.name, med, time) + lowLine,
