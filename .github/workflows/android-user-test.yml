@@ -6,6 +6,10 @@ on:
   push:
     branches: ["claude/android-user-test"]
   workflow_dispatch:
+    inputs:
+      api:
+        description: "Android API level of the emulator (23 = Android 6, the oldest Asha supports)"
+        default: "34"
 
 permissions:
   contents: write
@@ -50,7 +54,7 @@ jobs:
       - name: Run the user test on an emulator
         uses: reactivecircus/android-emulator-runner@v2
         with:
-          api-level: 34
+          api-level: ${{ inputs.api || '34' }}
           target: google_apis
           arch: x86_64
           profile: pixel_6
@@ -66,7 +70,7 @@ jobs:
       - name: Publish results to the android-test-results branch
         if: always()
         run: |
-          mkdir -p /tmp/pub && cp -r results "/tmp/pub/run-${{ github.run_number }}"
+          mkdir -p /tmp/pub && cp -r results "/tmp/pub/run-${{ github.run_number }}" && echo "api ${{ inputs.api || '34' }}" > "/tmp/pub/run-${{ github.run_number }}/API.txt"
           cd /tmp/pub
           git init -q -b android-test-results
           git remote add origin "https://x-access-token:${{ github.token }}@github.com/${{ github.repository }}.git"

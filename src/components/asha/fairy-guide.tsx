@@ -3,6 +3,7 @@ import { Button } from "@/components/ui/button";
 import { t } from "@/components/asha/bits";
 import { Pixie, type PixieMood } from "@/components/asha/pixie";
 import type { Localized } from "@/lib/asha/plans";
+import { digits } from "@/lib/asha/schedule";
 import { useAsha } from "@/lib/asha/store";
 import { speak, stopSpeaking } from "@/lib/asha/voice";
 
@@ -93,17 +94,24 @@ export function FairyTour() {
   const voiceLang = useAsha((s) => s.voiceLang);
   const voiceOn = useAsha((s) => s.voiceOn);
   const name = useAsha((s) => s.name.trim());
-  const helper = useAsha(
-    (s) =>
-      s.contacts.find((c) => c.name.trim())?.name.trim() ||
-      (s.lang === "hi" ? "आपके अपनों" : "your family"),
+  // only someone Help can actually ring; without one she means the emergency number
+  const helperName = useAsha(
+    (s) => s.contacts.find((c) => c.name?.trim() && digits(c.phone ?? "").length >= 3)?.name.trim() ?? "",
   );
-  const finish = useAsha((s) => s.finishTour);
+  const emergency = useAsha((s) => s.emergencyNumber.trim());
+  const helperIn = (l: "en" | "hi") =>
+    helperName || (emergency ? emergency : l === "hi" ? "आपके अपनों" : "your family");
+  const finishTour = useAsha((s) => s.finishTour);
+  const finish = () => {
+    finishTour();
+    window.scrollTo({ top: 0 });
+  };
   const label = useFairyLabel();
   const [i, setI] = useState(0);
   const [rect, setRect] = useState<DOMRect | null>(null);
   const step = TOUR[i];
-  const line = step.line(name, helper);
+  const line = step.line(name, helperIn(lang));
+  const spoken = step.line(name, helperIn(voiceLang));
 
   useLayoutEffect(() => {
     const el = step.target
@@ -135,7 +143,7 @@ export function FairyTour() {
   }, [i]);
 
   useEffect(() => {
-    if (voiceOn) void speak(t(voiceLang, line), voiceLang, "fairy");
+    if (voiceOn) void speak(t(voiceLang, spoken), voiceLang, "fairy");
   }, [i, voiceLang]);
   useEffect(() => () => stopSpeaking(), []);
 
@@ -170,23 +178,23 @@ export function FairyTour() {
         className={`fixed inset-x-0 mx-auto flex max-w-lg gap-2 px-4 ${step.target ? "items-end" : "flex-col items-center"}`}
         style={place}
       >
-        <Pixie mood={step.mood} className={`${step.target ? "h-28 w-24" : "h-44 w-36"} shrink-0`} />
+        <Pixie mood={step.mood} className={`${step.target ? "tour-pixie h-28 w-24" : "h-44 w-36"} shrink-0`} />
         <div
           key={i}
           className={`fi-bubble rounded-3xl border-2 border-[#f3c4d0] bg-paper p-4 shadow-lg ${step.target ? "flex-1" : "w-full"}`}
         >
           <p className="text-sm font-bold uppercase tracking-wide text-[#d9506f]">{label}</p>
           <p className="mt-1 text-lg leading-snug">{t(lang, line)}</p>
-          <div className="mt-3 flex gap-2">
+          <div className="mt-3 flex flex-wrap gap-2">
             <button
               type="button"
               className="min-h-12 shrink-0 rounded-2xl border border-line px-3 text-base font-bold text-quiet"
-              onClick={() => void speak(t(voiceLang, line), voiceLang, "fairy")}
+              onClick={() => void speak(t(voiceLang, spoken), voiceLang, "fairy")}
             >
               🔊 {t(lang, { en: "Again", hi: "फिर से" })}
             </button>
             <Button
-              className="flex-1"
+              className="min-w-36 flex-1"
               onClick={() => (i < TOUR.length - 1 ? setI(i + 1) : finish())}
             >
               {t(lang, step.next)}

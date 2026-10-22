@@ -87,7 +87,7 @@ function Join() {
         <FairyScene news={false} mood="happy" size="md" />
         <div>
           <h1 className="display text-4xl leading-tight">{t(lang, { en: "Join your family", hi: "परिवार से जुड़ें" })}</h1>
-          <p className="mt-1 text-lg text-quiet">{t(lang, { en: "Ask her for the 6-digit code from her Asha (Family tab).", hi: "उनकी आशा (परिवार टैब) से 6 अंकों का कोड माँगें." })}</p>
+          <p className="mt-1 text-lg text-quiet">{t(lang, { en: "Ask them for the 6-digit code from their Asha (Family tab).", hi: "उनकी आशा (परिवार टैब) से 6 अंकों का कोड माँगें." })}</p>
         </div>
       </div>
       <div className="mt-6">
@@ -102,11 +102,11 @@ function Join() {
         />
       </div>
       <div className="mt-4">
-        <FieldLabel>{t(lang, { en: "Your name (she'll see this)", hi: "आपका नाम (उन्हें दिखेगा)" })}</FieldLabel>
+        <FieldLabel>{t(lang, { en: "Your name (they'll see this)", hi: "आपका नाम (उन्हें दिखेगा)" })}</FieldLabel>
         <SpeakField value={myName} onChange={setName} placeholder={t(lang, { en: "Rahul", hi: "राहुल" })} />
       </div>
       <div className="mt-4">
-        <FieldLabel>{t(lang, { en: "You are her…", hi: "आप उनके…" })}</FieldLabel>
+        <FieldLabel>{t(lang, { en: "You are their…", hi: "आप उनके…" })}</FieldLabel>
         <div className="grid grid-cols-2 gap-2">
           {RELATIONS.map((r) => (
             <button
@@ -192,7 +192,7 @@ function Joined() {
       {alerts.length ? (
         <Card className="mt-4 border-sos bg-sos-soft">
           <p className="text-xl font-bold">{textOf(alerts[0], lang)}</p>
-          <p className="mt-2 text-base">{t(lang, { en: "Please call her now.", hi: "कृपया अभी फ़ोन करें." })}</p>
+          <p className="mt-2 text-base">{t(lang, { en: "Please call them now.", hi: "कृपया अभी फ़ोन करें." })}</p>
         </Card>
       ) : null}
 
@@ -213,7 +213,7 @@ function Joined() {
       </Card>
 
       <h2 className="mt-8 text-2xl font-bold">{t(lang, { en: `${label}'s day`, hi: `${label} का दिन` })}</h2>
-      <Feed messages={mine.slice(0, 40)} emptyText={t(lang, { en: "Updates from her day will appear here.", hi: "उनके दिन के अपडेट यहाँ दिखेंगे." })} />
+      <Feed messages={mine.slice(0, 40)} emptyText={t(lang, { en: "Updates from their day will appear here.", hi: "उनके दिन के अपडेट यहाँ दिखेंगे." })} />
     </div>
   );
 }

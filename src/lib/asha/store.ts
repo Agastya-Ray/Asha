@@ -160,7 +160,11 @@ function sanitize(raw: unknown): Persist {
     // people who already set up meds are the person cared for
     roleChosen: typeof r.roleChosen === "boolean" ? r.roleChosen : Boolean(r.onboarded),
     conditions: Array.isArray(r.conditions) ? r.conditions.filter(Boolean) : [],
-    contacts: Array.isArray(r.contacts) ? r.contacts : [],
+    contacts: Array.isArray(r.contacts)
+      ? r.contacts
+          .filter((c) => c && typeof c === "object")
+          .map((c) => ({ ...c, id: typeof c.id === "string" && c.id ? c.id : uid(), name: String(c.name ?? ""), relation: String(c.relation ?? ""), phone: String(c.phone ?? "") }))
+      : [],
     meds: Array.isArray(r.meds)
       ? r.meds
           .filter((m) => m && typeof m === "object" && typeof m.id === "string")

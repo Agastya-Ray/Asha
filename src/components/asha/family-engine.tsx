@@ -1,4 +1,5 @@
-import { useEffect, useState, type ReactNode } from "react";
+import { useEffect, useRef, useState, type ReactNode } from "react";
+import { createPortal } from "react-dom";
 import { App } from "@capacitor/app";
 import { cn } from "@/lib/cn";
 import type { Lang } from "@/lib/asha/types";
@@ -87,6 +88,7 @@ export function FairyDock() {
   const tab = useAsha((s) => s.tab);
   const setTab = useAsha((s) => s.setTab);
   const name = useAsha((s) => s.name);
+  const fairyName = useAsha((s) => s.fairyName);
   const meds = useAsha((s) => s.meds);
   const meals = useAsha((s) => s.meals);
   const doseLogs = useAsha((s) => s.doseLogs);
@@ -105,6 +107,18 @@ export function FairyDock() {
   const [awayUntil, setAwayUntil] = useState(readAway);
   // she listens when tapped: what you say goes to the same helper as "Tell Asha"
   const [ear, setEar] = useState<"" | "listening" | "thinking" | "hello" | "shy" | "blush" | "wake" | "missed" | "nomic">("");
+  // on Today the reminder card keeps a corner free for her (data-fairy-perch), so she sits there instead of over its text
+  const [perch, setPerch] = useState<HTMLElement | null>(null);
+  useEffect(() => {
+    const el = document.querySelector<HTMLElement>("[data-fairy-perch]");
+    if (el !== perch) setPerch(el);
+  });
+  // while her bubble is up, the page gets extra room at the bottom so the last card can scroll clear of it
+  const talking = useRef(false);
+  talking.current = false;
+  useEffect(() => {
+    document.documentElement.classList.toggle("fairy-talking", talking.current);
+  });
   const unread = unreadOf({ messages, heardLocal });
   // she always speaks in her own little voice, never the grown-up warm voice Asha uses
   const say = (text: string) => void speak(text, voiceLang, "fairy");
@@ -204,7 +218,7 @@ export function FairyDock() {
   if (bye === "lie") {
     return (
       <div data-fairy="bye-lie" className="fairy-dock fairy-dock-floor fairy-vanish-soft pointer-events-none fixed right-3 z-30">
-        <FairyScene news={false} mood="sleep" floor size="md" label={t(lang, { en: "Asha is asleep", hi: "आशा सो रही है" })} />
+        <FairyScene news={false} mood="sleep" floor size="md" label={fairyName ? t(lang, { en: `${fairyName} is asleep`, hi: `${fairyName} सो रही है` }) : t(lang, { en: "Your fairy is asleep", hi: "आपकी परी सो रही है" })} />
       </div>
     );
   }
@@ -216,7 +230,7 @@ export function FairyDock() {
           ? t(lang, { en: "Oh… *sniff*", hi: "ओह… *सुबक*" })
           : bye === "brave"
             ? t(lang, { en: "I'm still here to help, as a tiny friend or for your medicines.", hi: "मैं मदद के लिए यहीं हूँ, छोटी दोस्त या दवाइयों के लिए." })
-            : t(lang, { en: "*yawn* Good night! See you soon.", hi: "*उबासी* शुभ रात्रि! जल्दी मिलेंगे." });
+            : t(lang, { en: `*yawn* Good night${name ? `, ${name}` : ""}! See you soon.`, hi: `*उबासी* शुभ रात्रि${name ? ` ${name} जी` : ""}! जल्दी मिलेंगे.` });
     const face: FairyMood = bye === "ask" ? "asking" : bye === "sad" ? "sad" : bye === "brave" ? "happy" : "yawn";
     return (
       <div data-fairy={`bye-${bye}`} className={`fairy-dock fixed right-3 z-30 flex items-end gap-2 ${speaking ? "fairy-dock-up" : ""}`}>
@@ -350,6 +364,15 @@ export function FairyDock() {
   // on Today the reminder card already says it, so she stays small and quiet there and does not cover it;
   // with nothing to say she is small and quiet everywhere
   const quiet = !ear && ((tab === "today" && (kind === "due" || kind === "missed")) || (kind === "idle" && !bubble) || kind === "sleep");
+  talking.current = !quiet;
+  if (quiet && perch && tab === "today" && (kind === "due" || kind === "missed")) {
+    return createPortal(
+      <div data-fairy={kind} className="fairy-perched">
+        <FairyScene news={news} mood={mood} size="sm" label={bubble ? `${label}: ${bubble}` : label} onTap={onTap} />
+      </div>,
+      perch,
+    );
+  }
   return (
     <div data-fairy={kind} className={`fairy-dock fixed right-3 z-30 flex items-end gap-2 ${kind === "sleep" && !ear ? "fairy-dock-floor" : speaking ? "fairy-dock-up" : ""}`}>
       {quiet ? null : (

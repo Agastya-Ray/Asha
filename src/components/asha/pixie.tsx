@@ -1,3 +1,4 @@
+import { useAsha } from "@/lib/asha/store";
 import type { CSSProperties } from "react";
 import { cn } from "@/lib/cn";
 import idle from "@/assets/fairy/idle.webp";
@@ -68,9 +69,10 @@ type Look = { x: number; y: number } | undefined;
 
 export function Pixie({ mood = "idle", look, className, style }: { mood?: PixieMood; look?: Look; className?: string; style?: CSSProperties }) {
   // she leans a little toward whatever was just tapped
+  const fairyName = useAsha((s) => s.fairyName);
   const lean = look ? { transform: `translateX(${look.x * 4}%) rotate(${look.x * 5}deg)` } : undefined;
   return (
-    <div className={cn("pixie relative", `pixie-${mood}`, className)} style={style} role="img" aria-label={mood === "sleep" ? "Asha the fairy, asleep" : "Asha the fairy"}>
+    <div className={cn("pixie relative", `pixie-${mood}`, className)} style={style} role="img" aria-label={`${fairyName || "Your fairy"}${mood === "sleep" ? ", asleep" : ""}`}>
       <div className="pixie-glow absolute inset-0" />
       <div className="pixie-lean absolute inset-0" style={lean}>
         <img src={ART[mood]} alt="" draggable={false} className="pixie-art absolute inset-0 h-full w-full object-contain object-bottom" />

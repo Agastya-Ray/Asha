@@ -3,54 +3,46 @@ appId: com.agastyaray.asha
 ---
 - launchApp:
     clearState: true
+# The fairy is asleep in her night room; a tap wakes her, she says hello and asks for a name.
 - extendedWaitUntil:
-    visible: "Skip"
+    visible: ".*Tap her gently to wake her up.*"
     timeout: 120000
-- takeScreenshot: 01-intro-1
-- scrollUntilVisible:
-    element: "Next"
-- tapOn: "Next"
-- waitForAnimationToEnd
+- takeScreenshot: 01-intro-asleep
+- tapOn: ".*Tap her gently to wake her up.*"
 - extendedWaitUntil:
-    visible: "Skip"
-    timeout: 5000
-- takeScreenshot: 01-intro-2
-- scrollUntilVisible:
-    element: "Next"
-- tapOn: "Next"
-- waitForAnimationToEnd
+    visible: "Hello!"
+    timeout: 10000
+- takeScreenshot: 01-intro-hello
+- tapOn: "Hello!"
 - extendedWaitUntil:
-    visible: "Skip"
+    visible: "Yes, of course"
     timeout: 5000
-- takeScreenshot: 01-intro-3
-- scrollUntilVisible:
-    element: "Next"
-- tapOn: "Next"
-- waitForAnimationToEnd
+- takeScreenshot: 01-intro-shy
+- tapOn: "Yes, of course"
 - extendedWaitUntil:
-    visible: "Skip"
+    visible: "Give your fairy a name"
     timeout: 5000
-- takeScreenshot: 01-intro-4
+- takeScreenshot: 01-intro-naming
+- tapOn: "Titli"
 - scrollUntilVisible:
-    element: "Next"
-- tapOn: "Next"
-- waitForAnimationToEnd
+    element: "That's her name"
+    centerElement: true
+- tapOn: "That's her name"
 - extendedWaitUntil:
-    visible: "Skip"
+    visible: "You're welcome"
     timeout: 5000
-- takeScreenshot: 01-intro-5
-- scrollUntilVisible:
-    element: "Next"
-- tapOn: "Next"
-- waitForAnimationToEnd
+- takeScreenshot: 01-intro-loves
+- tapOn: "You're welcome"
 - extendedWaitUntil:
-    visible: "Skip"
+    visible: "Yes, I'd love to"
     timeout: 5000
-- takeScreenshot: 01-intro-6
-- takeScreenshot: 02-intro-last
-- scrollUntilVisible:
-    element: "Let's set up.*"
-- tapOn: "Let's set up.*"
+- takeScreenshot: 01-intro-invite
+- tapOn: "Yes, I'd love to"
+- extendedWaitUntil:
+    visible: "Welcome to my home!"
+    timeout: 5000
+- takeScreenshot: 02-intro-home
+- tapOn: "Thank you, Titli"
 - extendedWaitUntil:
     visible: "Who will use this phone?"
     timeout: 10000
@@ -78,7 +70,7 @@ appId: com.agastyaray.asha
     element: "Continue"
 - tapOn: "Continue"
 - takeScreenshot: 07-setup-step3
-- tapOn: "112"
+- tapOn: "For example 112"
 - inputText: "112"
 - hideKeyboard
 - scrollUntilVisible:
@@ -126,3 +118,26 @@ appId: com.agastyaray.asha
 - tapOn: "Go to my day"
 - waitForAnimationToEnd
 - takeScreenshot: 12-today-first-open
+# Titli walks the person round Today once: what is due, the Help button, the tabs, then she goes to her corner.
+- extendedWaitUntil:
+    visible: "This is your day.*"
+    timeout: 10000
+- takeScreenshot: 12-tour-1-today
+- tapOn: "Next"
+- extendedWaitUntil:
+    visible: "See this red Help button.*"
+    timeout: 5000
+- takeScreenshot: 12-tour-2-help
+- tapOn: "Next"
+- extendedWaitUntil:
+    visible: "These buttons at the bottom.*"
+    timeout: 5000
+- takeScreenshot: 12-tour-3-tabs
+- tapOn: "Next"
+- extendedWaitUntil:
+    visible: "Now my home is your home too.*"
+    timeout: 5000
+- takeScreenshot: 12-tour-4-corner
+- tapOn: "Thank you"
+- waitForAnimationToEnd
+- takeScreenshot: 12-today-after-tour

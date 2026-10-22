@@ -102,6 +102,10 @@ export function FairyIntro() {
     if (line && voiceOn) void speak(t(voiceLang, line), voiceLang, "fairy");
   }, [step, voiceLang]);
   useEffect(() => () => stopSpeaking(), []);
+  // a new step starts at the top, so her face is never scrolled away (the naming card can be long)
+  useEffect(() => {
+    window.scrollTo({ top: 0 });
+  }, [step]);
 
   const wake = () => {
     unlockAudio();
@@ -237,7 +241,7 @@ export function FairyIntro() {
             {name || t(lang, { en: "Your fairy", hi: "आपकी परी" })}
           </p>
           <p className="mt-1 text-xl leading-snug">{t(lang, line)}</p>
-          <div className="mt-3 flex gap-2">
+          <div className="mt-3 flex flex-wrap gap-2">
             <button
               type="button"
               className="min-h-12 shrink-0 rounded-2xl border border-line px-3 text-base font-bold text-quiet"
@@ -246,7 +250,7 @@ export function FairyIntro() {
               🔊 {t(lang, { en: "Again", hi: "फिर से" })}
             </button>
             <Button
-              className="flex-1"
+              className="min-w-36 flex-1"
               onClick={() => {
                 if (step === "hello") setStep(saved ? "loves" : "shy");
                 else if (step === "shy") setStep("naming");
@@ -295,7 +299,7 @@ export function FairyIntro() {
           <p className="text-base text-quiet">
             {t(lang, {
               en: "I'm not a doctor, so I never change your prescription.",
-              hi: "मैं डॉक्टर नहीं हूँ, इसलिए आपकी पर्ची कभी नहीं बदलती.",
+              hi: "मैं डॉक्टर नहीं हूँ, इसलिए मैं आपकी पर्ची कभी नहीं बदलती.",
             })}
           </p>
         </div>

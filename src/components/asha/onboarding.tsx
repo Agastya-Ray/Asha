@@ -2,7 +2,7 @@ import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Choice, FieldLabel, SpeakField, t } from "@/components/asha/bits";
 import { FairyGuide } from "@/components/asha/fairy-guide";
-import { MedEditor } from "@/components/asha/meds";
+import { MedEditor, medSummary } from "@/components/asha/meds";
 import { CONDITIONS } from "@/lib/asha/plans";
 import { digits } from "@/lib/asha/schedule";
 import { blankMed, newId, useAsha } from "@/lib/asha/store";
@@ -140,7 +140,7 @@ export function Onboarding() {
               inputMode="tel"
               value={emergency}
               onChange={(e) => setEmergencyLocal(e.target.value)}
-              placeholder="112"
+              placeholder={t(lang, { en: "For example 112", hi: "जैसे 112" })}
             />
           </div>
           {people.map((person, index) => (
@@ -233,7 +233,7 @@ export function Onboarding() {
               <ul className="mt-2 space-y-1 text-lg">
                 {meds.map((m) => (
                   <li key={m.id}>
-                    {m.name} · {m.dose} · {m.times.join(", ")}
+                    <b>{m.name}</b>: {medSummary(m, lang)}
                   </li>
                 ))}
               </ul>

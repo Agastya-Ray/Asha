@@ -28,11 +28,12 @@ export function padTime(h: number, m: number) {
 }
 
 export function normTime(raw: string): string | null {
-  const m = raw.trim().match(/^(\d{1,2})[:.](\d{2})\s*(am|pm)?$/i);
-  if (!m) return null;
+  // "08:00", "8.30 pm", and also "9 am" / "9pm" (a photo of a prescription often comes back like that)
+  const m = raw.trim().match(/^(\d{1,2})(?:[:.](\d{2}))?\s*(am|pm|a\.m\.|p\.m\.)?$/i);
+  if (!m || (m[2] === undefined && !m[3])) return null;
   let h = Number(m[1]);
-  const min = Number(m[2]);
-  const ap = m[3]?.toLowerCase();
+  const min = Number(m[2] ?? 0);
+  const ap = m[3]?.toLowerCase().replace(/\./g, "");
   if (ap === "pm" && h < 12) h += 12;
   if (ap === "am" && h === 12) h = 0;
   if (h > 23 || min > 59) return null;
