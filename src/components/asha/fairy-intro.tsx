@@ -15,6 +15,7 @@ import { speak, stopSpeaking, unlockAudio } from "@/lib/asha/voice";
 type Step = "asleep" | "waking" | "hello" | "shy" | "naming" | "loves" | "invite" | "home";
 
 const NAMES = ["Titli", "Mishti", "Juhi", "Tara"];
+const STARS = [[14, 22], [32, 12], [58, 26], [72, 34], [22, 44], [86, 52], [46, 50]];
 
 const LINES: Record<Exclude<Step, "asleep" | "waking" | "naming">, (name: string) => Localized> = {
   hello: () => ({
@@ -133,7 +134,11 @@ export function FairyIntro() {
     return (
       <div className="fi-night fi-room -mx-4 flex min-h-[calc(100dvh-5rem)] flex-col items-center px-4 pt-6">
         <span className="fi-moon" aria-hidden />
-        <span className="fi-stars" aria-hidden />
+        <span className="fi-stars" aria-hidden>
+          {STARS.map(([x, y], i) => (
+            <i key={i} style={{ left: `${x}%`, top: `${y}%` }} />
+          ))}
+        </span>
         <div className="relative z-10 w-full max-w-sm">
           <LangSwitch value={lang} onChange={(l) => setBoth(l)} />
         </div>
