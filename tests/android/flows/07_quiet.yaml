@@ -6,7 +6,9 @@ appId: com.agastyaray.asha
 - tapOn: "Settings"
 - scrollUntilVisible:
     element: "🤫 Quiet for a while (meeting, event)"
-- tapOn: "🤫 Quiet for a while (meeting, event)"
+- tapOn:
+    text: "🤫 Quiet for a while (meeting, event)"
+    retryTapIfNoChange: false
 - waitForAnimationToEnd
 - extendedWaitUntil:
     visible: "30 minutes"

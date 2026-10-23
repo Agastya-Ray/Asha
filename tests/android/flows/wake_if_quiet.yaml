@@ -6,8 +6,10 @@ appId: com.agastyaray.asha
       visible:
         text: ".*is quiet until.*"
     commands:
+      # no retry tap: a second tap would land on the sheet's dimmed backdrop and close it
       - tapOn:
           text: "🤫.*is quiet until.*"
+          retryTapIfNoChange: false
       - waitForAnimationToEnd
       - extendedWaitUntil:
           visible: "Wake her now"
