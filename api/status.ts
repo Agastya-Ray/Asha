@@ -1,5 +1,5 @@
 // GET /api/status -> which services are switched on (no secrets are shown). Handy for checking setup.
-import { CORS } from "./_shared";
+import { CORS } from "./_shared.js";
 
 export function GET() {
   const on = (k: string) => Boolean(process.env[k]);

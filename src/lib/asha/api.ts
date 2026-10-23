@@ -3,7 +3,7 @@ import { isNative } from "@/lib/asha/native";
 import type { Lang } from "@/lib/asha/types";
 
 /** Where the server lives. In the browser it is the same site. In the app it is the Vercel address. */
-const FALLBACK_API = "https://asha-agastya.vercel.app";
+const FALLBACK_API = "https://asha-rho.vercel.app";
 const BASE = (import.meta.env.VITE_API_BASE as string | undefined)?.replace(/\/$/, "") || (isNative ? FALLBACK_API : "");
 const APP_KEY = (import.meta.env.VITE_ASHA_APP_KEY as string | undefined) ?? "";
 

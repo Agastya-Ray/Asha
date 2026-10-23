@@ -1,7 +1,7 @@
 // POST /api/voices  {}  ->  { ok, voices: [{ id, owner, name, about, accent, preview }] }
 // Candidate voices for Titli, for the "Choose Titli's voice" screen in Settings.
-import { guard, json, preflight } from "./_shared";
-import { elevenChoices, elevenKey } from "./_eleven";
+import { guard, json, preflight } from "./_shared.js";
+import { elevenChoices, elevenKey } from "./_eleven.js";
 
 export function OPTIONS() {
   return preflight();

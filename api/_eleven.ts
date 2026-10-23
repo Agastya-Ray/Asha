@@ -1,5 +1,5 @@
 // ElevenLabs: Titli's own voice (ELEVENLABS_API_KEY). Files starting with "_" are not endpoints.
-import { toBase64 } from "./_shared";
+import { toBase64 } from "./_shared.js";
 
 const API = "https://api.elevenlabs.io";
 export const elevenKey = () => process.env.ELEVENLABS_API_KEY ?? "";

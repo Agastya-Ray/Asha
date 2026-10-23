@@ -4,8 +4,8 @@
 // ELEVENLABS_VOICE_FAIRY. Never a grown-up voice: if it fails, the app uses her phone voice.
 //   1. xAI voice        (XAI_API_KEY)            paid per character
 //   2. Google Cloud TTS (GOOGLE_TTS_API_KEY)     1M Chirp-HD + 4M WaveNet characters free every month
-import { asLang, guard, json, preflight, readBody, toBase64, type Lang } from "./_shared";
-import { elevenSpeak } from "./_eleven";
+import { asLang, guard, json, preflight, readBody, toBase64, type Lang } from "./_shared.js";
+import { elevenSpeak } from "./_eleven.js";
 
 export function OPTIONS() {
   return preflight();
