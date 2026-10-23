@@ -160,10 +160,8 @@ function Header() {
               type="button"
               data-tour="help"
               onClick={() => setTab("sos")}
-              className={cn(
-                "min-h-12 rounded-full px-4 text-lg font-bold",
-                tab === "sos" ? "bg-ink text-paper" : "bg-sos text-paper",
-              )}
+              aria-current={tab === "sos" ? "page" : undefined}
+              className="btn-sos min-h-12 rounded-full bg-sos px-4 text-lg font-bold text-paper"
             >
               {t(lang, { en: "Help", hi: "मदद" })}
             </button>
@@ -197,9 +195,10 @@ function Nav() {
               key={item.id}
               type="button"
               onClick={() => setTab(item.id)}
-              className={cn("flex min-h-14 flex-col items-center justify-center gap-0.5 text-sm font-bold transition-colors", on ? "tab-on text-sage" : "text-quiet")}
+              aria-current={on ? "page" : undefined}
+              className={cn("flex min-h-[4.25rem] flex-col items-center justify-center gap-1 text-base font-bold transition-colors", on ? "tab-on text-sage" : "text-quiet")}
             >
-              <Icon className="size-5" aria-hidden />
+              <Icon className="size-7" aria-hidden strokeWidth={2.2} />
               {lang === "hi" ? item.hi : item.en}
             </button>
           );

@@ -699,6 +699,61 @@ button.border.border-line.bg-paper {
   box-shadow: 0 12px 28px -14px var(--soft-shadow);
 }
 
+/* no outlines anywhere: every bordered box becomes a soft tinted or floating surface */
+.border-line,
+.border-sage,
+.border-clay,
+.border-sos,
+.border-b.border-line {
+  border-color: transparent;
+}
+header.border-b {
+  box-shadow: 0 6px 16px -14px var(--soft-shadow);
+}
+.border-line:not(.bg-paper):not(.bg-linen):not(header) {
+  background: var(--quiet-fill);
+}
+.border-line.bg-paper:not(button) {
+  box-shadow:
+    0 1px 2px var(--soft-shadow),
+    0 10px 24px -18px var(--soft-shadow);
+}
+.border-b.border-line:not(header) {
+  background: none;
+  border-bottom-color: var(--quiet-edge);
+  border-bottom-style: dashed;
+}
+/* chosen things glow warmly instead of getting a dark ring */
+.border-sage.bg-sage-soft,
+.border-2.border-sage:not(.tell-asha) {
+  background-color: var(--color-sage-soft);
+  box-shadow:
+    0 0 0 3px var(--btn-1),
+    0 10px 22px -14px var(--btn-glow);
+}
+.border-sos.bg-sos-soft {
+  box-shadow: 0 10px 24px -16px rgb(207 52 72 / 0.45);
+}
+.border-clay.bg-clay-soft {
+  box-shadow: 0 10px 24px -16px rgb(180 82 15 / 0.35);
+}
+button.border.border-line.bg-paper {
+  border-color: transparent;
+  box-shadow:
+    inset 0 0 0 1px var(--quiet-edge),
+    0 6px 14px -10px var(--soft-shadow);
+}
+.field {
+  border-color: transparent;
+  background: #ffffff;
+  box-shadow:
+    inset 0 0 0 1.5px var(--quiet-edge),
+    0 6px 14px -12px var(--soft-shadow);
+}
+.nav-float {
+  border-color: transparent;
+}
+
 /* ---------- the pixie (pixie.tsx) ---------- */
 .pixie-glow {
   background: radial-gradient(closest-side, rgb(255 246 200 / 0.75), rgb(255 246 200 / 0));

@@ -59,7 +59,6 @@ export function TodayScreen() {
       </div>
 
       <ReminderHealth />
-      <VoiceCommand />
 
       {conditions.includes("heart") && checkin?.chestOk !== true ? (
         <Card className="mt-5 border-sos bg-sos-soft">
@@ -125,6 +124,8 @@ export function TodayScreen() {
         </div>
       ) : null}
       </section>
+
+      <VoiceCommand />
 
       {sample ? (
         <p className="mt-4 text-base text-quiet">

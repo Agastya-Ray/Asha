@@ -77,8 +77,8 @@ export function CareScreen() {
       <h1 className="display text-4xl">{t(lang, { en: "Care", hi: "देखभाल" })}</h1>
       <p className="mt-2 text-lg text-quiet">
         {t(lang, {
-          en: "Meal times, a short check-in, then the chart. Open a condition to read the plate. This is general care, not your doctor's order.",
-          hi: "खाने का समय, छोटी जाँच, फिर चार्ट. प्लेट पढ़ने के लिए बीमारी खोलें. यह सामान्य देखभाल है, डॉक्टर का आदेश नहीं.",
+          en: "Meals, how you feel, and your chart. General care, not a doctor's order.",
+          hi: "खाना, आप कैसा महसूस करते हैं, और चार्ट. सामान्य देखभाल, डॉक्टर का आदेश नहीं.",
         })}
       </p>
 

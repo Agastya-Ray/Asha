@@ -25,7 +25,7 @@ export function doseSentence(lang: Lang, name: string, med: Med, time: string) {
   const when = speakClock(lang, time);
   const food = foodSentence(med.food, lang);
   if (lang === "hi") {
-    return `${who}, ${when} हो गए हैं. ${med.name} की बारी है, ${med.dose}. ${food} ले लें, तो हरे बटन को दबा दें.`;
+    return `${who}, ${when} हो गए हैं. ${med.name} की बारी है, ${med.dose}. ${food} ले लें, तो बड़े बटन को दबा दें.`;
   }
   return `${who}, it's ${when}. Time for your ${med.name}, ${med.dose}. ${food} When you have taken it, press the big button.`;
 }
@@ -74,7 +74,7 @@ export function mealSentence(lang: Lang, name: string, meal: Meal, time: string)
   const title = mealTitle(meal, lang);
   const note = mealNote(meal, lang);
   if (lang === "hi") {
-    return `${who}, ${when} हो गए हैं. ${title} का समय है. ${note} आराम से खाएँ. खा लें तो हरे बटन को दबा दें.`;
+    return `${who}, ${when} हो गए हैं. ${title} का समय है. ${note} आराम से खाएँ. खा लें तो बड़े बटन को दबा दें.`;
   }
   return `${who}, it's ${when}. Time for ${title}. ${note} Eat slowly. When you finish, press the big button.`;
 }
