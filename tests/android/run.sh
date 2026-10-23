@@ -122,6 +122,7 @@ if command -v convert >/dev/null; then
   adb shell am broadcast -a android.intent.action.MEDIA_SCANNER_SCAN_FILE -d file:///sdcard/Pictures/prescription.jpg >/dev/null
 fi
 
+MAIN_PID=$$
 # watch the emulator itself: if it vanishes mid-run, this shows when, and how much memory the runner had left
 ( while true; do echo "$(date +%T) $(adb devices | grep -c 'device$') dev | $(free -m | awk '/Mem:/{print "free " $7 " MB"}') | $(pgrep -f qemu-system >/dev/null && echo qemu up || echo qemu GONE)"; sleep 5; done ) > "$OUT/watch.log" 2>&1 &
 WATCH_PID=$!
@@ -129,7 +130,9 @@ WATCH_PID=$!
 adb logcat -v time -b main -b system -b crash -b events > "$OUT/logcat-stream.txt" 2>/dev/null &
 STREAM_PID=$!
 # when the emulator process dies, keep the host's view of why
-( while pgrep -f qemu-system >/dev/null; do sleep 3; done; { echo "qemu gone at $(date +%T)"; sudo dmesg | tail -40; ls -la /tmp/android-*/ 2>/dev/null; tail -50 ~/.android/avd/*.avd/*.log 2>/dev/null; } > "$OUT/emulator-death.txt" 2>&1 ) &
+( while pgrep -f qemu-system >/dev/null; do sleep 3; done; { echo "qemu gone at $(date +%T)"; sudo dmesg | tail -40; ls -la /tmp/android-*/ 2>/dev/null; tail -50 ~/.android/avd/*.avd/*.log 2>/dev/null; } > "$OUT/emulator-death.txt" 2>&1
+  # nothing more can run without the emulator; stop now instead of hanging until the job's 60-minute limit
+  echo "== the emulator died (see emulator-death.txt)" >> "$OUT/steps.log"; pkill -f maestro; kill $MAIN_PID ) &
 flow 01_setup.yaml
 flow 02_permissions.yaml
 shot 25-today-after-permissions
