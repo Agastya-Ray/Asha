@@ -813,33 +813,33 @@ body {
 .fi-sky {
   background: radial-gradient(circle at 50% 25%, #fff6e0 0, #fde3ea 45%, #e9e2f7 100%);
 }
+/* No box-shadows, isolation or sub-pixel gradients in this room: together they crashed the Android emulator's
+   graphics (and are heavy for old phones). The glows are plain gradients and the stars are small dots. */
 .fi-room {
   position: relative;
   overflow: hidden;
-  isolation: isolate;
 }
 .fi-moon {
   position: absolute;
   right: 12%;
   top: 18%;
-  width: 56px;
-  aspect-ratio: 1;
+  width: 104px;
+  height: 104px;
+  margin: -24px -24px 0 0;
   border-radius: 50%;
-  background: #fff6d5;
-  box-shadow: 0 0 40px 10px #fff6d566;
+  background: radial-gradient(circle closest-side, #fff6d5 0 53%, rgba(255, 246, 213, 0.4) 56%, rgba(255, 246, 213, 0) 100%);
 }
 .fi-stars {
   position: absolute;
   inset: 0 0 40% 0;
-  background:
-    radial-gradient(2px 2px at 14% 22%, #fff 50%, transparent 51%),
-    radial-gradient(2px 2px at 32% 12%, #fffbe8 50%, transparent 51%),
-    radial-gradient(1.5px 1.5px at 58% 26%, #fff 50%, transparent 51%),
-    radial-gradient(2px 2px at 72% 34%, #ffeef6 50%, transparent 51%),
-    radial-gradient(1.5px 1.5px at 22% 44%, #fff 50%, transparent 51%),
-    radial-gradient(2px 2px at 86% 52%, #fff 50%, transparent 51%),
-    radial-gradient(1.5px 1.5px at 46% 50%, #fffbe8 50%, transparent 51%);
   animation: fi-twinkle 3.2s ease-in-out infinite alternate;
+}
+.fi-stars i {
+  position: absolute;
+  width: 3px;
+  height: 3px;
+  border-radius: 50%;
+  background: #fffbe8;
 }
 @keyframes fi-twinkle {
   from { opacity: 0.55; }
@@ -854,7 +854,6 @@ body {
   margin-top: 24px;
   border-radius: 50% 50% 0 0 / 40% 40% 0 0;
   background: linear-gradient(#f5d7e3, #e8c6d8);
-  box-shadow: 0 -10px 50px 6px #ffd9ec55;
 }
 .fi-sleeper {
   position: absolute !important;
