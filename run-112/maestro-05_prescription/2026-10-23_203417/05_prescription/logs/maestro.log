@@ -1,0 +1,47 @@
+20:34:23.581 [ INFO] maestro.cli.runner.MaestroCommandRunner.runCommands$lambda$0: Define variables RUNNING
+20:34:23.586 [ INFO] maestro.cli.runner.MaestroCommandRunner.runCommands$lambda$11: Define variables metadata CommandMetadata(numberOfRuns=null, evaluatedCommand=MaestroCommand(defineVariablesCommand=DefineVariablesCommand(env={MAESTRO_FILENAME=05_prescription, MAESTRO_DEVICE_UDID=emulator-5554, MAESTRO_SHARD_ID=1, MAESTRO_SHARD_INDEX=0}, label=null, optional=false)), logMessages=[], insight=Insight(message=, level=NONE), aiReasoning=null, labeledCommand=null)
+20:34:23.588 [ INFO] maestro.cli.runner.MaestroCommandRunner.runCommands$lambda$2: Define variables COMPLETED
+20:34:23.589 [ INFO] maestro.cli.runner.MaestroCommandRunner.runCommands$lambda$0: Apply configuration RUNNING
+20:34:23.591 [ INFO] maestro.cli.runner.MaestroCommandRunner.runCommands$lambda$11: Apply configuration metadata CommandMetadata(numberOfRuns=null, evaluatedCommand=MaestroCommand(applyConfigurationCommand=ApplyConfigurationCommand(config=MaestroConfig(appId=com.agastyaray.asha, name=null, tags=[], ext={}, onFlowStart=null, onFlowComplete=null, properties={}), label=null, optional=false)), logMessages=[], insight=Insight(message=, level=NONE), aiReasoning=null, labeledCommand=null)
+20:34:23.592 [ INFO] maestro.cli.runner.MaestroCommandRunner.runCommands$lambda$2: Apply configuration COMPLETED
+20:34:23.592 [ INFO] maestro.cli.runner.MaestroCommandRunner.runCommands$lambda$0: Launch app "com.agastyaray.asha" RUNNING
+20:34:23.595 [ INFO] maestro.cli.runner.MaestroCommandRunner.runCommands$lambda$11: Launch app "com.agastyaray.asha" metadata CommandMetadata(numberOfRuns=null, evaluatedCommand=MaestroCommand(launchAppCommand=LaunchAppCommand(appId=com.agastyaray.asha, clearState=null, clearKeychain=null, stopApp=null, permissions=null, launchArguments=null, label=null, optional=false)), logMessages=[], insight=Insight(message=, level=NONE), aiReasoning=null, labeledCommand=null)
+20:34:24.099 [ INFO] maestro.Maestro.launchApp$lambda$5: Launching app com.agastyaray.asha
+20:34:24.099 [ INFO] maestro.Maestro.launchApp$lambda$5: Stopping com.agastyaray.asha app during launch
+20:34:24.804 [ INFO] maestro.cli.runner.MaestroCommandRunner.runCommands$lambda$2: Launch app "com.agastyaray.asha" COMPLETED
+20:34:24.808 [ INFO] maestro.cli.runner.MaestroCommandRunner.runCommands$lambda$0: Tap on "Meds" RUNNING
+20:34:24.830 [ INFO] maestro.cli.runner.MaestroCommandRunner.runCommands$lambda$11: Tap on "Meds" metadata CommandMetadata(numberOfRuns=null, evaluatedCommand=MaestroCommand(tapOnElementCommand=TapOnElementCommand(selector=ElementSelector(textRegex=Meds, idRegex=null, size=null, below=null, above=null, leftOf=null, rightOf=null, containsChild=null, containsDescendants=null, traits=null, index=null, enabled=null, optional=false, selected=null, checked=null, focused=null, childOf=null, css=null), retryIfNoChange=false, waitUntilVisible=false, longPress=false, repeat=null, waitToSettleTimeoutMs=null, relativePoint=null, label=null, optional=false)), logMessages=[], insight=Insight(message=, level=NONE), aiReasoning=null, labeledCommand=null)
+20:34:35.769 [ INFO] maestro.Maestro.tap-HgV9Ck0: Tapping on element:  UiElement(treeNode=TreeNode(attributes={text=Meds, accessibilityText=, hintText=, ignoreBoundsFiltering=false, resource-id=, clickable=true, bounds=[294,2112][543,2293], enabled=true, focused=false, checked=false, scrollable=false, selected=false, class=android.widget.Button, important-for-accessibility=false, error=}, children=[], clickable=true, enabled=true, focused=false, checked=false, selected=false), bounds=Bounds(x=294, y=2112, width=249, height=181))
+20:34:37.510 [ INFO] maestro.Maestro.tap-HgV9Ck0: Tap aimed via settled hierarchy
+20:34:37.517 [ INFO] maestro.Maestro.hierarchyBasedTap-ogj28Uc: Tapping at (418, 2202) using hierarchy based logic for wait
+20:34:39.392 [ INFO] maestro.Maestro.hierarchyBasedTap-ogj28Uc: Something has changed in the UI judging by view hierarchy. Proceed.
+20:34:39.393 [ INFO] maestro.cli.runner.MaestroCommandRunner.runCommands$lambda$2: Tap on "Meds" COMPLETED
+20:34:39.393 [ INFO] maestro.cli.runner.MaestroCommandRunner.runCommands$lambda$0: Assert that "Asha is speaking" is not visible RUNNING
+20:34:39.395 [ INFO] maestro.cli.runner.MaestroCommandRunner.runCommands$lambda$11: Assert that "Asha is speaking" is not visible metadata CommandMetadata(numberOfRuns=null, evaluatedCommand=MaestroCommand(assertConditionCommand=AssertConditionCommand(condition=Condition(platform=null, visible=null, notVisible=ElementSelector(textRegex=Asha is speaking, idRegex=null, size=null, below=null, above=null, leftOf=null, rightOf=null, containsChild=null, containsDescendants=null, traits=null, index=null, enabled=null, optional=false, selected=null, checked=null, focused=null, childOf=null, css=null), scriptCondition=null, label=null), timeout=30000, label=null, optional=false)), logMessages=[], insight=Insight(message=, level=NONE), aiReasoning=null, labeledCommand=null)
+20:34:46.463 [ INFO] maestro.cli.runner.MaestroCommandRunner.runCommands$lambda$2: Assert that "Asha is speaking" is not visible COMPLETED
+20:34:46.464 [ INFO] maestro.cli.runner.MaestroCommandRunner.runCommands$lambda$0: Scrolling DOWN until "Choose from gallery" is visible with speed 40, visibility percentage 100%, timeout 20000 ms, with centering enabled RUNNING
+20:34:46.467 [ INFO] maestro.cli.runner.MaestroCommandRunner.runCommands$lambda$11: Scrolling DOWN until "Choose from gallery" is visible with speed 40, visibility percentage 100%, timeout 20000 ms, with centering enabled metadata CommandMetadata(numberOfRuns=null, evaluatedCommand=MaestroCommand(scrollUntilVisibleCommand=ScrollUntilVisibleCommand(selector=ElementSelector(textRegex=Choose from gallery, idRegex=null, size=null, below=null, above=null, leftOf=null, rightOf=null, containsChild=null, containsDescendants=null, traits=null, index=null, enabled=null, optional=false, selected=null, checked=null, focused=null, childOf=null, css=null), direction=DOWN, scrollDuration=601, visibilityPercentage=100, timeout=20000, waitToSettleTimeoutMs=null, centerElement=true, originalSpeedValue=40, label=null, optional=false)), logMessages=[], insight=Insight(message=, level=NONE), aiReasoning=null, labeledCommand=null)
+20:34:47.231 [ WARN] maestro.orchestra.Orchestra.scrollUntilVisible: Error: maestro.MaestroException$ElementNotFound: Element not found: Text matching regex: Choose from gallery
+20:34:47.240 [ INFO] maestro.Maestro.swipeFromCenter: Swiping UP from center
+20:34:49.755 [ WARN] maestro.orchestra.Orchestra.scrollUntilVisible: Error: maestro.MaestroException$ElementNotFound: Element not found: Text matching regex: Choose from gallery
+20:34:49.765 [ INFO] maestro.Maestro.swipeFromCenter: Swiping UP from center
+20:34:52.294 [ WARN] maestro.orchestra.Orchestra.scrollUntilVisible: Error: maestro.MaestroException$ElementNotFound: Element not found: Text matching regex: Choose from gallery
+20:34:52.303 [ INFO] maestro.Maestro.swipeFromCenter: Swiping UP from center
+20:34:54.867 [ WARN] maestro.orchestra.Orchestra.scrollUntilVisible: Error: maestro.MaestroException$ElementNotFound: Element not found: Text matching regex: Choose from gallery
+20:34:54.873 [ INFO] maestro.Maestro.swipeFromCenter: Swiping UP from center
+20:34:57.922 [ WARN] maestro.orchestra.Orchestra.scrollUntilVisible: Error: maestro.MaestroException$ElementNotFound: Element not found: Text matching regex: Choose from gallery
+20:34:57.930 [ INFO] maestro.Maestro.swipeFromCenter: Swiping UP from center
+20:35:00.435 [ WARN] maestro.orchestra.Orchestra.scrollUntilVisible: Error: maestro.MaestroException$ElementNotFound: Element not found: Text matching regex: Choose from gallery
+20:35:00.441 [ INFO] maestro.Maestro.swipeFromCenter: Swiping UP from center
+20:35:02.026 [ WARN] maestro.orchestra.Orchestra.scrollUntilVisible: Error: maestro.MaestroException$ElementNotFound: Element not found: Text matching regex: Choose from gallery
+20:35:02.035 [ INFO] maestro.Maestro.swipeFromCenter: Swiping UP from center
+20:35:03.630 [ WARN] maestro.orchestra.Orchestra.scrollUntilVisible: Error: maestro.MaestroException$ElementNotFound: Element not found: Text matching regex: Choose from gallery
+20:35:03.639 [ INFO] maestro.Maestro.swipeFromCenter: Swiping UP from center
+20:35:05.242 [ WARN] maestro.orchestra.Orchestra.scrollUntilVisible: Error: maestro.MaestroException$ElementNotFound: Element not found: Text matching regex: Choose from gallery
+20:35:05.248 [ INFO] maestro.Maestro.swipeFromCenter: Swiping UP from center
+20:35:06.814 [ WARN] maestro.orchestra.Orchestra.scrollUntilVisible: Error: maestro.MaestroException$ElementNotFound: Element not found: Text matching regex: Choose from gallery
+20:35:06.820 [ INFO] maestro.Maestro.swipeFromCenter: Swiping UP from center
+20:35:07.779 [ERROR] maestro.orchestra.Orchestra.executeCommands: [Command execution] CommandFailed: No visible element found: "Choose from gallery"
+20:35:08.077 [ INFO] maestro.Maestro.takeScreenshot: Taking screenshot
+20:35:08.078 [TRACE] maestro.utils.ScreenshotUtils.takeScreenshot: Taking screenshot to output sink
+20:35:08.415 [ INFO] maestro.cli.runner.MaestroCommandRunner.runCommands$lambda$4: Scrolling DOWN until "Choose from gallery" is visible with speed 40, visibility percentage 100%, timeout 20000 ms, with centering enabled FAILED
