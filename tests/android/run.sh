@@ -190,6 +190,32 @@ adb shell input keyevent KEYCODE_BACK; sleep 2
 adb shell am force-stop com.google.android.dialer; adb shell input keyevent KEYCODE_WAKEUP; sleep 2
 shot 75-back-in-asha
 
+# --- Quiet mode: "I'm going to an event, be quiet" ---
+log "quiet mode test"
+setclock 101519202026.00          # 19:20, ten minutes before dinner (lunch and snack ring now, out loud)
+sleep 30
+adb shell am force-stop $PKG; adb shell monkey -p $PKG -c android.intent.category.LAUNCHER 1 >/dev/null 2>&1; sleep 15
+flow 07_quiet.yaml                # quiet, then woken early: Android says "I'm back" straight away
+sleep 6
+grep "AshaSpeaker" "$OUT/logcat-stream.txt" | tail -3 > "$OUT/quiet-early-said.txt"
+grep -q "I'm back" "$OUT/quiet-early-said.txt" && log "woken early: she said I'm back" || { FAILED=1; log "woken early: no I'm back"; }
+flow 08_quiet_stay.yaml           # quiet for 30 minutes, until about 19:55
+adb shell input keyevent KEYCODE_HOME
+SAID_BEFORE=$(grep -c "AshaSpeaker" "$OUT/logcat-stream.txt")
+setclock 101519294026.40          # 19:29:40, so dinner comes due while she is quiet
+sleep 80
+adb shell dumpsys notification --noredact | grep -E "android.title=|android.text=" > "$OUT/quiet-1930-cards.txt" || true
+grep -qi "dinner" "$OUT/quiet-1930-cards.txt" && log "19:30 while quiet: silent dinner card shown" || { FAILED=1; log "19:30 while quiet: no dinner card"; }
+SAID_QUIET=$(grep -c "AshaSpeaker" "$OUT/logcat-stream.txt")
+[ "$SAID_QUIET" = "$SAID_BEFORE" ] && log "19:30 while quiet: she stayed silent" || { FAILED=1; log "19:30 while quiet: she spoke"; grep "AshaSpeaker" "$OUT/logcat-stream.txt" | tail -3 >> "$OUT/steps.log"; }
+adb shell input keyevent KEYCODE_WAKEUP; sleep 2; shot 83-quiet-silent-card
+setclock 101520052026.00          # 20:05, past the end of quiet
+sleep 40
+grep "AshaSpeaker" "$OUT/logcat-stream.txt" | tail -3 > "$OUT/quiet-end-said.txt"
+grep -q "I'm back" "$OUT/quiet-end-said.txt" && grep -qi "dinner" "$OUT/quiet-end-said.txt" && log "quiet over: she said I'm back and the dinner" || { FAILED=1; log "quiet over: missing I'm back or dinner (see quiet-end-said.txt)"; }
+shot 84-quiet-over
+grep -E "FATAL EXCEPTION" -A8 "$OUT/logcat-stream.txt" | grep -B2 -A6 "$PKG" > "$OUT/quiet-crash.txt" && { FAILED=1; log "crash during quiet mode (see quiet-crash.txt)"; } || true
+
 # --- Hindi and the largest text, tapped by screen position (Maestro's text bounds sat under the bottom nav) ---
 # the Help flow leaves the app on Help, and a relaunch reopens Help, so go back to Today for its Settings button
 adb shell am force-stop $PKG; adb shell monkey -p $PKG -c android.intent.category.LAUNCHER 1 >/dev/null 2>&1; sleep 15

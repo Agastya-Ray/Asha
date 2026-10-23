@@ -35,6 +35,7 @@ export const initialPersist = (): Persist => ({
   dailyGreetings: true,
   wakeTime: "07:30",
   sleepTime: "21:30",
+  quietUntil: 0,
   conditions: [],
   contacts: [],
   emergencyNumber: "",
@@ -103,6 +104,7 @@ type State = Persist & {
     >,
   ) => void;
   pushChat: (turn: ChatTurn) => void;
+  setQuiet: (until: number) => void;
   dismissCoach: () => void;
   finishSetup: () => void;
   loadSample: () => void;
@@ -177,6 +179,7 @@ function sanitize(raw: unknown): Persist {
     reminded: Array.isArray(r.reminded) ? r.reminded : [],
     snooze: r.snooze && typeof r.snooze === "object" ? r.snooze : {},
     chat: Array.isArray(r.chat) ? r.chat : [],
+    quietUntil: typeof r.quietUntil === "number" && r.quietUntil > Date.now() ? r.quietUntil : 0,
     setupStep: r.setupStep === 2 || r.setupStep === 3 || r.setupStep === 4 ? r.setupStep : 1,
   };
 }
@@ -204,6 +207,7 @@ export const useAsha = create<State>((set) => ({
   setBothLangs: (lang) => set({ lang, voiceLang: lang }),
   setTextSize: (textSize) => set({ textSize }),
   finishIntro: () => set({ introSeen: true }),
+  setQuiet: (quietUntil) => set({ quietUntil: Math.max(0, Math.round(quietUntil)) }),
   chooseRole: (appRole) => set({ appRole, roleChosen: true, tab: appRole === "family" ? "family" : "today" }),
   replayIntro: () => set({ introSeen: false }),
   setFairyName: (fairyName) => set({ fairyName: fairyName.trim().slice(0, 24) }),

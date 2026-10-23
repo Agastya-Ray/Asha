@@ -34,7 +34,7 @@ if (typeof window !== "undefined")
 
 function allowed(now = new Date()) {
   const s = useAsha.getState();
-  return s.fairySounds && awake(s.wakeTime, s.sleepTime, now);
+  return s.fairySounds && !(s.quietUntil > now.getTime()) && awake(s.wakeTime, s.sleepTime, now);
 }
 
 /** Plays one sound; says whether it was heard (false at night, when switched off, or before the first touch). */

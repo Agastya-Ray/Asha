@@ -24,6 +24,8 @@ public final class AlarmStore {
     private static final String KEY_TEMPLATES = "templates";
     private static final String KEY_ACTIONS = "actions";
     private static final String KEY_CONFIG = "config";
+    private static final String KEY_QUIET_MISSED = "quietMissed";
+    public static final String QUIET_END = "quiet|end";
 
     private AlarmStore() { }
 
@@ -40,6 +42,43 @@ public final class AlarmStore {
 
     public static void saveConfig(Context ctx, JSONObject cfg) {
         prefs(ctx).edit().putString(KEY_CONFIG, cfg.toString()).apply();
+    }
+
+    // ---------- quiet mode ("I'm going to an event, be quiet") ----------
+
+    /** True while the person asked the fairy to stay silent. */
+    public static boolean quiet(Context ctx) {
+        return config(ctx).optLong("quietUntil", 0) > System.currentTimeMillis();
+    }
+
+    /** Sets (or clears) the alarm that ends quiet mode. Ending early rings the end straight away. */
+    public static void applyQuiet(Context ctx, long oldUntil, long newUntil) {
+        long now = System.currentTimeMillis();
+        if (newUntil > now) {
+            scheduleFollowUp(ctx, QUIET_END, 0, newUntil);
+        } else {
+            cancel(ctx, QUIET_END, true);
+            if (oldUntil > now) scheduleFollowUp(ctx, QUIET_END, 0, now + 1500);
+        }
+    }
+
+    /** A reminder that came while quiet: remember it, so she says it out loud when quiet ends. */
+    public static synchronized void addQuietMissed(Context ctx, String key) {
+        JSONArray list = quietMissedList(ctx);
+        for (int i = 0; i < list.length(); i++) if (key.equals(list.optString(i))) return;
+        list.put(key);
+        prefs(ctx).edit().putString(KEY_QUIET_MISSED, list.toString()).apply();
+    }
+
+    public static synchronized JSONArray drainQuietMissed(Context ctx) {
+        JSONArray list = quietMissedList(ctx);
+        prefs(ctx).edit().putString(KEY_QUIET_MISSED, "[]").apply();
+        return list;
+    }
+
+    private static JSONArray quietMissedList(Context ctx) {
+        try { return new JSONArray(prefs(ctx).getString(KEY_QUIET_MISSED, "[]")); }
+        catch (JSONException e) { return new JSONArray(); }
     }
 
     // ---------- templates ----------

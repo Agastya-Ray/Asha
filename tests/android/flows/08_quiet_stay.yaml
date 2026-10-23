@@ -1,0 +1,13 @@
+# Quiet for 30 minutes, and leave her quiet.
+appId: com.agastyaray.asha
+---
+- launchApp
+- tapOn: "Settings"
+- scrollUntilVisible:
+    element: "🤫 Quiet for a while (meeting, event)"
+- tapOn: "🤫 Quiet for a while (meeting, event)"
+- tapOn: "30 minutes"
+- tapOn:
+    text: "Be quiet until.*"
+- assertVisible:
+    text: ".*is quiet until.*"

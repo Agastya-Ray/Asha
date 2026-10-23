@@ -14,6 +14,7 @@ public class ReminderReceiver extends BroadcastReceiver {
         String key = intent.getStringExtra("key");
         int attempt = intent.getIntExtra("attempt", 0);
         if (key == null) return;
+        if (AlarmStore.QUIET_END.equals(key)) { startService(ctx, key, 0, null); return; }
         JSONObject t = AlarmStore.find(ctx, key);
         if (t == null) return;
 
@@ -22,6 +23,18 @@ public class ReminderReceiver extends BroadcastReceiver {
 
         if (t.optLong("skipUntil", 0) > System.currentTimeMillis()) return; // already done today
 
+        // Quiet mode: greetings wait for another day; medicines and meals only buzz a silent card
+        // and are said out loud when quiet ends.
+        if (AlarmStore.quiet(ctx)) {
+            if ("greet".equals(t.optString("kind"))) return;
+            AlarmStore.addQuietMissed(ctx, key);
+            ReminderService.showCard(ctx, t, attempt);
+            return;
+        }
+        startService(ctx, key, attempt, t);
+    }
+
+    private void startService(Context ctx, String key, int attempt, JSONObject t) {
         Intent svc = new Intent(ctx, ReminderService.class);
         svc.putExtra("key", key);
         svc.putExtra("attempt", attempt);
@@ -30,6 +43,7 @@ public class ReminderReceiver extends BroadcastReceiver {
             else ctx.startService(svc);
         } catch (Exception notAllowed) {
             // Some phones refuse background services. Still show the card and speak briefly.
+            if (t == null) { ReminderService.endQuietQuick(ctx, goAsync()); return; }
             ReminderService.showCard(ctx, t, attempt);
             if (!AlarmStore.config(ctx).optBoolean("speak", true)) return;
             PendingResult pending = goAsync();

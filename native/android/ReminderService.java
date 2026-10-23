@@ -37,7 +37,8 @@ public class ReminderService extends Service {
     public int onStartCommand(Intent intent, int flags, int startId) {
         String key = intent != null ? intent.getStringExtra("key") : null;
         int attempt = intent != null ? intent.getIntExtra("attempt", 0) : 0;
-        JSONObject t = key != null ? AlarmStore.find(this, key) : null;
+        boolean quietEnd = AlarmStore.QUIET_END.equals(key);
+        JSONObject t = key != null && !quietEnd ? AlarmStore.find(this, key) : null;
 
         Notification busy = baseBuilder(this)
             .setContentTitle("Asha")
@@ -54,6 +55,16 @@ public class ReminderService extends Service {
             // keep going without the foreground status
         }
 
+        if (quietEnd) {
+            String line = endQuiet(this);
+            JSONObject cfg = AlarmStore.config(this);
+            final int id = startId;
+            if (line.isEmpty() || !cfg.optBoolean("speak", true)) { finish(id); return START_NOT_STICKY; }
+            main.postDelayed(() -> finish(id), 60_000);
+            Speaker.get(this).speak(line, cfg.optString("quietLang", "en"),
+                (float) cfg.optDouble("rate", 0.92), ok -> main.post(() -> finish(id)));
+            return START_NOT_STICKY;
+        }
         if (t == null) { finish(startId); return START_NOT_STICKY; }
 
         showCard(this, t, attempt);
@@ -91,6 +102,36 @@ public class ReminderService extends Service {
     public void onTimeout(int startId) {
         Speaker.get(this).stop();
         finish(startId);
+    }
+
+    /**
+     * Quiet mode is over. Shows again every reminder that only buzzed while she was quiet and is still
+     * not done, lines up the usual follow-up, and returns what to say: "I'm back" plus those reminders.
+     */
+    static String endQuiet(Context ctx) {
+        JSONObject cfg = AlarmStore.config(ctx);
+        StringBuilder say = new StringBuilder(cfg.optString("quietBack"));
+        JSONArray missed = AlarmStore.drainQuietMissed(ctx);
+        long now = System.currentTimeMillis();
+        int gap = cfg.optInt("repeatMinutes", 10);
+        for (int i = 0; i < missed.length(); i++) {
+            JSONObject t = AlarmStore.find(ctx, missed.optString(i));
+            if (t == null || t.optLong("skipUntil", 0) > now) continue; // taken meanwhile
+            showCard(ctx, t, 1);
+            AlarmStore.scheduleFollowUp(ctx, t.optString("key"), 2, now + gap * 60_000L);
+            if (say.length() > 0) say.append(' ');
+            say.append(t.optString("say"));
+        }
+        return say.toString().trim();
+    }
+
+    /** endQuiet for phones that refuse to start the service. */
+    static void endQuietQuick(Context ctx, android.content.BroadcastReceiver.PendingResult pending) {
+        String line = endQuiet(ctx);
+        JSONObject cfg = AlarmStore.config(ctx);
+        if (line.isEmpty() || !cfg.optBoolean("speak", true)) { pending.finish(); return; }
+        Speaker.get(ctx).speak(line, cfg.optString("quietLang", "en"),
+            (float) cfg.optDouble("rate", 0.92), ok -> pending.finish());
     }
 
     static String sentence(JSONObject t, int attempt) {

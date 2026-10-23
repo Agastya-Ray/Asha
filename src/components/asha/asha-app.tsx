@@ -3,6 +3,7 @@ import { App as NativeApp } from "@capacitor/app";
 import { HeartHandshake, HeartPulse, Leaf, MessageCircle, Pill, Settings, Sun } from "lucide-react";
 import { CareScreen } from "@/components/asha/care";
 import { ReminderEngine } from "@/components/asha/engine";
+import { QuietBanner, QuietSheet } from "@/components/asha/quiet";
 import { MedsScreen } from "@/components/asha/meds";
 import { FairyDock, FamilyEngine } from "@/components/asha/family-engine";
 import { FamilyHome } from "@/components/asha/family-home";
@@ -79,6 +80,7 @@ function Shell() {
     <div className="min-h-dvh bg-linen text-ink" onPointerDown={() => unlockAudio()}>
       <div className="mx-auto flex min-h-dvh w-full max-w-lg flex-col">
         <Header />
+        {onboarded && introSeen && roleChosen && !familyMode ? <QuietBanner /> : null}
         <main className="flex-1 px-4 pb-36">
           {!introSeen ? (
             <FairyIntro />
@@ -111,6 +113,7 @@ function Shell() {
       <FamilyEngine />
       {/* in the intro and setup the fairy talks in her own bubble (with Again); the dark bar covered her words and the headings */}
       {introSeen && roleChosen && (onboarded || familyMode) ? <Speaking docked={onboarded && !familyMode} /> : null}
+      <QuietSheet />
       <ReminderEngine />
     </div>
   );

@@ -1,0 +1,22 @@
+# Quiet mode: ask her to be quiet from Settings, check the banner, then wake her early.
+appId: com.agastyaray.asha
+---
+- launchApp
+- tapOn: "Settings"
+- scrollUntilVisible:
+    element: "🤫 Quiet for a while (meeting, event)"
+- tapOn: "🤫 Quiet for a while (meeting, event)"
+- assertVisible: "Shh, okay. For how long should I be quiet?"
+- tapOn: "30 minutes"
+- takeScreenshot: 80-quiet-sheet
+- tapOn:
+    text: "Be quiet until.*"
+- assertVisible:
+    text: ".*is quiet until.*"
+- takeScreenshot: 81-quiet-banner
+- tapOn:
+    text: ".*is quiet until.*"
+- tapOn: "Wake her now"
+- assertNotVisible:
+    text: ".*is quiet until.*"
+- takeScreenshot: 82-quiet-woken

@@ -248,8 +248,10 @@ public class AshaNativePlugin extends Plugin {
     public void setReminders(PluginCall call) {
         JSArray items = call.getArray("items");
         JSObject config = call.getObject("config");
+        long oldQuiet = AlarmStore.config(getContext()).optLong("quietUntil", 0);
         if (config != null) AlarmStore.saveConfig(getContext(), config);
         AlarmStore.replaceAll(getContext(), items != null ? items : new JSONArray());
+        AlarmStore.applyQuiet(getContext(), oldQuiet, AlarmStore.config(getContext()).optLong("quietUntil", 0));
         call.resolve(ok(true));
     }
 

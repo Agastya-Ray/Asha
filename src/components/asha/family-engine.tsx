@@ -6,7 +6,9 @@ import type { Lang } from "@/lib/asha/types";
 import { t, useNow } from "@/components/asha/bits";
 import { FairyScene, type FairyMood } from "@/components/asha/fairy";
 import { awake, checkinQuestion, companionNudge, nudgeBubble } from "@/lib/asha/companion";
+import { useQuietSheet } from "@/components/asha/quiet";
 import { actOnSpoken } from "@/components/asha/voice-command";
+import { QUIET, minutesSaid } from "@/lib/asha/quiet";
 import { canListen, listenOnce } from "@/lib/asha/listen";
 import { buildAgenda } from "@/lib/asha/schedule";
 import { todayKey } from "@/lib/asha/time";
@@ -97,6 +99,7 @@ export function FairyDock() {
   const checkins = useAsha((s) => s.checkins);
   const wakeTime = useAsha((s) => s.wakeTime);
   const sleepTime = useAsha((s) => s.sleepTime);
+  const quietUntil = useAsha((s) => s.quietUntil);
   const messages = useFamily((s) => s.messages);
   const heardLocal = useFamily((s) => s.heardLocal);
   const speaking = useSpeech((s) => s.active);
@@ -173,6 +176,10 @@ export function FairyDock() {
       later(r.problem === "denied" ? 5000 : 2500, () => setEar(""));
       return;
     }
+    if (QUIET.test(said)) {
+      setEar("");
+      return useQuietSheet.getState().show(minutesSaid(said));
+    }
     if (GO_AWAY.test(said)) {
       setEar("");
       return askWhy();
@@ -214,6 +221,22 @@ export function FairyDock() {
     });
   };
 
+  // quiet mode: she naps on the floor without a sound; a tap shows until when, and can wake her
+  if (quietUntil > now.getTime() && !bye) {
+    return (
+      <div data-fairy="quiet" className="fairy-dock fairy-dock-floor fixed right-3 z-30">
+        <FairyScene
+          news={false}
+          mood="sleep"
+          floor
+          size="sm"
+          label={t(lang, { en: "She is being quiet. Tap to see until when", hi: "वह चुप है. कब तक, देखने के लिए छुएँ" })}
+          onTap={() => useQuietSheet.getState().show()}
+        />
+      </div>
+    );
+  }
+
   // after the yawn she curls up on the floor of the screen, sleeps a moment, then fades away softly
   if (bye === "lie") {
     return (
@@ -238,6 +261,16 @@ export function FairyDock() {
           <p>{line}</p>
           {bye === "ask" ? (
             <div className="mt-2 flex flex-col gap-2">
+              <button
+                type="button"
+                className="min-h-11 rounded-xl border border-line px-3 text-left"
+                onClick={() => {
+                  setBye("");
+                  useQuietSheet.getState().show();
+                }}
+              >
+                {t(lang, { en: "Be quiet for a while 🤫", hi: "थोड़ी देर चुप रहो 🤫" })}
+              </button>
               <button type="button" className="min-h-11 rounded-xl border border-line px-3 text-left" onClick={() => goodnight(false)}>
                 {t(lang, { en: "I just want some quiet", hi: "बस थोड़ा शांत रहना है" })}
               </button>
