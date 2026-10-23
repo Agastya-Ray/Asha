@@ -31,7 +31,12 @@ export function DoseSpotlight() {
   };
 
   return (
-    <div role="dialog" aria-modal="true" aria-label={med.name} className="fixed inset-0 z-40 flex items-end justify-center bg-ink/40 px-3 pb-3 pt-10">
+    <div
+      role="dialog"
+      aria-modal="true"
+      aria-label={med.name}
+      className="fixed inset-0 z-40 flex items-end justify-center bg-ink/40 px-3 pb-3 pt-10"
+    >
       <div className="flex max-h-full w-full max-w-lg flex-col overflow-y-auto rounded-[2rem] bg-paper p-4 shadow-xl">
         <div className="flex items-end gap-2">
           <Pixie mood="point" className="h-24 w-20 shrink-0" />
@@ -45,7 +50,11 @@ export function DoseSpotlight() {
         <p className="mt-4 text-center text-4xl font-bold leading-tight">{med.name}</p>
         <p className="mt-1 text-center text-2xl">{item.detail}</p>
         {due.length > 1 ? (
-          <p className="mt-1 text-center text-base text-quiet">{lang === "hi" ? `${due.length} दवाइयों में से पहली` : `1 of ${due.length} medicines now`}</p>
+          <p className="mt-1 text-center text-base text-quiet">
+            {lang === "hi"
+              ? `${due.length} दवाइयों में से पहली`
+              : `1 of ${due.length} medicines now`}
+          </p>
         ) : null}
         <div className="mt-4 flex flex-col gap-2">
           <Button

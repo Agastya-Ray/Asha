@@ -37,14 +37,29 @@ export function FamilyMedPhotos({ circle }: { circle: CircleInfo }) {
             : sendError(r, lang),
       }));
     } catch {
-      setNote((n) => ({ ...n, [medId]: t(lang, { en: "That photo did not open. Try again.", hi: "वह फ़ोटो नहीं खुली. फिर कोशिश करें." }) }));
+      setNote((n) => ({
+        ...n,
+        [medId]: t(lang, {
+          en: "That photo did not open. Try again.",
+          hi: "वह फ़ोटो नहीं खुली. फिर कोशिश करें.",
+        }),
+      }));
     }
   }
 
   return (
     <Card className="mt-4">
-      <input ref={input} type="file" accept="image/*" capture="environment" className="hidden" onChange={(e) => void pick(e.target.files?.[0])} />
-      <p className="text-lg font-bold">{t(lang, { en: `Photos of ${label}'s medicines`, hi: `${label} की दवाओं की फ़ोटो` })}</p>
+      <input
+        ref={input}
+        type="file"
+        accept="image/*"
+        capture="environment"
+        className="hidden"
+        onChange={(e) => void pick(e.target.files?.[0])}
+      />
+      <p className="text-lg font-bold">
+        {t(lang, { en: `Photos of ${label}'s medicines`, hi: `${label} की दवाओं की फ़ोटो` })}
+      </p>
       <p className="mt-1 text-base text-quiet">
         {t(lang, {
           en: "At reminder time the photo fills the screen, so there's no doubt which one to take.",
@@ -103,7 +118,14 @@ export function FamilyPhotoOffer() {
   const [, bump] = useState(0);
   const [url, setUrl] = useState<{ id: number; url: string | null } | null>(null);
   const done = new Set(decided());
-  const offer = messages.find((m) => m.kind === "photo" && m.photo && !m.mine && !done.has(m.id) && meds.some((x) => x.id === m.template));
+  const offer = messages.find(
+    (m) =>
+      m.kind === "photo" &&
+      m.photo &&
+      !m.mine &&
+      !done.has(m.id) &&
+      meds.some((x) => x.id === m.template),
+  );
   const offerId = offer?.id;
   useEffect(() => {
     if (offerId === undefined) return;
@@ -125,11 +147,17 @@ export function FamilyPhotoOffer() {
     <Card className="mt-5">
       <p className="text-xl font-bold">{from}</p>
       {url?.id === offer.id && url.url ? (
-        <img src={url.url} alt={med.name} className="mt-3 mx-auto aspect-square w-full max-w-72 rounded-3xl object-cover" />
+        <img
+          src={url.url}
+          alt={med.name}
+          className="mt-3 mx-auto aspect-square w-full max-w-72 rounded-3xl object-cover"
+        />
       ) : (
         <div className="mt-3 mx-auto aspect-square w-full max-w-72 animate-pulse rounded-3xl bg-linen" />
       )}
-      <p className="mt-3 text-lg">{lang === "hi" ? `क्या यही आपकी ${med.name} है?` : `Is this your ${med.name}?`}</p>
+      <p className="mt-3 text-lg">
+        {lang === "hi" ? `क्या यही आपकी ${med.name} है?` : `Is this your ${med.name}?`}
+      </p>
       <div className="mt-3 flex flex-col gap-2">
         <Button
           disabled={!url?.url}

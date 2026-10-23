@@ -22,16 +22,39 @@ function usePicker(medId: string, onDone?: () => void) {
       setMedPhoto(medId, Date.now());
       onDone?.();
     } catch {
-      setError(t(lang, { en: "That photo did not open. Try again.", hi: "वह फ़ोटो नहीं खुली. फिर कोशिश करें." }));
+      setError(
+        t(lang, {
+          en: "That photo did not open. Try again.",
+          hi: "वह फ़ोटो नहीं खुली. फिर कोशिश करें.",
+        }),
+      );
     }
   }
   const inputs = (
     <>
-      <input ref={camera} type="file" accept="image/*" capture="environment" className="hidden" onChange={(e) => void pick(e.target.files?.[0])} />
-      <input ref={gallery} type="file" accept="image/*" className="hidden" onChange={(e) => void pick(e.target.files?.[0])} />
+      <input
+        ref={camera}
+        type="file"
+        accept="image/*"
+        capture="environment"
+        className="hidden"
+        onChange={(e) => void pick(e.target.files?.[0])}
+      />
+      <input
+        ref={gallery}
+        type="file"
+        accept="image/*"
+        className="hidden"
+        onChange={(e) => void pick(e.target.files?.[0])}
+      />
     </>
   );
-  return { inputs, error, takePhoto: () => camera.current?.click(), choosePhoto: () => gallery.current?.click() };
+  return {
+    inputs,
+    error,
+    takePhoto: () => camera.current?.click(),
+    choosePhoto: () => gallery.current?.click(),
+  };
 }
 
 /** The photo itself, or a soft pill shape when there is none yet. */
@@ -39,7 +62,9 @@ export function MedPicture({ med, className }: { med: Med; className?: string })
   const url = usePhoto(med.id, med.photoAt);
   if (!url) {
     return (
-      <div className={`flex items-center justify-center rounded-3xl bg-sage-soft text-sage ${className ?? ""}`}>
+      <div
+        className={`flex items-center justify-center rounded-3xl bg-sage-soft text-sage ${className ?? ""}`}
+      >
         <Pill className="size-1/3" aria-hidden />
       </div>
     );
@@ -62,7 +87,10 @@ export function MedPhotoRow({ med }: { med: Med }) {
               ? lang === "hi"
                 ? `${med.photoBy} ने फ़ोटो जोड़ी. याद के समय यही दिखेगी.`
                 : `Photo added by ${med.photoBy}. It shows at reminder time.`
-              : t(lang, { en: "This photo shows at reminder time.", hi: "याद के समय यही फ़ोटो दिखेगी." })}
+              : t(lang, {
+                  en: "This photo shows at reminder time.",
+                  hi: "याद के समय यही फ़ोटो दिखेगी.",
+                })}
           </p>
         ) : (
           <p className="text-base text-quiet">
@@ -72,9 +100,15 @@ export function MedPhotoRow({ med }: { med: Med }) {
             })}
           </p>
         )}
-        <button type="button" onClick={p.takePhoto} className="mt-1 inline-flex min-h-11 items-center gap-2 text-base font-bold text-sage">
+        <button
+          type="button"
+          onClick={p.takePhoto}
+          className="mt-1 inline-flex min-h-11 items-center gap-2 text-base font-bold text-sage"
+        >
           <Camera className="size-5" aria-hidden />
-          {med.photoAt ? t(lang, { en: "New photo", hi: "नई फ़ोटो" }) : t(lang, { en: "Take a photo", hi: "फ़ोटो लें" })}
+          {med.photoAt
+            ? t(lang, { en: "New photo", hi: "नई फ़ोटो" })
+            : t(lang, { en: "Take a photo", hi: "फ़ोटो लें" })}
         </button>
         {p.error ? <p className="text-base font-bold text-clay">{p.error}</p> : null}
       </div>

@@ -15,7 +15,10 @@ function db(): Promise<IDBDatabase> {
   });
 }
 
-async function run<T>(mode: IDBTransactionMode, fn: (s: IDBObjectStore) => IDBRequest<T>): Promise<T> {
+async function run<T>(
+  mode: IDBTransactionMode,
+  fn: (s: IDBObjectStore) => IDBRequest<T>,
+): Promise<T> {
   const d = await db();
   return new Promise((resolve, reject) => {
     const req = fn(d.transaction(STORE, mode).objectStore(STORE));
@@ -45,7 +48,10 @@ export async function putPhoto(medId: string, dataUrl: string) {
   } catch {
     /* kept in memory for this session */
   }
-  if (isNative) await AshaNative.savePhoto({ id: medId, data: dataUrl.split(",")[1] ?? "" }).catch(() => undefined);
+  if (isNative)
+    await AshaNative.savePhoto({ id: medId, data: dataUrl.split(",")[1] ?? "" }).catch(
+      () => undefined,
+    );
 }
 
 export async function deletePhoto(medId: string) {
