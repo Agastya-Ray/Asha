@@ -1,4 +1,5 @@
-import { Droplets } from "lucide-react";
+import { useState } from "react";
+import { Droplets, HeartPulse } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, Hear, t, useNow } from "@/components/asha/bits";
 import { ReminderHealth } from "@/components/asha/reminder-health";
@@ -34,12 +35,16 @@ export function TodayScreen() {
   const patchCheckin = useAsha((s) => s.patchCheckin);
   const addWater = useAsha((s) => s.addWater);
   const setTab = useAsha((s) => s.setTab);
+  const [picked, setPicked] = useState("");
 
   const hello = greeting(lang, name, now);
   const helloSay = greeting(voiceLang, name, now);
   const agenda = buildAgenda({ name, lang, voiceLang, meds, meals, doseLogs, mealLogs, snooze }, now);
   const active = agenda.filter((item) => item.state === "now" || item.state === "snoozed" || item.state === "open");
   const later = agenda.filter((item) => item.state === "later");
+  // one reminder at a time: the one due now (or the one the person tapped), the rest as short rows
+  const first = active.find((item) => item.key === picked) ?? active.find((item) => item.state === "now" || item.state === "open") ?? active[0];
+  const waiting = active.filter((item) => item !== first);
   const featuredLater = active.length === 0 ? later[0] : undefined;
   const restLater = featuredLater ? later.slice(1) : later;
   const done = agenda.filter((item) => item.state === "taken" || item.state === "skipped");
@@ -111,12 +116,28 @@ export function TodayScreen() {
           </p>
         </Card>
       ) : null}
-      {active.length > 0 ? (
-        <div className="mt-3 flex flex-col gap-3">
-          {active.map((item, i) => (
-            <AgendaCard key={item.key} item={item} perch={i === active.findIndex((a) => a.state === "now" || a.state === "open")} />
-          ))}
+      {first ? (
+        <div className="mt-3">
+          <AgendaCard key={first.key} item={first} perch />
         </div>
+      ) : null}
+      {waiting.length > 0 ? (
+        <>
+          <h2 className="mt-5 text-lg font-bold text-quiet">{t(lang, { en: "Also waiting", hi: "ये भी बाकी हैं" })}</h2>
+          <div className="mt-2 flex flex-col gap-2">
+            {waiting.map((item) => (
+              <button
+                key={item.key}
+                type="button"
+                onClick={() => setPicked(item.key)}
+                className="flex min-h-14 items-center justify-between gap-3 rounded-2xl border border-line bg-paper px-4 py-3 text-left"
+              >
+                <span className="text-lg font-bold first-letter:uppercase">{item.title}</span>
+                <span className="shrink-0 text-base font-bold text-sage">{t(lang, { en: "Open", hi: "खोलें" })}</span>
+              </button>
+            ))}
+          </div>
+        </>
       ) : null}
       {featuredLater ? (
         <div className="mt-3">
@@ -182,6 +203,21 @@ export function TodayScreen() {
         </div>
       </Card>
 
+      <Card className="mt-5">
+        <div className="flex flex-wrap items-center gap-3">
+          <HeartPulse className="size-7 shrink-0 text-sage" aria-hidden />
+          <p className="min-w-0 flex-1 text-lg font-bold">
+            {t(lang, { en: "Meals and my chart", hi: "खाना और मेरा चार्ट" })}
+            <span className="block text-base font-normal text-quiet">
+              {t(lang, { en: "Meal times, how you feel, and your health chart.", hi: "खाने का समय, आप कैसे हैं, और सेहत चार्ट." })}
+            </span>
+          </p>
+          <Button variant="quiet" className="w-auto px-5" aria-label={t(lang, { en: "Open meals and my chart", hi: "खाना और मेरा चार्ट खोलें" })} onClick={() => setTab("care")}>
+            {t(lang, { en: "Open", hi: "खोलें" })}
+          </Button>
+        </div>
+      </Card>
+
       {conditions.includes("diabetes") && hour >= 18 && !checkin?.footCheck ? (
         <Card className="mt-5">
           <p className="text-lg font-bold">{t(lang, { en: "Look at both feet tonight.", hi: "आज रात दोनों पैर देखें." })}</p>
@@ -208,7 +244,7 @@ export function TodayScreen() {
       {done.length > 0 ? (
         <details className="mt-4 rounded-3xl border border-line bg-paper px-4 py-3">
           <summary className="min-h-12 cursor-pointer text-lg font-bold">
-            {t(lang, { en: "Already marked", hi: "पहले से चिह्नित" })} ({done.length})
+            {t(lang, { en: "Done today ✓", hi: "आज हो गया ✓" })} ({done.length})
           </summary>
           <div className="mt-3 flex flex-col gap-3">
             {done.map((item) => (

@@ -72,8 +72,8 @@ const TOUR: TourStep[] = [
     target: "nav",
     mood: "happy",
     line: () => ({
-      en: "These buttons at the bottom open the other rooms of my home: medicines, health chart, family, and a chat with me.",
-      hi: "नीचे के ये बटन मेरे घर के बाकी कमरे खोलते हैं: दवाएँ, सेहत चार्ट, परिवार, और मुझसे बातें.",
+      en: "These four buttons at the bottom open the rooms of my home: today, medicines, family, and a chat with me. Meals and your health chart open from Today.",
+      hi: "नीचे के ये चार बटन मेरे घर के कमरे खोलते हैं: आज, दवाएँ, परिवार, और मुझसे बातें. खाना और सेहत चार्ट 'आज' से खुलते हैं.",
     }),
     next: { en: "Next", hi: "आगे" },
   },

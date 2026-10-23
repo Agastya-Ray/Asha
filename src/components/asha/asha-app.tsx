@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useState } from "react";
 import { App as NativeApp } from "@capacitor/app";
-import { HeartHandshake, HeartPulse, Leaf, MessageCircle, Pill, Settings, Sun } from "lucide-react";
+import { HeartHandshake, Leaf, MessageCircle, Pill, Settings, Sun } from "lucide-react";
 import { CareScreen } from "@/components/asha/care";
 import { ReminderEngine } from "@/components/asha/engine";
 import { QuietBanner, QuietSheet } from "@/components/asha/quiet";
@@ -175,7 +175,6 @@ function Header() {
 const TABS: { id: Tab; en: string; hi: string; icon: typeof Sun }[] = [
   { id: "today", en: "Today", hi: "आज", icon: Sun },
   { id: "meds", en: "Meds", hi: "दवा", icon: Pill },
-  { id: "care", en: "Care", hi: "देखभाल", icon: HeartPulse },
   { id: "family", en: "Family", hi: "परिवार", icon: HeartHandshake },
   { id: "talk", en: "Talk", hi: "बात", icon: MessageCircle },
 ];
@@ -186,7 +185,7 @@ function Nav() {
   const setTab = useAsha((s) => s.setTab);
   return (
     <nav data-tour="nav" aria-label={lang === "hi" ? "मुख्य" : "Main"} className="dock fixed inset-x-0 bottom-0 z-20 px-3">
-      <div className="nav-float mx-auto grid w-full max-w-lg grid-cols-5 p-1.5">
+      <div className="nav-float mx-auto grid w-full max-w-lg grid-cols-4 p-1.5">
         {TABS.map((item) => {
           const Icon = item.icon;
           const on = tab === item.id;

@@ -22,6 +22,7 @@ type Metric = "sugar" | "bp" | "pain" | "mood";
 
 export function CareScreen() {
   const lang = useAsha((s) => s.lang);
+  const setTab = useAsha((s) => s.setTab);
   const conditions = useAsha((s) => s.conditions);
   const meals = useAsha((s) => s.meals);
   const updateMeal = useAsha((s) => s.updateMeal);
@@ -74,11 +75,14 @@ export function CareScreen() {
 
   return (
     <div className="py-5">
-      <h1 className="display text-4xl">{t(lang, { en: "Care", hi: "देखभाल" })}</h1>
+      <button type="button" className="min-h-12 text-lg font-bold text-sage" onClick={() => setTab("today")}>
+        {t(lang, { en: "← Back to the day", hi: "← दिन पर वापस" })}
+      </button>
+      <h1 className="display mt-2 text-4xl">{t(lang, { en: "Meals and my chart", hi: "खाना और मेरा चार्ट" })}</h1>
       <p className="mt-2 text-lg text-quiet">
         {t(lang, {
-          en: "Meals, how you feel, and your chart. General care, not a doctor's order.",
-          hi: "खाना, आप कैसा महसूस करते हैं, और चार्ट. सामान्य देखभाल, डॉक्टर का आदेश नहीं.",
+          en: "General care, not a doctor's order.",
+          hi: "सामान्य देखभाल, डॉक्टर का आदेश नहीं.",
         })}
       </p>
 

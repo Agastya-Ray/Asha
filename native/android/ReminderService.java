@@ -193,6 +193,10 @@ public class ReminderService extends Service {
         }
         if (attempt > 0) b.setSubText(t.optString("againLabel", "Reminder " + (attempt + 1)));
         nm.notify(AlarmStore.notificationId(key), b.build());
+        if (!"greet".equals(t.optString("kind"))) {
+            AlarmStore.setDue(ctx, key);
+            FairyWidget.refreshAll(ctx);
+        }
     }
 
     /**
