@@ -122,13 +122,16 @@ export function FairyTour() {
       return;
     }
     // A tall target (a long "Right now" list) is shown from its top, so there is room for her bubble below it.
-    const tall = el.getBoundingClientRect().height > window.innerHeight * 0.45;
-    if (tall)
-      window.scrollTo({
-        top: window.scrollY + el.getBoundingClientRect().top - 110,
-        behavior: "instant" as ScrollBehavior,
-      });
-    else el.scrollIntoView({ block: "center", behavior: "instant" as ScrollBehavior });
+    const show = () => {
+      const tall = el.getBoundingClientRect().height > window.innerHeight * 0.45;
+      if (tall)
+        window.scrollTo({
+          top: window.scrollY + el.getBoundingClientRect().top - 110,
+          behavior: "instant" as ScrollBehavior,
+        });
+      else el.scrollIntoView({ block: "center", behavior: "instant" as ScrollBehavior });
+    };
+    show();
     const measure = () => {
       const r = el.getBoundingClientRect();
       setRect(new DOMRect(r.left, r.top, r.width, Math.min(r.height, window.innerHeight * 0.62)));
@@ -136,9 +139,16 @@ export function FairyTour() {
     measure();
     window.addEventListener("resize", measure);
     window.addEventListener("scroll", measure, true);
+    // a card that appears late (the phone's reminder-permission card) pushes the target down; bring it back into view
+    const grow = new ResizeObserver(() => {
+      show();
+      measure();
+    });
+    grow.observe(document.body);
     return () => {
       window.removeEventListener("resize", measure);
       window.removeEventListener("scroll", measure, true);
+      grow.disconnect();
     };
   }, [i]);
 
