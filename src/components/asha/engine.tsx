@@ -70,7 +70,6 @@ export function ReminderEngine() {
         state.lang !== prev.lang ||
         state.voiceLang !== prev.voiceLang ||
         state.voiceOn !== prev.voiceOn ||
-        state.familyAlert !== prev.familyAlert ||
         state.dailyGreetings !== prev.dailyGreetings ||
         state.wakeTime !== prev.wakeTime ||
         state.sleepTime !== prev.sleepTime ||

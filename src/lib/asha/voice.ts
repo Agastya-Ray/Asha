@@ -3,10 +3,12 @@ import type { Lang } from "@/lib/asha/types";
 import { apiTts } from "@/lib/asha/api";
 import { AshaNative, isNative } from "@/lib/asha/native";
 import { todayKey } from "@/lib/asha/time";
+import { useAsha } from "@/lib/asha/store";
 
 /**
  * Asha's voice, in order of preference:
  *   1. warm cloud voice  (server: xAI, then Google)   — needs internet
+ *      Titli has her own: the childlike ElevenLabs voice picked in Settings, never a grown-up one
  *   2. the phone's own voice (Android TextToSpeech)   — free, offline
  *   3. the browser's voice (when used as a website)
  * If one fails, the next one speaks. She never goes silent because a service stopped.
@@ -57,38 +59,44 @@ export function stopSpeaking() {
   set({ active: false });
 }
 
+// Titli talks much more than Asha, so she gets her own daily allowance
 const DAILY_WARM = 40;
-function warmAllowed() {
+const DAILY_FAIRY = 150;
+function warmAllowed(fairy: boolean) {
   try {
-    const raw = localStorage.getItem("asha.tts");
+    const raw = localStorage.getItem(fairy ? "asha.tts.fairy" : "asha.tts");
     const p = raw ? (JSON.parse(raw) as { day: string; n: number }) : null;
-    return !p || p.day !== todayKey() || p.n < DAILY_WARM;
+    return !p || p.day !== todayKey() || p.n < (fairy ? DAILY_FAIRY : DAILY_WARM);
   } catch {
     return true;
   }
 }
-function countWarm() {
+function countWarm(fairy: boolean) {
   try {
     const day = todayKey();
-    const raw = localStorage.getItem("asha.tts");
+    const slot = fairy ? "asha.tts.fairy" : "asha.tts";
+    const raw = localStorage.getItem(slot);
     const p = raw ? (JSON.parse(raw) as { day: string; n: number }) : { day, n: 0 };
-    localStorage.setItem("asha.tts", JSON.stringify({ day, n: p.day === day ? p.n + 1 : 1 }));
+    localStorage.setItem(slot, JSON.stringify({ day, n: p.day === day ? p.n + 1 : 1 }));
   } catch {
     /* ignore */
   }
 }
 
-async function warmClip(text: string, lang: Lang) {
-  const key = `${lang}|${text}`;
+let fairyRestUntil = 0;
+async function warmClip(text: string, lang: Lang, fairy?: { id: string; owner: string }) {
+  const key = `${fairy?.id ?? "asha"}|${lang}|${text}`;
   const hit = cache.get(key);
   if (hit) return hit;
-  if (Date.now() < warmRestUntil || !warmAllowed()) throw new Error("rest");
-  const res = await apiTts(text, lang);
+  if (Date.now() < (fairy ? fairyRestUntil : warmRestUntil) || !warmAllowed(!!fairy)) throw new Error("rest");
+  const res = await apiTts(text, lang, fairy);
   if (!res.ok) {
-    warmRestUntil = Date.now() + (res.status === 429 ? 30 : 5) * 60 * 1000;
+    const until = Date.now() + (res.status === 429 ? 30 : 5) * 60 * 1000;
+    if (fairy) fairyRestUntil = until;
+    else warmRestUntil = until;
     throw new Error(res.error);
   }
-  countWarm();
+  countWarm(!!fairy);
   if (cache.size > 40) cache.delete(cache.keys().next().value as string);
   cache.set(key, res.audio);
   return res.audio;
@@ -158,9 +166,10 @@ export async function speak(text: string, lang: Lang, prefer: "warm" | "device" 
   audio = null;
   if (!isNative && typeof window !== "undefined") window.speechSynthesis?.cancel();
   set({ active: true, lastSaid: clean, failed: false, source: null });
-  if (prefer === "warm") {
+  const fairyVoice = prefer === "fairy" ? useAsha.getState().fairyVoice : null;
+  if (prefer === "warm" || fairyVoice) {
     try {
-      const b64 = await warmClip(clean, lang);
+      const b64 = await warmClip(clean, lang, fairyVoice ?? undefined);
       if (mine !== generation) return;
       const next = new Audio(`data:audio/mpeg;base64,${b64}`);
       audio = next;

@@ -1,6 +1,5 @@
 package com.agastyaray.asha;
 
-import android.Manifest;
 import android.app.Notification;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
@@ -8,18 +7,15 @@ import android.app.PendingIntent;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
-import android.content.pm.PackageManager;
 import android.content.pm.ServiceInfo;
 import android.os.Build;
 import android.os.Handler;
 import android.os.IBinder;
 import android.os.Looper;
-import android.telephony.SmsManager;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
 
-import java.util.ArrayList;
 
 /**
  * Runs for a few seconds when a reminder is due:
@@ -197,12 +193,10 @@ public class ReminderService extends Service {
 
     /**
      * Last reminder went unanswered.
-     * 1) Family who use Asha get a free, instant alert through the app (if Maa agreed to share this).
-     * 2) If that reached nobody and "text family" is on, a normal SMS goes to her loved ones.
+     * Family who use Asha get a free, instant alert through the app (if Maa agreed to share this).
      */
     static void alertFamily(Context ctx, JSONObject t, JSONObject cfg) {
         new Thread(() -> {
-            int pushed = 0;
             if (FamilyStore.ready(ctx) && FamilyStore.config(ctx).optBoolean("inCircle", false)) {
                 try {
                     JSONObject body = new JSONObject();
@@ -210,37 +204,9 @@ public class ReminderService extends Service {
                     body.put("template", "missed");
                     body.put("timeEn", t.optString("alertTimeEn"));
                     body.put("timeHi", t.optString("alertTimeHi"));
-                    JSONObject out = FamilyStore.post(ctx, body);
-                    if (out != null && out.optBoolean("ok")) pushed = out.optInt("pushed", 0);
+                    FamilyStore.post(ctx, body);
                 } catch (Exception ignored) { }
             }
-            if (pushed == 0 && cfg.optBoolean("familyAlert", false)) smsFamily(ctx, t, cfg);
         }).start();
-    }
-
-    static void smsFamily(Context ctx, JSONObject t, JSONObject cfg) {
-        if (ctx.checkSelfPermission(Manifest.permission.SEND_SMS) != PackageManager.PERMISSION_GRANTED) return;
-        JSONArray numbers = cfg.optJSONArray("familyNumbers");
-        String text = t.optString("missedText");
-        if (numbers == null || text.isEmpty()) return;
-        sendSms(ctx, numbers, text);
-    }
-
-    static int sendSms(Context ctx, JSONArray numbers, String text) {
-        int sent = 0;
-        try {
-            SmsManager sms = Build.VERSION.SDK_INT >= Build.VERSION_CODES.S
-                ? ctx.getSystemService(SmsManager.class)
-                : SmsManager.getDefault();
-            if (sms == null) return 0;
-            ArrayList<String> parts = sms.divideMessage(text);
-            for (int i = 0; i < numbers.length(); i++) {
-                String n = numbers.optString(i).replaceAll("[^0-9+]", "");
-                if (n.length() < 3) continue;
-                sms.sendMultipartTextMessage(n, null, parts, null, null);
-                sent++;
-            }
-        } catch (Exception ignored) { }
-        return sent;
     }
 }
