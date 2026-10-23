@@ -130,7 +130,7 @@ WATCH_PID=$!
 adb logcat -v time -b main -b system -b crash -b events > "$OUT/logcat-stream.txt" 2>/dev/null &
 STREAM_PID=$!
 # when the emulator process dies, keep the host's view of why
-( while pgrep -f qemu-system >/dev/null; do sleep 3; done; { echo "qemu gone at $(date +%T)"; sudo dmesg | tail -40; ls -la /tmp/android-*/ 2>/dev/null; tail -50 ~/.android/avd/*.avd/*.log 2>/dev/null; } > "$OUT/emulator-death.txt" 2>&1
+( while pgrep -f qemu-system >/dev/null; do sleep 3; done; grep -q '^== done' "$OUT/steps.log" && exit 0; { echo "qemu gone at $(date +%T)"; sudo dmesg | tail -40; ls -la /tmp/android-*/ 2>/dev/null; tail -50 ~/.android/avd/*.avd/*.log 2>/dev/null; } > "$OUT/emulator-death.txt" 2>&1
   # nothing more can run without the emulator; stop now instead of hanging until the job's 60-minute limit
   echo "== the emulator died (see emulator-death.txt)" >> "$OUT/steps.log"; pkill -f maestro; kill $MAIN_PID ) &
 flow 01_setup.yaml
