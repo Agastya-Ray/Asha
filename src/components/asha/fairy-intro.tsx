@@ -1,6 +1,14 @@
 import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { FieldLabel, LangSwitch, SpeakField, t } from "@/components/asha/bits";
+import {
+  FairyFlipbook,
+  HELLO,
+  JOY,
+  SLEEP,
+  WAKE,
+  type Frame,
+} from "@/components/asha/fairy-flipbook";
 import { Pixie, type PixieMood } from "@/components/asha/pixie";
 import type { Localized } from "@/lib/asha/plans";
 import { useAsha } from "@/lib/asha/store";
@@ -9,12 +17,13 @@ import { speak, stopSpeaking, unlockAudio } from "@/lib/asha/voice";
 /**
  * First run: the fairy is asleep in a little meadow. A tap wakes her; she says hello, asks the person to name her,
  * says she likes them and invites them into her home (Asha), then shows what Asha does. Every step waits for a tap.
- * Her wake-up animation will come from drawn frames; until then she uses her existing poses.
+ * She sleeps, wakes and says hello in drawn keyframes (fairy-flipbook.tsx).
  */
 
 type Step = "asleep" | "waking" | "hello" | "shy" | "naming" | "loves" | "invite" | "home";
 
 const NAMES = ["Titli", "Mishti", "Juhi", "Tara"];
+const STARS = [[14, 22], [32, 12], [58, 26], [72, 34], [22, 44], [86, 52], [46, 50]];
 
 const LINES: Record<Exclude<Step, "asleep" | "waking" | "naming">, (name: string) => Localized> = {
   hello: () => ({
@@ -48,6 +57,14 @@ const MOOD: Record<Step, PixieMood> = {
   loves: "happy",
   invite: "flower",
   home: "wave",
+};
+
+/** Steps drawn from her real keyframes; the rest use her single poses until their keyframes are drawn. */
+const KEYFRAMES: Partial<Record<Step, Frame[]>> = {
+  hello: HELLO,
+  shy: [["blush", 1000]],
+  loves: JOY,
+  invite: [["17-standing", 1000]],
 };
 
 const HOME_ROWS: { icon: string; text: Localized }[] = [
@@ -110,7 +127,6 @@ export function FairyIntro() {
   const wake = () => {
     unlockAudio();
     setStep("waking");
-    window.setTimeout(() => setStep("hello"), 1800);
   };
 
   const saveName = () => {
@@ -132,8 +148,21 @@ export function FairyIntro() {
   if (step === "asleep" || step === "waking")
     return (
       <div className="fi-night fi-room -mx-4 flex min-h-[calc(100dvh-5rem)] flex-col items-center px-4 pt-6">
-        <span className="fi-moon" aria-hidden />
-        <span className="fi-stars" aria-hidden />
+        {/* a flat SVG moon: the same moon as a round CSS box (border-radius) crashed the Android emulator */}
+        <svg className="fi-moon" viewBox="0 0 104 104" aria-hidden>
+          <circle cx="52" cy="52" r="50" fill="#fff6d5" opacity="0.05" />
+          <circle cx="52" cy="52" r="46" fill="#fff6d5" opacity="0.05" />
+          <circle cx="52" cy="52" r="42" fill="#fff6d5" opacity="0.05" />
+          <circle cx="52" cy="52" r="38" fill="#fff6d5" opacity="0.05" />
+          <circle cx="52" cy="52" r="34" fill="#fff6d5" opacity="0.05" />
+          <circle cx="52" cy="52" r="31" fill="#fff6d5" opacity="0.05" />
+          <circle cx="52" cy="52" r="28" fill="#fff6d5" />
+        </svg>
+        <span className="fi-stars" aria-hidden>
+          {STARS.map(([x, y], i) => (
+            <i key={i} style={{ left: `${x}%`, top: `${y}%` }} />
+          ))}
+        </span>
         <div className="relative z-10 w-full max-w-sm">
           <LangSwitch value={lang} onChange={(l) => setBoth(l)} />
         </div>
@@ -161,7 +190,14 @@ export function FairyIntro() {
               <span>z</span>
             </span>
           ) : null}
-          <Pixie mood={MOOD[step]} className={step === "asleep" ? "fi-sleeper" : "fi-waker"} />
+          <FairyFlipbook
+            key={step}
+            frames={step === "asleep" ? SLEEP : WAKE}
+            loop={step === "asleep"}
+            height={300}
+            onDone={() => setStep("hello")}
+            className="fi-flip"
+          />
         </button>
       </div>
     );
@@ -180,6 +216,14 @@ export function FairyIntro() {
           </div>
           <Pixie mood={MOOD[step]} className="h-24 w-20 shrink-0" />
         </div>
+      ) : KEYFRAMES[step] ? (
+        <FairyFlipbook
+          key={step}
+          frames={KEYFRAMES[step]!}
+          loop={step === "loves"}
+          height={256}
+          className="mx-auto mt-4"
+        />
       ) : (
         <Pixie mood={MOOD[step]} className="mx-auto mt-4 h-64 w-56" />
       )}

@@ -5,13 +5,14 @@ appId: com.agastyaray.asha
     clearState: true
 # The fairy is asleep in her night room; a tap wakes her, she says hello and asks for a name.
 - extendedWaitUntil:
-    visible: ".*Tap her gently to wake her up.*"
+    visible: "Wake the fairy"
     timeout: 120000
 - takeScreenshot: 01-intro-asleep
-- tapOn: ".*Tap her gently to wake her up.*"
+- tapOn: "Wake the fairy"
+# Her wake-up animation (eyes, sitting up, yawn, grin) takes about 10 seconds.
 - extendedWaitUntil:
     visible: "Hello!"
-    timeout: 10000
+    timeout: 30000
 - takeScreenshot: 01-intro-hello
 - tapOn: "Hello!"
 - extendedWaitUntil:

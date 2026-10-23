@@ -109,7 +109,8 @@ function Shell() {
       {onboarded && introSeen && roleChosen && !familyMode && tourDone ? <FairyDock /> : null}
       {onboarded && introSeen && roleChosen && !familyMode && !tourDone && tab === "today" ? <FairyTour /> : null}
       <FamilyEngine />
-      <Speaking docked={onboarded && introSeen && roleChosen && !familyMode} />
+      {/* in the intro and setup the fairy talks in her own bubble (with Again); the dark bar covered her words and the headings */}
+      {introSeen && roleChosen && (onboarded || familyMode) ? <Speaking docked={onboarded && !familyMode} /> : null}
       <ReminderEngine />
     </div>
   );
