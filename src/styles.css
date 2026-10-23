@@ -807,99 +807,54 @@ body {
 }
 
 /* ---------- fairy intro (fairy-intro.tsx) ---------- */
-.fi-night {
-  background: radial-gradient(circle at 50% 35%, #5b4f86 0, #34305a 60%, #25223f 100%);
-}
 .fi-sky {
   background: radial-gradient(circle at 50% 25%, #fff6e0 0, #fde3ea 45%, #e9e2f7 100%);
 }
-/* No box-shadows, isolation or sub-pixel gradients in this room: together they crashed the Android emulator's
-   graphics (and are heavy for old phones). The glows are plain gradients and the stars are small dots. */
-.fi-room {
+/* Her flower garden: the drawn clip fills the top of the screen at full width, and the grass carries on below it
+   where her words appear, so the speech bubble never covers her. */
+.fi-garden {
   position: relative;
   overflow: hidden;
+  background: linear-gradient(#5f8a3a 60%, #4f7a31);
 }
-.fi-moon {
+.fi-garden-scene {
   position: absolute;
-  right: 12%;
-  top: 18%;
-  width: 104px;
-  height: 104px;
-  margin: -24px -24px 0 0;
+  left: 0;
+  right: 0;
+  top: 0;
+  aspect-ratio: 784 / 1116;
+  max-height: 100%;
+  margin: 0 auto;
 }
-.fi-stars {
+.fi-garden-scene > video,
+.fi-garden-scene > img {
   position: absolute;
-  inset: 0 0 40% 0;
-  animation: fi-twinkle 3.2s ease-in-out infinite alternate;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
 }
-.fi-stars i {
+.fi-garden-scene::after {
+  content: "";
   position: absolute;
-  width: 3px;
-  height: 3px;
-  border-radius: 50%;
-  background: #fffbe8;
+  left: 0;
+  right: 0;
+  bottom: -1px;
+  height: 64px;
+  background: linear-gradient(rgba(95, 138, 58, 0), #5f8a3a);
+  pointer-events: none;
 }
-@keyframes fi-twinkle {
-  from { opacity: 0.55; }
-  to { opacity: 1; }
-}
-/* The floor of the screen: a soft rug of light she sleeps on. */
-.fi-floor {
+.fi-garden-hint {
   position: relative;
-  z-index: 1;
-  width: calc(100% + 2rem);
-  height: 120px;
-  margin-top: 24px;
-  border-radius: 50% 50% 0 0 / 40% 40% 0 0;
-  background: linear-gradient(#f5d7e3, #e8c6d8);
-}
-.fi-sleeper {
-  position: absolute !important;
-  z-index: 2;
-  left: 50%;
-  bottom: 28px;
-  width: min(64vw, 270px);
-  height: min(36vw, 150px);
-  transform: translateX(-50%);
-  animation: fi-breathe 3.6s ease-in-out infinite;
-}
-@keyframes fi-breathe {
-  50% { transform: translateX(-50%) scale(1.015, 1.03); }
-}
-.fi-zzz {
-  position: absolute;
-  z-index: 3;
-  left: 62%;
-  bottom: 170px;
-  font-size: 26px;
+  z-index: 10;
+  padding: 12px 14px;
+  border-radius: 20px;
+  background: rgba(255, 252, 245, 0.88);
+  text-align: center;
+  font-size: 1.25rem;
   font-weight: 700;
-  color: #fff6d5;
-  animation: fi-float 2.8s ease-in-out infinite;
-}
-.fi-zzz span {
-  display: inline-block;
-  margin-left: 2px;
-  font-size: 1.25em;
-  transform: translateY(-10px);
-}
-.fi-zzz span + span {
-  font-size: 1.5em;
-  transform: translateY(-24px);
-}
-@keyframes fi-float {
-  0% { opacity: 0; transform: translateY(8px); }
-  30%, 70% { opacity: 1; }
-  100% { opacity: 0; transform: translateY(-16px); }
-}
-.fi-waker {
-  position: absolute !important;
-  z-index: 2;
-  left: 50%;
-  bottom: 40px;
-  width: min(50vw, 200px);
-  height: min(62vw, 250px);
-  margin-left: max(-25vw, -100px);
-  animation: fi-rise 0.9s ease-out both;
+  line-height: 1.35;
+  pointer-events: none;
 }
 @keyframes fi-rise {
   from { opacity: 0; transform: translateY(14px) scale(0.96); }
@@ -918,16 +873,5 @@ body {
   animation: fi-rise 0.5s ease-out both;
 }
 @media (prefers-reduced-motion: reduce) {
-  .fi-waker, .fi-hand, .fi-bubble, .fi-row, .fi-sleeper, .fi-stars, .fi-zzz { animation: none; }
-}
-.fi-moon, .fi-stars, .fi-zzz {
-  pointer-events: none;
-}
-/* Her keyframes stand on the floor of the night room. */
-.fi-flip {
-  position: absolute !important;
-  z-index: 2;
-  left: 50%;
-  bottom: 28px;
-  transform: translateX(-50%);
+  .fi-hand, .fi-bubble, .fi-row { animation: none; }
 }
