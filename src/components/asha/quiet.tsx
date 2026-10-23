@@ -8,6 +8,7 @@ import { useAsha } from "@/lib/asha/store";
 import { clockLabel } from "@/lib/asha/time";
 import type { Lang } from "@/lib/asha/types";
 import { speak } from "@/lib/asha/voice";
+import { useBack } from "@/lib/asha/back";
 
 /** Opens the "how long should I be quiet?" sheet, from her voice, Talk, or her own button. */
 export const useQuietSheet = create<{ open: boolean; minutes: number; show: (minutes?: number) => void; hide: () => void }>((set) => ({
@@ -37,7 +38,12 @@ export function QuietSheet() {
   const lang = s.lang;
   const fairy = s.fairyName || t(lang, { en: "Your fairy", hi: "आपकी परी" });
   const quiet = isQuiet(s, now.getTime());
-  const sayV = (en: string, hi: string, loud = false) => void speak(s.voiceLang === "hi" ? hi : en, s.voiceLang, "fairy", loud);
+  useBack(() => {
+    hide();
+    return true;
+  }, open);
+  const sayV = (en: string, hi: string, loud = false) =>
+    void speak(s.voiceLang === "hi" ? hi : en, s.voiceLang, "fairy", loud);
 
   useEffect(() => {
     if (!open) return;
