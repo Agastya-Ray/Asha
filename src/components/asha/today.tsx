@@ -1,3 +1,4 @@
+import { VisitSoon } from "@/components/asha/ideas/prescriptions";
 import { Droplets } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, Hear, t, useNow } from "@/components/asha/bits";
@@ -59,6 +60,7 @@ export function TodayScreen() {
       </div>
 
       <ReminderHealth />
+      <VisitSoon />
       <VoiceCommand />
 
       {conditions.includes("heart") && checkin?.chestOk !== true ? (

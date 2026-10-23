@@ -6,6 +6,7 @@ import { useQuietSheet } from "@/components/asha/quiet";
 import { apiChat } from "@/lib/asha/api";
 import { QUIET, minutesSaid } from "@/lib/asha/quiet";
 import { CONDITIONS, text as phrase } from "@/lib/asha/plans";
+import { rxContext } from "@/lib/asha/rx";
 import { useAsha } from "@/lib/asha/store";
 import { speak } from "@/lib/asha/voice";
 
@@ -51,7 +52,7 @@ export function TalkScreen() {
       .join(", ");
     const context = `Name: ${name || "not given"}. Conditions: ${conditionNames || "none selected"}. Medicines: ${
       meds.map((m) => `${m.name} ${m.dose} at ${m.times.join(", ")}`).join("; ") || "none listed"
-    }. Local time: ${new Date().toLocaleString("en-IN")}.`;
+    }. ${rxContext(useAsha.getState().prescriptions)} Local time: ${new Date().toLocaleString("en-IN")}.`;
     const turns = [...useAsha.getState().chat].slice(-10).map((turn) => ({ role: turn.role, content: turn.text }));
     const res = await apiChat({ show: lang, say: voiceLang, context, turns });
     setBusy(false);
