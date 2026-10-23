@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { create } from "zustand";
 import { t, useNow } from "@/components/asha/bits";
 import { FairyScene } from "@/components/asha/fairy";
@@ -33,6 +33,7 @@ export function QuietSheet() {
   const s = useAsha();
   const now = useNow();
   const [minutes, setMinutes] = useState(0);
+  const sheet = useRef<HTMLDivElement>(null);
   const lang = s.lang;
   const fairy = s.fairyName || t(lang, { en: "Your fairy", hi: "आपकी परी" });
   const quiet = isQuiet(s, now.getTime());
@@ -41,6 +42,8 @@ export function QuietSheet() {
   useEffect(() => {
     if (!open) return;
     setMinutes(asked);
+    // move focus into the sheet: screen readers (and Android's accessibility tree) then pick it up straight away
+    window.requestAnimationFrame(() => sheet.current?.focus());
     const st = useAsha.getState();
     if (isQuiet(st)) return;
     if (!asked) sayV("Shh, okay. For how long should I be quiet?", "श्श, ठीक है. कितनी देर चुप रहूँ?");
@@ -66,7 +69,7 @@ export function QuietSheet() {
   return (
     <div className="fixed inset-0 z-50 flex items-end justify-center" role="dialog" aria-label={t(lang, { en: "Quiet time", hi: "शांत समय" })}>
       <div className="fixed inset-0 bg-ink/55" onClick={hide} />
-      <div data-quiet-sheet className="relative mx-auto w-full max-w-lg rounded-t-3xl bg-paper px-4 pb-8 pt-4 shadow-lg">
+      <div ref={sheet} tabIndex={-1} data-quiet-sheet className="relative outline-none mx-auto w-full max-w-lg rounded-t-3xl bg-paper px-4 pb-8 pt-4 shadow-lg">
         <div className="flex items-end gap-3">
           <div className="h-28 w-24 shrink-0">
             <FairyScene news={false} mood={quiet ? "sleep" : minutes ? "happy" : "asking"} size="sm" label={fairy} />
