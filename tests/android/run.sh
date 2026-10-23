@@ -202,7 +202,7 @@ grep -q "I'm back" "$OUT/quiet-early-said.txt" && log "woken early: she said I'm
 flow 08_quiet_stay.yaml           # quiet for 30 minutes, until about 19:55
 adb shell input keyevent KEYCODE_HOME
 SAID_BEFORE=$(grep -c "AshaSpeaker" "$OUT/logcat-stream.txt")
-setclock 101519294026.40          # 19:29:40, so dinner comes due while she is quiet
+setclock 101519292026.40          # 19:29:40, so dinner comes due while she is quiet
 sleep 80
 adb shell dumpsys notification --noredact | grep -E "android.title=|android.text=" > "$OUT/quiet-1930-cards.txt" || true
 grep -qi "dinner" "$OUT/quiet-1930-cards.txt" && log "19:30 while quiet: silent dinner card shown" || { FAILED=1; log "19:30 while quiet: no dinner card"; }

@@ -6,11 +6,14 @@ appId: com.agastyaray.asha
 - scrollUntilVisible:
     element: "🤫 Quiet for a while (meeting, event)"
 - tapOn: "🤫 Quiet for a while (meeting, event)"
-- assertVisible: "Shh, okay. For how long should I be quiet?"
+- extendedWaitUntil:
+    visible: "30 minutes"
+    timeout: 5000
 - tapOn: "30 minutes"
 - takeScreenshot: 80-quiet-sheet
 - tapOn:
     text: "Be quiet until.*"
+- tapOn: "Today"
 - assertVisible:
     text: ".*is quiet until.*"
 - takeScreenshot: 81-quiet-banner
