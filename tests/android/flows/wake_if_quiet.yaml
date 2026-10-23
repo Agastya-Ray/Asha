@@ -1,0 +1,9 @@
+# If she is still quiet (from an earlier try), wake her with the banner's Wake button.
+appId: com.agastyaray.asha
+---
+- runFlow:
+    when:
+      visible: "Wake her"
+    commands:
+      - tapOn: "Wake her"
+      - waitForAnimationToEnd

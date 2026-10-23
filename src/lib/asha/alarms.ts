@@ -3,6 +3,7 @@ import { AshaNative, isNative, type NativeReminder } from "@/lib/asha/native";
 import { timeWords } from "@/lib/asha/family";
 import { digits, latinDigits } from "@/lib/asha/schedule";
 import { againSentence, doseSentence, mealNote, mealSentence, mealTitle, missedText, morningLine, nightLine } from "@/lib/asha/speech";
+import { backLine } from "@/lib/asha/quiet";
 import { useAsha } from "@/lib/asha/store";
 import { speakClock, todayKey, toMin } from "@/lib/asha/time";
 import type { Persist } from "@/lib/asha/types";
@@ -123,6 +124,10 @@ export function syncReminders(force = false) {
       rate: 0.92,
       familyAlert: s.familyAlert,
       familyNumbers: s.contacts.map((c) => latinDigits(c.phone)).filter((p) => digits(p).length >= 6),
+      // quiet mode: Android buzzes silently until then, and says "I'm back" plus anything not yet taken
+      quietUntil: s.quietUntil,
+      quietBack: backLine(s.voiceLang, s.name),
+      quietLang: s.voiceLang,
     };
     const payload = JSON.stringify({ items, config });
     if (!force && payload === lastSent) return;

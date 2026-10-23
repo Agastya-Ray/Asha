@@ -4,9 +4,13 @@ import { pullNativeActions, syncReminders } from "@/lib/asha/alarms";
 import { setDeviceId } from "@/lib/asha/api";
 import { isNative } from "@/lib/asha/native";
 import { buildAgenda, shouldSpeak } from "@/lib/asha/schedule";
+import { backLine, isQuiet } from "@/lib/asha/quiet";
 import { greeting } from "@/lib/asha/speech";
 import { useAsha } from "@/lib/asha/store";
-import { speak, useSpeech } from "@/lib/asha/voice";
+import { setHush, speak, useSpeech } from "@/lib/asha/voice";
+
+// Reminders that only buzzed while she was quiet (web): she says them when quiet ends.
+const buzzed = new Set<string>();
 
 /**
  * In the Android app, Android itself rings and speaks each reminder (see alarms.ts),
@@ -18,6 +22,21 @@ async function webTick() {
   if (isNative || !s.hydrated || !s.onboarded || s.appRole !== "elder" || !s.voiceOn) return;
   if (useSpeech.getState().active) return;
   const items = buildAgenda(s);
+  if (isQuiet(s)) {
+    // quiet mode: a silent card and a buzz, once; not marked as said, so it is said when quiet ends
+    const due = items.find((item) => shouldSpeak(item, s.reminded, s.snooze) && !buzzed.has(item.key));
+    if (!due) return;
+    buzzed.add(due.key);
+    if (typeof Notification !== "undefined" && Notification.permission === "granted") {
+      try {
+        new Notification("Asha", { body: due.sentence, silent: true });
+      } catch {
+        /* optional */
+      }
+    }
+    navigator.vibrate?.([0, 400, 250, 400]);
+    return;
+  }
   const next = items.find((item) => shouldSpeak(item, s.reminded, s.snooze));
   if (!next) return;
   s.markReminded([next.key]);
@@ -55,6 +74,7 @@ export function ReminderEngine() {
         state.dailyGreetings !== prev.dailyGreetings ||
         state.wakeTime !== prev.wakeTime ||
         state.sleepTime !== prev.sleepTime ||
+        state.quietUntil !== prev.quietUntil ||
         state.onboarded !== prev.onboarded ||
         state.appRole !== prev.appRole
       ) {
@@ -72,6 +92,31 @@ export function ReminderEngine() {
     return () => {
       unsub();
       removeResume?.();
+    };
+  }, [hydrated]);
+
+  // Quiet mode: hush her voice until then; at the end she says "I'm back" (Android does this itself).
+  useEffect(() => {
+    if (!hydrated) return;
+    let end = 0;
+    const arm = (until: number) => {
+      setHush(until);
+      window.clearTimeout(end);
+      if (until > Date.now()) end = window.setTimeout(() => useAsha.getState().setQuiet(0), until - Date.now() + 200);
+      else if (until) useAsha.getState().setQuiet(0);
+    };
+    arm(useAsha.getState().quietUntil);
+    const unsub = useAsha.subscribe((state, prev) => {
+      if (state.quietUntil === prev.quietUntil) return;
+      arm(state.quietUntil);
+      if (state.quietUntil || !prev.quietUntil) return;
+      buzzed.clear();
+      if (isNative || !state.voiceOn) return;
+      void speak(backLine(state.voiceLang, state.name), state.voiceLang, "fairy").then(() => webTick());
+    });
+    return () => {
+      window.clearTimeout(end);
+      unsub();
     };
   }, [hydrated]);
 

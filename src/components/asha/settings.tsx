@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, Choice, FieldLabel, LangSwitch, SpeakField, t } from "@/components/asha/bits";
+import { useQuietSheet } from "@/components/asha/quiet";
 import { ReminderHealth } from "@/components/asha/reminder-health";
 import { CONDITIONS } from "@/lib/asha/plans";
 import { AshaNative, isNative } from "@/lib/asha/native";
@@ -98,6 +99,9 @@ export function SettingsScreen() {
 
       <h2 className="mt-6 text-2xl font-bold">{t(lang, { en: "Voice", hi: "आवाज़" })}</h2>
       <div className="mt-3 flex flex-col gap-2">
+        <Button variant="quiet" onClick={() => useQuietSheet.getState().show()}>
+          {t(lang, { en: "🤫 Quiet for a while (meeting, event)", hi: "🤫 थोड़ी देर चुप (मीटिंग, कार्यक्रम)" })}
+        </Button>
         <Toggle on={s.voiceOn} lang={lang} label={t(lang, { en: "Speak reminders and greetings", hi: "याद और अभिवादन बोलें" })} onClick={() => s.setPrefs({ voiceOn: !s.voiceOn })} />
         <Toggle on={s.richVoice} lang={lang} label={t(lang, { en: "Use the warmer voice when online", hi: "ऑनलाइन होने पर ज़्यादा प्यारी आवाज़" })} onClick={() => s.setPrefs({ richVoice: !s.richVoice })} />
         <Toggle on={s.fairySounds} lang={lang} label={t(lang, { en: "Little fairy sounds (quiet at night)", hi: "परी की छोटी आवाज़ें (रात में चुप)" })} onClick={() => s.setPrefs({ fairySounds: !s.fairySounds })} />

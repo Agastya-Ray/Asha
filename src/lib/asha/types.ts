@@ -116,6 +116,8 @@ export type Persist = {
   dailyGreetings: boolean;
   wakeTime: string;
   sleepTime: string;
+  /** quiet mode: the fairy stays silent until this time (ms, 0 = off) */
+  quietUntil: number;
   conditions: ConditionId[];
   contacts: Contact[];
   emergencyNumber: string;

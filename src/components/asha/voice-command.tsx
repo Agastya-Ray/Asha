@@ -3,7 +3,9 @@ import { Mic } from "lucide-react";
 import { create } from "zustand";
 import { t } from "@/components/asha/bits";
 import { canListen, listenOnce } from "@/lib/asha/listen";
+import { QUIET, minutesSaid } from "@/lib/asha/quiet";
 import { buildAgenda } from "@/lib/asha/schedule";
+import { useQuietSheet } from "@/components/asha/quiet";
 import { useAsha } from "@/lib/asha/store";
 import { speak } from "@/lib/asha/voice";
 
@@ -23,11 +25,12 @@ const WATER = /\b(water|glass)\b|पानी/i;
 // "I haven't taken it", "remind me later", "दवा नहीं ली": never mark these as done
 const NOT_YET = /n't\b|\b(not|never|yet|later|remind|forgot|forget|skip)\b|नहीं|नही\b|भूल|बाद में|याद दिला/i;
 
-export type Heard = "help" | "taken" | "ate" | "not-yet" | "water" | "other";
+export type Heard = "help" | "quiet" | "taken" | "ate" | "not-yet" | "water" | "other";
 
 /** What a short spoken sentence asks for. Help wins; a "not yet" stops a dose or meal being marked. */
 export function intentOf(said: string): Heard {
   if (HELP.test(said) || URGENT.test(said)) return "help";
+  if (QUIET.test(said)) return "quiet";
   const taken = TAKEN.test(said) && !ATE.test(said);
   const ate = ATE.test(said);
   if ((taken || ate) && NOT_YET.test(said)) return "not-yet";
@@ -107,6 +110,10 @@ export function actOnSpoken(said: string) {
   if (want === "help") {
     s.setTab("sos");
     reply("Opening Help.", "मदद खोल रही हूँ.");
+    return;
+  }
+  if (want === "quiet") {
+    useQuietSheet.getState().show(minutesSaid(said));
     return;
   }
   if (want === "taken") {

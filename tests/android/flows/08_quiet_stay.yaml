@@ -1,0 +1,21 @@
+# Quiet for 30 minutes, and leave her quiet.
+appId: com.agastyaray.asha
+---
+- launchApp
+- runFlow: wake_if_quiet.yaml
+- tapOn: "Settings"
+- scrollUntilVisible:
+    element: "🤫 Quiet for a while (meeting, event)"
+- tapOn:
+    text: "🤫 Quiet for a while (meeting, event)"
+    retryTapIfNoChange: false
+- waitForAnimationToEnd
+- extendedWaitUntil:
+    visible: "30 minutes"
+    timeout: 10000
+- tapOn: "30 minutes"
+- tapOn:
+    text: "Be quiet until.*"
+- tapOn: "Today"
+- assertVisible:
+    text: ".*is quiet until.*"

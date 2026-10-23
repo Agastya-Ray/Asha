@@ -41,6 +41,13 @@ export function unlockAudio() {
   });
 }
 
+let hushUntil = 0;
+/** Quiet mode ("I'm going to an event, be quiet"): she says nothing until then, except lines marked loud. */
+export function setHush(until: number) {
+  hushUntil = until;
+  if (until > Date.now()) stopSpeaking();
+}
+
 export function stopSpeaking() {
   generation += 1;
   audio?.pause();
@@ -143,9 +150,9 @@ function phoneVoice(text: string, lang: Lang, mine: number, fairy = false) {
   });
 }
 
-export async function speak(text: string, lang: Lang, prefer: "warm" | "device" | "fairy") {
+export async function speak(text: string, lang: Lang, prefer: "warm" | "device" | "fairy", loud = false) {
   const clean = text.replace(/\s+/g, " ").trim();
-  if (!clean) return;
+  if (!clean || (!loud && hushUntil > Date.now())) return;
   const mine = ++generation;
   audio?.pause();
   audio = null;

@@ -2,7 +2,9 @@ import { useEffect, useRef, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, MicButton, t } from "@/components/asha/bits";
 import { URGENT, useTalkHandoff } from "@/components/asha/voice-command";
+import { useQuietSheet } from "@/components/asha/quiet";
 import { apiChat } from "@/lib/asha/api";
+import { QUIET, minutesSaid } from "@/lib/asha/quiet";
 import { CONDITIONS, text as phrase } from "@/lib/asha/plans";
 import { useAsha } from "@/lib/asha/store";
 import { speak } from "@/lib/asha/voice";
@@ -35,6 +37,8 @@ export function TalkScreen() {
     if (!text || busy) return;
     setDraft("");
     setError("");
+    // "I'm going to a wedding, be quiet": quiet time, not a chat question
+    if (QUIET.test(text) && !CRISIS.test(text) && !URGENT.test(text)) return useQuietSheet.getState().show(minutesSaid(text));
     if (CRISIS.test(text)) setCrisis(true);
     if (URGENT.test(text)) setUrgent(true);
     push({ role: "user", text });
