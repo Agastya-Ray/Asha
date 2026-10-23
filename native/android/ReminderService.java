@@ -20,6 +20,8 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Locale;
 
 /**
  * Runs for a few seconds when a reminder is due:
@@ -84,7 +86,7 @@ public class ReminderService extends Service {
         final int id = startId;
         if (!cfg.optBoolean("speak", true)) { finish(id); return START_NOT_STICKY; }
         main.postDelayed(() -> finish(id), 60_000); // safety stop
-        Speaker.get(this).speak(sentence(t, attempt), t.optString("lang", "en"),
+        Speaker.get(this).speak(sentence(t, attempt, maxRepeats), t.optString("lang", "en"),
             (float) cfg.optDouble("rate", 0.92), ok -> main.post(() -> finish(id)));
         return START_NOT_STICKY;
     }
@@ -134,7 +136,11 @@ public class ReminderService extends Service {
             (float) cfg.optDouble("rate", 0.92), ok -> pending.finish());
     }
 
-    static String sentence(JSONObject t, int attempt) {
+    static String sentence(JSONObject t, int attempt, int maxRepeats) {
+        if (attempt >= maxRepeats) {
+            String last = t.optString("lastAgain");
+            if (!last.isEmpty()) return last;
+        }
         if (attempt > 0) {
             String again = t.optString("again");
             if (!again.isEmpty()) return again;
@@ -164,11 +170,28 @@ public class ReminderService extends Service {
         nm.createNotificationChannel(ch);
     }
 
+    /**
+     * The day (yyyy-MM-dd, phone's own time zone) this card's dose belongs to. A repeat or snooze that rings after
+     * midnight for a late-evening dose belongs to yesterday, so pressing "Taken" on it never ticks off today's dose.
+     */
+    static String doseDay(JSONObject t, int attempt) {
+        Calendar c = Calendar.getInstance();
+        int now = c.get(Calendar.HOUR_OF_DAY) * 60 + c.get(Calendar.MINUTE);
+        int at = t.optInt("hour") * 60 + t.optInt("minute");
+        if (attempt > 0 && now < at) c.add(Calendar.DAY_OF_YEAR, -1);
+        return dayKey(c);
+    }
+
+    static String dayKey(Calendar c) {
+        return String.format(Locale.US, "%04d-%02d-%02d", c.get(Calendar.YEAR), c.get(Calendar.MONTH) + 1, c.get(Calendar.DAY_OF_MONTH));
+    }
+
     static void showCard(Context ctx, JSONObject t, int attempt) {
         NotificationManager nm = (NotificationManager) ctx.getSystemService(Context.NOTIFICATION_SERVICE);
         if (nm == null) return;
         String key = t.optString("key");
         boolean med = "med".equals(t.optString("kind"));
+        String day = doseDay(t, attempt);
 
         Intent open = ctx.getPackageManager().getLaunchIntentForPackage(ctx.getPackageName());
         PendingIntent openPi = PendingIntent.getActivity(ctx, AlarmStore.notificationId(key), open,
@@ -187,9 +210,9 @@ public class ReminderService extends Service {
             .setOngoing(false);
         if (!"greet".equals(t.optString("kind"))) {
             b.addAction(new Notification.Action.Builder(null, t.optString("doneLabel", med ? "Taken" : "Eaten"),
-                ActionReceiver.pending(ctx, key, "taken")).build())
+                ActionReceiver.pending(ctx, key, "taken", day)).build())
             .addAction(new Notification.Action.Builder(null, t.optString("snoozeLabel", "10 min later"),
-                ActionReceiver.pending(ctx, key, "snooze")).build());
+                ActionReceiver.pending(ctx, key, "snooze", day)).build());
         }
         if (attempt > 0) b.setSubText(t.optString("againLabel", "Reminder " + (attempt + 1)));
         nm.notify(AlarmStore.notificationId(key), b.build());

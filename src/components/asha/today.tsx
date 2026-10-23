@@ -3,6 +3,7 @@ import { Button } from "@/components/ui/button";
 import { Card, Hear, t, useNow } from "@/components/asha/bits";
 import { ReminderHealth } from "@/components/asha/reminder-health";
 import { VoiceCommand } from "@/components/asha/voice-command";
+import { YesterdayNote } from "@/components/asha/ideas/yesterday-note";
 import { isNative } from "@/lib/asha/native";
 import { plateLine } from "@/lib/asha/plans";
 import { buildAgenda, doseProgress, todayCheckin } from "@/lib/asha/schedule";
@@ -59,6 +60,7 @@ export function TodayScreen() {
       </div>
 
       <ReminderHealth />
+      <YesterdayNote />
       <VoiceCommand />
 
       {conditions.includes("heart") && checkin?.chestOk !== true ? (

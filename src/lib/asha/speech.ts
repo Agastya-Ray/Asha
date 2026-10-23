@@ -161,6 +161,17 @@ export function againSentence(lang: Lang, name: string, title: string) {
   return `${who}, ${title} is still waiting. When it's done, press the green button. No rush.`;
 }
 
+/** The last of the repeat reminders: a softer check-in, and (when family will be told) why. */
+export function lastAgainSentence(lang: Lang, name: string, title: string, familyTold: boolean) {
+  const who = person(name, lang);
+  if (lang === "hi") {
+    const fam = familyTold ? " अगर आपसे बात न हो पाई तो मैं परिवार को बता दूँगी, बस ताकि वे चिंता न करें." : "";
+    return `${who}, मैं बस आपका हाल देख रही हूँ. ${title} अभी बाकी है. ले ली हो तो हरा बटन दबा दें.${fam}`;
+  }
+  const fam = familyTold ? " If I don't hear from you, I'll let your family know, just so they don't worry." : "";
+  return `${who}, just checking on you. Your ${title} is still waiting. If you've taken it, press the green button.${fam}`;
+}
+
 /** Text sent to family when a medicine reminder goes unanswered. Written in the screen language. */
 export function missedText(lang: Lang, name: string, medName: string, time: string) {
   const who = name.trim() || (lang === "hi" ? "आपके अपने" : "Your family member");

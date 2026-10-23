@@ -146,6 +146,12 @@ export function SettingsScreen() {
           label={t(lang, { en: "Tell family if a medicine is missed (after 3 reminders)", hi: "दवा छूटे तो परिवार को बताएँ (3 बार याद के बाद)" })}
           onClick={() => (s.familyAlert ? s.setPrefs({ familyAlert: false }) : void needSms(() => s.setPrefs({ familyAlert: true })))}
         />
+        <p className="text-base text-quiet">
+          {t(lang, {
+            en: "How a reminder goes: on time, again after 10 minutes, a gentle check after 20, then family (if on). A missed dose is never added to the next one: the next morning Asha only says to take today's doses on time.",
+            hi: "याद ऐसे दिलाती हूँ: समय पर, 10 मिनट बाद फिर, 20 मिनट बाद प्यार से पूछना, फिर परिवार (अगर चालू है). छूटी दवा अगली में नहीं जोड़ी जाती: अगली सुबह बस आज की दवा समय पर लेने को कहती हूँ.",
+          })}
+        </p>
         {isNative ? (
           <Toggle
             on={phoneDirect}

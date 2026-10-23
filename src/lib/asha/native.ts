@@ -13,6 +13,8 @@ export type NativeReminder = {
   body: string;
   say: string;
   again?: string;
+  /** said on the last repeat instead of `again` */
+  lastAgain?: string;
   lang: Lang;
   skipUntil?: number;
   missedText?: string;
@@ -49,7 +51,7 @@ interface AshaNativePlugin {
   listen(o: { lang: Lang }): Promise<{ text: string; error?: number }>;
   stopListening(): Promise<void>;
   setReminders(o: { items: NativeReminder[]; config: NativeConfig }): Promise<{ ok: boolean }>;
-  drainActions(): Promise<{ actions: { key: string; action: string; at: number }[] }>;
+  drainActions(): Promise<{ actions: { key: string; action: string; at: number; day?: string }[] }>;
   status(): Promise<NativeStatus>;
   requestNotifications(): Promise<{ ok: boolean }>;
   openExactAlarmSettings(): Promise<void>;

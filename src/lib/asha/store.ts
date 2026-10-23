@@ -36,6 +36,7 @@ export const initialPersist = (): Persist => ({
   wakeTime: "07:30",
   sleepTime: "21:30",
   quietUntil: 0,
+  yesterdayNoted: "",
   conditions: [],
   contacts: [],
   emergencyNumber: "",
@@ -74,7 +75,7 @@ type State = Persist & {
   replayIntro: () => void;
   setFairyName: (name: string) => void;
   finishTour: () => void;
-  applyNativeActions: (actions: { key: string; action: string; at: number }[]) => void;
+  applyNativeActions: (actions: { key: string; action: string; at: number; day?: string }[]) => void;
   setName: (name: string) => void;
   toggleCondition: (id: ConditionId) => void;
   setConditions: (ids: ConditionId[]) => void;
@@ -87,7 +88,10 @@ type State = Persist & {
   removeMed: (id: string) => void;
   saveMeds: (meds: Med[]) => void;
   updateMeal: (id: string, patch: Partial<{ name: string; time: string; note: string }>) => void;
-  logDose: (medId: string, time: string, status: "taken" | "skipped") => void;
+  /** day defaults to today; the "yesterday" note passes yesterday's day */
+  logDose: (medId: string, time: string, status: "taken" | "skipped", day?: string) => void;
+  /** answers the morning-after note; doses still unmarked are recorded as missed */
+  noteYesterday: (day: string, missed: { medId: string; time: string; day: string }[]) => void;
   undoDose: (medId: string, time: string) => void;
   logMeal: (mealId: string) => void;
   undoMeal: (mealId: string) => void;
@@ -179,6 +183,7 @@ function sanitize(raw: unknown): Persist {
     reminded: Array.isArray(r.reminded) ? r.reminded : [],
     snooze: r.snooze && typeof r.snooze === "object" ? r.snooze : {},
     chat: Array.isArray(r.chat) ? r.chat : [],
+    yesterdayNoted: typeof r.yesterdayNoted === "string" ? r.yesterdayNoted : "",
     quietUntil: typeof r.quietUntil === "number" && r.quietUntil > Date.now() ? r.quietUntil : 0,
     setupStep: r.setupStep === 2 || r.setupStep === 3 || r.setupStep === 4 ? r.setupStep : 1,
   };
@@ -222,7 +227,8 @@ export const useAsha = create<State>((set) => ({
       const reminded = new Set(s.reminded);
       for (const a of actions) {
         const [kind, id, time] = a.key.split("|");
-        const day = todayKey(new Date(a.at || Date.now()));
+        // the day the card was for (a card from last night pressed this morning is last night's dose, not today's)
+        const day = a.day || todayKey(new Date(a.at || Date.now()));
         reminded.add(`${day}|${kind}|${id}|${time}`);
         if (a.action !== "taken") continue;
         if (kind === "med" && id && time) {
@@ -258,7 +264,7 @@ export const useAsha = create<State>((set) => ({
   setContacts: (contacts: Contact[]) => set({ contacts }),
   saveMed: (med) =>
     set((s) => ({
-      meds: s.meds.some((m) => m.id === med.id) ? s.meds.map((m) => (m.id === med.id ? med : m)) : [...s.meds, med],
+      meds: s.meds.some((m) => m.id === med.id) ? s.meds.map((m) => (m.id === med.id ? med : m)) : [...s.meds, { ...med, addedOn: med.addedOn ?? todayKey() }],
     })),
   removeMed: (id) => set((s) => ({ meds: s.meds.filter((m) => m.id !== id) })),
   // From a prescription photo: a medicine already on the list is updated, not added twice.
@@ -269,7 +275,7 @@ export const useAsha = create<State>((set) => ({
       for (const m of incoming) {
         const i = meds.findIndex((x) => norm(x.name) === norm(m.name));
         if (i >= 0) meds[i] = { ...meds[i], dose: m.dose || meds[i].dose, times: m.times, food: m.food, note: m.note || meds[i].note };
-        else meds.push(m);
+        else meds.push({ ...m, addedOn: m.addedOn ?? todayKey() });
       }
       return { meds };
     }),
@@ -277,9 +283,19 @@ export const useAsha = create<State>((set) => ({
     set((s) => ({
       meals: s.meals.map((m) => (m.id === id ? { ...m, ...patch } : m)),
     })),
-  logDose: (medId, time, status) =>
+  noteYesterday: (yesterdayNoted, missed) =>
+    set((s) => ({
+      yesterdayNoted,
+      doseLogs: [
+        ...s.doseLogs,
+        ...missed
+          .filter((m) => !s.doseLogs.some((l) => l.day === m.day && l.medId === m.medId && l.time === m.time))
+          .map((m) => ({ ...m, status: "skipped" as const, missed: true })),
+      ],
+    })),
+  logDose: (medId, time, status, onDay) =>
     set((s) => {
-      const day = todayKey();
+      const day = onDay ?? todayKey();
       const prev = s.doseLogs.find((l) => l.day === day && l.medId === medId && l.time === time);
       let meds = s.meds;
       let counted = status === "taken" && prev?.status === "taken" ? prev.counted : false;
