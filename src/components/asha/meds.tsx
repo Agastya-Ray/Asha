@@ -379,8 +379,8 @@ export function MedsScreen() {
       <h1 className="display text-4xl">{t(lang, { en: "Medicines", hi: "दवाइयाँ" })}</h1>
       <p className="mt-2 text-lg text-quiet">
         {t(lang, {
-          en: "Green on Today means taken. If a name looks wrong, change it here. A photo can misread handwriting, so you confirm every name.",
-          hi: "आज वाले पन्ने पर हरा मतलब ले ली. नाम गलत लगे तो यहीं बदलें. फ़ोटो लिखावट गलत पढ़ सकती है, इसलिए हर नाम आप पक्का करते हैं.",
+          en: "Today marks each dose as you take it. If a name looks wrong, change it here. A photo can misread handwriting, so you confirm every name.",
+          hi: "आज वाला पन्ना हर ली गई दवा चिह्नित करता है. नाम गलत लगे तो यहीं बदलें. फ़ोटो लिखावट गलत पढ़ सकती है, इसलिए हर नाम आप पक्का करते हैं.",
         })}
       </p>
 

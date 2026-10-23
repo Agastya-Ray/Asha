@@ -27,7 +27,7 @@ export function doseSentence(lang: Lang, name: string, med: Med, time: string) {
   if (lang === "hi") {
     return `${who}, ${when} हो गए हैं. ${med.name} की बारी है, ${med.dose}. ${food} ले लें, तो हरे बटन को दबा दें.`;
   }
-  return `${who}, it's ${when}. Time for your ${med.name}, ${med.dose}. ${food} When you have taken it, press the green button.`;
+  return `${who}, it's ${when}. Time for your ${med.name}, ${med.dose}. ${food} When you have taken it, press the big button.`;
 }
 
 const PRESET_NAME: Record<MealPreset, { en: string; hi: string }> = {
@@ -76,7 +76,7 @@ export function mealSentence(lang: Lang, name: string, meal: Meal, time: string)
   if (lang === "hi") {
     return `${who}, ${when} हो गए हैं. ${title} का समय है. ${note} आराम से खाएँ. खा लें तो हरे बटन को दबा दें.`;
   }
-  return `${who}, it's ${when}. Time for ${title}. ${note} Eat slowly. When you finish, press the green button.`;
+  return `${who}, it's ${when}. Time for ${title}. ${note} Eat slowly. When you finish, press the big button.`;
 }
 
 export function greeting(lang: Lang, name: string, date: Date) {
@@ -157,8 +157,8 @@ export function smsBody(lang: Lang, name: string) {
 
 export function againSentence(lang: Lang, name: string, title: string) {
   const who = person(name, lang);
-  if (lang === "hi") return `${who}, ${title} अभी भी बाकी है. ले लें तो हरा बटन दबा दें. कोई जल्दी नहीं.`;
-  return `${who}, ${title} is still waiting. When it's done, press the green button. No rush.`;
+  if (lang === "hi") return `${who}, ${title} अभी भी बाकी है. ले लें तो बड़ा बटन दबा दें. कोई जल्दी नहीं.`;
+  return `${who}, ${title} is still waiting. When it's done, press the big button. No rush.`;
 }
 
 /** Text sent to family when a medicine reminder goes unanswered. Written in the screen language. */

@@ -533,58 +533,170 @@ html[data-size="xl"] .tour-pixie {
   padding-bottom: 17rem;
 }
 
-/* ---------- look: warm, soft depth ---------- */
+/* ---------- look: Marigold (default) and Lotus ----------
+   Older eyes see through a yellowing lens: pale greens and blues blur and beige turns muddy, while warm rich
+   colours stay clear. So: a cream-white page, full gradient buttons with a soft text shadow, a contrasting
+   Tell Asha, few outlines, and red only for Help. */
+:root {
+  --page: #fffaf3;
+  --glow-a: #ffe4c2;
+  --glow-b: #ffdfe6;
+  --glow-c: #fff1c4;
+  --btn-1: #ffc865;
+  --btn-2: #f9a12e;
+  --btn-3: #ec7f14;
+  --btn-text: #3a1f08;
+  --btn-text-shadow: 0 1px 0 rgb(255 240 210 / 0.75);
+  --btn-glow: rgb(236 127 20 / 0.45);
+  --tell-1: #2aa3a1;
+  --tell-2: #1a8584;
+  --tell-3: #13706f;
+  --tell-text: #ffffff;
+  --tell-glow: rgb(19 112 111 / 0.4);
+  --quiet-fill: #fff3e3;
+  --quiet-text: #5a3214;
+  --quiet-edge: #f6d8b2;
+  --soft-shadow: rgb(120 64 30 / 0.16);
+  --color-linen: var(--page);
+  --color-line: #f3e3d1;
+  --color-ink: #33210f;
+  --color-quiet: #6e5643;
+  --color-sage: #b4520f;
+  --color-sage-soft: #fff0dc;
+  --color-sos: #cf3448;
+}
+html[data-look="lotus"] {
+  --page: #fdf8fb;
+  --glow-a: #f6dff0;
+  --glow-b: #ffe8cc;
+  --glow-c: #ebe4fb;
+  --btn-1: #d27bb0;
+  --btn-2: #b04f8b;
+  --btn-3: #8c346c;
+  --btn-text: #ffffff;
+  --btn-text-shadow: 0 1px 2px rgb(70 10 45 / 0.45);
+  --btn-glow: rgb(140 52 108 / 0.45);
+  --tell-1: #ffc865;
+  --tell-2: #f9a12e;
+  --tell-3: #ec7f14;
+  --tell-text: #3a1f08;
+  --tell-glow: rgb(236 127 20 / 0.45);
+  --quiet-fill: #fbeff6;
+  --quiet-text: #74285a;
+  --quiet-edge: #ecc9dd;
+  --soft-shadow: rgb(110 40 90 / 0.16);
+  --color-line: #efdfe9;
+  --color-ink: #33203a;
+  --color-quiet: #6f5a72;
+  --color-sage: #93376f;
+  --color-sage-soft: #f8e6f1;
+}
 body {
   background:
-    radial-gradient(60rem 30rem at 0% -10%, #fde7d3 0%, transparent 60%),
-    radial-gradient(50rem 28rem at 110% 10%, #dff0e4 0%, transparent 55%),
+    radial-gradient(24rem 18rem at -8% 0%, var(--glow-a) 0%, transparent 70%),
+    radial-gradient(24rem 18rem at 112% 28%, var(--glow-b) 0%, transparent 70%),
+    radial-gradient(24rem 16rem at 40% 110%, var(--glow-c) 0%, transparent 70%),
     var(--color-linen);
   background-attachment: fixed;
 }
-/* cards float on the page instead of sitting flat with a hard outline */
+.display,
+h1,
+h2,
+h3 {
+  font-family: "Nunito", ui-rounded, system-ui, sans-serif;
+  font-weight: 800;
+  letter-spacing: -0.01em;
+}
+header {
+  background: color-mix(in srgb, var(--page) 90%, transparent);
+}
+/* cards float with a soft shadow instead of an outline */
 .rounded-3xl.bg-paper,
-.rounded-2xl.border-line.bg-paper {
+.rounded-2xl.border-line.bg-paper,
+.rounded-3xl.border-line.bg-paper {
+  border-radius: 1.75rem;
+  border-color: transparent;
   box-shadow:
-    0 1px 2px rgb(60 40 20 / 0.05),
-    0 8px 24px -10px rgb(60 40 20 / 0.14);
+    0 1px 2px var(--soft-shadow),
+    0 14px 30px -18px var(--soft-shadow);
 }
-.btn-primary {
-  background-image: linear-gradient(180deg, #2a8a5b 0%, var(--color-sage) 100%);
-  box-shadow:
-    inset 0 1px 0 rgb(255 255 255 / 0.18),
-    0 6px 16px -6px rgb(29 107 69 / 0.55);
-}
-.btn-sos {
-  background-image: linear-gradient(180deg, #b0304a 0%, var(--color-sos) 100%);
-  box-shadow: 0 6px 16px -6px rgb(143 29 50 / 0.5);
+section.border-sage {
+  border-color: transparent;
 }
 .hero {
   border-radius: 2rem;
-  padding: 1.25rem;
-  background: linear-gradient(135deg, #fff6ec 0%, #fffdf8 45%, #eaf6ee 100%);
-  box-shadow: 0 10px 30px -14px rgb(60 40 20 / 0.22);
+  padding: 1.25rem 1.25rem 1.4rem;
+  background: linear-gradient(140deg, var(--glow-a) 0%, #ffffff 55%, var(--glow-b) 100%);
+  box-shadow: 0 16px 32px -22px var(--soft-shadow);
 }
-.logo-badge {
-  background: linear-gradient(145deg, #34a06c, var(--color-sage));
-  box-shadow: 0 4px 12px -4px rgb(29 107 69 / 0.6);
+/* full gradient buttons: light at the top, deep at the bottom, a glossy edge and a soft glow */
+.btn-primary,
+.tab-on {
+  color: var(--btn-text);
+  text-shadow: var(--btn-text-shadow);
+  background-image: linear-gradient(180deg, var(--btn-1) 0%, var(--btn-2) 55%, var(--btn-3) 100%);
 }
-.rounded-3xl.border-line.bg-paper,
-.rounded-2xl.border-line.bg-paper {
-  border-color: rgb(228 216 198 / 0.55);
-}
-/* tab bar floats as a rounded pill above the bottom edge; the open tab gets a soft pill */
-.nav-float {
-  border-radius: 1.75rem;
-  background: rgb(255 253 248 / 0.92);
-  backdrop-filter: blur(10px);
+.btn-primary {
+  border-radius: 999px;
   box-shadow:
-    0 1px 0 rgb(255 255 255 / 0.8) inset,
-    0 12px 32px -12px rgb(60 40 20 / 0.3);
-  border: 1px solid rgb(228 216 198 / 0.6);
+    inset 0 2px 0 rgb(255 255 255 / 0.45),
+    inset 0 -2px 0 rgb(0 0 0 / 0.08),
+    0 10px 20px -10px var(--btn-glow);
 }
 .tab-on {
-  background: var(--color-sage-soft);
-  border-radius: 1.25rem;
+  border-radius: 1.5rem;
+  box-shadow: 0 6px 14px -8px var(--btn-glow);
+}
+.tell-asha {
+  border-radius: 999px;
+  border-color: transparent;
+  color: var(--tell-text);
+  text-shadow: 0 1px 2px rgb(0 0 0 / 0.22);
+  background-image: linear-gradient(180deg, var(--tell-1) 0%, var(--tell-2) 55%, var(--tell-3) 100%);
+  box-shadow:
+    inset 0 2px 0 rgb(255 255 255 / 0.35),
+    0 10px 20px -10px var(--tell-glow);
+}
+html[data-look="lotus"] .tell-asha {
+  text-shadow: 0 1px 0 rgb(255 240 210 / 0.75);
+}
+/* quiet buttons are soft tinted pills, not white boxes with outlines */
+button.border.border-line.bg-paper {
+  border-radius: 999px;
+  background: linear-gradient(180deg, #ffffff, var(--quiet-fill));
+  color: var(--quiet-text);
+  border-color: var(--quiet-edge);
+  text-shadow: 0 1px 0 rgb(255 255 255 / 0.8);
+}
+.hear-round {
+  color: var(--quiet-text);
+  background: linear-gradient(180deg, #ffffff, var(--quiet-fill));
+  box-shadow:
+    0 0 0 1px var(--quiet-edge),
+    0 6px 12px -8px var(--soft-shadow);
+}
+.pill-progress {
+  color: var(--quiet-text);
+  background: var(--quiet-fill);
+}
+.btn-sos {
+  background-image: linear-gradient(180deg, #e65b67 0%, #cf3448 60%, #b82a3d 100%);
+  text-shadow: 0 1px 2px rgb(80 0 10 / 0.35);
+  box-shadow:
+    inset 0 2px 0 rgb(255 255 255 / 0.3),
+    0 8px 16px -8px rgb(207 52 72 / 0.6);
+}
+.logo-badge {
+  background: linear-gradient(145deg, var(--btn-1), var(--btn-3));
+  color: var(--btn-text);
+  box-shadow: 0 4px 12px -6px var(--btn-glow);
+}
+.nav-float {
+  border-radius: 2rem;
+  background: rgb(255 255 255 / 0.94);
+  backdrop-filter: blur(10px);
+  border: 1px solid var(--color-line);
+  box-shadow: 0 12px 28px -14px var(--soft-shadow);
 }
 
 /* ---------- the pixie (pixie.tsx) ---------- */

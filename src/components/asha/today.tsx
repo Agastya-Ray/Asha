@@ -50,12 +50,12 @@ export function TodayScreen() {
 
   return (
     <div className="py-5">
-      <div className="hero">
-        <h1 className="display text-4xl leading-tight">{hello.title}</h1>
-        <p className="mt-3 text-lg text-quiet">{hello.line}</p>
-        <div className="mt-4">
-          <Hear say={`${helloSay.title} ${helloSay.line}`} label={t(lang, { en: "Hear this", hi: "इसे सुनें" })} />
+      <div className="hero flex items-start gap-3">
+        <div className="min-w-0 flex-1">
+          <h1 className="display text-4xl leading-tight">{hello.title}</h1>
+          <p className="mt-2 text-lg text-quiet">{hello.line}</p>
         </div>
+        <Hear round say={`${helloSay.title} ${helloSay.line}`} label={t(lang, { en: "Hear this", hi: "इसे सुनें" })} />
       </div>
 
       <ReminderHealth />
@@ -93,7 +93,14 @@ export function TodayScreen() {
         </Card>
       ) : null}
 
-      <h2 className="mt-6 text-xl font-bold">{t(lang, { en: "Right now", hi: "अभी" })}</h2>
+      <div className="mt-7 flex items-center justify-between gap-3">
+        <h2 className="text-xl font-bold">{t(lang, { en: "Right now", hi: "अभी" })}</h2>
+        {progress.total > 0 ? (
+          <span className="pill-progress shrink-0 rounded-full px-3 py-1 text-base font-bold tabular-nums">
+            {lang === "hi" ? `${progress.total} में से ${progress.marked}` : `${progress.marked} of ${progress.total} done`}
+          </span>
+        ) : null}
+      </div>
       <section data-tour="now">
       {active.length === 0 && !featuredLater ? (
         <Card className="mt-3">
@@ -162,18 +169,14 @@ export function TodayScreen() {
       ) : null}
 
       <Card className="mt-5">
-        <div className="flex items-center gap-3">
-          <Droplets className="size-6 text-sage" aria-hidden />
-          <p className="text-lg font-bold">
+        <div className="flex flex-wrap items-center gap-3">
+          <Droplets className="size-7 shrink-0 text-sage" aria-hidden />
+          <p className="min-w-0 flex-1 text-lg font-bold">
             {t(lang, { en: "Water", hi: "पानी" })} · {checkin?.water ?? 0} / 8
+            <span className="block text-base font-normal text-quiet">{t(lang, { en: "Eight glasses is plenty.", hi: "आठ गिलास काफ़ी हैं." })}</span>
           </p>
-        </div>
-        <p className="mt-2 text-base text-quiet">
-          {t(lang, { en: "Tap when you finish a glass. Eight is plenty for most days.", hi: "गिलास खत्म हो तो दबाएँ. ज़्यादातर दिनों में आठ काफ़ी हैं." })}
-        </p>
-        <div className="mt-4">
-          <Button variant="quiet" onClick={() => addWater()}>
-            {t(lang, { en: "I drank a glass", hi: "एक गिलास पी लिया" })}
+          <Button variant="quiet" className="w-auto px-5" onClick={() => addWater()}>
+            {t(lang, { en: "+ 1 glass", hi: "+ 1 गिलास" })}
           </Button>
         </div>
       </Card>
@@ -195,15 +198,11 @@ export function TodayScreen() {
         </Card>
       ) : null}
 
-      <p className="mt-5 text-lg">
-        {progress.total === 0
-          ? t(lang, { en: "No doses are on the list yet.", hi: "सूची में अभी कोई खुराक नहीं." })
-          : progress.marked === progress.total
-            ? t(lang, { en: "Today's doses are marked. That is a good day's work.", hi: "आज की खुराकें चिह्नित हैं. यह अच्छे दिन का काम है." })
-            : lang === "hi"
-              ? `आज ${progress.total} में से ${progress.marked} खुराक चिह्नित हैं.`
-              : `You have marked ${progress.marked} of ${progress.total} doses today.`}
-      </p>
+      {progress.total > 0 && progress.marked === progress.total ? (
+        <p className="mt-5 text-lg">
+          {t(lang, { en: "Today's doses are marked. That is a good day's work.", hi: "आज की खुराकें चिह्नित हैं. यह अच्छे दिन का काम है." })}
+        </p>
+      ) : null}
 
       {done.length > 0 ? (
         <details className="mt-4 rounded-3xl border border-line bg-paper px-4 py-3">
@@ -240,7 +239,7 @@ export function TodayScreen() {
         </summary>
         <ol className="mt-3 list-decimal space-y-2 pl-5 text-lg">
           <li>{t(lang, { en: "When a dose is due, Asha speaks the sentence on the card.", hi: "जब दवा का समय हो, आशा कार्ड वाला वाक्य बोलती है." })}</li>
-          <li>{t(lang, { en: "Press the green button after it is taken.", hi: "ले लेने के बाद हरा बटन दबाएँ." })}</li>
+          <li>{t(lang, { en: "Press the big button after it is taken.", hi: "ले लेने के बाद बड़ा बटन दबाएँ." })}</li>
           <li>{t(lang, { en: "Help stays at the top and opens the numbers you saved.", hi: "मदद ऊपर रहती है और सहेजे नंबर खोलती है." })}</li>
         </ol>
         <p className="mt-3 text-base text-quiet">
@@ -295,8 +294,8 @@ function AgendaCard({ item, perch = false }: { item: AgendaItem; perch?: boolean
       {item.state === "later" ? (
         <p className="mt-2 text-base text-quiet">
           {t(lang, {
-            en: "Coming up. If you already did it, press the green button.",
-            hi: "आने वाला है. हो चुका हो तो हरा बटन दबाएँ.",
+            en: "Coming up. If you already did it, press the big button.",
+            hi: "आने वाला है. हो चुका हो तो बड़ा बटन दबाएँ.",
           })}
         </p>
       ) : null}
@@ -306,9 +305,9 @@ function AgendaCard({ item, perch = false }: { item: AgendaItem; perch?: boolean
       {item.state === "open" ? (
         <p className="mt-2 text-base font-bold">{t(lang, { en: "Still open from earlier. No scolding.", hi: "पहले से खुली है. कोई डाँट नहीं." })}</p>
       ) : null}
-      <p className="mt-3 text-lg">{item.sentence}</p>
-      <div className="mt-3">
-        <Hear say={item.say} label={t(lang, { en: "Hear this", hi: "इसे सुनें" })} />
+      <div className="mt-3 flex items-start gap-3">
+        <Hear round say={item.say} label={t(lang, { en: "Hear this", hi: "इसे सुनें" })} />
+        <p className="min-w-0 flex-1 text-lg">{item.sentence}</p>
       </div>
       <div className="mt-4 flex flex-col gap-2">
         <Button
@@ -319,14 +318,16 @@ function AgendaCard({ item, perch = false }: { item: AgendaItem; perch?: boolean
         >
           {primary}
         </Button>
-        <Button variant="quiet" onClick={() => snoozeKey(item.key, 10)}>
-          {t(lang, { en: "Remind me in 10 minutes", hi: "10 मिनट में याद दिलाएँ" })}
-        </Button>
-        {item.kind === "med" ? (
-          <Button variant="ghost" onClick={() => logDose(item.id, item.time, "skipped")}>
-            {t(lang, { en: "Skip today", hi: "आज छोड़ें" })}
+        <div className={item.kind === "med" ? "grid grid-cols-2 gap-2" : undefined}>
+          <Button variant="quiet" onClick={() => snoozeKey(item.key, 10)}>
+            {t(lang, { en: "In 10 min", hi: "10 मिनट में" })}
           </Button>
-        ) : null}
+          {item.kind === "med" ? (
+            <Button variant="ghost" onClick={() => logDose(item.id, item.time, "skipped")}>
+              {t(lang, { en: "Skip today", hi: "आज छोड़ें" })}
+            </Button>
+          ) : null}
+        </div>
       </div>
     </Card>
   );

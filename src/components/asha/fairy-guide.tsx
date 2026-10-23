@@ -54,8 +54,8 @@ const TOUR: TourStep[] = [
     target: "now",
     mood: "point",
     line: () => ({
-      en: "This is your day. What is due now, a medicine or a meal, shows here. When it's done, press the green button.",
-      hi: "यह आपका दिन है. अभी जो करना है, दवा या खाना, वह यहीं दिखेगा. हो जाए, तो हरा बटन दबाइए.",
+      en: "This is your day. What is due now, a medicine or a meal, shows here. When it's done, press the big button.",
+      hi: "यह आपका दिन है. अभी जो करना है, दवा या खाना, वह यहीं दिखेगा. हो जाए, तो बड़ा बटन दबाइए.",
     }),
     next: { en: "Next", hi: "आगे" },
   },
