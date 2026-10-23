@@ -303,7 +303,8 @@ alive 2-no-exact-alarms
 # Android stops an app when one of its permissions is taken back, so open Asha again afterwards
 adb shell pm revoke $PKG android.permission.RECORD_AUDIO && log "stress: microphone permission reset"
 relaunch
-xy=$(find_webview "^(Tell Asha|आशा को बताएँ)$")
+# Tell Asha sits below the reminders now, so it can take more than one round of scrolling to reach
+xy=$(find_webview "^(Tell Asha|आशा को बताएँ)$"); [ -n "$xy" ] || xy=$(find_webview "^(Tell Asha|आशा को बताएँ)$")
 if [ -n "$xy" ]; then
   adb shell input tap $xy; sleep 3; shot s3a-mic-prompt
   xy=$(center "(?i)don.t allow"); [ -n "$xy" ] && { adb shell input tap $xy; log "stress 3: said Don't allow to the microphone"; } || log "stress 3: no microphone prompt shown"
