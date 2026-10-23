@@ -159,7 +159,6 @@ export function FairyIntro() {
               👇
             </span>
           </p>
-          <span className="fi-floor" aria-hidden />
           {step === "asleep" ? (
             <span className="fi-zzz" aria-hidden>
               z<span>z</span>
