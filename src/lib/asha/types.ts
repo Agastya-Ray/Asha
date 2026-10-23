@@ -27,6 +27,10 @@ export type Med = {
   days?: number[];
   /** taken only when needed: no reminders, no dose on Today */
   asNeeded?: boolean;
+  /** when a photo of this medicine was saved (the photo itself is in IndexedDB, see photos.ts) */
+  photoAt?: number;
+  /** who added the photo, when it came from family ("Priya") */
+  photoBy?: string;
 };
 
 export type MealPreset = "breakfast" | "lunch" | "snack" | "dinner";

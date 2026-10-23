@@ -97,6 +97,21 @@ export async function checkVoice(base64: string, mime: string, geminiKey: string
   return { ok: true, en: String(out.en ?? said).slice(0, 300), hi: String(out.hi ?? said).slice(0, 300), checkedByAi: true, said };
 }
 
+/** A photo family sends for a medicine: it must show medicine (a strip, tablets, a bottle or a box) and nothing else. */
+export async function checkPhoto(base64: string, geminiKey: string): Promise<Verdict> {
+  const out = await gemini(geminiKey, [
+    {
+      text: `A family member is adding a photo of a medicine for an elderly parent, to show at reminder time.
+Accept ONLY a photo of medicine: a blister strip, tablets or capsules, a bottle, a box or a label.
+Reject anything else: people, faces, screenshots, text messages, money, QR codes, links, or anything upsetting.
+Return ONLY JSON: {"ok":true|false,"reason":"unsafe"}`,
+    },
+    { inline_data: { mime_type: "image/jpeg", data: base64 } },
+  ]);
+  if (!out) return { ok: true, en: "", hi: "", checkedByAi: false };
+  return out.ok ? { ok: true, en: "", hi: "", checkedByAi: true } : fail("unsafe");
+}
+
 type Part = { text: string } | { inline_data: { mime_type: string; data: string } };
 
 async function gemini(key: string, parts: Part[]): Promise<Record<string, unknown> | null> {

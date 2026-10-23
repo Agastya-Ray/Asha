@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Card, Choice, FieldLabel, LangSwitch, SpeakField, t } from "@/components/asha/bits";
 import { FairyScene } from "@/components/asha/fairy";
 import { ago, CustomComposer, Feed, HeartButton, PresetPicker, VoiceNote, sendError } from "@/components/asha/family-parts";
+import { FamilyMedPhotos } from "@/components/asha/ideas/family-med-photos";
 import { cn } from "@/lib/cn";
 import {
   forgetMe,
@@ -211,6 +212,7 @@ function Joined() {
           <VoiceNote />
         </div>
       </Card>
+      <FamilyMedPhotos circle={circle} />
 
       <h2 className="mt-8 text-2xl font-bold">{t(lang, { en: `${label}'s day`, hi: `${label} का दिन` })}</h2>
       <Feed messages={mine.slice(0, 40)} emptyText={t(lang, { en: "Updates from their day will appear here.", hi: "उनके दिन के अपडेट यहाँ दिखेंगे." })} />

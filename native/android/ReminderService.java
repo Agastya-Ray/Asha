@@ -164,6 +164,19 @@ public class ReminderService extends Service {
         nm.createNotificationChannel(ch);
     }
 
+    static java.io.File photoFile(Context ctx, String medId) {
+        return new java.io.File(new java.io.File(ctx.getFilesDir(), "med-photos"), medId.replaceAll("[^A-Za-z0-9_-]", "") + ".jpg");
+    }
+
+    /** The medicine's photo (key looks like "med|<id>|08:00"), or null. */
+    static android.graphics.Bitmap photoFor(Context ctx, String key) {
+        String[] parts = key.split("\\|");
+        if (parts.length < 2 || !"med".equals(parts[0])) return null;
+        java.io.File f = photoFile(ctx, parts[1]);
+        if (!f.exists()) return null;
+        try { return android.graphics.BitmapFactory.decodeFile(f.getAbsolutePath()); } catch (Exception e) { return null; }
+    }
+
     static void showCard(Context ctx, JSONObject t, int attempt) {
         NotificationManager nm = (NotificationManager) ctx.getSystemService(Context.NOTIFICATION_SERVICE);
         if (nm == null) return;
@@ -190,6 +203,12 @@ public class ReminderService extends Service {
                 ActionReceiver.pending(ctx, key, "taken")).build())
             .addAction(new Notification.Action.Builder(null, t.optString("snoozeLabel", "10 min later"),
                 ActionReceiver.pending(ctx, key, "snooze")).build());
+        }
+        android.graphics.Bitmap photo = med ? photoFor(ctx, key) : null;
+        if (photo != null) {
+            // the photo of the real strip or tablet, so there is no doubt which one
+            b.setLargeIcon(photo).setStyle(new Notification.BigPictureStyle().bigPicture(photo)
+                .setSummaryText(t.optString("body")));
         }
         if (attempt > 0) b.setSubText(t.optString("againLabel", "Reminder " + (attempt + 1)));
         nm.notify(AlarmStore.notificationId(key), b.build());

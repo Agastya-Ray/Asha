@@ -2,7 +2,7 @@
 // One endpoint: POST { action, ...data }. Each phone proves who it is with x-device-id + x-device-secret.
 // Database tables are locked (Row Level Security, no policies); only this function, with the service role, reads them.
 import { createClient } from "jsr:@supabase/supabase-js@2";
-import { checkText, checkVoice } from "./moderation.ts";
+import { checkPhoto, checkText, checkVoice } from "./moderation.ts";
 import { push } from "./fcm.ts";
 import { fill, FROM_ELDER, MEALS, presetById, STATUS, TO_ELDER, type Bi } from "./presets.ts";
 
@@ -45,6 +45,7 @@ type Circle = {
   invite_expires: string | null;
   last_digest_day: string | null;
   last_nudge_day: string | null;
+  meds?: { id: string; name: string; dose: string }[];
 };
 
 // ---------- small helpers ----------
@@ -145,7 +146,7 @@ async function sentToday(deviceId: string, kinds: string[]) {
   return count ?? 0;
 }
 
-const LIMITS: Record<string, number> = { heart: 40, preset: 25, custom: 12, voice: 6, status: 60, alert: 20 };
+const LIMITS: Record<string, number> = { heart: 40, preset: 25, custom: 12, voice: 6, status: 60, alert: 20, photo: 20 };
 
 type Msg = {
   id: number;
@@ -157,6 +158,7 @@ type Msg = {
   text_en: string;
   text_hi: string;
   audio_path: string | null;
+  photo_path?: string | null;
   silent: boolean;
   created_at: string;
 };
@@ -376,14 +378,14 @@ async function state(d: Device) {
       caps: await caps(),
     });
   }
-  const { data: rows } = await db.from("members").select("circle_id, relation, display_name, blocked, circles(id, elder_label, elder_id)").eq("device_id", d.id);
+  const { data: rows } = await db.from("members").select("circle_id, relation, display_name, blocked, circles(id, elder_label, elder_id, meds)").eq("device_id", d.id);
   const circles = [];
   for (const r of rows ?? []) {
     if (r.blocked) continue;
     // deno-lint-ignore no-explicit-any
-    const c = (r as any).circles as { id: string; elder_label: string; elder_id: string };
+    const c = (r as any).circles as { id: string; elder_label: string; elder_id: string; meds: { id: string; name: string; dose: string }[] | null };
     const { data: elder } = await db.from("devices").select("last_seen").eq("id", c.elder_id).maybeSingle();
-    circles.push({ id: c.id, label: c.elder_label, relation: r.relation, myName: r.display_name, elderLastSeen: elder?.last_seen ?? null });
+    circles.push({ id: c.id, label: c.elder_label, relation: r.relation, myName: r.display_name, elderLastSeen: elder?.last_seen ?? null, meds: c.meds ?? [] });
   }
   return json({ ok: true, role: "family", circles, members: [], caps: await caps() });
 }
@@ -396,7 +398,7 @@ async function send(d: Device, b: Body) {
   const circle = await canUse(d, str(b.circleId, 40));
   if (!circle) return err("not-in-circle", 403);
   const kind = String(b.kind);
-  if (!["preset", "custom", "heart", "voice"].includes(kind)) return err("bad-kind");
+  if (!["preset", "custom", "heart", "voice", "photo"].includes(kind)) return err("bad-kind");
   if ((await sentToday(d.id, [kind])) >= (LIMITS[kind] ?? 20)) return err("limit", 429);
 
   const elderSide = d.id === circle.elder_id;
@@ -410,6 +412,8 @@ async function send(d: Device, b: Body) {
     const r = await deliver(circle, d, { to_device: to, kind, template: "heart", ...out, audio_path: null, silent: false });
     return json({ ok: true, id: r.message.id, pushed: r.pushed });
   }
+
+  if (kind === "photo") return await sendPhoto(d, circle, fromName, b);
 
   if (kind === "preset") {
     const p = presetById(str(b.template, 40));
@@ -465,6 +469,51 @@ async function send(d: Device, b: Body) {
   return json({ ok: true, id: r.message.id, pushed: r.pushed });
 }
 
+/**
+ * A family member adds a photo of one of the elder's medicines. Free (it helps safety), checked by AI when a key
+ * is set, and never used on the elder's phone until she says yes to it.
+ */
+async function sendPhoto(d: Device, circle: Circle, fromName: string, b: Body) {
+  if (d.id === circle.elder_id) return err("family-only", 403);
+  const med = (circle.meds ?? []).find((m) => m.id === str(b.medId, 60));
+  if (!med) return err("unknown-med", 404);
+  const image = String(b.image ?? "");
+  if (!image || image.length > 600000) return err("too-large");
+  const key = await geminiKey();
+  if (key) {
+    const v = await checkPhoto(image, key);
+    if (!v.ok) return json({ ok: false, error: "blocked", reason: v.reason, hint: v.hint }, 422);
+  }
+  const path = `${circle.id}/photo-${Date.now()}-${randomToken(6)}.jpg`;
+  const bytes = Uint8Array.from(atob(image), (c) => c.charCodeAt(0));
+  const up = await db.storage.from("voice").upload(path, bytes, { contentType: "image/jpeg", upsert: false });
+  if (up.error) return err("upload-failed", 500);
+  const r = await deliver(circle, d, {
+    to_device: circle.elder_id,
+    kind: "photo",
+    template: med.id,
+    text_en: `📷 ${fromName} added a photo of your ${med.name}`,
+    text_hi: `📷 ${fromName} ने आपकी ${med.name} की फ़ोटो जोड़ी`,
+    audio_path: null,
+    photo_path: path,
+    silent: false,
+  });
+  return json({ ok: true, id: r.message.id, pushed: r.pushed });
+}
+
+/** The elder's medicine list (names and amounts only), so family can add photos for them. */
+async function saveMeds(d: Device, b: Body) {
+  if (d.role !== "elder") return err("elder-only", 403);
+  const c = await circleOfElder(d.id);
+  if (!c) return json({ ok: true, skipped: "no-circle" });
+  const list = (Array.isArray(b.meds) ? b.meds : []).slice(0, 40).map((m) => {
+    const x = (m ?? {}) as Record<string, unknown>;
+    return { id: str(x.id, 60), name: str(x.name, 60), dose: str(x.dose, 40) };
+  }).filter((m) => m.id && m.name);
+  await db.from("circles").update({ meds: list }).eq("id", c.id);
+  return json({ ok: true });
+}
+
 /** Automatic updates from the elder's phone. Only sent if she agreed. */
 async function status(d: Device, b: Body) {
   if (d.role !== "elder") return err("elder-only", 403);
@@ -512,7 +561,7 @@ async function inbox(d: Device, b: Body) {
   if (!circleIds.length) return json({ ok: true, messages: [] });
   let q = db
     .from("messages")
-    .select("id, circle_id, from_device, to_device, kind, template, text_en, text_hi, audio_path, silent, heard_at, heard_by, reaction, created_at")
+    .select("id, circle_id, from_device, to_device, kind, template, text_en, text_hi, audio_path, photo_path, silent, heard_at, heard_by, reaction, created_at")
     .in("circle_id", circleIds)
     .order("id", { ascending: false })
     .limit(80);
@@ -548,6 +597,7 @@ async function inbox(d: Device, b: Body) {
       en: m.text_en,
       hi: m.text_hi,
       voice: Boolean(m.audio_path),
+      photo: Boolean(m.photo_path),
       silent: m.silent,
       heardAt: m.heard_at,
       reaction: m.reaction,
@@ -628,6 +678,13 @@ async function voiceUrl(d: Device, b: Body) {
   const { data: m } = await db.from("messages").select("circle_id, audio_path").eq("id", Number(b.id)).maybeSingle();
   if (!m?.audio_path || !(await canUse(d, m.circle_id))) return err("not-found", 404);
   const { data } = await db.storage.from("voice").createSignedUrl(m.audio_path, 600);
+  return json({ ok: true, url: data?.signedUrl ?? null });
+}
+
+async function photoUrl(d: Device, b: Body) {
+  const { data: m } = await db.from("messages").select("circle_id, photo_path").eq("id", Number(b.id)).maybeSingle();
+  if (!m?.photo_path || !(await canUse(d, m.circle_id))) return err("not-found", 404);
+  const { data } = await db.storage.from("voice").createSignedUrl(m.photo_path, 600);
   return json({ ok: true, url: data?.signedUrl ?? null });
 }
 
@@ -756,6 +813,10 @@ Deno.serve(async (req) => {
         return await leave(d, body);
       case "voice-url":
         return await voiceUrl(d, body);
+      case "photo-url":
+        return await photoUrl(d, body);
+      case "meds":
+        return await saveMeds(d, body);
       case "forget":
         return await forget(d);
       case "test-push":

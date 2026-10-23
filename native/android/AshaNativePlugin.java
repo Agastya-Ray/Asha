@@ -378,6 +378,29 @@ public class AshaNativePlugin extends Plugin {
         }
     }
 
+    /** A photo of a medicine, shown on its reminder notification. Empty data removes it. */
+    @PluginMethod
+    public void savePhoto(PluginCall call) {
+        String id = call.getString("id", "").replaceAll("[^A-Za-z0-9_-]", "");
+        if (id.isEmpty()) { call.reject("no-id"); return; }
+        java.io.File f = ReminderService.photoFile(getContext(), id);
+        String data = call.getString("data", "");
+        try {
+            if (data.isEmpty()) {
+                //noinspection ResultOfMethodCallIgnored
+                f.delete();
+            } else {
+                //noinspection ResultOfMethodCallIgnored
+                f.getParentFile().mkdirs();
+                byte[] bytes = android.util.Base64.decode(data, android.util.Base64.DEFAULT);
+                try (java.io.FileOutputStream out = new java.io.FileOutputStream(f)) { out.write(bytes); }
+            }
+            call.resolve();
+        } catch (Exception e) {
+            call.reject("photo-failed");
+        }
+    }
+
     @PluginMethod
     public void share(PluginCall call) {
         Intent send = new Intent(Intent.ACTION_SEND);

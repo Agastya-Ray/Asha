@@ -59,6 +59,8 @@ interface AshaNativePlugin {
   sendSms(o: { numbers: string[]; text: string }): Promise<{ sent: number }>;
   call(o: { number: string }): Promise<{ direct: boolean }>;
   share(o: { text: string; title?: string }): Promise<void>;
+  /** keeps a medicine photo (base64 JPEG) for the reminder notification; empty data removes it */
+  savePhoto(o: { id: string; data: string }): Promise<void>;
   // family circle
   getPushToken(): Promise<{ token: string }>;
   setFamilyConfig(o: FamilyNativeConfig): Promise<void>;
