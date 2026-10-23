@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { VoiceShelf } from "@/components/asha/ideas/voice-shelf";
 import { Share2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, FieldLabel, Hear, t } from "@/components/asha/bits";
@@ -239,6 +240,8 @@ function ElderCircle() {
       <div className="mt-5">
         <HeartButton />
       </div>
+
+      <VoiceShelf />
 
       <h2 className="mt-6 text-2xl font-bold">{t(lang, { en: "Messages", hi: "संदेश" })}</h2>
       <Feed
