@@ -161,7 +161,6 @@ export function FairyIntro() {
               <span>z</span>
             </span>
           ) : null}
-          <Pixie mood={MOOD[step]} className={step === "asleep" ? "fi-sleeper" : "fi-waker"} />
         </button>
       </div>
     );
