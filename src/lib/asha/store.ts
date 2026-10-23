@@ -14,6 +14,7 @@ import type {
 } from "@/lib/asha/types";
 import { defaultMeals, emptyCheckin } from "@/lib/asha/schedule";
 import { shiftDay, todayKey } from "@/lib/asha/time";
+import { daysInLogs } from "@/lib/asha/crown";
 
 const KEY = "asha.v1";
 
@@ -56,6 +57,8 @@ export const initialPersist = (): Persist => ({
   coachDismissed: false,
   sample: false,
   chat: [],
+  growth: { days: 0, last: "" },
+  crownSeen: 0,
 });
 
 type State = Persist & {
@@ -145,6 +148,16 @@ function snapshot(s: State): Persist {
   return prune(out);
 }
 
+// before the crown existed: count the days already logged, and celebrate what she has grown so far once
+function seedGrowth(r: Partial<Persist>) {
+  const days = daysInLogs({
+    doseLogs: Array.isArray(r.doseLogs) ? r.doseLogs : [],
+    mealLogs: Array.isArray(r.mealLogs) ? r.mealLogs : [],
+    checkins: Array.isArray(r.checkins) ? r.checkins : [],
+  });
+  return { days: days.length, last: days[days.length - 1] ?? "" };
+}
+
 function sanitize(raw: unknown): Persist {
   const base = initialPersist();
   if (!raw || typeof raw !== "object") return base;
@@ -182,6 +195,8 @@ function sanitize(raw: unknown): Persist {
     reminded: Array.isArray(r.reminded) ? r.reminded : [],
     snooze: r.snooze && typeof r.snooze === "object" ? r.snooze : {},
     chat: Array.isArray(r.chat) ? r.chat : [],
+    growth: r.growth && typeof r.growth.days === "number" ? { days: Math.max(0, r.growth.days), last: String(r.growth.last ?? "") } : seedGrowth(r),
+    crownSeen: typeof r.crownSeen === "number" ? r.crownSeen : 0,
     quietUntil: typeof r.quietUntil === "number" && r.quietUntil > Date.now() ? r.quietUntil : 0,
     setupStep: r.setupStep === 2 || r.setupStep === 3 || r.setupStep === 4 ? r.setupStep : 1,
   };
