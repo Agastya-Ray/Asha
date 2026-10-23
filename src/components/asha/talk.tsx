@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, MicButton, t } from "@/components/asha/bits";
-import { useTalkHandoff } from "@/components/asha/voice-command";
+import { URGENT, useTalkHandoff } from "@/components/asha/voice-command";
 import { apiChat } from "@/lib/asha/api";
 import { CONDITIONS, text as phrase } from "@/lib/asha/plans";
 import { useAsha } from "@/lib/asha/store";
@@ -27,6 +27,7 @@ export function TalkScreen() {
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState("");
   const [crisis, setCrisis] = useState(false);
+  const [urgent, setUrgent] = useState(false);
   const endRef = useRef<HTMLDivElement>(null);
 
   async function send(textIn?: string) {
@@ -35,6 +36,7 @@ export function TalkScreen() {
     setDraft("");
     setError("");
     if (CRISIS.test(text)) setCrisis(true);
+    if (URGENT.test(text)) setUrgent(true);
     push({ role: "user", text });
     setBusy(true);
     const conditionNames = conditions
@@ -121,6 +123,22 @@ export function TalkScreen() {
               hi: "माइक दबाकर बोलें, या लिखें. आवाज़ चालू हो तो वह जवाब बोलेगी.",
             })}
       </p>
+      {urgent ? (
+        <Card className="mt-4 border-sos bg-sos-soft">
+          <p className="text-lg font-bold">{t(lang, { en: "This could be serious. Don't wait.", hi: "यह गंभीर हो सकता है. रुकिए मत." })}</p>
+          <p className="mt-2 text-lg">
+            {t(lang, {
+              en: "Sit down and stay still. Open Help now and hold the big button: Asha calls for help.",
+              hi: "बैठ जाइए और हिलिए मत. अभी मदद खोलिए और बड़ा बटन दबाकर रखिए: आशा मदद के लिए कॉल करेगी.",
+            })}
+          </p>
+          <div className="mt-3">
+            <Button variant="sos" onClick={() => setTab("sos")}>
+              {t(lang, { en: "Open Help", hi: "मदद खोलें" })}
+            </Button>
+          </div>
+        </Card>
+      ) : null}
       {crisis ? (
         <Card className="mt-4 border-sos bg-sos-soft">
           <p className="text-lg font-bold">{t(lang, { en: "Please talk to someone now.", hi: "कृपया अभी किसी से बात करें." })}</p>

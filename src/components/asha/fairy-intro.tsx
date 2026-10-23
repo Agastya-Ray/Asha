@@ -122,14 +122,27 @@ export function FairyIntro() {
   }, [step]);
 
   const wakeClip = useRef<HTMLVideoElement>(null);
+  const wakeTimer = useRef(0);
+  useEffect(() => () => window.clearTimeout(wakeTimer.current), []);
   const wake = () => {
     unlockAudio();
     const clip = wakeClip.current;
     const reduced = window.matchMedia?.("(prefers-reduced-motion: reduce)").matches;
     if (!clip || reduced) return setStep("hello");
     setStep("waking");
-    // if the phone will not play the clip, she simply wakes up straight away
-    clip.play().catch(() => setStep("hello"));
+    // If the phone can't play the clip (it won't load, or play() just waits), or it stalls part way, she wakes
+    // straight to hello rather than leaving the person on a still picture.
+    const toHello = () => setStep((s) => (s === "waking" ? "hello" : s));
+    wakeTimer.current = window.setTimeout(toHello, 2500);
+    clip.addEventListener(
+      "playing",
+      () => {
+        window.clearTimeout(wakeTimer.current);
+        wakeTimer.current = window.setTimeout(toHello, ((clip.duration || 6) + 3) * 1000);
+      },
+      { once: true },
+    );
+    clip.play().catch(toHello);
   };
 
   const saveName = () => {
