@@ -10,6 +10,9 @@ on:
       api:
         description: "Android API level of the emulator (23 = Android 6, the oldest Asha supports)"
         default: "34"
+      gpu:
+        description: "Emulator GPU mode (swiftshader_indirect, or guest to render inside the emulator)"
+        default: "swiftshader_indirect"
 
 permissions:
   contents: write
@@ -41,7 +44,7 @@ jobs:
           cd android && chmod +x gradlew && ./gradlew assembleDebug --no-daemon -q
           cp app/build/outputs/apk/debug/app-debug.apk ../Asha.apk
       - name: Install ImageMagick (makes the prescription photo for the gallery test)
-        run: sudo apt-get install -y -q imagemagick fonts-dejavu-core
+        run: sudo apt-get update -q && sudo apt-get install -y -q imagemagick fonts-dejavu-core
       - name: Install Maestro
         run: |
           curl -Ls "https://get.maestro.mobile.dev" | bash
@@ -59,7 +62,7 @@ jobs:
           arch: x86_64
           profile: pixel_6
           disable-animations: true
-          emulator-options: -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim -camera-back none
+          emulator-options: -no-window -gpu ${{ inputs.gpu || 'swiftshader_indirect' }} -noaudio -no-boot-anim -camera-back none
           script: OUT=$PWD/results APK=$PWD/Asha.apk bash tests/android/run.sh
       - name: Keep the results
         if: always()
