@@ -133,7 +133,6 @@ export function FairyIntro() {
   if (step === "asleep" || step === "waking")
     return (
       <div className="fi-night fi-room -mx-4 flex min-h-[calc(100dvh-5rem)] flex-col items-center px-4 pt-6">
-        <span className="fi-moon" aria-hidden />
         <span className="fi-stars" aria-hidden>
           {STARS.map(([x, y], i) => (
             <i key={i} style={{ left: `${x}%`, top: `${y}%` }} />
