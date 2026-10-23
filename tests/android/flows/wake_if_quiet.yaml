@@ -1,0 +1,16 @@
+# If she is still quiet (from an earlier try), wake her from the banner on Today.
+appId: com.agastyaray.asha
+---
+- runFlow:
+    when:
+      visible:
+        text: ".*is quiet until.*"
+    commands:
+      - tapOn:
+          text: "🤫.*is quiet until.*"
+      - waitForAnimationToEnd
+      - extendedWaitUntil:
+          visible: "Wake her now"
+          timeout: 10000
+      - tapOn: "Wake her now"
+      - waitForAnimationToEnd

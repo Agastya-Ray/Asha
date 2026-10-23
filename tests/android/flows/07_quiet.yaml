@@ -2,13 +2,15 @@
 appId: com.agastyaray.asha
 ---
 - launchApp
+- runFlow: wake_if_quiet.yaml
 - tapOn: "Settings"
 - scrollUntilVisible:
     element: "🤫 Quiet for a while (meeting, event)"
 - tapOn: "🤫 Quiet for a while (meeting, event)"
+- waitForAnimationToEnd
 - extendedWaitUntil:
     visible: "30 minutes"
-    timeout: 5000
+    timeout: 10000
 - tapOn: "30 minutes"
 - takeScreenshot: 80-quiet-sheet
 - tapOn:
@@ -17,9 +19,7 @@ appId: com.agastyaray.asha
 - assertVisible:
     text: ".*is quiet until.*"
 - takeScreenshot: 81-quiet-banner
-- tapOn:
-    text: ".*is quiet until.*"
-- tapOn: "Wake her now"
+- runFlow: wake_if_quiet.yaml
 - assertNotVisible:
     text: ".*is quiet until.*"
 - takeScreenshot: 82-quiet-woken

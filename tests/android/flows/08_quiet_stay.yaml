@@ -2,10 +2,15 @@
 appId: com.agastyaray.asha
 ---
 - launchApp
+- runFlow: wake_if_quiet.yaml
 - tapOn: "Settings"
 - scrollUntilVisible:
     element: "🤫 Quiet for a while (meeting, event)"
 - tapOn: "🤫 Quiet for a while (meeting, event)"
+- waitForAnimationToEnd
+- extendedWaitUntil:
+    visible: "30 minutes"
+    timeout: 10000
 - tapOn: "30 minutes"
 - tapOn:
     text: "Be quiet until.*"
