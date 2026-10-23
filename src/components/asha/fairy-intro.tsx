@@ -133,7 +133,16 @@ export function FairyIntro() {
   if (step === "asleep" || step === "waking")
     return (
       <div className="fi-night fi-room -mx-4 flex min-h-[calc(100dvh-5rem)] flex-col items-center px-4 pt-6">
-        <span className="fi-moon" aria-hidden />
+        {/* a flat SVG moon: the same moon as a round CSS box (border-radius) crashed the Android emulator */}
+        <svg className="fi-moon" viewBox="0 0 104 104" aria-hidden>
+          <circle cx="52" cy="52" r="50" fill="#fff6d5" opacity="0.05" />
+          <circle cx="52" cy="52" r="46" fill="#fff6d5" opacity="0.05" />
+          <circle cx="52" cy="52" r="42" fill="#fff6d5" opacity="0.05" />
+          <circle cx="52" cy="52" r="38" fill="#fff6d5" opacity="0.05" />
+          <circle cx="52" cy="52" r="34" fill="#fff6d5" opacity="0.05" />
+          <circle cx="52" cy="52" r="31" fill="#fff6d5" opacity="0.05" />
+          <circle cx="52" cy="52" r="28" fill="#fff6d5" />
+        </svg>
         <span className="fi-stars" aria-hidden>
           {STARS.map(([x, y], i) => (
             <i key={i} style={{ left: `${x}%`, top: `${y}%` }} />
