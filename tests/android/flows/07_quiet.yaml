@@ -4,8 +4,10 @@ appId: com.agastyaray.asha
 - launchApp
 - runFlow: wake_if_quiet.yaml
 - tapOn: "Settings"
+# centred, so the tap can't land on Titli's bubble or the tab bar at the bottom
 - scrollUntilVisible:
     element: "🤫 Quiet for a while (meeting, event)"
+    centerElement: true
 - tapOn:
     text: "🤫 Quiet for a while (meeting, event)"
     retryTapIfNoChange: false

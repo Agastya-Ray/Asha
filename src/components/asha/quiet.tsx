@@ -42,11 +42,16 @@ export function QuietSheet() {
   useEffect(() => {
     if (!open) return;
     setMinutes(asked);
-    // move focus into the sheet: screen readers (and Android's accessibility tree) then pick it up straight away
-    window.requestAnimationFrame(() => sheet.current?.focus());
+    // move focus onto the sheet's first button once it is laid out: Android's WebView only refreshes its
+    // accessibility tree (what TalkBack, and the Android test, read) when focus lands on a real control,
+    // and a sheet opened over Today otherwise stays invisible to it
+    const focus = window.setTimeout(() => {
+      const first = sheet.current?.querySelector<HTMLElement>("button");
+      (first ?? sheet.current)?.focus({ preventScroll: true });
+    }, 150);
     const st = useAsha.getState();
-    if (isQuiet(st)) return;
-    if (!asked) sayV("Shh, okay. For how long should I be quiet?", "श्श, ठीक है. कितनी देर चुप रहूँ?");
+    if (!isQuiet(st) && !asked) sayV("Shh, okay. For how long should I be quiet?", "श्श, ठीक है. कितनी देर चुप रहूँ?");
+    return () => window.clearTimeout(focus);
   }, [open, asked]);
 
   if (!open) return null;
