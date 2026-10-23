@@ -22,7 +22,8 @@ export async function elevenSpeak(text: string, voice: unknown, owner: unknown):
       headers: { "Content-Type": "application/json", "xi-api-key": key },
       body: JSON.stringify({
         text,
-        model_id: process.env.ELEVENLABS_MODEL || "eleven_multilingual_v2",
+        // flash costs half the credits of multilingual (the free plan has 10,000 a month) and speaks Hindi too
+        model_id: process.env.ELEVENLABS_MODEL || "eleven_flash_v2_5",
         // a little slower than normal, expressive, and still clearly the same girl every time
         voice_settings: { stability: 0.45, similarity_boost: 0.8, style: 0.55, use_speaker_boost: true, speed: 0.85 },
       }),
@@ -56,31 +57,57 @@ export type VoiceChoice = { id: string; owner: string; name: string; about: stri
 
 let cached: { at: number; list: VoiceChoice[] } | null = null;
 
-/** Young, sweet, girlish voices from the ElevenLabs library, for "Choose Titli's voice". */
+/**
+ * Voices for "Choose Titli's voice". First the ones in your own ElevenLabs account (a voice you made with
+ * Voice Design is yours and works on the free plan), then ElevenLabs' own young female voices (also free).
+ * The shared library (other people's voices) needs a paid plan for apps, so it is only offered when
+ * ELEVENLABS_LIBRARY=1.
+ */
 export async function elevenChoices(): Promise<VoiceChoice[]> {
   const key = elevenKey();
   if (!key) return [];
-  if (cached && Date.now() - cached.at < 6 * 60 * 60 * 1000) return cached.list;
+  if (cached && Date.now() - cached.at < 10 * 60 * 1000) return cached.list;
   const seen = new Set<string>();
   const list: VoiceChoice[] = [];
-  for (const search of ["child girl", "little girl", "cute girl", "fairy", "young girl sweet"]) {
-    try {
-      const q = new URLSearchParams({ search, gender: "female", page_size: "12", sort: "trending" });
-      const res = await fetch(`${API}/v1/shared-voices?${q}`, { headers: { "xi-api-key": key } });
-      if (!res.ok) continue;
+  try {
+    const res = await fetch(`${API}/v1/voices`, { headers: { "xi-api-key": key } });
+    if (res.ok) {
       const body = (await res.json()) as {
-        voices?: { voice_id: string; public_owner_id: string; name: string; description?: string; accent?: string; age?: string; preview_url?: string }[];
+        voices?: { voice_id: string; name: string; category?: string; description?: string; labels?: Record<string, string>; preview_url?: string }[];
       };
-      for (const v of body.voices ?? []) {
-        if (seen.has(v.voice_id) || v.age === "old" || v.age === "middle_aged") continue;
+      const all = body.voices ?? [];
+      const mine = all.filter((v) => v.category && v.category !== "premade");
+      const stock = all.filter((v) => v.category === "premade" && v.labels?.gender === "female" && v.labels?.age !== "old" && v.labels?.age !== "middle_aged");
+      for (const v of [...mine, ...stock]) {
+        if (seen.has(v.voice_id)) continue;
         seen.add(v.voice_id);
-        list.push({ id: v.voice_id, owner: v.public_owner_id, name: v.name, about: (v.description ?? "").slice(0, 140), accent: v.accent ?? "", preview: v.preview_url ?? "" });
+        const about = v.description || [v.labels?.descriptive, v.labels?.description, v.labels?.use_case].filter(Boolean).join(", ");
+        list.push({ id: v.voice_id, owner: "", name: v.name, about: about.slice(0, 140), accent: v.labels?.accent ?? "", preview: v.preview_url ?? "" });
       }
-    } catch {
-      /* next search */
     }
-    if (list.length >= 10) break;
+  } catch {
+    /* the library below, if allowed */
   }
-  cached = { at: Date.now(), list: list.slice(0, 10) };
+  if (process.env.ELEVENLABS_LIBRARY === "1") {
+    for (const search of ["child girl", "little girl", "cute girl", "fairy", "young girl sweet"]) {
+      try {
+        const q = new URLSearchParams({ search, gender: "female", page_size: "12", sort: "trending" });
+        const res = await fetch(`${API}/v1/shared-voices?${q}`, { headers: { "xi-api-key": key } });
+        if (!res.ok) continue;
+        const body = (await res.json()) as {
+          voices?: { voice_id: string; public_owner_id: string; name: string; description?: string; accent?: string; age?: string; preview_url?: string }[];
+        };
+        for (const v of body.voices ?? []) {
+          if (seen.has(v.voice_id) || v.age === "old" || v.age === "middle_aged") continue;
+          seen.add(v.voice_id);
+          list.push({ id: v.voice_id, owner: v.public_owner_id, name: v.name, about: (v.description ?? "").slice(0, 140), accent: v.accent ?? "", preview: v.preview_url ?? "" });
+        }
+      } catch {
+        /* next search */
+      }
+      if (list.length >= 16) break;
+    }
+  }
+  cached = { at: Date.now(), list: list.slice(0, 16) };
   return cached.list;
 }

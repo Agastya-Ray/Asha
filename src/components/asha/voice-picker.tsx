@@ -49,8 +49,9 @@ export function VoicePicker() {
     audio.current?.pause();
     stopSpeaking();
     setPlaying(v.id);
-    const r = await apiTts(sampleLine(voiceLang, name), voiceLang, v);
-    const src = r.ok ? `data:audio/mpeg;base64,${r.audio}` : v.preview;
+    // the voice's own sample is free; only a voice without one is asked to say her line (that costs credits)
+    const r = v.preview ? null : await apiTts(sampleLine(voiceLang, name), voiceLang, v);
+    const src = r?.ok ? `data:audio/mpeg;base64,${r.audio}` : v.preview;
     if (!src) {
       setPlaying("");
       setProblem(t(lang, { en: "That voice didn't load. Try another.", hi: "यह आवाज़ नहीं चली. दूसरी आज़माएँ." }));
