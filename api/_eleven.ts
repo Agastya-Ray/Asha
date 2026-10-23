@@ -3,6 +3,8 @@ import { toBase64 } from "./_shared.js";
 
 const API = "https://api.elevenlabs.io";
 export const elevenKey = () => process.env.ELEVENLABS_API_KEY ?? "";
+// why the last attempt failed (ElevenLabs' own status, never the key), so a 503 can say what to fix
+export let elevenWhy = "";
 const okId = (v: unknown) => (typeof v === "string" && /^[A-Za-z0-9]{8,40}$/.test(v) ? v : "");
 
 /**
@@ -12,6 +14,7 @@ const okId = (v: unknown) => (typeof v === "string" && /^[A-Za-z0-9]{8,40}$/.tes
 export async function elevenSpeak(text: string, voice: unknown, owner: unknown): Promise<string | null> {
   const key = elevenKey();
   const id = okId(voice) || okId(process.env.ELEVENLABS_VOICE_FAIRY);
+  elevenWhy = !key ? "no ELEVENLABS_API_KEY" : !id ? "no voice chosen" : "";
   if (!key || !id) return null;
   const say = () =>
     fetch(`${API}/v1/text-to-speech/${id}?output_format=mp3_44100_64`, {
@@ -33,12 +36,18 @@ export async function elevenSpeak(text: string, voice: unknown, owner: unknown):
         body: JSON.stringify({ new_name: `Titli ${id.slice(0, 6)}` }),
       });
       if (added.ok) res = await say();
+      else elevenWhy = `add voice ${added.status}: ${(await added.text()).slice(0, 200)}`;
     }
     const type = res.headers.get("content-type") ?? "";
-    if (!res.ok || !type.includes("audio")) return null;
+    if (!res.ok || !type.includes("audio")) {
+      elevenWhy = `speak ${res.status}: ${(await res.text()).slice(0, 200)}${elevenWhy ? ` (${elevenWhy})` : ""}`;
+      console.error("elevenlabs", elevenWhy);
+      return null;
+    }
     const bytes = new Uint8Array(await res.arrayBuffer());
     return bytes.length > 100 ? toBase64(bytes) : null;
-  } catch {
+  } catch (e) {
+    elevenWhy = `network: ${String(e).slice(0, 120)}`;
     return null;
   }
 }

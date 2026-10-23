@@ -5,7 +5,7 @@
 //   1. xAI voice        (XAI_API_KEY)            paid per character
 //   2. Google Cloud TTS (GOOGLE_TTS_API_KEY)     1M Chirp-HD + 4M WaveNet characters free every month
 import { asLang, guard, json, preflight, readBody, toBase64, type Lang } from "./_shared.js";
-import { elevenSpeak } from "./_eleven.js";
+import { elevenSpeak, elevenWhy } from "./_eleven.js";
 
 export function OPTIONS() {
   return preflight();
@@ -19,7 +19,7 @@ export async function GET(request: Request) {
   const text = String(q.get("text") ?? "").slice(0, 300).trim();
   if (!text) return json({ ok: false, error: "Nothing to say." }, 400);
   const fairy = await elevenSpeak(text, q.get("voice"), q.get("owner"));
-  if (!fairy) return json({ ok: false, error: "Titli's voice is resting." }, 503);
+  if (!fairy) return json({ ok: false, error: "Titli's voice is resting.", why: elevenWhy }, 503);
   if (q.get("play") === "1")
     return new Response(Buffer.from(fairy, "base64"), { headers: { "content-type": "audio/mpeg", "access-control-allow-origin": "*" } });
   return json({ ok: true, audio: fairy, provider: "elevenlabs" });
@@ -36,7 +36,7 @@ export async function POST(request: Request) {
   if (body?.who === "fairy") {
     const fairy = await elevenSpeak(text, body.voice, body.owner);
     if (fairy) return json({ ok: true, audio: fairy, provider: "elevenlabs" });
-    return json({ ok: false, error: "Titli's voice is resting. The phone voice will speak." }, 503);
+    return json({ ok: false, error: "Titli's voice is resting. The phone voice will speak.", why: elevenWhy }, 503);
   }
 
   const xai = await tryXai(text, lang);
