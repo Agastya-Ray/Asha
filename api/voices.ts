@@ -7,6 +7,9 @@ export function OPTIONS() {
   return preflight();
 }
 
+// GET works too, so the voice list can be checked from a browser
+export const GET = (request: Request) => POST(request);
+
 export async function POST(request: Request) {
   const blocked = guard(request, "voices", 30);
   if (blocked) return blocked;

@@ -11,6 +11,20 @@ export function OPTIONS() {
   return preflight();
 }
 
+// GET /api/tts?voice=<id>&owner=<id>&lang=en&text=... : Titli only, for hearing a voice from a browser link
+export async function GET(request: Request) {
+  const blocked = guard(request, "tts", 60);
+  if (blocked) return blocked;
+  const q = new URL(request.url).searchParams;
+  const text = String(q.get("text") ?? "").slice(0, 300).trim();
+  if (!text) return json({ ok: false, error: "Nothing to say." }, 400);
+  const fairy = await elevenSpeak(text, q.get("voice"), q.get("owner"));
+  if (!fairy) return json({ ok: false, error: "Titli's voice is resting." }, 503);
+  if (q.get("play") === "1")
+    return new Response(Buffer.from(fairy, "base64"), { headers: { "content-type": "audio/mpeg", "access-control-allow-origin": "*" } });
+  return json({ ok: true, audio: fairy, provider: "elevenlabs" });
+}
+
 export async function POST(request: Request) {
   const blocked = guard(request, "tts", 60);
   if (blocked) return blocked;
