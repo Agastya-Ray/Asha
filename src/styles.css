@@ -901,8 +901,10 @@ body {
   margin-left: max(-25vw, -100px);
   animation: fi-rise 0.9s ease-out both;
 }
+/* Never from opacity 0: Android's WebView leaves a node that starts invisible out of the accessibility tree until
+   something else on screen changes, so TalkBack (and the Android test) could not find the fairy's words. */
 @keyframes fi-rise {
-  from { opacity: 0; transform: translateY(14px) scale(0.96); }
+  from { opacity: 0.3; transform: translateY(14px) scale(0.96); }
   to { opacity: 1; transform: none; }
 }
 .fi-hand {
