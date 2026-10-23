@@ -59,7 +59,7 @@ public final class Speaker {
     /** pitch 1.0 is the phone's own voice; the fairy speaks higher */
     public void speak(String text, String lang, float rate, float pitch, Done done) {
         // test builds only: lets the emulator test check what she said (and that she stayed silent)
-        if (BuildConfig.DEBUG) android.util.Log.i("AshaSpeaker", text.length() > 240 ? text.substring(0, 240) : text);
+        if ((app.getApplicationInfo().flags & android.content.pm.ApplicationInfo.FLAG_DEBUGGABLE) != 0) android.util.Log.i("AshaSpeaker", text.length() > 240 ? text.substring(0, 240) : text);
         ensure(() -> {
             if (!ready || tts == null) { if (done != null) done.done(false); return; }
             Locale locale = "hi".equals(lang) ? new Locale("hi", "IN") : new Locale("en", "IN");
