@@ -3,6 +3,7 @@ import { Button } from "@/components/ui/button";
 import { Card, Choice, FieldLabel, LangSwitch, SpeakField, t } from "@/components/asha/bits";
 import { useQuietSheet } from "@/components/asha/quiet";
 import { ReminderHealth } from "@/components/asha/reminder-health";
+import { VoicePicker } from "@/components/asha/voice-picker";
 import { CONDITIONS } from "@/lib/asha/plans";
 import { AshaNative, isNative } from "@/lib/asha/native";
 import { forgetMe, pushNativeConfig, testPush, useFamily } from "@/lib/asha/family";
@@ -98,6 +99,7 @@ export function SettingsScreen() {
       </div>
 
       <h2 className="mt-6 text-2xl font-bold">{t(lang, { en: "Voice", hi: "आवाज़" })}</h2>
+      <VoicePicker />
       <div className="mt-3 flex flex-col gap-2">
         <Button variant="quiet" onClick={() => useQuietSheet.getState().show()}>
           {t(lang, { en: "🤫 Quiet for a while (meeting, event)", hi: "🤫 थोड़ी देर चुप (मीटिंग, कार्यक्रम)" })}
