@@ -7,7 +7,7 @@ export function GET() {
     JSON.stringify({
       ok: true,
       chat: { xai: on("XAI_API_KEY"), gemini: on("GEMINI_API_KEY") },
-      voice: { xai: on("XAI_API_KEY"), google: on("GOOGLE_TTS_API_KEY"), phone: true },
+      voice: { xai: on("XAI_API_KEY"), google: on("GOOGLE_TTS_API_KEY"), elevenlabs: on("ELEVENLABS_API_KEY"), phone: true },
       appKeyRequired: on("ASHA_APP_KEY"),
     }),
     { headers: { "content-type": "application/json", ...CORS } },

@@ -37,8 +37,19 @@ async function post<T>(path: string, body: unknown, timeoutMs = 25000): Promise<
   }
 }
 
-export function apiTts(text: string, lang: Lang) {
-  return post<{ audio: string; provider: string }>("/api/tts", { text, lang }, 15000);
+export function apiTts(text: string, lang: Lang, fairy?: { id: string; owner: string }) {
+  return post<{ audio: string; provider: string }>(
+    "/api/tts",
+    fairy ? { text, lang, who: "fairy", voice: fairy.id, owner: fairy.owner } : { text, lang },
+    15000,
+  );
+}
+
+export type VoiceChoice = { id: string; owner: string; name: string; about: string; accent: string; preview: string };
+
+/** Childlike voices Titli could have, for "Choose Titli's voice". */
+export function apiVoices() {
+  return post<{ voices: VoiceChoice[] }>("/api/voices", {}, 20000);
 }
 
 export function apiChat(input: { show: Lang; say: Lang; context: string; turns: { role: string; content: string }[] }) {
