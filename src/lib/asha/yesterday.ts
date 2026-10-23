@@ -18,7 +18,8 @@ export function unmarkedYesterday(meds: Med[], logs: DoseLog[], now = new Date()
     // added yesterday or today: we can't tell whether it existed at dose time
     if (med.addedOn && med.addedOn >= day) continue;
     for (const time of med.times) {
-      if (!logs.some((l) => l.day === day && l.medId === med.id && l.time === time)) out.push({ med, time });
+      if (!logs.some((l) => l.day === day && l.medId === med.id && l.time === time))
+        out.push({ med, time });
     }
   }
   return out.sort((a, b) => a.time.localeCompare(b.time));
@@ -34,7 +35,10 @@ export function yesterdayLine(lang: Lang, items: Unmarked[]) {
     };
   }
   return {
-    title: items.length === 1 ? "One dose from yesterday wasn't marked" : `${items.length} doses from yesterday weren't marked`,
+    title:
+      items.length === 1
+        ? "One dose from yesterday wasn't marked"
+        : `${items.length} doses from yesterday weren't marked`,
     line: `${list}. That's okay, it happens. Please don't take extra today to make up for it. Just take today's doses on time. If you're unsure, ask your doctor.`,
   };
 }

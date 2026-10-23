@@ -32,10 +32,22 @@ export function YesterdayNote() {
       <p className="text-xl font-bold">{copy.title}</p>
       <p className="mt-2 text-lg">{copy.line}</p>
       <div className="mt-3">
-        <Hear say={`${say.title}. ${say.line}`} label={t(lang, { en: "Hear this", hi: "इसे सुनें" })} />
+        <Hear
+          say={`${say.title}. ${say.line}`}
+          label={t(lang, { en: "Hear this", hi: "इसे सुनें" })}
+        />
       </div>
       <div className="mt-4 flex flex-col gap-2">
-        <Button onClick={() => noteYesterday(today, items.map((i) => ({ medId: i.med.id, time: i.time, day: yesterday })))}>{t(lang, { en: "Okay, today's doses on time", hi: "ठीक है, आज की दवा समय पर" })}</Button>
+        <Button
+          onClick={() =>
+            noteYesterday(
+              today,
+              items.map((i) => ({ medId: i.med.id, time: i.time, day: yesterday })),
+            )
+          }
+        >
+          {t(lang, { en: "Okay, today's doses on time", hi: "ठीक है, आज की दवा समय पर" })}
+        </Button>
         <Button
           variant="quiet"
           onClick={() => {
@@ -45,7 +57,10 @@ export function YesterdayNote() {
         >
           {items.length === 1
             ? t(lang, { en: "I did take it, I forgot to press", hi: "मैंने ली थी, दबाना भूल गई" })
-            : t(lang, { en: "I did take them, I forgot to press", hi: "मैंने ली थीं, दबाना भूल गई" })}
+            : t(lang, {
+                en: "I did take them, I forgot to press",
+                hi: "मैंने ली थीं, दबाना भूल गई",
+              })}
         </Button>
       </div>
     </Card>
