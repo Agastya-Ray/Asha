@@ -38,7 +38,6 @@ import java.util.ArrayList;
     name = "AshaNative",
     permissions = {
         @Permission(alias = "microphone", strings = { Manifest.permission.RECORD_AUDIO }),
-        @Permission(alias = "sms", strings = { Manifest.permission.SEND_SMS }),
         @Permission(alias = "phone", strings = { Manifest.permission.CALL_PHONE }),
         @Permission(alias = "notifications", strings = { Manifest.permission.POST_NOTIFICATIONS })
     }
@@ -277,7 +276,6 @@ public class AshaNativePlugin extends Plugin {
         r.put("notifications", notificationsOn());
         PowerManager pm = (PowerManager) ctx.getSystemService(Context.POWER_SERVICE);
         r.put("batteryFree", pm != null && pm.isIgnoringBatteryOptimizations(ctx.getPackageName()));
-        r.put("sms", getPermissionState("sms") == PermissionState.GRANTED);
         r.put("phone", getPermissionState("phone") == PermissionState.GRANTED);
         r.put("microphone", getPermissionState("microphone") == PermissionState.GRANTED);
         r.put("speechInput", SpeechRecognizer.isRecognitionAvailable(ctx));
@@ -324,18 +322,9 @@ public class AshaNativePlugin extends Plugin {
         call.resolve();
     }
 
-    // ---------------- help: SMS and calls ----------------
-
-    @PluginMethod
-    public void requestSms(PluginCall call) {
-        if (getPermissionState("sms") == PermissionState.GRANTED) { call.resolve(ok(true)); return; }
-        requestPermissionForAlias("sms", call, "smsResult");
-    }
-
-    @PermissionCallback
-    private void smsResult(PluginCall call) {
-        call.resolve(ok(getPermissionState("sms") == PermissionState.GRANTED));
-    }
+    // ---------------- help: calls ----------------
+    // No SMS permission: Play Protect blocks sideloaded apps that can text by themselves.
+    // Help opens the messages app with the text ready instead (sms: links need no permission).
 
     @PluginMethod
     public void requestPhone(PluginCall call) {
@@ -346,18 +335,6 @@ public class AshaNativePlugin extends Plugin {
     @PermissionCallback
     private void phoneResult(PluginCall call) {
         call.resolve(ok(getPermissionState("phone") == PermissionState.GRANTED));
-    }
-
-    /** Sends the same text to every number, without opening the messages app. Needs SMS permission. */
-    @PluginMethod
-    public void sendSms(PluginCall call) {
-        if (getPermissionState("sms") != PermissionState.GRANTED) { call.reject("sms-denied"); return; }
-        JSArray numbers = call.getArray("numbers");
-        String text = call.getString("text", "");
-        int sent = ReminderService.sendSms(getContext(), numbers != null ? numbers : new JSONArray(), text);
-        JSObject r = new JSObject();
-        r.put("sent", sent);
-        call.resolve(r);
     }
 
     /** Calls straight away when allowed; otherwise opens the dialer with the number filled in. */
