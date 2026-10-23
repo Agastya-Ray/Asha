@@ -64,7 +64,7 @@ export function QuietSheet() {
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-end justify-center" role="dialog" aria-modal="true" aria-label={t(lang, { en: "Quiet time", hi: "शांत समय" })}>
+    <div className="fixed inset-0 z-50 flex items-end justify-center" role="dialog" aria-label={t(lang, { en: "Quiet time", hi: "शांत समय" })}>
       <div className="fixed inset-0 bg-ink/55" onClick={hide} />
       <div data-quiet-sheet className="relative mx-auto w-full max-w-lg rounded-t-3xl bg-paper px-4 pb-8 pt-4 shadow-lg">
         <div className="flex items-end gap-3">
@@ -141,19 +141,19 @@ export function QuietBanner() {
   const quietUntil = useAsha((s) => s.quietUntil);
   const fairyName = useAsha((s) => s.fairyName);
   const show = useQuietSheet((q) => q.show);
+  const setQuiet = useAsha((s) => s.setQuiet);
   const now = useNow();
   if (quietUntil <= now.getTime()) return null;
   const at = clockLabel(lang, new Date(quietUntil));
   const who = fairyName || t(lang, { en: "Your fairy", hi: "आपकी परी" });
   return (
-    <button
-      type="button"
-      data-quiet-banner
-      onClick={() => show()}
-      className="mx-4 mb-2 flex min-h-12 items-center justify-between gap-2 rounded-2xl border border-line bg-paper px-4 text-left text-base font-bold"
-    >
-      <span>🤫 {t(lang, { en: `${who} is quiet until ${at}`, hi: `${who} ${at} तक चुप है` })}</span>
-      <span className="shrink-0 text-sage underline">{t(lang, { en: "Wake", hi: "जगाएँ" })}</span>
-    </button>
+    <div data-quiet-banner className="mx-4 mb-2 flex min-h-12 items-center justify-between gap-2 rounded-2xl border border-line bg-paper pl-4 text-base font-bold">
+      <button type="button" className="min-h-12 flex-1 text-left" onClick={() => show()}>
+        🤫 {t(lang, { en: `${who} is quiet until ${at}`, hi: `${who} ${at} तक चुप है` })}
+      </button>
+      <button type="button" className="min-h-12 shrink-0 px-4 text-sage underline" onClick={() => setQuiet(0)}>
+        {t(lang, { en: "Wake her", hi: "जगाएँ" })}
+      </button>
+    </div>
   );
 }

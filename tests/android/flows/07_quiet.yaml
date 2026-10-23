@@ -21,7 +21,15 @@ appId: com.agastyaray.asha
 - assertVisible:
     text: ".*is quiet until.*"
 - takeScreenshot: 81-quiet-banner
-- runFlow: wake_if_quiet.yaml
+# the banner opens the sheet, which can wake her too
+- tapOn:
+    text: "🤫.*is quiet until.*"
+    retryTapIfNoChange: false
+- extendedWaitUntil:
+    visible: "Wake her now"
+    timeout: 10000
+- tapOn: "Wake her now"
+- waitForAnimationToEnd
 - assertNotVisible:
     text: ".*is quiet until.*"
 - takeScreenshot: 82-quiet-woken

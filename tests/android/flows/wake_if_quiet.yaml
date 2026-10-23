@@ -1,18 +1,9 @@
-# If she is still quiet (from an earlier try), wake her from the banner on Today.
+# If she is still quiet (from an earlier try), wake her with the banner's Wake button.
 appId: com.agastyaray.asha
 ---
 - runFlow:
     when:
-      visible:
-        text: ".*is quiet until.*"
+      visible: "Wake her"
     commands:
-      # no retry tap: a second tap would land on the sheet's dimmed backdrop and close it
-      - tapOn:
-          text: "🤫.*is quiet until.*"
-          retryTapIfNoChange: false
-      - waitForAnimationToEnd
-      - extendedWaitUntil:
-          visible: "Wake her now"
-          timeout: 10000
-      - tapOn: "Wake her now"
+      - tapOn: "Wake her"
       - waitForAnimationToEnd
