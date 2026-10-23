@@ -1,29 +1,27 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { FieldLabel, LangSwitch, SpeakField, t } from "@/components/asha/bits";
-import {
-  FairyFlipbook,
-  HELLO,
-  JOY,
-  SLEEP,
-  WAKE,
-  type Frame,
-} from "@/components/asha/fairy-flipbook";
+import { FairyFlipbook, JOY, type Frame } from "@/components/asha/fairy-flipbook";
+import gardenFirst from "@/assets/fairy/garden/first.webp";
+import gardenLast from "@/assets/fairy/garden/last.webp";
+import sleepMp4 from "@/assets/fairy/garden/sleep.mp4";
+import sleepWebm from "@/assets/fairy/garden/sleep.webm";
+import wakeMp4 from "@/assets/fairy/garden/wake.mp4";
+import wakeWebm from "@/assets/fairy/garden/wake.webm";
 import { Pixie, type PixieMood } from "@/components/asha/pixie";
 import type { Localized } from "@/lib/asha/plans";
 import { useAsha } from "@/lib/asha/store";
 import { speak, stopSpeaking, unlockAudio } from "@/lib/asha/voice";
 
 /**
- * First run: the fairy is asleep in a little meadow. A tap wakes her; she says hello, asks the person to name her,
+ * First run: the fairy is asleep in her flower garden. A tap wakes her; she says hello, asks the person to name her,
  * says she likes them and invites them into her home (Asha), then shows what Asha does. Every step waits for a tap.
- * She sleeps, wakes and says hello in drawn keyframes (fairy-flipbook.tsx).
+ * Her wake-up in the garden is one drawn clip (Grok, frame by frame); later steps use her keyframes (fairy-flipbook.tsx).
  */
 
 type Step = "asleep" | "waking" | "hello" | "shy" | "naming" | "loves" | "invite" | "home";
 
 const NAMES = ["Titli", "Mishti", "Juhi", "Tara"];
-const STARS = [[14, 22], [32, 12], [58, 26], [72, 34], [22, 44], [86, 52], [46, 50]];
 
 const LINES: Record<Exclude<Step, "asleep" | "waking" | "naming">, (name: string) => Localized> = {
   hello: () => ({
@@ -61,7 +59,6 @@ const MOOD: Record<Step, PixieMood> = {
 
 /** Steps drawn from her real keyframes; the rest use her single poses until their keyframes are drawn. */
 const KEYFRAMES: Partial<Record<Step, Frame[]>> = {
-  hello: HELLO,
   shy: [["blush", 1000]],
   loves: JOY,
   invite: [["17-standing", 1000]],
@@ -124,9 +121,15 @@ export function FairyIntro() {
     window.scrollTo({ top: 0 });
   }, [step]);
 
+  const wakeClip = useRef<HTMLVideoElement>(null);
   const wake = () => {
     unlockAudio();
+    const clip = wakeClip.current;
+    const reduced = window.matchMedia?.("(prefers-reduced-motion: reduce)").matches;
+    if (!clip || reduced) return setStep("hello");
     setStep("waking");
+    // if the phone will not play the clip, she simply wakes up straight away
+    clip.play().catch(() => setStep("hello"));
   };
 
   const saveName = () => {
@@ -144,61 +147,107 @@ export function FairyIntro() {
     setStep("loves");
   };
 
-  // The whole screen is her room at night; she is curled up asleep on its floor. Tapping anywhere wakes her.
-  if (step === "asleep" || step === "waking")
-    return (
-      <div className="fi-night fi-room -mx-4 flex min-h-[calc(100dvh-5rem)] flex-col items-center px-4 pt-6">
-        {/* a flat SVG moon: the same moon as a round CSS box (border-radius) crashed the Android emulator */}
-        <svg className="fi-moon" viewBox="0 0 104 104" aria-hidden>
-          <circle cx="52" cy="52" r="50" fill="#fff6d5" opacity="0.05" />
-          <circle cx="52" cy="52" r="46" fill="#fff6d5" opacity="0.05" />
-          <circle cx="52" cy="52" r="42" fill="#fff6d5" opacity="0.05" />
-          <circle cx="52" cy="52" r="38" fill="#fff6d5" opacity="0.05" />
-          <circle cx="52" cy="52" r="34" fill="#fff6d5" opacity="0.05" />
-          <circle cx="52" cy="52" r="31" fill="#fff6d5" opacity="0.05" />
-          <circle cx="52" cy="52" r="28" fill="#fff6d5" />
-        </svg>
-        <span className="fi-stars" aria-hidden>
-          {STARS.map(([x, y], i) => (
-            <i key={i} style={{ left: `${x}%`, top: `${y}%` }} />
-          ))}
-        </span>
-        <div className="relative z-10 w-full max-w-sm">
-          <LangSwitch value={lang} onChange={(l) => setBoth(l)} />
+  const bubble = line ? (
+        <div className="fi-bubble mt-4 rounded-3xl border-2 border-[#f3c4d0] bg-paper p-4 shadow-sm">
+          <p className="text-sm font-bold uppercase tracking-wide text-[#d9506f]">
+            {name || t(lang, { en: "Your fairy", hi: "आपकी परी" })}
+          </p>
+          <p className="mt-1 text-xl leading-snug">{t(lang, line)}</p>
+          <div className="mt-3 flex flex-wrap gap-2">
+            <button
+              type="button"
+              className="min-h-12 shrink-0 rounded-2xl border border-line px-3 text-base font-bold text-quiet"
+              onClick={() => void speak(t(voiceLang, line), voiceLang, "fairy")}
+            >
+              🔊 {t(lang, { en: "Again", hi: "फिर से" })}
+            </button>
+            <Button
+              className="min-w-36 flex-1"
+              onClick={() => {
+                if (step === "hello") setStep(saved ? "loves" : "shy");
+                else if (step === "shy") setStep("naming");
+                else if (step === "loves") setStep("invite");
+                else if (step === "invite") setStep("home");
+                else finish();
+              }}
+            >
+              {step === "hello"
+                ? t(lang, { en: "Hello!", hi: "नमस्ते!" })
+                : step === "shy"
+                  ? t(lang, { en: "Yes, of course", hi: "हाँ, ज़रूर" })
+                  : step === "loves"
+                    ? t(lang, { en: "You're welcome", hi: "आपका स्वागत है" })
+                    : step === "invite"
+                      ? t(lang, { en: "Yes, I'd love to", hi: "हाँ, मुझे अच्छा लगेगा" })
+                      : t(lang, { en: `Thank you, ${name}`, hi: `शुक्रिया, ${name}` })}
+            </Button>
+          </div>
         </div>
+  ) : null;
+
+  // Her flower garden fills the screen: she sleeps there (a short breathing loop) until tapped, then wakes up, sits up,
+  // grins, stands and hops for joy in one drawn clip, and says hello from the garden.
+  if (step === "asleep" || step === "waking" || step === "hello")
+    return (
+      <div className="fi-garden -mx-4 flex min-h-[calc(100dvh-5rem)] flex-col">
         <button
           type="button"
-          className="flex w-full flex-1 flex-col items-center"
+          className="fi-garden-scene"
           onClick={step === "asleep" ? wake : undefined}
           aria-label={t(lang, { en: "Wake the fairy", hi: "परी को जगाएँ" })}
+          disabled={step !== "asleep"}
         >
-          <p
-            className={`relative z-10 my-auto pb-40 text-center text-2xl font-bold text-paper transition-opacity ${step === "waking" ? "opacity-0" : ""}`}
-          >
-            {t(lang, { en: "Shh… she is sleeping.", hi: "श्श… वह सो रही है." })}
-            <br />
-            {t(lang, { en: "Tap her gently to wake her up", hi: "उसे धीरे से छूकर जगाइए" })}
-            <br />
-            <span className="fi-hand inline-block text-4xl" aria-hidden>
-              👇
-            </span>
-          </p>
-          <span className="fi-floor" aria-hidden />
-          {step === "asleep" ? (
-            <span className="fi-zzz" aria-hidden>
-              z<span>z</span>
-              <span>z</span>
-            </span>
-          ) : null}
-          <FairyFlipbook
-            key={step}
-            frames={step === "asleep" ? SLEEP : WAKE}
-            loop={step === "asleep"}
-            height={300}
-            onDone={() => setStep("hello")}
-            className="fi-flip"
-          />
+          {step === "hello" ? (
+            <img src={gardenLast} alt="" draggable={false} />
+          ) : (
+            <>
+              <video
+                poster={gardenFirst}
+                muted
+                playsInline
+                autoPlay
+                loop
+                preload="auto"
+                aria-hidden
+              >
+                <source src={sleepMp4} type="video/mp4" />
+                <source src={sleepWebm} type="video/webm" />
+              </video>
+              <video
+                ref={wakeClip}
+                muted
+                playsInline
+                preload="auto"
+                onEnded={() => setStep("hello")}
+                className={step === "waking" ? "" : "opacity-0"}
+                aria-hidden
+              >
+                <source src={wakeMp4} type="video/mp4" />
+                <source src={wakeWebm} type="video/webm" />
+              </video>
+            </>
+          )}
         </button>
+        {step === "asleep" ? (
+          <div className="relative z-10 mx-4 mt-4">
+            <LangSwitch value={lang} onChange={(l) => setBoth(l)} />
+          </div>
+        ) : null}
+        {/* below her, on the grass: how to wake her, then her words */}
+        <div className="relative z-10 mt-auto px-4 pb-8">
+          {step === "asleep" ? (
+            <p className="fi-garden-hint">
+              {t(lang, { en: "Shh… she is sleeping.", hi: "श्श… वह सो रही है." })}
+              <br />
+              {t(lang, { en: "Tap her gently to wake her up", hi: "उसे धीरे से छूकर जगाइए" })}{" "}
+              <span className="fi-hand inline-block" aria-hidden>
+                👆
+              </span>
+            </p>
+          ) : (
+            bubble
+          )}
+        </div>
       </div>
     );
 
@@ -279,43 +328,7 @@ export function FairyIntro() {
         </div>
       ) : null}
 
-      {line ? (
-        <div className="fi-bubble mt-4 rounded-3xl border-2 border-[#f3c4d0] bg-paper p-4 shadow-sm">
-          <p className="text-sm font-bold uppercase tracking-wide text-[#d9506f]">
-            {name || t(lang, { en: "Your fairy", hi: "आपकी परी" })}
-          </p>
-          <p className="mt-1 text-xl leading-snug">{t(lang, line)}</p>
-          <div className="mt-3 flex flex-wrap gap-2">
-            <button
-              type="button"
-              className="min-h-12 shrink-0 rounded-2xl border border-line px-3 text-base font-bold text-quiet"
-              onClick={() => void speak(t(voiceLang, line), voiceLang, "fairy")}
-            >
-              🔊 {t(lang, { en: "Again", hi: "फिर से" })}
-            </button>
-            <Button
-              className="min-w-36 flex-1"
-              onClick={() => {
-                if (step === "hello") setStep(saved ? "loves" : "shy");
-                else if (step === "shy") setStep("naming");
-                else if (step === "loves") setStep("invite");
-                else if (step === "invite") setStep("home");
-                else finish();
-              }}
-            >
-              {step === "hello"
-                ? t(lang, { en: "Hello!", hi: "नमस्ते!" })
-                : step === "shy"
-                  ? t(lang, { en: "Yes, of course", hi: "हाँ, ज़रूर" })
-                  : step === "loves"
-                    ? t(lang, { en: "You're welcome", hi: "आपका स्वागत है" })
-                    : step === "invite"
-                      ? t(lang, { en: "Yes, I'd love to", hi: "हाँ, मुझे अच्छा लगेगा" })
-                      : t(lang, { en: `Thank you, ${name}`, hi: `शुक्रिया, ${name}` })}
-            </Button>
-          </div>
-        </div>
-      ) : null}
+      {bubble}
 
       {step === "home" ? (
         <div className="mt-4 flex flex-col gap-2">
