@@ -44,7 +44,6 @@ export function SosScreen() {
   const name = useAsha((s) => s.name);
   const contacts = useAsha((s) => s.contacts);
   const emergency = useAsha((s) => s.emergencyNumber);
-  const autoSms = useAsha((s) => s.sosAutoSms);
   const checkins = useAsha((s) => s.checkins);
   const openSettings = useAsha((s) => s.openSettings);
   const tight = todayCheckin(checkins)?.chestOk === false;
@@ -76,21 +75,10 @@ export function SosScreen() {
     // family who use the Asha app get an urgent alert first (free, instant)
     const pushed = await familyAlert("sos", { where: link });
     if (pushed > 0) log(lang === "hi" ? `परिवार ऐप पर ${pushed} लोगों को सूचना गई.` : `Alert sent to ${pushed} family phone${pushed > 1 ? "s" : ""} in Asha.`);
-    const text = sosText(lang, name, link);
     const numbers = people.map((p) => latinDigits(p.phone));
 
-    if (numbers.length && isNative && autoSms) {
-      try {
-        const { sent } = await AshaNative.sendSms({ numbers, text });
-        log(
-          lang === "hi"
-            ? `${sent} लोगों को संदेश भेजा.`
-            : `Message sent to ${sent} ${sent === 1 ? "person" : "people"}.`,
-        );
-      } catch {
-        log(t(lang, { en: "Could not send messages by itself. Use the Message buttons below.", hi: "खुद संदेश नहीं भेज पाई. नीचे संदेश बटन दबाएँ." }));
-      }
-    } else if (numbers.length) {
+    // Asha does not text by itself (Play Protect blocks apps that can); each person has a ready Message button
+    if (numbers.length) {
       log(t(lang, { en: "Press Message under each person to send your location.", hi: "जगह भेजने के लिए हर व्यक्ति के नीचे संदेश दबाएँ." }));
     }
 
@@ -175,12 +163,8 @@ export function SosScreen() {
         </button>
         <p className="mt-4 text-center text-lg">
           {t(lang, {
-            en: isNative && autoSms
-              ? "Asha texts your loved ones where you are, then calls."
-              : "Asha finds where you are, then calls. Messages go with one more press.",
-            hi: isNative && autoSms
-              ? "आशा आपके अपनों को आपकी जगह भेजती है, फिर कॉल करती है."
-              : "आशा आपकी जगह ढूँढती है, फिर कॉल करती है. संदेश एक और बटन से जाते हैं.",
+            en: "Asha finds where you are, then calls. Messages go with one more press.",
+            hi: "आशा आपकी जगह ढूँढती है, फिर कॉल करती है. संदेश एक और बटन से जाते हैं.",
           })}
         </p>
       </div>
