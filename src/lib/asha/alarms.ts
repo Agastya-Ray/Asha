@@ -2,8 +2,9 @@
 import { AshaNative, isNative, type NativeReminder } from "@/lib/asha/native";
 import { timeWords } from "@/lib/asha/family";
 import { digits, latinDigits } from "@/lib/asha/schedule";
-import { againSentence, doseSentence, mealNote, mealSentence, mealTitle, missedText, morningLine, nightLine } from "@/lib/asha/speech";
+import { againSentence, doseSentence, mealNote, mealSentence, mealTitle, missedText } from "@/lib/asha/speech";
 import { backLine } from "@/lib/asha/quiet";
+import { morningRitual, nightLineAhead } from "@/lib/asha/ritual";
 import { useAsha } from "@/lib/asha/store";
 import { speakClock, todayKey, toMin } from "@/lib/asha/time";
 import type { Persist } from "@/lib/asha/types";
@@ -81,14 +82,23 @@ export function buildReminders(s: S): NativeReminder[] {
   if (s.dailyGreetings) {
     const wake = toMin(s.wakeTime || "07:30");
     const sleep = toMin(s.sleepTime || "21:30");
+    // the day each greeting will next ring on (Android rings it later, maybe tomorrow)
+    const nowMin = new Date().getHours() * 60 + new Date().getMinutes();
+    const on = (min: number, plus = 0) => {
+      const d = new Date();
+      d.setDate(d.getDate() + (nowMin >= min ? 1 : 0) + plus);
+      return d;
+    };
+    const morningDay = on(wake);
+    const nightAfter = on(sleep, 1);
     out.push({
       key: "greet|morning|x",
       hour: Math.floor(wake / 60),
       minute: wake % 60,
       kind: "greet",
       title: lang === "hi" ? "सुप्रभात" : "Good morning",
-      body: morningLine(lang, s.name),
-      say: morningLine(v, s.name),
+      body: morningRitual(lang, s, morningDay),
+      say: morningRitual(v, s, morningDay),
       lang: v,
     });
     out.push({
@@ -97,8 +107,8 @@ export function buildReminders(s: S): NativeReminder[] {
       minute: sleep % 60,
       kind: "greet",
       title: lang === "hi" ? "शुभ रात्रि" : "Good night",
-      body: nightLine(lang, s.name),
-      say: nightLine(v, s.name),
+      body: nightLineAhead(lang, s, nightAfter),
+      say: nightLineAhead(v, s, nightAfter),
       lang: v,
     });
   }
