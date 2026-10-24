@@ -334,19 +334,34 @@ export function FairyTour() {
       setVp({ w: window.innerWidth, h: window.innerHeight });
     };
     let el: HTMLElement | null = null;
+    // bring it into the upper part of the screen, so her bubble has room underneath (fixed bars stay put)
+    const show = (target: HTMLElement | null) => {
+      if (target && !target.closest(".dock, header, nav") && getComputedStyle(target).position !== "fixed") {
+        const r = target.getBoundingClientRect();
+        window.scrollTo({ top: window.scrollY + r.top - Math.max(96, window.innerHeight * 0.22), behavior: "instant" as ScrollBehavior });
+      }
+      measure(target);
+    };
     const place = (tries = 0) => {
       el = via ? findTarget([step.via!]) : findTarget(step.target);
-      // a room can still be loading (the family circle on a slow phone): look again for a few seconds
-      if (!el && step.target && !via && tries < 10) {
+      // a room can still be loading (the family circle on a slow phone): look again for a moment
+      if (!el && step.target && !via && tries < 6) {
         timers.push(window.setTimeout(() => place(tries + 1), 400));
         return;
       }
-      // bring it into the upper part of the screen, so her bubble has room underneath (fixed bars stay put)
-      if (el && !el.closest(".dock, header, nav") && getComputedStyle(el).position !== "fixed") {
-        const r = el.getBoundingClientRect();
-        window.scrollTo({ top: window.scrollY + r.top - Math.max(96, window.innerHeight * 0.22), behavior: "instant" as ScrollBehavior });
+      show(el);
+      // still loading: she talks from the middle meanwhile, and flies over once it appears
+      if (!el && step.target && !via) {
+        let more = 0;
+        const look = () => {
+          const found = findTarget(step.target);
+          if (found) {
+            el = found;
+            show(el);
+          } else if (++more < 30) timers.push(window.setTimeout(look, 500));
+        };
+        timers.push(window.setTimeout(look, 500));
       }
-      measure(el);
       // she takes a while to fly there; once settled, a breath, and then she speaks
       timers.push(
         window.setTimeout(() => {
