@@ -120,7 +120,14 @@ flow fairy_home_ask.yaml && pass "Today: she asks to live on the home screen, an
 sleep 5
 shot F02-wallpaper-preview
 top_activity > "$OUT/after-yes-activity.txt"
-grep -qiE "wallpaper" "$OUT/after-yes-activity.txt" && pass "Android's wallpaper preview opened" || fail "no wallpaper preview ($(cat "$OUT/after-yes-activity.txt"))"
+if grep -qiE "wallpaper" "$OUT/after-yes-activity.txt"; then pass "Android's wallpaper preview opened from the Yes button"
+else
+  fail "the Yes button did not open the wallpaper preview ($(cat "$OUT/after-yes-activity.txt"))"
+  # still check the wallpaper itself: open the same preview the button opens
+  adb shell am start -a android.service.wallpaper.CHANGE_LIVE_WALLPAPER --ecn android.service.wallpaper.extra.LIVE_WALLPAPER_COMPONENT $PKG/.FairyWallpaper >/dev/null; sleep 5
+  shot F02b-wallpaper-preview-direct
+  top_activity | grep -qi wallpaper && log "the preview opens when started directly" || log "the preview does not open even directly ($(top_activity))"
+fi
 xy=$(center "(?i)^set wallpaper$|^Set$|Apply")
 [ -n "$xy" ] && { adb shell input tap $xy; log "tapped Set wallpaper at $xy"; sleep 3; shot F03-home-or-lock; } || fail "no Set wallpaper button"
 xy=$(center "(?i)home and lock|home screen and lock")
