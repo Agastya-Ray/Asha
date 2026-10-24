@@ -334,27 +334,33 @@ export function FairyTour() {
       setVp({ w: window.innerWidth, h: window.innerHeight });
     };
     let el: HTMLElement | null = null;
-    const place = () => {
+    const place = (tries = 0) => {
       el = via ? findTarget([step.via!]) : findTarget(step.target);
+      // a room can still be loading (the family circle on a slow phone): look again for a few seconds
+      if (!el && step.target && !via && tries < 10) {
+        timers.push(window.setTimeout(() => place(tries + 1), 400));
+        return;
+      }
       // bring it into the upper part of the screen, so her bubble has room underneath (fixed bars stay put)
       if (el && !el.closest(".dock, header, nav") && getComputedStyle(el).position !== "fixed") {
         const r = el.getBoundingClientRect();
         window.scrollTo({ top: window.scrollY + r.top - Math.max(96, window.innerHeight * 0.22), behavior: "instant" as ScrollBehavior });
       }
       measure(el);
+      // she takes a while to fly there; once settled, a breath, and then she speaks
+      timers.push(
+        window.setTimeout(() => {
+          measure(el);
+          setArrived(true);
+        }, 1500),
+      );
+      if (!via) timers.push(window.setTimeout(() => setReadyFor(`${i}-${phase}`), 2300));
     };
     if (!via && step.via) window.scrollTo({ top: 0, behavior: "instant" as ScrollBehavior });
     // Slowly, one thing at a time: the new room opens and she stays by its button a moment so it can be seen,
     // then she flies to the thing, settles, takes a breath, and only then speaks.
     const start = via ? 0 : step.via ? 1200 : 60;
-    timers.push(window.setTimeout(place, start));
-    timers.push(
-      window.setTimeout(() => {
-        measure(el);
-        setArrived(true);
-      }, start + 1500),
-    );
-    if (!via) timers.push(window.setTimeout(() => setReadyFor(`${i}-${phase}`), start + 2300));
+    timers.push(window.setTimeout(() => place(), start));
     // on the room's button: a tap, a pause, and in she goes
     if (via) timers.push(window.setTimeout(() => setPos({ i, phase: "here" }), 4000));
     const onMove = () => measure(el);

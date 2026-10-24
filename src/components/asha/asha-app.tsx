@@ -128,7 +128,8 @@ function Shell() {
       {onboarded && introSeen && roleChosen && !familyMode && tourDone && tab !== "sos" ? <DoseSpotlight /> : null}
       <FamilyEngine />
       {/* in the intro and setup the fairy talks in her own bubble (with Again); the dark bar covered her words and the headings */}
-      {introSeen && roleChosen && (onboarded || familyMode) ? <Speaking docked={onboarded && !familyMode} /> : null}
+      {/* on the tour her bubble has its own Again, and the bar would sit over what she is showing */}
+      {introSeen && roleChosen && (onboarded || familyMode) && (tourDone || familyMode) ? <Speaking docked={onboarded && !familyMode} /> : null}
       <QuietSheet />
       <RememberSheet />
       <AskHow />
