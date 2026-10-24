@@ -64,6 +64,19 @@ public class AshaNativePlugin extends Plugin {
         }
     }
 
+    // While Asha is on screen the fairy inside the app is the one you see; the floating one waits outside.
+    @Override
+    protected void handleOnResume() {
+        super.handleOnResume();
+        FairyBubbleService.setAppVisible(getContext(), true);
+    }
+
+    @Override
+    protected void handleOnPause() {
+        super.handleOnPause();
+        FairyBubbleService.setAppVisible(getContext(), false);
+    }
+
     /** Called by FamilyNotify when a message arrives while the app is running. */
     static void emitFamily() {
         AshaNativePlugin p = instance;
@@ -253,6 +266,8 @@ public class AshaNativePlugin extends Plugin {
         AlarmStore.applyQuiet(getContext(), oldQuiet, AlarmStore.config(getContext()).optLong("quietUntil", 0));
         // a dose marked inside the app takes its buttons off the home-screen fairy
         FairyWidget.refreshAll(getContext());
+        FairyBubbleService.recheck(getContext());
+        FairyBubbleService.refresh(getContext());
         call.resolve(ok(true));
     }
 

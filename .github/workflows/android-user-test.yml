@@ -13,6 +13,9 @@ on:
       gpu:
         description: "Emulator GPU mode (swiftshader_indirect, or guest to render inside the emulator)"
         default: "swiftshader_indirect"
+      suite:
+        description: "full = the whole user test; fairy = only the fairy on the phone screen (tests/android/fairy-overlay.sh)"
+        default: "full"
 
 permissions:
   contents: write
@@ -63,7 +66,7 @@ jobs:
           profile: pixel_6
           disable-animations: true
           emulator-options: -no-window -gpu ${{ inputs.gpu || 'swiftshader_indirect' }} -noaudio -no-boot-anim -camera-back none
-          script: OUT=$PWD/results APK=$PWD/Asha.apk bash tests/android/run.sh
+          script: OUT=$PWD/results APK=$PWD/Asha.apk bash tests/android/${{ inputs.suite == 'fairy' && 'fairy-overlay' || 'run' }}.sh
       - name: Keep the results
         if: always()
         uses: actions/upload-artifact@v4

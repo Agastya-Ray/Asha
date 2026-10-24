@@ -66,6 +66,7 @@ public class ReminderService extends Service {
         if (t == null) { finish(startId); return START_NOT_STICKY; }
 
         showCard(this, t, attempt);
+        FairyBubbleService.popUp(this, t, attempt);
         JSONObject cfg = AlarmStore.config(this);
         int maxRepeats = cfg.optInt("repeats", 2);
         int gap = cfg.optInt("repeatMinutes", 10);
@@ -116,6 +117,7 @@ public class ReminderService extends Service {
             JSONObject t = AlarmStore.find(ctx, missed.optString(i));
             if (t == null || t.optLong("skipUntil", 0) > now) continue; // taken meanwhile
             showCard(ctx, t, 1);
+            FairyBubbleService.popUp(ctx, t, 1);
             AlarmStore.scheduleFollowUp(ctx, t.optString("key"), 2, now + gap * 60_000L);
             if (say.length() > 0) say.append(' ');
             say.append(t.optString("say"));

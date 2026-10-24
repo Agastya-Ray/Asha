@@ -9,7 +9,8 @@ import { ReminderHealth } from "@/components/asha/reminder-health";
 import { VoicePicker } from "@/components/asha/voice-picker";
 import { CONDITIONS } from "@/lib/asha/plans";
 import { AshaNative, isNative } from "@/lib/asha/native";
-import { forgetMe, pushNativeConfig, testPush, useFamily } from "@/lib/asha/family";
+import { forgetMe, testPush, useFamily } from "@/lib/asha/family";
+import { stayOff, wantStay } from "@/lib/asha/stay";
 import { newId, useAsha } from "@/lib/asha/store";
 import type { Lang, TextSize } from "@/lib/asha/types";
 
@@ -255,24 +256,19 @@ function FairySettings() {
 
   async function toggleBubble() {
     if (bubble) {
+      stayOff();
       await AshaNative.setBubble({ on: false }).catch(() => undefined);
       useFamily.setState({ bubble: false });
       return;
     }
-    const can = await AshaNative.canDrawOverlays().catch(() => ({ ok: false }));
-    if (!can.ok) {
+    if ((await wantStay()) === "settings") {
       setNote(
         t(lang, {
-          en: "A settings page opens. Find Asha and turn on 'Display over other apps', then come back and press this again.",
-          hi: "एक सेटिंग पन्ना खुलेगा. आशा ढूँढकर 'Display over other apps' चालू करें, फिर वापस आकर यह बटन दोबारा दबाएँ.",
+          en: "A settings page opens. Find Asha and turn on 'Display over other apps', then come back. The fairy will be there.",
+          hi: "एक सेटिंग पन्ना खुलेगा. आशा ढूँढकर 'Display over other apps' चालू करें, फिर वापस आएँ. परी वहाँ होगी.",
         }),
       );
-      await AshaNative.openOverlaySettings().catch(() => undefined);
-      return;
     }
-    const r = await AshaNative.setBubble({ on: true }).catch(() => ({ ok: false }));
-    useFamily.setState({ bubble: r.ok });
-    void pushNativeConfig();
   }
 
   return (

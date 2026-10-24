@@ -4,6 +4,7 @@ import { Droplets, HeartPulse } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, Hear, t, useNow } from "@/components/asha/bits";
 import { ReminderHealth } from "@/components/asha/reminder-health";
+import { FairyStayAsk } from "@/components/asha/fairy-stay";
 import { VoiceCommand } from "@/components/asha/voice-command";
 import { DayRitual } from "@/components/asha/ideas/day-ritual";
 import { FamilyPhotoOffer } from "@/components/asha/ideas/family-med-photos";
@@ -71,6 +72,7 @@ export function TodayScreen() {
 
       <DayRitual />
       <ReminderHealth />
+      <FairyStayAsk />
 
       {conditions.includes("heart") && checkin?.chestOk !== true ? (
         <Card className="mt-5 border-sos bg-sos-soft">

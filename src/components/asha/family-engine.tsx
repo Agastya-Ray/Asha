@@ -29,6 +29,7 @@ import {
 import { AshaNative, isNative } from "@/lib/asha/native";
 import { useAsha } from "@/lib/asha/store";
 import { speak, useSpeech } from "@/lib/asha/voice";
+import { settleStay } from "@/lib/asha/stay";
 import { fairySound, fairySoundOnce, type Sfx } from "@/lib/asha/sfx";
 
 /** Keeps the Family Circle in sync: on open, on return to the app, and when a push arrives. */
@@ -64,8 +65,10 @@ export function FamilyEngine() {
       if (document.visibilityState === "visible" && useFamily.getState().circles.length) void pullInbox();
     };
     document.addEventListener("visibilitychange", onVis);
-    // turn the floating fairy back on if she was on
+    // turn the floating fairy back on if she was on, or on for the first time once Android allows her
     if (isNative && useFamily.getState().bubble) void AshaNative.setBubble({ on: true }).catch(() => undefined);
+    else void settleStay();
+    if (isNative) void App.addListener("resume", () => void settleStay()).then((h) => removers.push(() => void h.remove()));
     return () => {
       removers.forEach((r) => r());
       document.removeEventListener("visibilitychange", onVis);
