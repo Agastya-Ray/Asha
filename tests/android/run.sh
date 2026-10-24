@@ -81,10 +81,16 @@ find_webview() {
   for i in 1 2 3 4; do xy=$(center_webview "$1"); [ -n "$xy" ] && break; adb shell input swipe 540 1500 540 900 400; sleep 2; done
   echo "$xy"
 }
-# like find_webview, but scrolls until the match sits above the bottom nav (its y under 1900)
+# like find_webview, but scrolls until the match sits above the bottom nav (its y under 1950)
+# and has stopped moving (two dumps a second apart agree), so a page still gliding from a swipe is not tapped
 find_above_nav() {
-  local xy=""
-  for i in 1 2 3 4 5 6; do xy=$(center_webview "$1"); [ -n "$xy" ] && [ "${xy#* }" -lt 1900 ] && break; xy=""; adb shell input swipe 540 1500 540 1000 400; sleep 2; done
+  local xy="" again=""
+  for i in 1 2 3 4 5 6 7; do
+    sleep 2; xy=$(center_webview "$1"); sleep 1; again=$(center_webview "$1")
+    log "  looking for $1: $xy / $again" >&2
+    [ -n "$xy" ] && [ "$xy" = "$again" ] && [ "${xy#* }" -lt 1950 ] && break
+    xy=""; adb shell input swipe 540 1500 540 1100 600
+  done
   echo "$xy"
 }
 setclock() { adb shell "date $1" >/dev/null; log "clock set to $(adb shell date)"; }
@@ -244,7 +250,7 @@ shot 41-today-hindi-largest-text
 # Meds from the bottom nav, then Care (meals and chart), which opens from a card on Today, in Hindi
 xy=$(find_webview "^दवा$"); [ -n "$xy" ] && { adb shell input tap $xy; sleep 3; shot 43-meds-hindi-largest-text; } || { FAILED=1; log "no Hindi Meds tab"; }
 xy=$(find_webview "^आज$"); [ -n "$xy" ] && { adb shell input tap $xy; sleep 3; } || { FAILED=1; log "no Hindi Today tab"; }
-xy=""; for i in 1 2 3 4; do xy=$(find_webview "^खाना और मेरा चार्ट खोलें$"); [ -n "$xy" ] && break; done; [ -n "$xy" ] && { adb shell input tap $xy; sleep 3; shot 44-care-hindi-largest-text; } || { FAILED=1; log "no Hindi meals and chart card"; }
+xy=$(find_above_nav "^खाना और मेरा चार्ट खोलें$"); [ -n "$xy" ] || xy=$(find_above_nav "^खाना और मेरा चार्ट खोलें$"); [ -n "$xy" ] && { adb shell input tap $xy; sleep 3; shot 44-care-hindi-largest-text; } || { FAILED=1; log "no Hindi meals and chart card"; }
 # ---- the floating fairy: she must come back after a reboot, after Android kills Asha, after a long idle, and sleep at night ----
 fairy_check() {
   local name=$1
@@ -293,25 +299,24 @@ setclock 101608302026.00
 adb shell "sed -i '/name=\"bubble\"/d' $PREFS"
 adb shell am force-stop $PKG
 # 08:30 brings the morning dose up full screen over Today; take it so the checks below can see Today
-relaunch
-for i in 1 2 3; do xy=$(center_webview "^(I've taken it|ले ली) ✓"); [ -n "$xy" ] || break; adb shell input tap $xy; log "stress: took the dose shown full screen"; sleep 3; done
+clear_dose() { local xy; for i in 1 2 3; do xy=$(center_webview "^(I've taken it|ले ली) ?✓"); [ -n "$xy" ] || break; adb shell input tap $xy; log "stress: took the dose shown full screen"; sleep 3; done; }
 
 # 1. notifications refused
 adb shell pm revoke $PKG android.permission.POST_NOTIFICATIONS && log "stress: notifications refused"
-relaunch; shot s1-no-notifications
+relaunch; clear_dose; shot s1-no-notifications
 [ -n "$(center_webview 'Allow reminders on screen|स्क्रीन पर याद की अनुमति')" ] && log "stress 1: Today asks again to allow reminders" || { FAILED=1; log "stress 1: no 'Allow reminders on screen' step on Today"; }
 alive 1-no-notifications
 
 # 2. exact alarms refused
 adb shell appops set $PKG SCHEDULE_EXACT_ALARM deny && log "stress: exact alarms refused"
-relaunch; shot s2-no-exact-alarms
+relaunch; clear_dose; shot s2-no-exact-alarms
 [ -n "$(center_webview 'Allow exact times|ठीक समय की अनुमति')" ] && log "stress 2: Today asks for exact times" || { FAILED=1; log "stress 2: no 'Allow exact times' step on Today"; }
 alive 2-no-exact-alarms
 
 # 3. microphone refused: tap Tell Asha, answer "Don't allow" in the system prompt
 # Android stops an app when one of its permissions is taken back, so open Asha again afterwards
 adb shell pm revoke $PKG android.permission.RECORD_AUDIO && log "stress: microphone permission reset"
-relaunch
+relaunch; clear_dose
 # Tell Asha sits below the reminders now, so it can take more than one round of scrolling to reach
 xy=$(find_webview "^(Tell Asha|आशा को बताएँ)$"); [ -n "$xy" ] || xy=$(find_webview "^(Tell Asha|आशा को बताएँ)$")
 if [ -n "$xy" ]; then
