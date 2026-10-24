@@ -87,7 +87,14 @@ find_above_nav() {
   for i in $(seq 1 12); do xy=$(center_webview "$1"); [ -n "$xy" ] && [ "${xy#* }" -lt 1900 ] && break; xy=""; adb shell input swipe 540 1750 540 750 500; sleep 2; done
   echo "$xy"
 }
-setclock() { adb shell "date $1" >/dev/null; log "clock set to $(adb shell date)"; }
+# The times below are written for 15 Oct 2026 (16 Oct = the next day) but run on today's date, so the phone's
+# clock is never behind a server's freshly renewed TLS certificate (that broke the family calls on 24 Oct).
+DAY0=$(TZ=Asia/Kolkata date +%m%d); DAY1=$(TZ=Asia/Kolkata date -d tomorrow +%m%d); YEAR=$(TZ=Asia/Kolkata date +%Y); YEAR1=$(TZ=Asia/Kolkata date -d tomorrow +%Y)
+setclock() {
+  local t="$1"
+  case "$t" in 1015????2026.*) t="$DAY0${t:4:4}$YEAR${t:12}" ;; 1016????2026.*) t="$DAY1${t:4:4}$YEAR1${t:12}" ;; esac
+  adb shell "date $t" >/dev/null; log "clock set to $(adb shell date)"
+}
 
 adb root >/dev/null 2>&1; sleep 3; adb wait-for-device
 sleep 40   # let the freshly booted emulator settle (avoids "Pixel Launcher isn't responding")
@@ -96,7 +103,7 @@ adb shell am broadcast -a android.intent.action.CLOSE_SYSTEM_DIALOGS >/dev/null
 adb shell settings put global auto_time 0
 adb shell settings put global auto_time_zone 0
 adb shell service call alarm 3 s16 Asia/Kolkata >/dev/null
-setclock 101507302026.00          # 15 Oct 2026, 07:30 India time
+setclock 101507302026.00          # today, 07:30 India time
 adb shell settings put system screen_off_timeout 600000
 adb install -r -g "${APK:-Asha.apk}" >/dev/null && log "installed (all permissions pre-granted: no)" || true
 # reinstall without auto-grant so the user sees the real permission prompts

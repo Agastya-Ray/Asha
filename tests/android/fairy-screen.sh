@@ -54,7 +54,14 @@ find_webview() {
 }
 run_flow() { (cd "$OUT" && maestro test --test-output-dir "$OUT/maestro-${1%.yaml}" "$FLOWS/$1" >> "$OUT/maestro.log" 2>&1); }
 flow() { log "flow $1"; run_flow "$1" || { log "flow $1 retry"; run_flow "$1" || { fail "flow $1 (see maestro.log)"; shot "fail-${1%.yaml}"; }; }; }
-setclock() { adb shell "date $1" >/dev/null; log "clock set to $(adb shell date)"; }
+# The times below are written for 15 Oct 2026 (16 Oct = the next day) but run on today's date, so the phone's
+# clock is never behind a server's freshly renewed TLS certificate (that broke the family calls on 24 Oct).
+DAY0=$(TZ=Asia/Kolkata date +%m%d); DAY1=$(TZ=Asia/Kolkata date -d tomorrow +%m%d); YEAR=$(TZ=Asia/Kolkata date +%Y); YEAR1=$(TZ=Asia/Kolkata date -d tomorrow +%Y)
+setclock() {
+  local t="$1"
+  case "$t" in 1015????2026.*) t="$DAY0${t:4:4}$YEAR${t:12}" ;; 1016????2026.*) t="$DAY1${t:4:4}$YEAR1${t:12}" ;; esac
+  adb shell "date $t" >/dev/null; log "clock set to $(adb shell date)"
+}
 # How many of Asha's overlay windows are drawn right now (the little fairy = 1, plus the reminder card = 2)
 overlays() {
   adb shell dumpsys window windows > "$OUT/windows-now.txt" 2>/dev/null
@@ -98,7 +105,7 @@ adb shell settings put global hide_error_dialogs 1
 adb shell settings put global auto_time 0
 adb shell settings put global auto_time_zone 0
 adb shell service call alarm 3 s16 Asia/Kolkata >/dev/null
-setclock 101507302026.00          # 15 Oct 2026, 07:30 India time
+setclock 101507302026.00          # today, 07:30 India time
 adb shell settings put system screen_off_timeout 1800000
 adb shell settings put global animator_duration_scale 1   # the workflow turns animations off; her flight needs them (and the video shows it)
 adb install -r "${APK:-Asha.apk}" && log "installed Asha"
