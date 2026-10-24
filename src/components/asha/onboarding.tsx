@@ -265,8 +265,8 @@ export function Onboarding() {
           <h1 className="display text-4xl">{t(lang, { en: "Let me remember for you", hi: "याद मैं रखूँगी" })}</h1>
           <p className="mt-3 text-lg text-quiet">
             {t(lang, {
-              en: "You can type the first one now. Or finish, and on Meds take a photo of the prescription. Asha reads the names and waits for you to check each one. Handwriting is easy to misread.",
-              hi: "पहली दवा अभी लिख सकते हैं. या खत्म करें, और दवा वाले पन्ने पर पर्ची की फ़ोटो लें. आशा नाम पढ़ेगी और हर नाम आपकी जाँच का इंतज़ार करेगी. लिखावट आसानी से गलत पढ़ी जाती है.",
+              en: "Add one now, or later on Meds with a photo of the prescription.",
+              hi: "अभी एक जोड़ें, या बाद में दवा वाले पन्ने पर पर्ची की फ़ोटो से.",
             })}
           </p>
           {meds.length > 0 && !adding ? (

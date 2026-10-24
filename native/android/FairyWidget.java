@@ -6,9 +6,15 @@ import android.appwidget.AppWidgetProvider;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
+import android.view.View;
 import android.widget.RemoteViews;
 
-/** The fairy on the home screen. She sleeps at night, glows when a family message arrives. Tap = open Asha. */
+import org.json.JSONObject;
+
+/**
+ * The fairy on the home screen. She sleeps at night, glows when a family message arrives. Tap = open Asha.
+ * While a reminder is ringing she shows it with big "Taken" and "Later" buttons, the same as the notification's.
+ */
 public class FairyWidget extends AppWidgetProvider {
     @Override
     public void onUpdate(Context ctx, AppWidgetManager mgr, int[] ids) {
@@ -23,6 +29,10 @@ public class FairyWidget extends AppWidgetProvider {
         if (ids == null || ids.length == 0) return;
         RemoteViews v = views(ctx);
         for (int id : ids) mgr.updateAppWidget(id, v);
+    }
+
+    private static int id(Context ctx, String name) {
+        return ctx.getResources().getIdentifier(name, "id", ctx.getPackageName());
     }
 
     static int drawableFor(Context ctx, String mood) {
@@ -49,6 +59,22 @@ public class FairyWidget extends AppWidgetProvider {
         if (open != null) open.putExtra("openTab", "family");
         PendingIntent pi = PendingIntent.getActivity(ctx, 7100, open, PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE);
         v.setOnClickPendingIntent(root, pi);
+
+        int row = id(ctx, "fairy_buttons");
+        JSONObject due = AlarmStore.due(ctx);
+        if (due == null) {
+            v.setViewVisibility(row, View.GONE);
+            return v;
+        }
+        String key = due.optString("key");
+        boolean med = "med".equals(due.optString("kind"));
+        v.setImageViewResource(img, drawableFor(ctx, "happy"));
+        v.setTextViewText(txt, due.optString("title"));
+        v.setViewVisibility(row, View.VISIBLE);
+        v.setTextViewText(id(ctx, "fairy_taken"), due.optString("doneLabel", med ? "Taken" : "Eaten"));
+        v.setTextViewText(id(ctx, "fairy_later"), due.optString("snoozeLabel", "10 min later"));
+        v.setOnClickPendingIntent(id(ctx, "fairy_taken"), ActionReceiver.pending(ctx, key, "taken"));
+        v.setOnClickPendingIntent(id(ctx, "fairy_later"), ActionReceiver.pending(ctx, key, "snooze"));
         return v;
     }
 }

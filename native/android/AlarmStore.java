@@ -233,4 +233,32 @@ public final class AlarmStore {
         prefs(ctx).edit().putString(KEY_ACTIONS, "[]").apply();
         return list;
     }
+
+    // ---------- the reminder ringing now, shown with Taken / Later on the home-screen fairy ----------
+
+    private static final String KEY_DUE = "dueNow";
+    private static final long DUE_FOR = 3 * 60 * 60_000L;
+
+    public static void setDue(Context ctx, String key) {
+        prefs(ctx).edit().putString(KEY_DUE, key + "|" + System.currentTimeMillis()).apply();
+    }
+
+    public static void clearDue(Context ctx, String key) {
+        String cur = prefs(ctx).getString(KEY_DUE, "");
+        if (key == null || cur.startsWith(key + "|")) prefs(ctx).edit().remove(KEY_DUE).apply();
+    }
+
+    /** The reminder still waiting for an answer, or null: rang in the last 3 hours and not marked since. */
+    public static JSONObject due(Context ctx) {
+        String cur = prefs(ctx).getString(KEY_DUE, "");
+        int bar = cur.lastIndexOf('|');
+        if (bar <= 0) return null;
+        long at;
+        try { at = Long.parseLong(cur.substring(bar + 1)); } catch (NumberFormatException e) { return null; }
+        long now = System.currentTimeMillis();
+        if (now - at > DUE_FOR) return null;
+        JSONObject t = find(ctx, cur.substring(0, bar));
+        if (t == null || "greet".equals(t.optString("kind")) || t.optLong("skipUntil", 0) > now) return null;
+        return t;
+    }
 }

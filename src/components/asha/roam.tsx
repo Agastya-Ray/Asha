@@ -28,7 +28,7 @@ const SPOTS: Spot[] = [
   {
     sel: '[data-tour="now"] [data-tour-done]',
     tap: true,
-    lines: () => [{ en: "When it's done, tap this green one. I'll do a happy dance!", hi: "हो जाए तो यह हरा बटन दबाइए. मैं खुशी से नाचूँगी!" }],
+    lines: () => [{ en: "When it's done, tap this big one. I'll do a happy dance!", hi: "हो जाए तो यह बड़ा बटन दबाइए. मैं खुशी से नाचूँगी!" }],
   },
   {
     sel: '[data-pet="water"]',

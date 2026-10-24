@@ -87,8 +87,8 @@ export function TalkScreen() {
         <h1 className="display text-4xl">{t(lang, { en: "Talk", hi: "बात" })}</h1>
         <p className="mt-2 text-lg text-quiet">
           {t(lang, {
-            en: "Medicines, meals, the chart, greetings, 'Tell Asha', and Help stay free for everyone.",
-            hi: "दवा, खाना, चार्ट, अभिवादन, 'आशा को बताएँ' और मदद सबके लिए मुफ़्त हैं.",
+            en: "Reminders, meals and Help are always free.",
+            hi: "याद दिलाना, खाना और मदद हमेशा मुफ़्त हैं.",
           })}
         </p>
         <Card className="mt-5">

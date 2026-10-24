@@ -17,7 +17,14 @@ appId: com.agastyaray.asha
 - takeScreenshot: 31-today-scrolled
 - tapOn: "Meds"
 - takeScreenshot: 32-meds
-- tapOn: "Care"
+# Care is no longer a tab: it opens from the "Meals and my chart" card on Today
+- tapOn: "Today"
+- scrollUntilVisible:
+    element: "Open meals and my chart"
+    direction: DOWN
+    centerElement: true
+    timeout: 20000
+- tapOn: "Open meals and my chart"
 - takeScreenshot: 33-care-top
 - scrollUntilVisible:
     element: "Okay"

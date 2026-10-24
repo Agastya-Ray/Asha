@@ -91,8 +91,8 @@ const TOUR: TourStep[] = [
     target: ['[data-tour="now"] [data-tour-done]'],
     tap: true,
     line: () => ({
-      en: "When it's done, you press this green button. Just like this! Then I know you're okay, and I won't keep reminding you.",
-      hi: "जब हो जाए, तो यह हरा बटन दबाइए. बस ऐसे! तब मुझे पता चलेगा कि आप ठीक हैं, और मैं बार-बार याद नहीं दिलाऊँगी.",
+      en: "When it's done, you press this big button. Just like this! Then I know you're okay, and I won't keep reminding you.",
+      hi: "जब हो जाए, तो यह बड़ा बटन दबाइए. बस ऐसे! तब मुझे पता चलेगा कि आप ठीक हैं, और मैं बार-बार याद नहीं दिलाऊँगी.",
     }),
   },
   {
@@ -115,11 +115,10 @@ const TOUR: TourStep[] = [
   },
   {
     room: "care",
-    via: '[data-tour-tab="care"]',
     target: ['[data-tour="care-feel"]'],
     line: () => ({
-      en: "This is the care room. Each day, you can tell me how you're feeling, a little like a diary. I'll keep your last seven days, so you can show your doctor.",
-      hi: "यह देखभाल का कमरा है. हर दिन आप मुझे बता सकते हैं कि आप कैसा महसूस कर रहे हैं, एक छोटी डायरी जैसा. मैं पिछले सात दिन रखूँगी, ताकि आप डॉक्टर को दिखा सकें.",
+      en: "This is the care room, for meals and your chart. You open it from a card on Today. Each day, you can tell me how you're feeling, a little like a diary. I'll keep your last seven days, so you can show your doctor.",
+      hi: "यह देखभाल का कमरा है, खाने और चार्ट के लिए. यह 'आज' के एक कार्ड से खुलता है. हर दिन आप मुझे बता सकते हैं कि आप कैसा महसूस कर रहे हैं, एक छोटी डायरी जैसा. मैं पिछले सात दिन रखूँगी, ताकि आप डॉक्टर को दिखा सकें.",
     }),
   },
   {
@@ -184,7 +183,7 @@ function goTo(room: Room) {
 
 /**
  * After setup, the fairy shows the person round her whole home once, like a host showing a guest around:
- * Today (what is due, the green button, Help), then each room in turn. She flies to each thing she talks about,
+ * Today (what is due, the big button, Help), then each room in turn. She flies to each thing she talks about,
  * points at it or taps it, and her bubble sits on the other side so it never hides what she is showing.
  * Back goes to what she said before.
  */

@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useState } from "react";
 import { App as NativeApp } from "@capacitor/app";
-import { HeartHandshake, HeartPulse, Leaf, MessageCircle, Pill, Settings, Sun } from "lucide-react";
+import { HeartHandshake, Leaf, MessageCircle, Pill, Settings, Sun } from "lucide-react";
 import { CareScreen } from "@/components/asha/care";
 import { ReminderEngine } from "@/components/asha/engine";
 import { runBack } from "@/lib/asha/back";
@@ -172,10 +172,8 @@ function Header() {
               type="button"
               data-tour="help"
               onClick={() => setTab("sos")}
-              className={cn(
-                "min-h-12 rounded-full px-4 text-lg font-bold",
-                tab === "sos" ? "bg-ink text-paper" : "bg-sos text-paper",
-              )}
+              aria-current={tab === "sos" ? "page" : undefined}
+              className="btn-sos min-h-12 rounded-full bg-sos px-4 text-lg font-bold text-paper"
             >
               {t(lang, { en: "Help", hi: "मदद" })}
             </button>
@@ -189,7 +187,6 @@ function Header() {
 const TABS: { id: Tab; en: string; hi: string; icon: typeof Sun }[] = [
   { id: "today", en: "Today", hi: "आज", icon: Sun },
   { id: "meds", en: "Meds", hi: "दवा", icon: Pill },
-  { id: "care", en: "Care", hi: "देखभाल", icon: HeartPulse },
   { id: "family", en: "Family", hi: "परिवार", icon: HeartHandshake },
   { id: "talk", en: "Talk", hi: "बात", icon: MessageCircle },
 ];
@@ -200,7 +197,7 @@ function Nav() {
   const setTab = useAsha((s) => s.setTab);
   return (
     <nav data-tour="nav" aria-label={lang === "hi" ? "मुख्य" : "Main"} className="dock fixed inset-x-0 bottom-0 z-20 px-3">
-      <div className="nav-float mx-auto grid w-full max-w-lg grid-cols-5 p-1.5">
+      <div className="nav-float mx-auto grid w-full max-w-lg grid-cols-4 p-1.5">
         {TABS.map((item) => {
           const Icon = item.icon;
           const on = tab === item.id;
@@ -210,9 +207,10 @@ function Nav() {
               type="button"
               data-tour-tab={item.id}
               onClick={() => setTab(item.id)}
-              className={cn("flex min-h-14 flex-col items-center justify-center gap-0.5 text-sm font-bold transition-colors", on ? "tab-on text-sage" : "text-quiet")}
+              aria-current={on ? "page" : undefined}
+              className={cn("flex min-h-[4.25rem] flex-col items-center justify-center gap-1 text-base font-bold transition-colors", on ? "tab-on text-sage" : "text-quiet")}
             >
-              <Icon className="size-5" aria-hidden />
+              <Icon className="size-7" aria-hidden strokeWidth={2.2} />
               {lang === "hi" ? item.hi : item.en}
             </button>
           );

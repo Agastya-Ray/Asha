@@ -95,7 +95,7 @@ export function VoiceCommand() {
       <button
         type="button"
         onClick={() => void run()}
-        className={`flex min-h-16 w-full items-center justify-center gap-3 rounded-2xl text-xl font-bold ${busy ? "listening bg-sage text-paper" : "border-2 border-sage bg-paper text-sage"}`}
+        className={`flex min-h-16 w-full items-center justify-center gap-3 rounded-2xl text-xl font-bold ${busy ? "listening bg-sage text-paper" : "tell-asha border-2 border-sage bg-paper text-sage"}`}
       >
         <Mic className="size-7" aria-hidden />
         {busy ? t(lang, { en: "Listening… speak now", hi: "सुन रही हूँ… अब बोलें" }) : t(lang, { en: "Tell Asha", hi: "आशा को बताएँ" })}
