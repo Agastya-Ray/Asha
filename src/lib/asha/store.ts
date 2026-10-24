@@ -94,6 +94,7 @@ type State = Persist & {
   setContacts: (contacts: Contact[]) => void;
   saveMed: (med: Med) => void;
   removeMed: (id: string) => void;
+  setMedPhoto: (id: string, photoAt: number | undefined, photoBy?: string) => void;
   saveMeds: (meds: Med[]) => void;
   remember: (m: Memory) => void;
   updateMemory: (id: string, patch: Partial<Memory>) => void;
@@ -304,7 +305,11 @@ export const useAsha = create<State>((set) => ({
     set((s) => ({
       meds: s.meds.some((m) => m.id === med.id) ? s.meds.map((m) => (m.id === med.id ? med : m)) : [...s.meds, { ...med, addedOn: med.addedOn ?? todayKey() }],
     })),
-  removeMed: (id) => set((s) => ({ meds: s.meds.filter((m) => m.id !== id) })),
+  removeMed: (id) => {
+    void import("@/lib/asha/photos").then((p) => p.deletePhoto(id));
+    set((s) => ({ meds: s.meds.filter((m) => m.id !== id) }));
+  },
+  setMedPhoto: (id, photoAt, photoBy) => set((s) => ({ meds: s.meds.map((m) => (m.id === id ? { ...m, photoAt, photoBy } : m)) })),
   // From a prescription photo: a medicine already on the list is updated, not added twice.
   saveMeds: (incoming) =>
     set((s) => {
