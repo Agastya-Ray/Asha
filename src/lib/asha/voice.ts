@@ -106,6 +106,12 @@ function keep(key: string, b64: string) {
     .catch(() => undefined);
 }
 
+/** "Phone voice" chosen in Settings: Titli uses the phone's own voice, free and offline. */
+export const PHONE_VOICE = "phone";
+/** Her voice until one is chosen: Jessica, one of ElevenLabs' own voices, free on its free plan. */
+export const DEFAULT_FAIRY_ID = "cgSgspJ2msm6clMCkdW9";
+const DEFAULT_FAIRY = { id: DEFAULT_FAIRY_ID, owner: "" };
+
 let fairyRestUntil = 0;
 async function warmClip(text: string, lang: Lang, fairy?: { id: string; owner: string }) {
   const key = `${fairy?.id ?? "asha"}|${lang}|${text}`;
@@ -140,8 +146,9 @@ function pickWebVoice(lang: Lang) {
   return [...voices].sort((a, b) => score(b) - score(a))[0];
 }
 
-/** The fairy has her own voice: the phone's voice, pitched up and a little quicker, like a small bright girl. */
-const FAIRY = { rate: 1.0, pitch: 1.6 };
+/** When her ElevenLabs voice can't speak (offline, or the day's allowance is used): the phone's voice, a little
+ * higher and slower. Only gently higher: at 1.6 it sounded squeaky and strange. */
+const FAIRY = { rate: 0.95, pitch: 1.25 };
 
 function phoneVoice(text: string, lang: Lang, mine: number, fairy = false) {
   return new Promise<void>((resolve) => {
@@ -190,7 +197,9 @@ export async function speak(text: string, lang: Lang, prefer: "warm" | "device" 
   audio = null;
   if (!isNative && typeof window !== "undefined") window.speechSynthesis?.cancel();
   set({ active: true, lastSaid: clean, failed: false, source: null });
-  const fairyVoice = prefer === "fairy" ? useAsha.getState().fairyVoice : null;
+  // Titli speaks in her ElevenLabs voice (the default until one is chosen), unless "Phone voice" was chosen
+  const chosen = useAsha.getState().fairyVoice;
+  const fairyVoice = prefer === "fairy" && chosen?.id !== PHONE_VOICE ? (chosen ?? DEFAULT_FAIRY) : null;
   if (prefer === "warm" || fairyVoice) {
     try {
       const b64 = await warmClip(clean, lang, fairyVoice ?? undefined);

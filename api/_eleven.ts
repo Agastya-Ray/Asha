@@ -5,6 +5,8 @@ const API = "https://api.elevenlabs.io";
 export const elevenKey = () => process.env.ELEVENLABS_API_KEY ?? "";
 // why the last attempt failed (ElevenLabs' own status, never the key), so a 503 can say what to fix
 export let elevenWhy = "";
+// Jessica, one of ElevenLabs' own voices: playful and bright, and it works on the free plan
+export const DEFAULT_FAIRY_VOICE = "cgSgspJ2msm6clMCkdW9";
 const okId = (v: unknown) => (typeof v === "string" && /^[A-Za-z0-9]{8,40}$/.test(v) ? v : "");
 
 /**
@@ -13,11 +15,11 @@ const okId = (v: unknown) => (typeof v === "string" && /^[A-Za-z0-9]{8,40}$/.tes
  */
 export async function elevenSpeak(text: string, voice: unknown, owner: unknown): Promise<string | null> {
   const key = elevenKey();
-  const id = okId(voice) || okId(process.env.ELEVENLABS_VOICE_FAIRY);
+  const id = okId(voice) || okId(process.env.ELEVENLABS_VOICE_FAIRY) || DEFAULT_FAIRY_VOICE;
   elevenWhy = !key ? "no ELEVENLABS_API_KEY" : !id ? "no voice chosen" : "";
   if (!key || !id) return null;
-  const say = () =>
-    fetch(`${API}/v1/text-to-speech/${id}?output_format=mp3_44100_64`, {
+  const say = (as = id) =>
+    fetch(`${API}/v1/text-to-speech/${as}?output_format=mp3_44100_64`, {
       method: "POST",
       headers: { "Content-Type": "application/json", "xi-api-key": key },
       body: JSON.stringify({
@@ -39,6 +41,8 @@ export async function elevenSpeak(text: string, voice: unknown, owner: unknown):
       if (added.ok) res = await say();
       else elevenWhy = `add voice ${added.status}: ${(await added.text()).slice(0, 200)}`;
     }
+    // a library voice on the free plan (402): she still speaks, in the default voice
+    if (res.status === 402 && id !== DEFAULT_FAIRY_VOICE) res = await say(DEFAULT_FAIRY_VOICE);
     const type = res.headers.get("content-type") ?? "";
     if (!res.ok || !type.includes("audio")) {
       elevenWhy = `speak ${res.status}: ${(await res.text()).slice(0, 200)}${elevenWhy ? ` (${elevenWhy})` : ""}`;
@@ -76,7 +80,8 @@ export async function elevenChoices(): Promise<VoiceChoice[]> {
         voices?: { voice_id: string; name: string; category?: string; description?: string; labels?: Record<string, string>; preview_url?: string }[];
       };
       const all = body.voices ?? [];
-      const mine = all.filter((v) => v.category && v.category !== "premade");
+      // made in this account (Voice Design, or a clone). A library voice added to the account still needs a paid plan.
+      const mine = all.filter((v) => v.category === "generated" || v.category === "cloned");
       const stock = all.filter((v) => v.category === "premade" && v.labels?.gender === "female" && v.labels?.age !== "old" && v.labels?.age !== "middle_aged");
       for (const v of [...mine, ...stock]) {
         if (seen.has(v.voice_id)) continue;
