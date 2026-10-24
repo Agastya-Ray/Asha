@@ -322,6 +322,7 @@ function DoctorReport() {
     const nowMin = minutesNow();
     let planned = 0;
     let taken = 0;
+    const missed: string[] = [];
     for (const m of s.meds) {
       const first = s.doseLogs.filter((l) => l.medId === m.id).map((l) => l.day).sort()[0];
       if (!first) continue;
@@ -332,6 +333,7 @@ function DoctorReport() {
           if (d === today && !log && toMin(time) > nowMin) continue;
           planned += 1;
           if (log?.status === "taken") taken += 1;
+          else if (d !== today && (!log || log.missed)) missed.push(`${d} ${m.name} ${time}`);
         }
       }
     }
@@ -343,6 +345,7 @@ function DoctorReport() {
       `Medicines: ${s.meds.map((m) => `${m.name} ${m.dose} (${m.times.join(", ")})`).join("; ") || "-"}`,
       planned ? `Doses marked taken: ${taken} of ${planned} (${Math.round((taken / planned) * 100)}%)` : "Doses marked taken: none marked yet",
     ];
+    if (missed.length) lines.push(`Doses missed: ${missed.length}`, ...missed.map((x) => `  ${x}`));
     const fs = avg(rows.map((r) => r.fastingSugar));
     const as = avg(rows.map((r) => r.afterSugar));
     const sys = avg(rows.map((r) => r.bpSys));

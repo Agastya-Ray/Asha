@@ -7,6 +7,7 @@ import { ReminderHealth } from "@/components/asha/reminder-health";
 import { VoiceCommand } from "@/components/asha/voice-command";
 import { DayRitual } from "@/components/asha/ideas/day-ritual";
 import { CallFaces } from "@/components/asha/ideas/call-faces";
+import { YesterdayNote } from "@/components/asha/ideas/yesterday-note";
 import { isNative } from "@/lib/asha/native";
 import { plateLine } from "@/lib/asha/plans";
 import { buildAgenda, doseProgress, todayCheckin } from "@/lib/asha/schedule";
@@ -151,6 +152,7 @@ export function TodayScreen() {
       </section>
 
       <VisitSoon />
+      <YesterdayNote />
       <VoiceCommand />
 
       {sample ? (
