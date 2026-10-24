@@ -410,6 +410,8 @@ function useMemoryWatch() {
       const s = useAsha.getState();
       if (r.step || !s.onboarded || !s.tourDone || s.appRole === "family" || s.tab !== "today")
         return;
+      // never on top of something else she is showing (a dose reminder comes first): next check
+      if (document.querySelector('[role="dialog"][aria-modal="true"]')) return;
       const now = Date.now();
       const due = s.memories.find(
         (m) => !m.done && m.at && m.at <= now && now - m.at < 12 * 3600000,
