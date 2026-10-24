@@ -1,6 +1,6 @@
 // POST /api/rx  { image: "data:image/jpeg;base64,..." }  ->  { ok, medicines[], unreadable, caution }
 // Reads a prescription photo. Nothing is stored on the server.
-import { guard, json, preflight, readBody, visionText } from "./_shared";
+import { guard, json, preflight, readBody, visionText } from "./_shared.js";
 
 export function OPTIONS() {
   return preflight();

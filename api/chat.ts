@@ -1,7 +1,7 @@
 // POST /api/chat  { show, say, context, turns }  ->  { ok, show, say }
 // "show" = language written on screen, "say" = language Asha speaks. They can differ
 // (e.g. she speaks Hindi while the screen shows English).
-import { asLang, chatText, guard, json, preflight, readBody } from "./_shared";
+import { asLang, chatText, guard, json, preflight, readBody } from "./_shared.js";
 
 export function OPTIONS() {
   return preflight();

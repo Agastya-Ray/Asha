@@ -3,6 +3,7 @@ import { Button } from "@/components/ui/button";
 import { Card, Choice, FieldLabel, LangSwitch, SpeakField, t } from "@/components/asha/bits";
 import { useQuietSheet } from "@/components/asha/quiet";
 import { ReminderHealth } from "@/components/asha/reminder-health";
+import { VoicePicker } from "@/components/asha/voice-picker";
 import { CONDITIONS } from "@/lib/asha/plans";
 import { AshaNative, isNative } from "@/lib/asha/native";
 import { forgetMe, pushNativeConfig, testPush, useFamily } from "@/lib/asha/family";
@@ -22,16 +23,6 @@ export function SettingsScreen() {
       .then((st) => setPhoneDirect(st.phone))
       .catch(() => undefined);
   }, []);
-
-  async function needSms(turnOn: () => void) {
-    if (!isNative) {
-      setNote(t(lang, { en: "Automatic messages work in the Android app.", hi: "अपने-आप संदेश एंड्रॉइड ऐप में चलते हैं." }));
-      return;
-    }
-    const r = await AshaNative.requestSms().catch(() => ({ ok: false }));
-    if (r.ok) turnOn();
-    else setNote(t(lang, { en: "SMS was not allowed. You can allow it later in phone settings.", hi: "एसएमएस की अनुमति नहीं मिली. बाद में फ़ोन सेटिंग में दे सकते हैं." }));
-  }
 
   async function allowWebNotes() {
     if (typeof Notification === "undefined") return;
@@ -75,7 +66,7 @@ export function SettingsScreen() {
         </p>
       </div>
 
-      <h2 className="mt-6 text-2xl font-bold">{t(lang, { en: "Text size", hi: "अक्षरों का आकार" })}</h2>
+      <h2 data-tour="set-size" className="mt-6 text-2xl font-bold">{t(lang, { en: "Text size", hi: "अक्षरों का आकार" })}</h2>
       <div className="mt-3 grid grid-cols-3 gap-2">
         {(["normal", "large", "xl"] as TextSize[]).map((size) => (
           <button
@@ -98,6 +89,7 @@ export function SettingsScreen() {
       </div>
 
       <h2 className="mt-6 text-2xl font-bold">{t(lang, { en: "Voice", hi: "आवाज़" })}</h2>
+      <VoicePicker />
       <div className="mt-3 flex flex-col gap-2">
         <Button variant="quiet" onClick={() => useQuietSheet.getState().show()}>
           {t(lang, { en: "🤫 Quiet for a while (meeting, event)", hi: "🤫 थोड़ी देर चुप (मीटिंग, कार्यक्रम)" })}
@@ -134,18 +126,6 @@ export function SettingsScreen() {
 
       <h2 className="mt-6 text-2xl font-bold">{t(lang, { en: "Help and family", hi: "मदद और परिवार" })}</h2>
       <div className="mt-3 flex flex-col gap-2">
-        <Toggle
-          on={s.sosAutoSms}
-          lang={lang}
-          label={t(lang, { en: "Help texts loved ones by itself, with my location", hi: "मदद खुद अपनों को मेरी जगह के साथ संदेश भेजे" })}
-          onClick={() => (s.sosAutoSms ? s.setPrefs({ sosAutoSms: false }) : void needSms(() => s.setPrefs({ sosAutoSms: true })))}
-        />
-        <Toggle
-          on={s.familyAlert}
-          lang={lang}
-          label={t(lang, { en: "Tell family if a medicine is missed (after 3 reminders)", hi: "दवा छूटे तो परिवार को बताएँ (3 बार याद के बाद)" })}
-          onClick={() => (s.familyAlert ? s.setPrefs({ familyAlert: false }) : void needSms(() => s.setPrefs({ familyAlert: true })))}
-        />
         {isNative ? (
           <Toggle
             on={phoneDirect}
