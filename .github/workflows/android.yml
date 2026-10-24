@@ -78,6 +78,13 @@ jobs:
           ../scripts/ci-step.sh "Gradle APK" ./gradlew assembleRelease --no-daemon
           cp app/build/outputs/apk/release/app-release.apk ../Asha.apk
 
+      - name: Check the app meets Google Play's target level (Android 16, API 36)
+        run: |
+          AAPT=$(ls "$ANDROID_HOME"/build-tools/*/aapt | sort -V | tail -1)
+          "$AAPT" dump badging Asha.apk | grep -E "^package:|targetSdkVersion"
+          T=$("$AAPT" dump badging Asha.apk | sed -n "s/^targetSdkVersion:'\([0-9]*\)'.*/\1/p")
+          if [ "${T:-0}" -lt 36 ]; then echo "::error title=Google Play::targetSdk is $T, Play needs 36"; exit 1; fi
+
       - name: Check Firebase is inside the app
         run: |
           if unzip -p Asha.apk resources.arsc | grep -aq google_app_id; then

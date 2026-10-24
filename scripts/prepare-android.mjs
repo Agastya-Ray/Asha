@@ -187,4 +187,14 @@ if (!rootGradle.includes("com.google.gms:google-services")) {
   writeFileSync(rootGradlePath, rootGradle);
 }
 
+// 5. Google Play: new apps and updates must target Android 16 (API 36) since 31 Aug 2026.
+//    Capacitor 7's template still says 35, so raise it here.
+const varsPath = join(android, "variables.gradle");
+if (existsSync(varsPath)) {
+  const vars = readFileSync(varsPath, "utf8")
+    .replace(/compileSdkVersion\s*=\s*\d+/, "compileSdkVersion = 36")
+    .replace(/targetSdkVersion\s*=\s*\d+/, "targetSdkVersion = 36");
+  writeFileSync(varsPath, vars);
+}
+
 console.log("Asha native code wired into android/ ✔");
