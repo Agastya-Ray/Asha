@@ -29,6 +29,8 @@ export type Med = {
   days?: number[];
   /** taken only when needed: no reminders, no dose on Today */
   asNeeded?: boolean;
+  /** day it was added (YYYY-MM-DD), so a new medicine is never called "missed" for days before it existed */
+  addedOn?: string;
 };
 
 /** A prescription the person kept: what the doctor wrote, so the fairy can answer "what did the doctor say?" */
@@ -65,6 +67,8 @@ export type DoseLog = {
   status: "taken" | "skipped";
   /** a pill was taken off "tablets left" for this dose (not when the count was already 0), so Undo puts back only that one */
   counted?: boolean;
+  /** recorded the morning after: the dose was not taken in time (kept for the doctor summary, never reminded again) */
+  missed?: boolean;
 };
 
 export type MealLog = {
@@ -139,6 +143,8 @@ export type Persist = {
   sleepTime: string;
   /** quiet mode: the fairy stays silent until this time (ms, 0 = off) */
   quietUntil: number;
+  /** day (YYYY-MM-DD) the "yesterday's doses" note on Today was answered */
+  yesterdayNoted: string;
   conditions: ConditionId[];
   contacts: Contact[];
   emergencyNumber: string;

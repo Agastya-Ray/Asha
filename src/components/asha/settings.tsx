@@ -131,6 +131,12 @@ export function SettingsScreen() {
 
       <h2 className="mt-6 text-2xl font-bold">{t(lang, { en: "Help and family", hi: "मदद और परिवार" })}</h2>
       <div className="mt-3 flex flex-col gap-2">
+        <p className="text-base text-quiet">
+          {t(lang, {
+            en: "How a reminder goes: on time, again after 10 minutes, a gentle check after 20, then family on Asha (if shared). A missed dose is never added to the next one: the next morning Asha only says to take today's doses on time.",
+            hi: "याद ऐसे दिलाती हूँ: समय पर, 10 मिनट बाद फिर, 20 मिनट बाद प्यार से पूछना, फिर Asha पर परिवार (अगर साझा है). छूटी दवा अगली में नहीं जोड़ी जाती: अगली सुबह बस आज की दवा समय पर लेने को कहती हूँ.",
+          })}
+        </p>
         {isNative ? (
           <Toggle
             on={phoneDirect}
