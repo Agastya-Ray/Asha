@@ -1,0 +1,3177 @@
+[ {
+  "command" : {
+    "defineVariablesCommand" : {
+      "env" : {
+        "MAESTRO_FILENAME" : "01_setup",
+        "MAESTRO_DEVICE_UDID" : "emulator-5554",
+        "MAESTRO_SHARD_ID" : "1",
+        "MAESTRO_SHARD_INDEX" : "0"
+      },
+      "optional" : false
+    }
+  },
+  "metadata" : {
+    "status" : "COMPLETED",
+    "timestamp" : 1792870245732,
+    "duration" : 16,
+    "sequenceNumber" : 0,
+    "depth" : 0,
+    "evaluatedCommand" : {
+      "defineVariablesCommand" : {
+        "env" : {
+          "MAESTRO_FILENAME" : "01_setup",
+          "MAESTRO_DEVICE_UDID" : "emulator-5554",
+          "MAESTRO_SHARD_ID" : "1",
+          "MAESTRO_SHARD_INDEX" : "0"
+        },
+        "optional" : false
+      }
+    }
+  }
+}, {
+  "command" : {
+    "applyConfigurationCommand" : {
+      "config" : {
+        "appId" : "com.agastyaray.asha"
+      },
+      "optional" : false
+    }
+  },
+  "metadata" : {
+    "status" : "COMPLETED",
+    "timestamp" : 1792870245756,
+    "duration" : 7,
+    "sequenceNumber" : 1,
+    "depth" : 0,
+    "evaluatedCommand" : {
+      "applyConfigurationCommand" : {
+        "config" : {
+          "appId" : "com.agastyaray.asha"
+        },
+        "optional" : false
+      }
+    }
+  }
+}, {
+  "command" : {
+    "launchAppCommand" : {
+      "appId" : "com.agastyaray.asha",
+      "clearState" : true,
+      "optional" : false
+    }
+  },
+  "metadata" : {
+    "status" : "COMPLETED",
+    "timestamp" : 1792870245768,
+    "duration" : 1558,
+    "sequenceNumber" : 2,
+    "depth" : 0,
+    "evaluatedCommand" : {
+      "launchAppCommand" : {
+        "appId" : "com.agastyaray.asha",
+        "clearState" : true,
+        "optional" : false
+      }
+    }
+  }
+}, {
+  "command" : {
+    "assertConditionCommand" : {
+      "condition" : {
+        "visible" : {
+          "textRegex" : "Wake the fairy",
+          "optional" : false
+        }
+      },
+      "timeout" : "120000",
+      "optional" : false
+    }
+  },
+  "metadata" : {
+    "status" : "COMPLETED",
+    "timestamp" : 1792870247335,
+    "duration" : 10732,
+    "sequenceNumber" : 3,
+    "depth" : 0,
+    "evaluatedCommand" : {
+      "assertConditionCommand" : {
+        "condition" : {
+          "visible" : {
+            "textRegex" : "Wake the fairy",
+            "optional" : false
+          }
+        },
+        "timeout" : "120000",
+        "optional" : false
+      }
+    }
+  }
+}, {
+  "command" : {
+    "takeScreenshotCommand" : {
+      "path" : "01-intro-asleep",
+      "optional" : false
+    }
+  },
+  "metadata" : {
+    "status" : "COMPLETED",
+    "timestamp" : 1792870258068,
+    "duration" : 6504,
+    "sequenceNumber" : 4,
+    "depth" : 0,
+    "evaluatedCommand" : {
+      "takeScreenshotCommand" : {
+        "path" : "01-intro-asleep",
+        "optional" : false
+      }
+    },
+    "artifacts" : [ {
+      "type" : "TAKE_SCREENSHOT",
+      "path" : "takeScreenshot/01-intro-asleep.png"
+    } ]
+  }
+}, {
+  "command" : {
+    "tapOnElement" : {
+      "selector" : {
+        "textRegex" : "Wake the fairy",
+        "optional" : false
+      },
+      "retryIfNoChange" : false,
+      "waitUntilVisible" : false,
+      "longPress" : false,
+      "optional" : false
+    }
+  },
+  "metadata" : {
+    "status" : "COMPLETED",
+    "timestamp" : 1792870264577,
+    "duration" : 5311,
+    "sequenceNumber" : 5,
+    "depth" : 0,
+    "evaluatedCommand" : {
+      "tapOnElement" : {
+        "selector" : {
+          "textRegex" : "Wake the fairy",
+          "optional" : false
+        },
+        "retryIfNoChange" : false,
+        "waitUntilVisible" : false,
+        "longPress" : false,
+        "optional" : false
+      }
+    }
+  }
+}, {
+  "command" : {
+    "assertConditionCommand" : {
+      "condition" : {
+        "visible" : {
+          "textRegex" : "Hello!",
+          "optional" : false
+        }
+      },
+      "timeout" : "30000",
+      "optional" : false
+    }
+  },
+  "metadata" : {
+    "status" : "COMPLETED",
+    "timestamp" : 1792870269889,
+    "duration" : 7179,
+    "sequenceNumber" : 6,
+    "depth" : 0,
+    "evaluatedCommand" : {
+      "assertConditionCommand" : {
+        "condition" : {
+          "visible" : {
+            "textRegex" : "Hello!",
+            "optional" : false
+          }
+        },
+        "timeout" : "30000",
+        "optional" : false
+      }
+    }
+  }
+}, {
+  "command" : {
+    "takeScreenshotCommand" : {
+      "path" : "01-intro-hello",
+      "optional" : false
+    }
+  },
+  "metadata" : {
+    "status" : "COMPLETED",
+    "timestamp" : 1792870277069,
+    "duration" : 827,
+    "sequenceNumber" : 7,
+    "depth" : 0,
+    "evaluatedCommand" : {
+      "takeScreenshotCommand" : {
+        "path" : "01-intro-hello",
+        "optional" : false
+      }
+    },
+    "artifacts" : [ {
+      "type" : "TAKE_SCREENSHOT",
+      "path" : "takeScreenshot/01-intro-hello.png"
+    } ]
+  }
+}, {
+  "command" : {
+    "tapOnElement" : {
+      "selector" : {
+        "textRegex" : "Hello!",
+        "optional" : false
+      },
+      "retryIfNoChange" : false,
+      "waitUntilVisible" : false,
+      "longPress" : false,
+      "optional" : false
+    }
+  },
+  "metadata" : {
+    "status" : "COMPLETED",
+    "timestamp" : 1792870277897,
+    "duration" : 2638,
+    "sequenceNumber" : 8,
+    "depth" : 0,
+    "evaluatedCommand" : {
+      "tapOnElement" : {
+        "selector" : {
+          "textRegex" : "Hello!",
+          "optional" : false
+        },
+        "retryIfNoChange" : false,
+        "waitUntilVisible" : false,
+        "longPress" : false,
+        "optional" : false
+      }
+    }
+  }
+}, {
+  "command" : {
+    "assertConditionCommand" : {
+      "condition" : {
+        "visible" : {
+          "textRegex" : "Yes, of course",
+          "optional" : false
+        }
+      },
+      "timeout" : "5000",
+      "optional" : false
+    }
+  },
+  "metadata" : {
+    "status" : "COMPLETED",
+    "timestamp" : 1792870280536,
+    "duration" : 40,
+    "sequenceNumber" : 9,
+    "depth" : 0,
+    "evaluatedCommand" : {
+      "assertConditionCommand" : {
+        "condition" : {
+          "visible" : {
+            "textRegex" : "Yes, of course",
+            "optional" : false
+          }
+        },
+        "timeout" : "5000",
+        "optional" : false
+      }
+    }
+  }
+}, {
+  "command" : {
+    "takeScreenshotCommand" : {
+      "path" : "01-intro-shy",
+      "optional" : false
+    }
+  },
+  "metadata" : {
+    "status" : "COMPLETED",
+    "timestamp" : 1792870280578,
+    "duration" : 343,
+    "sequenceNumber" : 10,
+    "depth" : 0,
+    "evaluatedCommand" : {
+      "takeScreenshotCommand" : {
+        "path" : "01-intro-shy",
+        "optional" : false
+      }
+    },
+    "artifacts" : [ {
+      "type" : "TAKE_SCREENSHOT",
+      "path" : "takeScreenshot/01-intro-shy.png"
+    } ]
+  }
+}, {
+  "command" : {
+    "tapOnElement" : {
+      "selector" : {
+        "textRegex" : "Yes, of course",
+        "optional" : false
+      },
+      "retryIfNoChange" : false,
+      "waitUntilVisible" : false,
+      "longPress" : false,
+      "optional" : false
+    }
+  },
+  "metadata" : {
+    "status" : "COMPLETED",
+    "timestamp" : 1792870280922,
+    "duration" : 3132,
+    "sequenceNumber" : 11,
+    "depth" : 0,
+    "evaluatedCommand" : {
+      "tapOnElement" : {
+        "selector" : {
+          "textRegex" : "Yes, of course",
+          "optional" : false
+        },
+        "retryIfNoChange" : false,
+        "waitUntilVisible" : false,
+        "longPress" : false,
+        "optional" : false
+      }
+    }
+  }
+}, {
+  "command" : {
+    "assertConditionCommand" : {
+      "condition" : {
+        "visible" : {
+          "textRegex" : "Give your fairy a name",
+          "optional" : false
+        }
+      },
+      "timeout" : "5000",
+      "optional" : false
+    }
+  },
+  "metadata" : {
+    "status" : "COMPLETED",
+    "timestamp" : 1792870284060,
+    "duration" : 447,
+    "sequenceNumber" : 12,
+    "depth" : 0,
+    "evaluatedCommand" : {
+      "assertConditionCommand" : {
+        "condition" : {
+          "visible" : {
+            "textRegex" : "Give your fairy a name",
+            "optional" : false
+          }
+        },
+        "timeout" : "5000",
+        "optional" : false
+      }
+    }
+  }
+}, {
+  "command" : {
+    "takeScreenshotCommand" : {
+      "path" : "01-intro-naming",
+      "optional" : false
+    }
+  },
+  "metadata" : {
+    "status" : "COMPLETED",
+    "timestamp" : 1792870284508,
+    "duration" : 2608,
+    "sequenceNumber" : 13,
+    "depth" : 0,
+    "evaluatedCommand" : {
+      "takeScreenshotCommand" : {
+        "path" : "01-intro-naming",
+        "optional" : false
+      }
+    },
+    "artifacts" : [ {
+      "type" : "TAKE_SCREENSHOT",
+      "path" : "takeScreenshot/01-intro-naming.png"
+    } ]
+  }
+}, {
+  "command" : {
+    "tapOnElement" : {
+      "selector" : {
+        "textRegex" : "Titli",
+        "optional" : false
+      },
+      "retryIfNoChange" : false,
+      "waitUntilVisible" : false,
+      "longPress" : false,
+      "optional" : false
+    }
+  },
+  "metadata" : {
+    "status" : "COMPLETED",
+    "timestamp" : 1792870287117,
+    "duration" : 4919,
+    "sequenceNumber" : 14,
+    "depth" : 0,
+    "evaluatedCommand" : {
+      "tapOnElement" : {
+        "selector" : {
+          "textRegex" : "Titli",
+          "optional" : false
+        },
+        "retryIfNoChange" : false,
+        "waitUntilVisible" : false,
+        "longPress" : false,
+        "optional" : false
+      }
+    }
+  }
+}, {
+  "command" : {
+    "scrollUntilVisible" : {
+      "selector" : {
+        "textRegex" : "That's her name",
+        "optional" : false
+      },
+      "direction" : "DOWN",
+      "scrollDuration" : "40",
+      "visibilityPercentage" : 100,
+      "timeout" : "20000",
+      "centerElement" : true,
+      "originalSpeedValue" : "40",
+      "optional" : false,
+      "visibilityPercentageNormalized" : 1.0
+    }
+  },
+  "metadata" : {
+    "status" : "COMPLETED",
+    "timestamp" : 1792870292037,
+    "duration" : 11346,
+    "sequenceNumber" : 15,
+    "depth" : 0,
+    "evaluatedCommand" : {
+      "scrollUntilVisible" : {
+        "selector" : {
+          "textRegex" : "That's her name",
+          "optional" : false
+        },
+        "direction" : "DOWN",
+        "scrollDuration" : "601",
+        "visibilityPercentage" : 100,
+        "timeout" : "20000",
+        "centerElement" : true,
+        "originalSpeedValue" : "40",
+        "optional" : false,
+        "visibilityPercentageNormalized" : 1.0
+      }
+    }
+  }
+}, {
+  "command" : {
+    "tapOnElement" : {
+      "selector" : {
+        "textRegex" : "That's her name",
+        "optional" : false
+      },
+      "retryIfNoChange" : false,
+      "waitUntilVisible" : false,
+      "longPress" : false,
+      "optional" : false
+    }
+  },
+  "metadata" : {
+    "status" : "COMPLETED",
+    "timestamp" : 1792870303384,
+    "duration" : 3329,
+    "sequenceNumber" : 16,
+    "depth" : 0,
+    "evaluatedCommand" : {
+      "tapOnElement" : {
+        "selector" : {
+          "textRegex" : "That's her name",
+          "optional" : false
+        },
+        "retryIfNoChange" : false,
+        "waitUntilVisible" : false,
+        "longPress" : false,
+        "optional" : false
+      }
+    }
+  }
+}, {
+  "command" : {
+    "assertConditionCommand" : {
+      "condition" : {
+        "visible" : {
+          "textRegex" : "You're welcome",
+          "optional" : false
+        }
+      },
+      "timeout" : "5000",
+      "optional" : false
+    }
+  },
+  "metadata" : {
+    "status" : "COMPLETED",
+    "timestamp" : 1792870306715,
+    "duration" : 149,
+    "sequenceNumber" : 17,
+    "depth" : 0,
+    "evaluatedCommand" : {
+      "assertConditionCommand" : {
+        "condition" : {
+          "visible" : {
+            "textRegex" : "You're welcome",
+            "optional" : false
+          }
+        },
+        "timeout" : "5000",
+        "optional" : false
+      }
+    }
+  }
+}, {
+  "command" : {
+    "takeScreenshotCommand" : {
+      "path" : "01-intro-loves",
+      "optional" : false
+    }
+  },
+  "metadata" : {
+    "status" : "COMPLETED",
+    "timestamp" : 1792870306867,
+    "duration" : 367,
+    "sequenceNumber" : 18,
+    "depth" : 0,
+    "evaluatedCommand" : {
+      "takeScreenshotCommand" : {
+        "path" : "01-intro-loves",
+        "optional" : false
+      }
+    },
+    "artifacts" : [ {
+      "type" : "TAKE_SCREENSHOT",
+      "path" : "takeScreenshot/01-intro-loves.png"
+    } ]
+  }
+}, {
+  "command" : {
+    "tapOnElement" : {
+      "selector" : {
+        "textRegex" : "You're welcome",
+        "optional" : false
+      },
+      "retryIfNoChange" : false,
+      "waitUntilVisible" : false,
+      "longPress" : false,
+      "optional" : false
+    }
+  },
+  "metadata" : {
+    "status" : "COMPLETED",
+    "timestamp" : 1792870307235,
+    "duration" : 2525,
+    "sequenceNumber" : 19,
+    "depth" : 0,
+    "evaluatedCommand" : {
+      "tapOnElement" : {
+        "selector" : {
+          "textRegex" : "You're welcome",
+          "optional" : false
+        },
+        "retryIfNoChange" : false,
+        "waitUntilVisible" : false,
+        "longPress" : false,
+        "optional" : false
+      }
+    }
+  }
+}, {
+  "command" : {
+    "assertConditionCommand" : {
+      "condition" : {
+        "visible" : {
+          "textRegex" : "Yes, I'd love to",
+          "optional" : false
+        }
+      },
+      "timeout" : "5000",
+      "optional" : false
+    }
+  },
+  "metadata" : {
+    "status" : "COMPLETED",
+    "timestamp" : 1792870309761,
+    "duration" : 75,
+    "sequenceNumber" : 20,
+    "depth" : 0,
+    "evaluatedCommand" : {
+      "assertConditionCommand" : {
+        "condition" : {
+          "visible" : {
+            "textRegex" : "Yes, I'd love to",
+            "optional" : false
+          }
+        },
+        "timeout" : "5000",
+        "optional" : false
+      }
+    }
+  }
+}, {
+  "command" : {
+    "takeScreenshotCommand" : {
+      "path" : "01-intro-invite",
+      "optional" : false
+    }
+  },
+  "metadata" : {
+    "status" : "COMPLETED",
+    "timestamp" : 1792870309837,
+    "duration" : 316,
+    "sequenceNumber" : 21,
+    "depth" : 0,
+    "evaluatedCommand" : {
+      "takeScreenshotCommand" : {
+        "path" : "01-intro-invite",
+        "optional" : false
+      }
+    },
+    "artifacts" : [ {
+      "type" : "TAKE_SCREENSHOT",
+      "path" : "takeScreenshot/01-intro-invite.png"
+    } ]
+  }
+}, {
+  "command" : {
+    "tapOnElement" : {
+      "selector" : {
+        "textRegex" : "Yes, I'd love to",
+        "optional" : false
+      },
+      "retryIfNoChange" : false,
+      "waitUntilVisible" : false,
+      "longPress" : false,
+      "optional" : false
+    }
+  },
+  "metadata" : {
+    "status" : "COMPLETED",
+    "timestamp" : 1792870310154,
+    "duration" : 5585,
+    "sequenceNumber" : 22,
+    "depth" : 0,
+    "evaluatedCommand" : {
+      "tapOnElement" : {
+        "selector" : {
+          "textRegex" : "Yes, I'd love to",
+          "optional" : false
+        },
+        "retryIfNoChange" : false,
+        "waitUntilVisible" : false,
+        "longPress" : false,
+        "optional" : false
+      }
+    }
+  }
+}, {
+  "command" : {
+    "assertConditionCommand" : {
+      "condition" : {
+        "visible" : {
+          "textRegex" : "Welcome to my home!",
+          "optional" : false
+        }
+      },
+      "timeout" : "5000",
+      "optional" : false
+    }
+  },
+  "metadata" : {
+    "status" : "COMPLETED",
+    "timestamp" : 1792870315742,
+    "duration" : 421,
+    "sequenceNumber" : 23,
+    "depth" : 0,
+    "evaluatedCommand" : {
+      "assertConditionCommand" : {
+        "condition" : {
+          "visible" : {
+            "textRegex" : "Welcome to my home!",
+            "optional" : false
+          }
+        },
+        "timeout" : "5000",
+        "optional" : false
+      }
+    }
+  }
+}, {
+  "command" : {
+    "takeScreenshotCommand" : {
+      "path" : "02-intro-home",
+      "optional" : false
+    }
+  },
+  "metadata" : {
+    "status" : "COMPLETED",
+    "timestamp" : 1792870316164,
+    "duration" : 743,
+    "sequenceNumber" : 24,
+    "depth" : 0,
+    "evaluatedCommand" : {
+      "takeScreenshotCommand" : {
+        "path" : "02-intro-home",
+        "optional" : false
+      }
+    },
+    "artifacts" : [ {
+      "type" : "TAKE_SCREENSHOT",
+      "path" : "takeScreenshot/02-intro-home.png"
+    } ]
+  }
+}, {
+  "command" : {
+    "tapOnElement" : {
+      "selector" : {
+        "textRegex" : "Thank you, Titli",
+        "optional" : false
+      },
+      "retryIfNoChange" : false,
+      "waitUntilVisible" : false,
+      "longPress" : false,
+      "optional" : false
+    }
+  },
+  "metadata" : {
+    "status" : "COMPLETED",
+    "timestamp" : 1792870316909,
+    "duration" : 5702,
+    "sequenceNumber" : 25,
+    "depth" : 0,
+    "evaluatedCommand" : {
+      "tapOnElement" : {
+        "selector" : {
+          "textRegex" : "Thank you, Titli",
+          "optional" : false
+        },
+        "retryIfNoChange" : false,
+        "waitUntilVisible" : false,
+        "longPress" : false,
+        "optional" : false
+      }
+    }
+  }
+}, {
+  "command" : {
+    "assertConditionCommand" : {
+      "condition" : {
+        "visible" : {
+          "textRegex" : "Who will use this phone?",
+          "optional" : false
+        }
+      },
+      "timeout" : "10000",
+      "optional" : false
+    }
+  },
+  "metadata" : {
+    "status" : "COMPLETED",
+    "timestamp" : 1792870322612,
+    "duration" : 264,
+    "sequenceNumber" : 26,
+    "depth" : 0,
+    "evaluatedCommand" : {
+      "assertConditionCommand" : {
+        "condition" : {
+          "visible" : {
+            "textRegex" : "Who will use this phone?",
+            "optional" : false
+          }
+        },
+        "timeout" : "10000",
+        "optional" : false
+      }
+    }
+  }
+}, {
+  "command" : {
+    "takeScreenshotCommand" : {
+      "path" : "03-role-choice",
+      "optional" : false
+    }
+  },
+  "metadata" : {
+    "status" : "COMPLETED",
+    "timestamp" : 1792870322891,
+    "duration" : 536,
+    "sequenceNumber" : 27,
+    "depth" : 0,
+    "evaluatedCommand" : {
+      "takeScreenshotCommand" : {
+        "path" : "03-role-choice",
+        "optional" : false
+      }
+    },
+    "artifacts" : [ {
+      "type" : "TAKE_SCREENSHOT",
+      "path" : "takeScreenshot/03-role-choice.png"
+    } ]
+  }
+}, {
+  "command" : {
+    "tapOnElement" : {
+      "selector" : {
+        "textRegex" : ".*for my own care.*",
+        "optional" : false
+      },
+      "retryIfNoChange" : false,
+      "waitUntilVisible" : false,
+      "longPress" : false,
+      "optional" : false
+    }
+  },
+  "metadata" : {
+    "status" : "COMPLETED",
+    "timestamp" : 1792870323428,
+    "duration" : 6361,
+    "sequenceNumber" : 28,
+    "depth" : 0,
+    "evaluatedCommand" : {
+      "tapOnElement" : {
+        "selector" : {
+          "textRegex" : ".*for my own care.*",
+          "optional" : false
+        },
+        "retryIfNoChange" : false,
+        "waitUntilVisible" : false,
+        "longPress" : false,
+        "optional" : false
+      }
+    }
+  }
+}, {
+  "command" : {
+    "assertConditionCommand" : {
+      "condition" : {
+        "visible" : {
+          "textRegex" : "Getting to know you",
+          "optional" : false
+        }
+      },
+      "timeout" : "10000",
+      "optional" : false
+    }
+  },
+  "metadata" : {
+    "status" : "COMPLETED",
+    "timestamp" : 1792870329791,
+    "duration" : 545,
+    "sequenceNumber" : 29,
+    "depth" : 0,
+    "evaluatedCommand" : {
+      "assertConditionCommand" : {
+        "condition" : {
+          "visible" : {
+            "textRegex" : "Getting to know you",
+            "optional" : false
+          }
+        },
+        "timeout" : "10000",
+        "optional" : false
+      }
+    }
+  }
+}, {
+  "command" : {
+    "takeScreenshotCommand" : {
+      "path" : "04-setup-step1",
+      "optional" : false
+    }
+  },
+  "metadata" : {
+    "status" : "COMPLETED",
+    "timestamp" : 1792870330337,
+    "duration" : 929,
+    "sequenceNumber" : 30,
+    "depth" : 0,
+    "evaluatedCommand" : {
+      "takeScreenshotCommand" : {
+        "path" : "04-setup-step1",
+        "optional" : false
+      }
+    },
+    "artifacts" : [ {
+      "type" : "TAKE_SCREENSHOT",
+      "path" : "takeScreenshot/04-setup-step1.png"
+    } ]
+  }
+}, {
+  "command" : {
+    "tapOnElement" : {
+      "selector" : {
+        "textRegex" : "Your first name",
+        "optional" : false
+      },
+      "retryIfNoChange" : false,
+      "waitUntilVisible" : false,
+      "longPress" : false,
+      "optional" : false
+    }
+  },
+  "metadata" : {
+    "status" : "COMPLETED",
+    "timestamp" : 1792870331267,
+    "duration" : 5482,
+    "sequenceNumber" : 31,
+    "depth" : 0,
+    "evaluatedCommand" : {
+      "tapOnElement" : {
+        "selector" : {
+          "textRegex" : "Your first name",
+          "optional" : false
+        },
+        "retryIfNoChange" : false,
+        "waitUntilVisible" : false,
+        "longPress" : false,
+        "optional" : false
+      }
+    }
+  }
+}, {
+  "command" : {
+    "inputTextCommand" : {
+      "text" : "Kamla",
+      "optional" : false
+    }
+  },
+  "metadata" : {
+    "status" : "COMPLETED",
+    "timestamp" : 1792870336750,
+    "duration" : 7306,
+    "sequenceNumber" : 32,
+    "depth" : 0,
+    "evaluatedCommand" : {
+      "inputTextCommand" : {
+        "text" : "Kamla",
+        "optional" : false
+      }
+    }
+  }
+}, {
+  "command" : {
+    "hideKeyboardCommand" : {
+      "optional" : false
+    }
+  },
+  "metadata" : {
+    "status" : "COMPLETED",
+    "timestamp" : 1792870344060,
+    "duration" : 5120,
+    "sequenceNumber" : 33,
+    "depth" : 0,
+    "evaluatedCommand" : {
+      "hideKeyboardCommand" : {
+        "optional" : false
+      }
+    }
+  }
+}, {
+  "command" : {
+    "takeScreenshotCommand" : {
+      "path" : "05-setup-step1-typed",
+      "optional" : false
+    }
+  },
+  "metadata" : {
+    "status" : "COMPLETED",
+    "timestamp" : 1792870349181,
+    "duration" : 604,
+    "sequenceNumber" : 34,
+    "depth" : 0,
+    "evaluatedCommand" : {
+      "takeScreenshotCommand" : {
+        "path" : "05-setup-step1-typed",
+        "optional" : false
+      }
+    },
+    "artifacts" : [ {
+      "type" : "TAKE_SCREENSHOT",
+      "path" : "takeScreenshot/05-setup-step1-typed.png"
+    } ]
+  }
+}, {
+  "command" : {
+    "scrollUntilVisible" : {
+      "selector" : {
+        "textRegex" : "Continue",
+        "optional" : false
+      },
+      "direction" : "DOWN",
+      "scrollDuration" : "40",
+      "visibilityPercentage" : 100,
+      "timeout" : "20000",
+      "centerElement" : false,
+      "originalSpeedValue" : "40",
+      "optional" : false,
+      "visibilityPercentageNormalized" : 1.0
+    }
+  },
+  "metadata" : {
+    "status" : "COMPLETED",
+    "timestamp" : 1792870349786,
+    "duration" : 466,
+    "sequenceNumber" : 35,
+    "depth" : 0,
+    "evaluatedCommand" : {
+      "scrollUntilVisible" : {
+        "selector" : {
+          "textRegex" : "Continue",
+          "optional" : false
+        },
+        "direction" : "DOWN",
+        "scrollDuration" : "601",
+        "visibilityPercentage" : 100,
+        "timeout" : "20000",
+        "centerElement" : false,
+        "originalSpeedValue" : "40",
+        "optional" : false,
+        "visibilityPercentageNormalized" : 1.0
+      }
+    }
+  }
+}, {
+  "command" : {
+    "tapOnElement" : {
+      "selector" : {
+        "textRegex" : "Continue",
+        "optional" : false
+      },
+      "retryIfNoChange" : false,
+      "waitUntilVisible" : false,
+      "longPress" : false,
+      "optional" : false
+    }
+  },
+  "metadata" : {
+    "status" : "COMPLETED",
+    "timestamp" : 1792870350257,
+    "duration" : 4685,
+    "sequenceNumber" : 36,
+    "depth" : 0,
+    "evaluatedCommand" : {
+      "tapOnElement" : {
+        "selector" : {
+          "textRegex" : "Continue",
+          "optional" : false
+        },
+        "retryIfNoChange" : false,
+        "waitUntilVisible" : false,
+        "longPress" : false,
+        "optional" : false
+      }
+    }
+  }
+}, {
+  "command" : {
+    "scrollUntilVisible" : {
+      "selector" : {
+        "textRegex" : "Diabetes.*",
+        "optional" : false
+      },
+      "direction" : "DOWN",
+      "scrollDuration" : "40",
+      "visibilityPercentage" : 100,
+      "timeout" : "20000",
+      "centerElement" : false,
+      "originalSpeedValue" : "40",
+      "optional" : false,
+      "visibilityPercentageNormalized" : 1.0
+    }
+  },
+  "metadata" : {
+    "status" : "COMPLETED",
+    "timestamp" : 1792870354943,
+    "duration" : 465,
+    "sequenceNumber" : 37,
+    "depth" : 0,
+    "evaluatedCommand" : {
+      "scrollUntilVisible" : {
+        "selector" : {
+          "textRegex" : "Diabetes.*",
+          "optional" : false
+        },
+        "direction" : "DOWN",
+        "scrollDuration" : "601",
+        "visibilityPercentage" : 100,
+        "timeout" : "20000",
+        "centerElement" : false,
+        "originalSpeedValue" : "40",
+        "optional" : false,
+        "visibilityPercentageNormalized" : 1.0
+      }
+    }
+  }
+}, {
+  "command" : {
+    "tapOnElement" : {
+      "selector" : {
+        "textRegex" : "Diabetes.*",
+        "optional" : false
+      },
+      "retryIfNoChange" : false,
+      "waitUntilVisible" : false,
+      "longPress" : false,
+      "optional" : false
+    }
+  },
+  "metadata" : {
+    "status" : "COMPLETED",
+    "timestamp" : 1792870355409,
+    "duration" : 4527,
+    "sequenceNumber" : 38,
+    "depth" : 0,
+    "evaluatedCommand" : {
+      "tapOnElement" : {
+        "selector" : {
+          "textRegex" : "Diabetes.*",
+          "optional" : false
+        },
+        "retryIfNoChange" : false,
+        "waitUntilVisible" : false,
+        "longPress" : false,
+        "optional" : false
+      }
+    }
+  }
+}, {
+  "command" : {
+    "scrollUntilVisible" : {
+      "selector" : {
+        "textRegex" : "After a heart attack.*",
+        "optional" : false
+      },
+      "direction" : "DOWN",
+      "scrollDuration" : "40",
+      "visibilityPercentage" : 100,
+      "timeout" : "20000",
+      "centerElement" : false,
+      "originalSpeedValue" : "40",
+      "optional" : false,
+      "visibilityPercentageNormalized" : 1.0
+    }
+  },
+  "metadata" : {
+    "status" : "COMPLETED",
+    "timestamp" : 1792870359937,
+    "duration" : 4477,
+    "sequenceNumber" : 39,
+    "depth" : 0,
+    "evaluatedCommand" : {
+      "scrollUntilVisible" : {
+        "selector" : {
+          "textRegex" : "After a heart attack.*",
+          "optional" : false
+        },
+        "direction" : "DOWN",
+        "scrollDuration" : "601",
+        "visibilityPercentage" : 100,
+        "timeout" : "20000",
+        "centerElement" : false,
+        "originalSpeedValue" : "40",
+        "optional" : false,
+        "visibilityPercentageNormalized" : 1.0
+      }
+    }
+  }
+}, {
+  "command" : {
+    "tapOnElement" : {
+      "selector" : {
+        "textRegex" : "After a heart attack.*",
+        "optional" : false
+      },
+      "retryIfNoChange" : false,
+      "waitUntilVisible" : false,
+      "longPress" : false,
+      "optional" : false
+    }
+  },
+  "metadata" : {
+    "status" : "COMPLETED",
+    "timestamp" : 1792870364415,
+    "duration" : 4191,
+    "sequenceNumber" : 40,
+    "depth" : 0,
+    "evaluatedCommand" : {
+      "tapOnElement" : {
+        "selector" : {
+          "textRegex" : "After a heart attack.*",
+          "optional" : false
+        },
+        "retryIfNoChange" : false,
+        "waitUntilVisible" : false,
+        "longPress" : false,
+        "optional" : false
+      }
+    }
+  }
+}, {
+  "command" : {
+    "takeScreenshotCommand" : {
+      "path" : "06-setup-step2",
+      "optional" : false
+    }
+  },
+  "metadata" : {
+    "status" : "COMPLETED",
+    "timestamp" : 1792870368607,
+    "duration" : 611,
+    "sequenceNumber" : 41,
+    "depth" : 0,
+    "evaluatedCommand" : {
+      "takeScreenshotCommand" : {
+        "path" : "06-setup-step2",
+        "optional" : false
+      }
+    },
+    "artifacts" : [ {
+      "type" : "TAKE_SCREENSHOT",
+      "path" : "takeScreenshot/06-setup-step2.png"
+    } ]
+  }
+}, {
+  "command" : {
+    "scrollUntilVisible" : {
+      "selector" : {
+        "textRegex" : "Continue",
+        "optional" : false
+      },
+      "direction" : "DOWN",
+      "scrollDuration" : "40",
+      "visibilityPercentage" : 100,
+      "timeout" : "20000",
+      "centerElement" : false,
+      "originalSpeedValue" : "40",
+      "optional" : false,
+      "visibilityPercentageNormalized" : 1.0
+    }
+  },
+  "metadata" : {
+    "status" : "COMPLETED",
+    "timestamp" : 1792870369221,
+    "duration" : 498,
+    "sequenceNumber" : 42,
+    "depth" : 0,
+    "evaluatedCommand" : {
+      "scrollUntilVisible" : {
+        "selector" : {
+          "textRegex" : "Continue",
+          "optional" : false
+        },
+        "direction" : "DOWN",
+        "scrollDuration" : "601",
+        "visibilityPercentage" : 100,
+        "timeout" : "20000",
+        "centerElement" : false,
+        "originalSpeedValue" : "40",
+        "optional" : false,
+        "visibilityPercentageNormalized" : 1.0
+      }
+    }
+  }
+}, {
+  "command" : {
+    "tapOnElement" : {
+      "selector" : {
+        "textRegex" : "Continue",
+        "optional" : false
+      },
+      "retryIfNoChange" : false,
+      "waitUntilVisible" : false,
+      "longPress" : false,
+      "optional" : false
+    }
+  },
+  "metadata" : {
+    "status" : "COMPLETED",
+    "timestamp" : 1792870369720,
+    "duration" : 4272,
+    "sequenceNumber" : 43,
+    "depth" : 0,
+    "evaluatedCommand" : {
+      "tapOnElement" : {
+        "selector" : {
+          "textRegex" : "Continue",
+          "optional" : false
+        },
+        "retryIfNoChange" : false,
+        "waitUntilVisible" : false,
+        "longPress" : false,
+        "optional" : false
+      }
+    }
+  }
+}, {
+  "command" : {
+    "takeScreenshotCommand" : {
+      "path" : "07-setup-step3",
+      "optional" : false
+    }
+  },
+  "metadata" : {
+    "status" : "COMPLETED",
+    "timestamp" : 1792870373993,
+    "duration" : 628,
+    "sequenceNumber" : 44,
+    "depth" : 0,
+    "evaluatedCommand" : {
+      "takeScreenshotCommand" : {
+        "path" : "07-setup-step3",
+        "optional" : false
+      }
+    },
+    "artifacts" : [ {
+      "type" : "TAKE_SCREENSHOT",
+      "path" : "takeScreenshot/07-setup-step3.png"
+    } ]
+  }
+}, {
+  "command" : {
+    "tapOnElement" : {
+      "selector" : {
+        "textRegex" : "For example 112",
+        "optional" : false
+      },
+      "retryIfNoChange" : false,
+      "waitUntilVisible" : false,
+      "longPress" : false,
+      "optional" : false
+    }
+  },
+  "metadata" : {
+    "status" : "COMPLETED",
+    "timestamp" : 1792870374621,
+    "duration" : 6692,
+    "sequenceNumber" : 45,
+    "depth" : 0,
+    "evaluatedCommand" : {
+      "tapOnElement" : {
+        "selector" : {
+          "textRegex" : "For example 112",
+          "optional" : false
+        },
+        "retryIfNoChange" : false,
+        "waitUntilVisible" : false,
+        "longPress" : false,
+        "optional" : false
+      }
+    }
+  }
+}, {
+  "command" : {
+    "inputTextCommand" : {
+      "text" : "112",
+      "optional" : false
+    }
+  },
+  "metadata" : {
+    "status" : "COMPLETED",
+    "timestamp" : 1792870381314,
+    "duration" : 1191,
+    "sequenceNumber" : 46,
+    "depth" : 0,
+    "evaluatedCommand" : {
+      "inputTextCommand" : {
+        "text" : "112",
+        "optional" : false
+      }
+    }
+  }
+}, {
+  "command" : {
+    "hideKeyboardCommand" : {
+      "optional" : false
+    }
+  },
+  "metadata" : {
+    "status" : "COMPLETED",
+    "timestamp" : 1792870382506,
+    "duration" : 1746,
+    "sequenceNumber" : 47,
+    "depth" : 0,
+    "evaluatedCommand" : {
+      "hideKeyboardCommand" : {
+        "optional" : false
+      }
+    }
+  }
+}, {
+  "command" : {
+    "scrollUntilVisible" : {
+      "selector" : {
+        "textRegex" : "Daughter",
+        "optional" : false
+      },
+      "direction" : "DOWN",
+      "scrollDuration" : "40",
+      "visibilityPercentage" : 100,
+      "timeout" : "20000",
+      "centerElement" : false,
+      "originalSpeedValue" : "40",
+      "optional" : false,
+      "visibilityPercentageNormalized" : 1.0
+    }
+  },
+  "metadata" : {
+    "status" : "COMPLETED",
+    "timestamp" : 1792870384253,
+    "duration" : 177,
+    "sequenceNumber" : 48,
+    "depth" : 0,
+    "evaluatedCommand" : {
+      "scrollUntilVisible" : {
+        "selector" : {
+          "textRegex" : "Daughter",
+          "optional" : false
+        },
+        "direction" : "DOWN",
+        "scrollDuration" : "601",
+        "visibilityPercentage" : 100,
+        "timeout" : "20000",
+        "centerElement" : false,
+        "originalSpeedValue" : "40",
+        "optional" : false,
+        "visibilityPercentageNormalized" : 1.0
+      }
+    }
+  }
+}, {
+  "command" : {
+    "tapOnElement" : {
+      "selector" : {
+        "textRegex" : "Daughter",
+        "optional" : false
+      },
+      "retryIfNoChange" : false,
+      "waitUntilVisible" : false,
+      "longPress" : false,
+      "optional" : false
+    }
+  },
+  "metadata" : {
+    "status" : "COMPLETED",
+    "timestamp" : 1792870384431,
+    "duration" : 5048,
+    "sequenceNumber" : 49,
+    "depth" : 0,
+    "evaluatedCommand" : {
+      "tapOnElement" : {
+        "selector" : {
+          "textRegex" : "Daughter",
+          "optional" : false
+        },
+        "retryIfNoChange" : false,
+        "waitUntilVisible" : false,
+        "longPress" : false,
+        "optional" : false
+      }
+    }
+  }
+}, {
+  "command" : {
+    "inputTextCommand" : {
+      "text" : "Daughter",
+      "optional" : false
+    }
+  },
+  "metadata" : {
+    "status" : "COMPLETED",
+    "timestamp" : 1792870389480,
+    "duration" : 3230,
+    "sequenceNumber" : 50,
+    "depth" : 0,
+    "evaluatedCommand" : {
+      "inputTextCommand" : {
+        "text" : "Daughter",
+        "optional" : false
+      }
+    }
+  }
+}, {
+  "command" : {
+    "hideKeyboardCommand" : {
+      "optional" : false
+    }
+  },
+  "metadata" : {
+    "status" : "COMPLETED",
+    "timestamp" : 1792870392711,
+    "duration" : 1843,
+    "sequenceNumber" : 51,
+    "depth" : 0,
+    "evaluatedCommand" : {
+      "hideKeyboardCommand" : {
+        "optional" : false
+      }
+    }
+  }
+}, {
+  "command" : {
+    "scrollUntilVisible" : {
+      "selector" : {
+        "textRegex" : "\\+91",
+        "optional" : false
+      },
+      "direction" : "DOWN",
+      "scrollDuration" : "40",
+      "visibilityPercentage" : 100,
+      "timeout" : "20000",
+      "centerElement" : false,
+      "originalSpeedValue" : "40",
+      "optional" : false,
+      "visibilityPercentageNormalized" : 1.0
+    }
+  },
+  "metadata" : {
+    "status" : "COMPLETED",
+    "timestamp" : 1792870394555,
+    "duration" : 250,
+    "sequenceNumber" : 52,
+    "depth" : 0,
+    "evaluatedCommand" : {
+      "scrollUntilVisible" : {
+        "selector" : {
+          "textRegex" : "\\+91",
+          "optional" : false
+        },
+        "direction" : "DOWN",
+        "scrollDuration" : "601",
+        "visibilityPercentage" : 100,
+        "timeout" : "20000",
+        "centerElement" : false,
+        "originalSpeedValue" : "40",
+        "optional" : false,
+        "visibilityPercentageNormalized" : 1.0
+      }
+    }
+  }
+}, {
+  "command" : {
+    "tapOnElement" : {
+      "selector" : {
+        "textRegex" : "\\+91",
+        "optional" : false
+      },
+      "retryIfNoChange" : false,
+      "waitUntilVisible" : false,
+      "longPress" : false,
+      "optional" : false
+    }
+  },
+  "metadata" : {
+    "status" : "COMPLETED",
+    "timestamp" : 1792870394806,
+    "duration" : 4066,
+    "sequenceNumber" : 53,
+    "depth" : 0,
+    "evaluatedCommand" : {
+      "tapOnElement" : {
+        "selector" : {
+          "textRegex" : "\\+91",
+          "optional" : false
+        },
+        "retryIfNoChange" : false,
+        "waitUntilVisible" : false,
+        "longPress" : false,
+        "optional" : false
+      }
+    }
+  }
+}, {
+  "command" : {
+    "inputTextCommand" : {
+      "text" : "+919876543210",
+      "optional" : false
+    }
+  },
+  "metadata" : {
+    "status" : "COMPLETED",
+    "timestamp" : 1792870398873,
+    "duration" : 2563,
+    "sequenceNumber" : 54,
+    "depth" : 0,
+    "evaluatedCommand" : {
+      "inputTextCommand" : {
+        "text" : "+919876543210",
+        "optional" : false
+      }
+    }
+  }
+}, {
+  "command" : {
+    "hideKeyboardCommand" : {
+      "optional" : false
+    }
+  },
+  "metadata" : {
+    "status" : "COMPLETED",
+    "timestamp" : 1792870401437,
+    "duration" : 1719,
+    "sequenceNumber" : 55,
+    "depth" : 0,
+    "evaluatedCommand" : {
+      "hideKeyboardCommand" : {
+        "optional" : false
+      }
+    }
+  }
+}, {
+  "command" : {
+    "tapOnElement" : {
+      "selector" : {
+        "below" : {
+          "textRegex" : "Loved one 1",
+          "optional" : false
+        },
+        "optional" : true
+      },
+      "retryIfNoChange" : false,
+      "waitUntilVisible" : false,
+      "longPress" : false,
+      "optional" : true
+    }
+  },
+  "metadata" : {
+    "status" : "COMPLETED",
+    "timestamp" : 1792870403156,
+    "duration" : 4358,
+    "sequenceNumber" : 56,
+    "depth" : 0,
+    "evaluatedCommand" : {
+      "tapOnElement" : {
+        "selector" : {
+          "below" : {
+            "textRegex" : "Loved one 1",
+            "optional" : false
+          },
+          "optional" : true
+        },
+        "retryIfNoChange" : false,
+        "waitUntilVisible" : false,
+        "longPress" : false,
+        "optional" : true
+      }
+    }
+  }
+}, {
+  "command" : {
+    "inputTextCommand" : {
+      "text" : "Priya",
+      "optional" : false
+    }
+  },
+  "metadata" : {
+    "status" : "COMPLETED",
+    "timestamp" : 1792870407514,
+    "duration" : 2596,
+    "sequenceNumber" : 57,
+    "depth" : 0,
+    "evaluatedCommand" : {
+      "inputTextCommand" : {
+        "text" : "Priya",
+        "optional" : false
+      }
+    }
+  }
+}, {
+  "command" : {
+    "hideKeyboardCommand" : {
+      "optional" : false
+    }
+  },
+  "metadata" : {
+    "status" : "COMPLETED",
+    "timestamp" : 1792870410111,
+    "duration" : 1773,
+    "sequenceNumber" : 58,
+    "depth" : 0,
+    "evaluatedCommand" : {
+      "hideKeyboardCommand" : {
+        "optional" : false
+      }
+    }
+  }
+}, {
+  "command" : {
+    "takeScreenshotCommand" : {
+      "path" : "08-setup-step3-typed",
+      "optional" : false
+    }
+  },
+  "metadata" : {
+    "status" : "COMPLETED",
+    "timestamp" : 1792870411885,
+    "duration" : 257,
+    "sequenceNumber" : 59,
+    "depth" : 0,
+    "evaluatedCommand" : {
+      "takeScreenshotCommand" : {
+        "path" : "08-setup-step3-typed",
+        "optional" : false
+      }
+    },
+    "artifacts" : [ {
+      "type" : "TAKE_SCREENSHOT",
+      "path" : "takeScreenshot/08-setup-step3-typed.png"
+    } ]
+  }
+}, {
+  "command" : {
+    "scrollUntilVisible" : {
+      "selector" : {
+        "textRegex" : "Continue",
+        "optional" : false
+      },
+      "direction" : "DOWN",
+      "scrollDuration" : "40",
+      "visibilityPercentage" : 100,
+      "timeout" : "20000",
+      "centerElement" : false,
+      "originalSpeedValue" : "40",
+      "optional" : false,
+      "visibilityPercentageNormalized" : 1.0
+    }
+  },
+  "metadata" : {
+    "status" : "COMPLETED",
+    "timestamp" : 1792870412142,
+    "duration" : 120,
+    "sequenceNumber" : 60,
+    "depth" : 0,
+    "evaluatedCommand" : {
+      "scrollUntilVisible" : {
+        "selector" : {
+          "textRegex" : "Continue",
+          "optional" : false
+        },
+        "direction" : "DOWN",
+        "scrollDuration" : "601",
+        "visibilityPercentage" : 100,
+        "timeout" : "20000",
+        "centerElement" : false,
+        "originalSpeedValue" : "40",
+        "optional" : false,
+        "visibilityPercentageNormalized" : 1.0
+      }
+    }
+  }
+}, {
+  "command" : {
+    "tapOnElement" : {
+      "selector" : {
+        "textRegex" : "Continue",
+        "optional" : false
+      },
+      "retryIfNoChange" : false,
+      "waitUntilVisible" : false,
+      "longPress" : false,
+      "optional" : false
+    }
+  },
+  "metadata" : {
+    "status" : "COMPLETED",
+    "timestamp" : 1792870412263,
+    "duration" : 3881,
+    "sequenceNumber" : 61,
+    "depth" : 0,
+    "evaluatedCommand" : {
+      "tapOnElement" : {
+        "selector" : {
+          "textRegex" : "Continue",
+          "optional" : false
+        },
+        "retryIfNoChange" : false,
+        "waitUntilVisible" : false,
+        "longPress" : false,
+        "optional" : false
+      }
+    }
+  }
+}, {
+  "command" : {
+    "assertConditionCommand" : {
+      "condition" : {
+        "visible" : {
+          "textRegex" : "Your medicines",
+          "optional" : false
+        }
+      },
+      "timeout" : "10000",
+      "optional" : false
+    }
+  },
+  "metadata" : {
+    "status" : "COMPLETED",
+    "timestamp" : 1792870416145,
+    "duration" : 238,
+    "sequenceNumber" : 62,
+    "depth" : 0,
+    "evaluatedCommand" : {
+      "assertConditionCommand" : {
+        "condition" : {
+          "visible" : {
+            "textRegex" : "Your medicines",
+            "optional" : false
+          }
+        },
+        "timeout" : "10000",
+        "optional" : false
+      }
+    }
+  }
+}, {
+  "command" : {
+    "takeScreenshotCommand" : {
+      "path" : "09-setup-step4",
+      "optional" : false
+    }
+  },
+  "metadata" : {
+    "status" : "COMPLETED",
+    "timestamp" : 1792870416385,
+    "duration" : 562,
+    "sequenceNumber" : 63,
+    "depth" : 0,
+    "evaluatedCommand" : {
+      "takeScreenshotCommand" : {
+        "path" : "09-setup-step4",
+        "optional" : false
+      }
+    },
+    "artifacts" : [ {
+      "type" : "TAKE_SCREENSHOT",
+      "path" : "takeScreenshot/09-setup-step4.png"
+    } ]
+  }
+}, {
+  "command" : {
+    "scrollUntilVisible" : {
+      "selector" : {
+        "textRegex" : "Add one medicine now",
+        "optional" : false
+      },
+      "direction" : "DOWN",
+      "scrollDuration" : "40",
+      "visibilityPercentage" : 100,
+      "timeout" : "20000",
+      "centerElement" : false,
+      "originalSpeedValue" : "40",
+      "optional" : false,
+      "visibilityPercentageNormalized" : 1.0
+    }
+  },
+  "metadata" : {
+    "status" : "COMPLETED",
+    "timestamp" : 1792870416947,
+    "duration" : 380,
+    "sequenceNumber" : 64,
+    "depth" : 0,
+    "evaluatedCommand" : {
+      "scrollUntilVisible" : {
+        "selector" : {
+          "textRegex" : "Add one medicine now",
+          "optional" : false
+        },
+        "direction" : "DOWN",
+        "scrollDuration" : "601",
+        "visibilityPercentage" : 100,
+        "timeout" : "20000",
+        "centerElement" : false,
+        "originalSpeedValue" : "40",
+        "optional" : false,
+        "visibilityPercentageNormalized" : 1.0
+      }
+    }
+  }
+}, {
+  "command" : {
+    "tapOnElement" : {
+      "selector" : {
+        "textRegex" : "Add one medicine now",
+        "optional" : false
+      },
+      "retryIfNoChange" : false,
+      "waitUntilVisible" : false,
+      "longPress" : false,
+      "optional" : false
+    }
+  },
+  "metadata" : {
+    "status" : "COMPLETED",
+    "timestamp" : 1792870417328,
+    "duration" : 6769,
+    "sequenceNumber" : 65,
+    "depth" : 0,
+    "evaluatedCommand" : {
+      "tapOnElement" : {
+        "selector" : {
+          "textRegex" : "Add one medicine now",
+          "optional" : false
+        },
+        "retryIfNoChange" : false,
+        "waitUntilVisible" : false,
+        "longPress" : false,
+        "optional" : false
+      }
+    }
+  }
+}, {
+  "command" : {
+    "tapOnElement" : {
+      "selector" : {
+        "textRegex" : "Metformin",
+        "optional" : false
+      },
+      "retryIfNoChange" : false,
+      "waitUntilVisible" : false,
+      "longPress" : false,
+      "optional" : false
+    }
+  },
+  "metadata" : {
+    "status" : "COMPLETED",
+    "timestamp" : 1792870424098,
+    "duration" : 9508,
+    "sequenceNumber" : 66,
+    "depth" : 0,
+    "evaluatedCommand" : {
+      "tapOnElement" : {
+        "selector" : {
+          "textRegex" : "Metformin",
+          "optional" : false
+        },
+        "retryIfNoChange" : false,
+        "waitUntilVisible" : false,
+        "longPress" : false,
+        "optional" : false
+      }
+    }
+  }
+}, {
+  "command" : {
+    "inputTextCommand" : {
+      "text" : "Metformin",
+      "optional" : false
+    }
+  },
+  "metadata" : {
+    "status" : "COMPLETED",
+    "timestamp" : 1792870433607,
+    "duration" : 7230,
+    "sequenceNumber" : 67,
+    "depth" : 0,
+    "evaluatedCommand" : {
+      "inputTextCommand" : {
+        "text" : "Metformin",
+        "optional" : false
+      }
+    }
+  }
+}, {
+  "command" : {
+    "hideKeyboardCommand" : {
+      "optional" : false
+    }
+  },
+  "metadata" : {
+    "status" : "COMPLETED",
+    "timestamp" : 1792870440841,
+    "duration" : 5185,
+    "sequenceNumber" : 68,
+    "depth" : 0,
+    "evaluatedCommand" : {
+      "hideKeyboardCommand" : {
+        "optional" : false
+      }
+    }
+  }
+}, {
+  "command" : {
+    "scrollUntilVisible" : {
+      "selector" : {
+        "textRegex" : "1 tablet, 500 mg",
+        "optional" : false
+      },
+      "direction" : "DOWN",
+      "scrollDuration" : "40",
+      "visibilityPercentage" : 100,
+      "timeout" : "20000",
+      "centerElement" : false,
+      "originalSpeedValue" : "40",
+      "optional" : false,
+      "visibilityPercentageNormalized" : 1.0
+    }
+  },
+  "metadata" : {
+    "status" : "COMPLETED",
+    "timestamp" : 1792870446027,
+    "duration" : 2875,
+    "sequenceNumber" : 69,
+    "depth" : 0,
+    "evaluatedCommand" : {
+      "scrollUntilVisible" : {
+        "selector" : {
+          "textRegex" : "1 tablet, 500 mg",
+          "optional" : false
+        },
+        "direction" : "DOWN",
+        "scrollDuration" : "601",
+        "visibilityPercentage" : 100,
+        "timeout" : "20000",
+        "centerElement" : false,
+        "originalSpeedValue" : "40",
+        "optional" : false,
+        "visibilityPercentageNormalized" : 1.0
+      }
+    }
+  }
+}, {
+  "command" : {
+    "tapOnElement" : {
+      "selector" : {
+        "textRegex" : "1 tablet, 500 mg",
+        "optional" : false
+      },
+      "retryIfNoChange" : false,
+      "waitUntilVisible" : false,
+      "longPress" : false,
+      "optional" : false
+    }
+  },
+  "metadata" : {
+    "status" : "COMPLETED",
+    "timestamp" : 1792870448902,
+    "duration" : 8862,
+    "sequenceNumber" : 70,
+    "depth" : 0,
+    "evaluatedCommand" : {
+      "tapOnElement" : {
+        "selector" : {
+          "textRegex" : "1 tablet, 500 mg",
+          "optional" : false
+        },
+        "retryIfNoChange" : false,
+        "waitUntilVisible" : false,
+        "longPress" : false,
+        "optional" : false
+      }
+    }
+  }
+}, {
+  "command" : {
+    "inputTextCommand" : {
+      "text" : "500 mg",
+      "optional" : false
+    }
+  },
+  "metadata" : {
+    "status" : "COMPLETED",
+    "timestamp" : 1792870457765,
+    "duration" : 2727,
+    "sequenceNumber" : 71,
+    "depth" : 0,
+    "evaluatedCommand" : {
+      "inputTextCommand" : {
+        "text" : "500 mg",
+        "optional" : false
+      }
+    }
+  }
+}, {
+  "command" : {
+    "hideKeyboardCommand" : {
+      "optional" : false
+    }
+  },
+  "metadata" : {
+    "status" : "COMPLETED",
+    "timestamp" : 1792870460493,
+    "duration" : 1789,
+    "sequenceNumber" : 72,
+    "depth" : 0,
+    "evaluatedCommand" : {
+      "hideKeyboardCommand" : {
+        "optional" : false
+      }
+    }
+  }
+}, {
+  "command" : {
+    "takeScreenshotCommand" : {
+      "path" : "10-med-editor",
+      "optional" : false
+    }
+  },
+  "metadata" : {
+    "status" : "COMPLETED",
+    "timestamp" : 1792870462283,
+    "duration" : 184,
+    "sequenceNumber" : 73,
+    "depth" : 0,
+    "evaluatedCommand" : {
+      "takeScreenshotCommand" : {
+        "path" : "10-med-editor",
+        "optional" : false
+      }
+    },
+    "artifacts" : [ {
+      "type" : "TAKE_SCREENSHOT",
+      "path" : "takeScreenshot/10-med-editor.png"
+    } ]
+  }
+}, {
+  "command" : {
+    "scrollUntilVisible" : {
+      "selector" : {
+        "textRegex" : "Save this medicine",
+        "optional" : false
+      },
+      "direction" : "DOWN",
+      "scrollDuration" : "40",
+      "visibilityPercentage" : 100,
+      "timeout" : "20000",
+      "centerElement" : true,
+      "originalSpeedValue" : "40",
+      "optional" : false,
+      "visibilityPercentageNormalized" : 1.0
+    }
+  },
+  "metadata" : {
+    "status" : "COMPLETED",
+    "timestamp" : 1792870462468,
+    "duration" : 11515,
+    "sequenceNumber" : 74,
+    "depth" : 0,
+    "evaluatedCommand" : {
+      "scrollUntilVisible" : {
+        "selector" : {
+          "textRegex" : "Save this medicine",
+          "optional" : false
+        },
+        "direction" : "DOWN",
+        "scrollDuration" : "601",
+        "visibilityPercentage" : 100,
+        "timeout" : "20000",
+        "centerElement" : true,
+        "originalSpeedValue" : "40",
+        "optional" : false,
+        "visibilityPercentageNormalized" : 1.0
+      }
+    }
+  }
+}, {
+  "command" : {
+    "tapOnElement" : {
+      "selector" : {
+        "textRegex" : "Save this medicine",
+        "optional" : false
+      },
+      "retryIfNoChange" : false,
+      "waitUntilVisible" : false,
+      "longPress" : false,
+      "optional" : false
+    }
+  },
+  "metadata" : {
+    "status" : "COMPLETED",
+    "timestamp" : 1792870473983,
+    "duration" : 4240,
+    "sequenceNumber" : 75,
+    "depth" : 0,
+    "evaluatedCommand" : {
+      "tapOnElement" : {
+        "selector" : {
+          "textRegex" : "Save this medicine",
+          "optional" : false
+        },
+        "retryIfNoChange" : false,
+        "waitUntilVisible" : false,
+        "longPress" : false,
+        "optional" : false
+      }
+    }
+  }
+}, {
+  "command" : {
+    "takeScreenshotCommand" : {
+      "path" : "11-med-saved",
+      "optional" : false
+    }
+  },
+  "metadata" : {
+    "status" : "COMPLETED",
+    "timestamp" : 1792870478224,
+    "duration" : 767,
+    "sequenceNumber" : 76,
+    "depth" : 0,
+    "evaluatedCommand" : {
+      "takeScreenshotCommand" : {
+        "path" : "11-med-saved",
+        "optional" : false
+      }
+    },
+    "artifacts" : [ {
+      "type" : "TAKE_SCREENSHOT",
+      "path" : "takeScreenshot/11-med-saved.png"
+    } ]
+  }
+}, {
+  "command" : {
+    "scrollUntilVisible" : {
+      "selector" : {
+        "textRegex" : "Go to my day",
+        "optional" : false
+      },
+      "direction" : "UP",
+      "scrollDuration" : "40",
+      "visibilityPercentage" : 100,
+      "timeout" : "20000",
+      "centerElement" : false,
+      "originalSpeedValue" : "40",
+      "optional" : false,
+      "visibilityPercentageNormalized" : 1.0
+    }
+  },
+  "metadata" : {
+    "status" : "COMPLETED",
+    "timestamp" : 1792870478996,
+    "duration" : 347,
+    "sequenceNumber" : 77,
+    "depth" : 0,
+    "evaluatedCommand" : {
+      "scrollUntilVisible" : {
+        "selector" : {
+          "textRegex" : "Go to my day",
+          "optional" : false
+        },
+        "direction" : "UP",
+        "scrollDuration" : "601",
+        "visibilityPercentage" : 100,
+        "timeout" : "20000",
+        "centerElement" : false,
+        "originalSpeedValue" : "40",
+        "optional" : false,
+        "visibilityPercentageNormalized" : 1.0
+      }
+    }
+  }
+}, {
+  "command" : {
+    "tapOnElement" : {
+      "selector" : {
+        "textRegex" : "Go to my day",
+        "optional" : false
+      },
+      "retryIfNoChange" : false,
+      "waitUntilVisible" : false,
+      "longPress" : false,
+      "optional" : false
+    }
+  },
+  "metadata" : {
+    "status" : "COMPLETED",
+    "timestamp" : 1792870479343,
+    "duration" : 9276,
+    "sequenceNumber" : 78,
+    "depth" : 0,
+    "evaluatedCommand" : {
+      "tapOnElement" : {
+        "selector" : {
+          "textRegex" : "Go to my day",
+          "optional" : false
+        },
+        "retryIfNoChange" : false,
+        "waitUntilVisible" : false,
+        "longPress" : false,
+        "optional" : false
+      }
+    }
+  }
+}, {
+  "command" : {
+    "waitForAnimationToEndCommand" : {
+      "optional" : false
+    }
+  },
+  "metadata" : {
+    "status" : "COMPLETED",
+    "timestamp" : 1792870488620,
+    "duration" : 16696,
+    "sequenceNumber" : 79,
+    "depth" : 0,
+    "evaluatedCommand" : {
+      "waitForAnimationToEndCommand" : {
+        "optional" : false
+      }
+    }
+  }
+}, {
+  "command" : {
+    "takeScreenshotCommand" : {
+      "path" : "12-today-first-open",
+      "optional" : false
+    }
+  },
+  "metadata" : {
+    "status" : "COMPLETED",
+    "timestamp" : 1792870505317,
+    "duration" : 1005,
+    "sequenceNumber" : 80,
+    "depth" : 0,
+    "evaluatedCommand" : {
+      "takeScreenshotCommand" : {
+        "path" : "12-today-first-open",
+        "optional" : false
+      }
+    },
+    "artifacts" : [ {
+      "type" : "TAKE_SCREENSHOT",
+      "path" : "takeScreenshot/12-today-first-open.png"
+    } ]
+  }
+}, {
+  "command" : {
+    "assertConditionCommand" : {
+      "condition" : {
+        "visible" : {
+          "textRegex" : "Welcome to my home.*",
+          "optional" : false
+        }
+      },
+      "timeout" : "10000",
+      "optional" : false
+    }
+  },
+  "metadata" : {
+    "status" : "COMPLETED",
+    "timestamp" : 1792870506325,
+    "duration" : 2635,
+    "sequenceNumber" : 81,
+    "depth" : 0,
+    "evaluatedCommand" : {
+      "assertConditionCommand" : {
+        "condition" : {
+          "visible" : {
+            "textRegex" : "Welcome to my home.*",
+            "optional" : false
+          }
+        },
+        "timeout" : "10000",
+        "optional" : false
+      }
+    }
+  }
+}, {
+  "command" : {
+    "takeScreenshotCommand" : {
+      "path" : "12-tour-1-today",
+      "optional" : false
+    }
+  },
+  "metadata" : {
+    "status" : "COMPLETED",
+    "timestamp" : 1792870508960,
+    "duration" : 1029,
+    "sequenceNumber" : 82,
+    "depth" : 0,
+    "evaluatedCommand" : {
+      "takeScreenshotCommand" : {
+        "path" : "12-tour-1-today",
+        "optional" : false
+      }
+    },
+    "artifacts" : [ {
+      "type" : "TAKE_SCREENSHOT",
+      "path" : "takeScreenshot/12-tour-1-today.png"
+    } ]
+  }
+}, {
+  "command" : {
+    "tapOnElement" : {
+      "selector" : {
+        "textRegex" : "Next",
+        "optional" : false
+      },
+      "retryIfNoChange" : false,
+      "waitUntilVisible" : false,
+      "longPress" : false,
+      "optional" : false
+    }
+  },
+  "metadata" : {
+    "status" : "COMPLETED",
+    "timestamp" : 1792870509990,
+    "duration" : 39137,
+    "sequenceNumber" : 83,
+    "depth" : 0,
+    "evaluatedCommand" : {
+      "tapOnElement" : {
+        "selector" : {
+          "textRegex" : "Next",
+          "optional" : false
+        },
+        "retryIfNoChange" : false,
+        "waitUntilVisible" : false,
+        "longPress" : false,
+        "optional" : false
+      }
+    }
+  }
+}, {
+  "command" : {
+    "assertConditionCommand" : {
+      "condition" : {
+        "visible" : {
+          "textRegex" : "When it's done.*",
+          "optional" : false
+        }
+      },
+      "timeout" : "10000",
+      "optional" : false
+    }
+  },
+  "metadata" : {
+    "status" : "COMPLETED",
+    "timestamp" : 1792870549128,
+    "duration" : 4684,
+    "sequenceNumber" : 84,
+    "depth" : 0,
+    "evaluatedCommand" : {
+      "assertConditionCommand" : {
+        "condition" : {
+          "visible" : {
+            "textRegex" : "When it's done.*",
+            "optional" : false
+          }
+        },
+        "timeout" : "10000",
+        "optional" : false
+      }
+    }
+  }
+}, {
+  "command" : {
+    "takeScreenshotCommand" : {
+      "path" : "12-tour-2-green",
+      "optional" : false
+    }
+  },
+  "metadata" : {
+    "status" : "COMPLETED",
+    "timestamp" : 1792870553813,
+    "duration" : 725,
+    "sequenceNumber" : 85,
+    "depth" : 0,
+    "evaluatedCommand" : {
+      "takeScreenshotCommand" : {
+        "path" : "12-tour-2-green",
+        "optional" : false
+      }
+    },
+    "artifacts" : [ {
+      "type" : "TAKE_SCREENSHOT",
+      "path" : "takeScreenshot/12-tour-2-green.png"
+    } ]
+  }
+}, {
+  "command" : {
+    "tapOnElement" : {
+      "selector" : {
+        "textRegex" : "Next",
+        "optional" : false
+      },
+      "retryIfNoChange" : false,
+      "waitUntilVisible" : false,
+      "longPress" : false,
+      "optional" : false
+    }
+  },
+  "metadata" : {
+    "status" : "COMPLETED",
+    "timestamp" : 1792870554539,
+    "duration" : 25584,
+    "sequenceNumber" : 86,
+    "depth" : 0,
+    "evaluatedCommand" : {
+      "tapOnElement" : {
+        "selector" : {
+          "textRegex" : "Next",
+          "optional" : false
+        },
+        "retryIfNoChange" : false,
+        "waitUntilVisible" : false,
+        "longPress" : false,
+        "optional" : false
+      }
+    }
+  }
+}, {
+  "command" : {
+    "assertConditionCommand" : {
+      "condition" : {
+        "visible" : {
+          "textRegex" : "I'm here to take care of you.*",
+          "optional" : false
+        }
+      },
+      "timeout" : "10000",
+      "optional" : false
+    }
+  },
+  "metadata" : {
+    "status" : "COMPLETED",
+    "timestamp" : 1792870580124,
+    "duration" : 2715,
+    "sequenceNumber" : 87,
+    "depth" : 0,
+    "evaluatedCommand" : {
+      "assertConditionCommand" : {
+        "condition" : {
+          "visible" : {
+            "textRegex" : "I'm here to take care of you.*",
+            "optional" : false
+          }
+        },
+        "timeout" : "10000",
+        "optional" : false
+      }
+    }
+  }
+}, {
+  "command" : {
+    "takeScreenshotCommand" : {
+      "path" : "12-tour-3-help",
+      "optional" : false
+    }
+  },
+  "metadata" : {
+    "status" : "COMPLETED",
+    "timestamp" : 1792870582840,
+    "duration" : 984,
+    "sequenceNumber" : 88,
+    "depth" : 0,
+    "evaluatedCommand" : {
+      "takeScreenshotCommand" : {
+        "path" : "12-tour-3-help",
+        "optional" : false
+      }
+    },
+    "artifacts" : [ {
+      "type" : "TAKE_SCREENSHOT",
+      "path" : "takeScreenshot/12-tour-3-help.png"
+    } ]
+  }
+}, {
+  "command" : {
+    "tapOnElement" : {
+      "selector" : {
+        "textRegex" : "Next",
+        "optional" : false
+      },
+      "retryIfNoChange" : false,
+      "waitUntilVisible" : false,
+      "longPress" : false,
+      "optional" : false
+    }
+  },
+  "metadata" : {
+    "status" : "COMPLETED",
+    "timestamp" : 1792870583825,
+    "duration" : 20882,
+    "sequenceNumber" : 89,
+    "depth" : 0,
+    "evaluatedCommand" : {
+      "tapOnElement" : {
+        "selector" : {
+          "textRegex" : "Next",
+          "optional" : false
+        },
+        "retryIfNoChange" : false,
+        "waitUntilVisible" : false,
+        "longPress" : false,
+        "optional" : false
+      }
+    }
+  }
+}, {
+  "command" : {
+    "assertConditionCommand" : {
+      "condition" : {
+        "visible" : {
+          "textRegex" : "Come, this is your medicine room.*",
+          "optional" : false
+        }
+      },
+      "timeout" : "10000",
+      "optional" : false
+    }
+  },
+  "metadata" : {
+    "status" : "COMPLETED",
+    "timestamp" : 1792870604708,
+    "duration" : 322,
+    "sequenceNumber" : 90,
+    "depth" : 0,
+    "evaluatedCommand" : {
+      "assertConditionCommand" : {
+        "condition" : {
+          "visible" : {
+            "textRegex" : "Come, this is your medicine room.*",
+            "optional" : false
+          }
+        },
+        "timeout" : "10000",
+        "optional" : false
+      }
+    }
+  }
+}, {
+  "command" : {
+    "takeScreenshotCommand" : {
+      "path" : "12-tour-4-meds",
+      "optional" : false
+    }
+  },
+  "metadata" : {
+    "status" : "COMPLETED",
+    "timestamp" : 1792870605030,
+    "duration" : 708,
+    "sequenceNumber" : 91,
+    "depth" : 0,
+    "evaluatedCommand" : {
+      "takeScreenshotCommand" : {
+        "path" : "12-tour-4-meds",
+        "optional" : false
+      }
+    },
+    "artifacts" : [ {
+      "type" : "TAKE_SCREENSHOT",
+      "path" : "takeScreenshot/12-tour-4-meds.png"
+    } ]
+  }
+}, {
+  "command" : {
+    "tapOnElement" : {
+      "selector" : {
+        "textRegex" : "Next",
+        "optional" : false
+      },
+      "retryIfNoChange" : false,
+      "waitUntilVisible" : false,
+      "longPress" : false,
+      "optional" : false
+    }
+  },
+  "metadata" : {
+    "status" : "COMPLETED",
+    "timestamp" : 1792870605738,
+    "duration" : 42812,
+    "sequenceNumber" : 92,
+    "depth" : 0,
+    "evaluatedCommand" : {
+      "tapOnElement" : {
+        "selector" : {
+          "textRegex" : "Next",
+          "optional" : false
+        },
+        "retryIfNoChange" : false,
+        "waitUntilVisible" : false,
+        "longPress" : false,
+        "optional" : false
+      }
+    }
+  }
+}, {
+  "command" : {
+    "assertConditionCommand" : {
+      "condition" : {
+        "visible" : {
+          "textRegex" : "This is the care room.*",
+          "optional" : false
+        }
+      },
+      "timeout" : "10000",
+      "optional" : false
+    }
+  },
+  "metadata" : {
+    "status" : "COMPLETED",
+    "timestamp" : 1792870648551,
+    "duration" : 5295,
+    "sequenceNumber" : 93,
+    "depth" : 0,
+    "evaluatedCommand" : {
+      "assertConditionCommand" : {
+        "condition" : {
+          "visible" : {
+            "textRegex" : "This is the care room.*",
+            "optional" : false
+          }
+        },
+        "timeout" : "10000",
+        "optional" : false
+      }
+    }
+  }
+}, {
+  "command" : {
+    "takeScreenshotCommand" : {
+      "path" : "12-tour-5-care",
+      "optional" : false
+    }
+  },
+  "metadata" : {
+    "status" : "COMPLETED",
+    "timestamp" : 1792870653847,
+    "duration" : 810,
+    "sequenceNumber" : 94,
+    "depth" : 0,
+    "evaluatedCommand" : {
+      "takeScreenshotCommand" : {
+        "path" : "12-tour-5-care",
+        "optional" : false
+      }
+    },
+    "artifacts" : [ {
+      "type" : "TAKE_SCREENSHOT",
+      "path" : "takeScreenshot/12-tour-5-care.png"
+    } ]
+  }
+}, {
+  "command" : {
+    "tapOnElement" : {
+      "selector" : {
+        "textRegex" : "Next",
+        "optional" : false
+      },
+      "retryIfNoChange" : false,
+      "waitUntilVisible" : false,
+      "longPress" : false,
+      "optional" : false
+    }
+  },
+  "metadata" : {
+    "status" : "COMPLETED",
+    "timestamp" : 1792870654657,
+    "duration" : 39471,
+    "sequenceNumber" : 95,
+    "depth" : 0,
+    "evaluatedCommand" : {
+      "tapOnElement" : {
+        "selector" : {
+          "textRegex" : "Next",
+          "optional" : false
+        },
+        "retryIfNoChange" : false,
+        "waitUntilVisible" : false,
+        "longPress" : false,
+        "optional" : false
+      }
+    }
+  }
+}, {
+  "command" : {
+    "assertConditionCommand" : {
+      "condition" : {
+        "visible" : {
+          "textRegex" : "And this is where your family lives.*",
+          "optional" : false
+        }
+      },
+      "timeout" : "10000",
+      "optional" : false
+    }
+  },
+  "metadata" : {
+    "status" : "COMPLETED",
+    "timestamp" : 1792870694129,
+    "duration" : 1302,
+    "sequenceNumber" : 96,
+    "depth" : 0,
+    "evaluatedCommand" : {
+      "assertConditionCommand" : {
+        "condition" : {
+          "visible" : {
+            "textRegex" : "And this is where your family lives.*",
+            "optional" : false
+          }
+        },
+        "timeout" : "10000",
+        "optional" : false
+      }
+    }
+  }
+}, {
+  "command" : {
+    "takeScreenshotCommand" : {
+      "path" : "12-tour-6-family",
+      "optional" : false
+    }
+  },
+  "metadata" : {
+    "status" : "COMPLETED",
+    "timestamp" : 1792870695432,
+    "duration" : 579,
+    "sequenceNumber" : 97,
+    "depth" : 0,
+    "evaluatedCommand" : {
+      "takeScreenshotCommand" : {
+        "path" : "12-tour-6-family",
+        "optional" : false
+      }
+    },
+    "artifacts" : [ {
+      "type" : "TAKE_SCREENSHOT",
+      "path" : "takeScreenshot/12-tour-6-family.png"
+    } ]
+  }
+}, {
+  "command" : {
+    "tapOnElement" : {
+      "selector" : {
+        "textRegex" : "Next",
+        "optional" : false
+      },
+      "retryIfNoChange" : false,
+      "waitUntilVisible" : false,
+      "longPress" : false,
+      "optional" : false
+    }
+  },
+  "metadata" : {
+    "status" : "COMPLETED",
+    "timestamp" : 1792870696011,
+    "duration" : 14930,
+    "sequenceNumber" : 98,
+    "depth" : 0,
+    "evaluatedCommand" : {
+      "tapOnElement" : {
+        "selector" : {
+          "textRegex" : "Next",
+          "optional" : false
+        },
+        "retryIfNoChange" : false,
+        "waitUntilVisible" : false,
+        "longPress" : false,
+        "optional" : false
+      }
+    }
+  }
+}, {
+  "command" : {
+    "assertConditionCommand" : {
+      "condition" : {
+        "visible" : {
+          "textRegex" : "This is my favourite room.*",
+          "optional" : false
+        }
+      },
+      "timeout" : "10000",
+      "optional" : false
+    }
+  },
+  "metadata" : {
+    "status" : "COMPLETED",
+    "timestamp" : 1792870710942,
+    "duration" : 339,
+    "sequenceNumber" : 99,
+    "depth" : 0,
+    "evaluatedCommand" : {
+      "assertConditionCommand" : {
+        "condition" : {
+          "visible" : {
+            "textRegex" : "This is my favourite room.*",
+            "optional" : false
+          }
+        },
+        "timeout" : "10000",
+        "optional" : false
+      }
+    }
+  }
+}, {
+  "command" : {
+    "takeScreenshotCommand" : {
+      "path" : "12-tour-7-talk",
+      "optional" : false
+    }
+  },
+  "metadata" : {
+    "status" : "COMPLETED",
+    "timestamp" : 1792870711282,
+    "duration" : 679,
+    "sequenceNumber" : 100,
+    "depth" : 0,
+    "evaluatedCommand" : {
+      "takeScreenshotCommand" : {
+        "path" : "12-tour-7-talk",
+        "optional" : false
+      }
+    },
+    "artifacts" : [ {
+      "type" : "TAKE_SCREENSHOT",
+      "path" : "takeScreenshot/12-tour-7-talk.png"
+    } ]
+  }
+}, {
+  "command" : {
+    "tapOnElement" : {
+      "selector" : {
+        "textRegex" : "Next",
+        "optional" : false
+      },
+      "retryIfNoChange" : false,
+      "waitUntilVisible" : false,
+      "longPress" : false,
+      "optional" : false
+    }
+  },
+  "metadata" : {
+    "status" : "COMPLETED",
+    "timestamp" : 1792870711961,
+    "duration" : 50445,
+    "sequenceNumber" : 101,
+    "depth" : 0,
+    "evaluatedCommand" : {
+      "tapOnElement" : {
+        "selector" : {
+          "textRegex" : "Next",
+          "optional" : false
+        },
+        "retryIfNoChange" : false,
+        "waitUntilVisible" : false,
+        "longPress" : false,
+        "optional" : false
+      }
+    }
+  }
+}, {
+  "command" : {
+    "assertConditionCommand" : {
+      "condition" : {
+        "visible" : {
+          "textRegex" : "Behind this little wheel.*",
+          "optional" : false
+        }
+      },
+      "timeout" : "10000",
+      "optional" : false
+    }
+  },
+  "metadata" : {
+    "status" : "COMPLETED",
+    "timestamp" : 1792870762406,
+    "duration" : 3102,
+    "sequenceNumber" : 102,
+    "depth" : 0,
+    "evaluatedCommand" : {
+      "assertConditionCommand" : {
+        "condition" : {
+          "visible" : {
+            "textRegex" : "Behind this little wheel.*",
+            "optional" : false
+          }
+        },
+        "timeout" : "10000",
+        "optional" : false
+      }
+    }
+  }
+}, {
+  "command" : {
+    "takeScreenshotCommand" : {
+      "path" : "12-tour-8-settings",
+      "optional" : false
+    }
+  },
+  "metadata" : {
+    "status" : "COMPLETED",
+    "timestamp" : 1792870765509,
+    "duration" : 738,
+    "sequenceNumber" : 103,
+    "depth" : 0,
+    "evaluatedCommand" : {
+      "takeScreenshotCommand" : {
+        "path" : "12-tour-8-settings",
+        "optional" : false
+      }
+    },
+    "artifacts" : [ {
+      "type" : "TAKE_SCREENSHOT",
+      "path" : "takeScreenshot/12-tour-8-settings.png"
+    } ]
+  }
+}, {
+  "command" : {
+    "tapOnElement" : {
+      "selector" : {
+        "textRegex" : "Next",
+        "optional" : false
+      },
+      "retryIfNoChange" : false,
+      "waitUntilVisible" : false,
+      "longPress" : false,
+      "optional" : false
+    }
+  },
+  "metadata" : {
+    "status" : "COMPLETED",
+    "timestamp" : 1792870766247,
+    "duration" : 91933,
+    "sequenceNumber" : 104,
+    "depth" : 0,
+    "evaluatedCommand" : {
+      "tapOnElement" : {
+        "selector" : {
+          "textRegex" : "Next",
+          "optional" : false
+        },
+        "retryIfNoChange" : false,
+        "waitUntilVisible" : false,
+        "longPress" : false,
+        "optional" : false
+      }
+    }
+  }
+}, {
+  "command" : {
+    "assertConditionCommand" : {
+      "condition" : {
+        "visible" : {
+          "textRegex" : "That's my whole home.*",
+          "optional" : false
+        }
+      },
+      "timeout" : "10000",
+      "optional" : false
+    }
+  },
+  "metadata" : {
+    "status" : "COMPLETED",
+    "timestamp" : 1792870858183,
+    "duration" : 3869,
+    "sequenceNumber" : 105,
+    "depth" : 0,
+    "evaluatedCommand" : {
+      "assertConditionCommand" : {
+        "condition" : {
+          "visible" : {
+            "textRegex" : "That's my whole home.*",
+            "optional" : false
+          }
+        },
+        "timeout" : "10000",
+        "optional" : false
+      }
+    }
+  }
+}, {
+  "command" : {
+    "takeScreenshotCommand" : {
+      "path" : "12-tour-9-end",
+      "optional" : false
+    }
+  },
+  "metadata" : {
+    "status" : "COMPLETED",
+    "timestamp" : 1792870862053,
+    "duration" : 770,
+    "sequenceNumber" : 106,
+    "depth" : 0,
+    "evaluatedCommand" : {
+      "takeScreenshotCommand" : {
+        "path" : "12-tour-9-end",
+        "optional" : false
+      }
+    },
+    "artifacts" : [ {
+      "type" : "TAKE_SCREENSHOT",
+      "path" : "takeScreenshot/12-tour-9-end.png"
+    } ]
+  }
+}, {
+  "command" : {
+    "tapOnElement" : {
+      "selector" : {
+        "textRegex" : "Thank you",
+        "optional" : false
+      },
+      "retryIfNoChange" : false,
+      "waitUntilVisible" : false,
+      "longPress" : false,
+      "optional" : false
+    }
+  },
+  "metadata" : {
+    "status" : "COMPLETED",
+    "timestamp" : 1792870862823,
+    "duration" : 41630,
+    "sequenceNumber" : 107,
+    "depth" : 0,
+    "evaluatedCommand" : {
+      "tapOnElement" : {
+        "selector" : {
+          "textRegex" : "Thank you",
+          "optional" : false
+        },
+        "retryIfNoChange" : false,
+        "waitUntilVisible" : false,
+        "longPress" : false,
+        "optional" : false
+      }
+    }
+  }
+}, {
+  "command" : {
+    "waitForAnimationToEndCommand" : {
+      "optional" : false
+    }
+  },
+  "metadata" : {
+    "status" : "COMPLETED",
+    "timestamp" : 1792870904453,
+    "duration" : 15212,
+    "sequenceNumber" : 108,
+    "depth" : 0,
+    "evaluatedCommand" : {
+      "waitForAnimationToEndCommand" : {
+        "optional" : false
+      }
+    }
+  }
+}, {
+  "command" : {
+    "takeScreenshotCommand" : {
+      "path" : "12-today-after-tour",
+      "optional" : false
+    }
+  },
+  "metadata" : {
+    "status" : "COMPLETED",
+    "timestamp" : 1792870919666,
+    "duration" : 855,
+    "sequenceNumber" : 109,
+    "depth" : 0,
+    "evaluatedCommand" : {
+      "takeScreenshotCommand" : {
+        "path" : "12-today-after-tour",
+        "optional" : false
+      }
+    },
+    "artifacts" : [ {
+      "type" : "TAKE_SCREENSHOT",
+      "path" : "takeScreenshot/12-today-after-tour.png"
+    } ]
+  }
+} ]
