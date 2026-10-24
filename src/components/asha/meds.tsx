@@ -492,12 +492,12 @@ export function MedsScreen() {
         <PhotoAsk medId={askPhoto} onDone={() => setAskPhoto(null)} />
       ) : (
         <div className="mt-4 flex flex-col gap-3">
-          <Button onClick={() => setAdding(true)}>{t(lang, { en: "Add a medicine", hi: "दवा जोड़ें" })}</Button>
+          <Button data-tour="meds-add" onClick={() => setAdding(true)}>{t(lang, { en: "Add a medicine", hi: "दवा जोड़ें" })}</Button>
           {reading ? (
             <p className="text-lg font-bold text-sage">{t(lang, { en: "Reading the page…", hi: "पन्ना पढ़ रही हूँ…" })}</p>
           ) : (
             <div className="grid grid-cols-2 gap-2">
-              <Button variant="quiet" onClick={() => fileRef.current?.click()}>
+              <Button data-tour="meds-photo" variant="quiet" onClick={() => fileRef.current?.click()}>
                 {t(lang, { en: "Photo of prescription", hi: "पर्ची की फ़ोटो लें" })}
               </Button>
               <Button variant="quiet" onClick={() => galleryRef.current?.click()}>

@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useLayoutEffect, useState } from "react";
 import { App as NativeApp } from "@capacitor/app";
 import { HeartHandshake, Leaf, MessageCircle, Pill, Settings, Sun } from "lucide-react";
 import { CareScreen } from "@/components/asha/care";
@@ -128,7 +128,8 @@ function Shell() {
       {onboarded && introSeen && roleChosen && !familyMode && tourDone && tab !== "sos" ? <DoseSpotlight /> : null}
       <FamilyEngine />
       {/* in the intro and setup the fairy talks in her own bubble (with Again); the dark bar covered her words and the headings */}
-      {introSeen && roleChosen && (onboarded || familyMode) ? <Speaking docked={onboarded && !familyMode} /> : null}
+      {/* on the tour her bubble has its own Again, and the bar would sit over what she is showing */}
+      {introSeen && roleChosen && (onboarded || familyMode) && (tourDone || familyMode) ? <Speaking docked={onboarded && !familyMode} /> : null}
       <QuietSheet />
       <RememberSheet />
       <AskHow />
@@ -235,9 +236,19 @@ function Nav() {
 function Speaking({ docked }: { docked: boolean }) {
   const lang = useAsha((s) => s.lang);
   const active = useSpeech((s) => s.active);
+  // just above the tab bar, however tall it is (big text and the phone's own bar make it taller than it looks)
+  const [above, setAbove] = useState(88);
+  useLayoutEffect(() => {
+    if (!active || !docked) return;
+    const nav = document.querySelector("nav.dock");
+    if (nav) setAbove(Math.round(window.innerHeight - nav.getBoundingClientRect().top + 8));
+  }, [active, docked]);
   if (!active) return null;
   return (
-    <div className={cn("fixed inset-x-0 z-30 px-4", docked ? "bottom-20" : "top-[calc(env(safe-area-inset-top)+5.5rem)]")}>
+    <div
+      className={cn("fixed inset-x-0 z-30 px-4", docked ? "" : "top-[calc(env(safe-area-inset-top)+5.5rem)]")}
+      style={docked ? { bottom: above } : undefined}
+    >
       <div className="mx-auto flex w-full max-w-lg items-center justify-between gap-3 rounded-2xl bg-ink px-4 py-3 text-paper">
         <p className="text-lg">{t(lang, { en: "Asha is speaking", hi: "आशा बोल रही हैं" })}</p>
         <button type="button" onClick={() => stopSpeaking()} className="min-h-11 rounded-xl bg-paper px-4 font-bold text-ink">
