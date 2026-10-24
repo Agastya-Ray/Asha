@@ -29,6 +29,12 @@ final class FairyCard {
         return ctx.getResources().getIdentifier(name, "id", ctx.getPackageName());
     }
 
+    private static String centre(View v) {
+        int[] xy = new int[2];
+        v.getLocationOnScreen(xy);
+        return (xy[0] + v.getWidth() / 2) + "," + (xy[1] + v.getHeight() / 2);
+    }
+
     static void fill(Context ctx, View pop, JSONObject t, int attempt, Actions a) {
         String key = t.optString("key");
         boolean greet = "greet".equals(t.optString("kind"));
@@ -60,6 +66,10 @@ final class FairyCard {
             later.setText(t.optString("snoozeLabel", "10 min later"));
             later.setVisibility(View.VISIBLE);
             later.setOnClickListener(v -> a.answer(ActionReceiver.pending(ctx, key, "snooze", day), false));
+        }
+        if ((ctx.getApplicationInfo().flags & android.content.pm.ApplicationInfo.FLAG_DEBUGGABLE) != 0) {
+            // the emulator test taps these by position (her floating animation keeps uiautomator from reading the screen)
+            taken.postDelayed(() -> android.util.Log.i("AshaFairy", "buttons taken=" + centre(taken) + " later=" + centre(later)), 1600);
         }
         fairy.setOnClickListener(v -> a.open());
         title.setOnClickListener(v -> a.open());

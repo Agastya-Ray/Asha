@@ -79,12 +79,15 @@ for blk in re.split(r"\n  Window #", x):
     if m and "mViewVisibility=0x0" in blk and int(m[3])-int(m[1]) > 600: print(m[1],m[2],m[3],m[4]); break
 ' "$OUT/windows-pop-now.txt"
 }
+# her card's buttons, by the position the debug build logs (uiautomator cannot read a screen that keeps moving)
 pop_tap() {
-  local f up; f=$(pop_frame); [ -z "$f" ] && { echo ""; return; }
-  up=$([ "$1" = taken ] && echo 310 || echo 126)
-  set -- $f; local xy="$(( ($1+$3)/2 )) $(( $4-up ))"; adb shell input tap $xy; echo "$xy"
+  sleep 2
+  local line xy; line=$(grep "AshaFairy( *[0-9]*): buttons" "$OUT/logcat-stream.txt" | tail -1)
+  [ -z "$line" ] && { echo ""; return; }
+  if [ "$1" = taken ]; then xy=$(echo "$line" | sed -E 's/.*taken=([0-9]+),([0-9]+).*/\1 \2/'); else xy=$(echo "$line" | sed -E 's/.*later=([0-9]+),([0-9]+).*/\1 \2/'); fi
+  adb shell input tap $xy; echo "$xy"
 }
-pop_title() { grep "AshaFairy" "$OUT/logcat-stream.txt" | tail -1 | sed 's/.*| //'; }
+pop_title() { grep "AshaFairy.*: pop " "$OUT/logcat-stream.txt" | tail -1 | sed 's/.*| //'; }
 
 top_activity() { adb shell dumpsys activity activities | grep -m1 -E "topResumedActivity|mResumedActivity"; }
 launch() { adb shell monkey -p $PKG -c android.intent.category.LAUNCHER 1 >/dev/null 2>&1; sleep 10; }
@@ -113,7 +116,7 @@ adb shell appops get $PKG USE_FULL_SCREEN_INTENT >> "$OUT/full-screen-permission
 launch
 
 # ---------- A. she asks to live on the home screen: one press, no permission ----------
-xy=$(find_webview "^Yes, live on my screen$")
+xy=$(find_webview "Yes, live on my screen"); [ -z "$xy" ] && xy=$(center "Yes, live on my screen")
 shot F01-today-she-asks
 [ -n "$xy" ] && pass "Today: she asks to live on the home screen" || fail "Today: no 'Yes, live on my screen'"
 [ -n "$xy" ] && adb shell input tap $xy; sleep 5
@@ -155,12 +158,12 @@ shot F08-alarm-over-lock-screen
 top_activity > "$OUT/alarm-activity.txt"
 grep -q "ReminderAlarmActivity" "$OUT/alarm-activity.txt" && pass "08:00: full-screen fairy over the lock screen" || fail "08:00: no full-screen fairy ($(cat "$OUT/alarm-activity.txt"))"
 FIRST=$(pop_title); log "first: $FIRST"
-xy=$(center "^(Taken|Eaten ✓|Eaten)$"); [ -n "$xy" ] && adb shell input tap $xy || fail "no Taken on the alarm"
+xy=$(pop_tap taken); [ -n "$xy" ] && log "tapped Taken/Eaten at $xy" || fail "no Taken on the alarm"
 sleep 1; shot F09-alarm-taken-happy
 sleep 4; shot F10-alarm-next-reminder
 SECOND=$(pop_title); log "second: $SECOND"
 [ -n "$SECOND" ] && [ "$SECOND" != "$FIRST" ] && pass "the second 08:00 reminder came next" || fail "no second reminder (first '$FIRST', then '$SECOND')"
-xy=$(center "min later"); [ -n "$xy" ] && adb shell input tap $xy || fail "no Later on the alarm"
+xy=$(pop_tap later); [ -n "$xy" ] && log "tapped Later at $xy" || fail "no Later on the alarm"
 sleep 3; shot F11-after-later
 wait $REC 2>/dev/null; adb pull /sdcard/fairy-alarm.mp4 "$OUT/fairy-alarm.mp4" >/dev/null 2>&1
 top_activity | grep -q "ReminderAlarmActivity" && fail "the alarm stayed after Later" || pass "after Later the alarm closes"
