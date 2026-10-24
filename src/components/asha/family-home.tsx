@@ -256,7 +256,7 @@ function Joined() {
         <p className="text-lg font-bold">{t(lang, { en: "In your own words", hi: "अपने शब्दों में" })}</p>
         <div className="mt-2">
           <CustomComposer />
-          <VoiceNote />
+          <VoiceNote schedule />
         </div>
       </Card>
       <FamilyMedPhotos circle={circle} />

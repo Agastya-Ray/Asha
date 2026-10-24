@@ -18,6 +18,8 @@ export type FamilyMsg = {
   en: string;
   hi: string;
   voice: boolean;
+  /** a held voice note: when it will play for the elder (only its sender sees it before then) */
+  scheduledFor?: string | null;
   /** a photo of a medicine (template = the medicine's id) */
   photo?: boolean;
   silent: boolean;
@@ -343,8 +345,39 @@ export async function sendHeart(circle = circleId()) {
 export async function sendCustom(text: string, circle = circleId()) {
   return afterSend(await call<{ id: number }>("send", { circleId: circle, kind: "custom", text }));
 }
-export async function sendVoice(audio: string, mime: string, circle = circleId()) {
-  return afterSend(await call<{ id: number }>("send", { circleId: circle, kind: "voice", audio, mime }, 45000));
+/** at: "now", or "HH:MM" on the elder's clock (the next time it comes round). */
+export async function sendVoice(audio: string, mime: string, circle = circleId(), at = "now") {
+  return afterSend(await call<{ id: number; scheduled?: string }>("send", { circleId: circle, kind: "voice", audio, mime, at }, 45000));
+}
+
+/** Plays a voice note; resolves when it ends (or fails). */
+export async function playVoiceNote(id: number) {
+  const url = await voiceUrl(id);
+  if (!url) return false;
+  return new Promise<boolean>((resolve) => {
+    const a = new Audio(url);
+    a.onended = () => resolve(true);
+    a.onerror = () => resolve(false);
+    void a.play().catch(() => resolve(false));
+  });
+}
+
+const HIDDEN = "asha.hiddenNotes.v1";
+/** Voice notes the elder said upset her: never played or shown again on this phone. */
+export function hiddenNotes(): number[] {
+  try {
+    return JSON.parse(localStorage.getItem(HIDDEN) ?? "[]") as number[];
+  } catch {
+    return [];
+  }
+}
+export function hideNote(id: number) {
+  try {
+    localStorage.setItem(HIDDEN, JSON.stringify([...hiddenNotes(), id].slice(-300)));
+  } catch {
+    /* hidden for this session only */
+  }
+  useFamily.setState((s) => ({ heardLocal: [...new Set([...s.heardLocal, id])], messages: [...s.messages] }));
 }
 export async function react(id: number, reaction = "❤️") {
   useFamily.setState((s) => ({ messages: s.messages.map((m) => (m.id === id ? { ...m, reaction, heardAt: m.heardAt ?? new Date().toISOString() } : m)) }));

@@ -445,8 +445,11 @@ async function send(d: Device, b: Body) {
     return json({ ok: true, id: r.message.id, pushed: r.pushed, checkedByAi: v.checkedByAi });
   }
 
-  // voice note
+  // voice note (now, or held for a time of day on the elder's clock)
   if (!key) return err("voice-needs-setup", 503);
+  const elderDev = (await db.from("devices").select("*").eq("id", circle.elder_id).single()).data as Device;
+  const when = elderSide ? null : deliverAt(str(b.at, 10), elderDev.tz);
+  if (when === undefined) return err("bad-time");
   const audio = String(b.audio ?? "");
   const mime = str(b.mime, 40) || "audio/webm";
   if (!audio || audio.length > 700000) return err("too-long");
@@ -456,7 +459,7 @@ async function send(d: Device, b: Body) {
   const bytes = Uint8Array.from(atob(audio), (c) => c.charCodeAt(0));
   const up = await db.storage.from("voice").upload(path, bytes, { contentType: mime.split(";")[0], upsert: false });
   if (up.error) return err("upload-failed", 500);
-  const r = await deliver(circle, d, {
+  const msg = {
     to_device: to,
     kind: "voice",
     template: null,
@@ -465,8 +468,55 @@ async function send(d: Device, b: Body) {
     original: v.said ?? null,
     audio_path: path,
     silent: false,
-  });
+  };
+  if (when) {
+    const { data: row, error } = await db
+      .from("messages")
+      .insert({ ...msg, circle_id: circle.id, from_device: d.id, pending: true, deliver_at: when.toISOString() })
+      .select("id")
+      .single();
+    if (error || !row) return err("server-error", 500);
+    return json({ ok: true, id: row.id, pushed: 0, scheduled: when.toISOString() });
+  }
+  const r = await deliver(circle, d, msg);
   return json({ ok: true, id: r.message.id, pushed: r.pushed });
+}
+
+/** "now" / "" -> null (send now). "HH:MM" -> the next time the elder's clock shows it. Anything else -> undefined. */
+function deliverAt(at: string, tz: string): Date | null | undefined {
+  if (!at || at === "now") return null;
+  if (!/^\d{2}:\d{2}$/.test(at)) return undefined;
+  const want = toMin(at);
+  if (want >= 24 * 60) return undefined;
+  const now = localNow(tz).min;
+  const minutes = (want - now + 1440) % 1440 || 1440;
+  return new Date(Date.now() + minutes * 60000);
+}
+
+/** Held voice notes whose time has come: delivered as fresh messages (pushed then, with that time). */
+async function releaseHeld() {
+  const { data: due } = await db.from("messages").select("*").eq("pending", true).lte("deliver_at", new Date().toISOString()).limit(200);
+  let n = 0;
+  for (const m of due ?? []) {
+    const { data: c } = await db.from("circles").select("*").eq("id", m.circle_id).maybeSingle();
+    const { data: from } = await db.from("devices").select("*").eq("id", m.from_device).maybeSingle();
+    await db.from("messages").delete().eq("id", m.id);
+    if (!c || !from) continue;
+    const member = await membership(c.id, from.id);
+    if (!member || member.blocked) continue;
+    await deliver(c as Circle, from as Device, {
+      to_device: m.to_device,
+      kind: m.kind,
+      template: m.template,
+      text_en: m.text_en,
+      text_hi: m.text_hi,
+      original: m.original ?? null,
+      audio_path: m.audio_path,
+      silent: false,
+    });
+    n += 1;
+  }
+  return n;
 }
 
 /**
@@ -561,7 +611,7 @@ async function inbox(d: Device, b: Body) {
   if (!circleIds.length) return json({ ok: true, messages: [] });
   let q = db
     .from("messages")
-    .select("id, circle_id, from_device, to_device, kind, template, text_en, text_hi, audio_path, photo_path, silent, heard_at, heard_by, reaction, created_at")
+    .select("id, circle_id, from_device, to_device, kind, template, text_en, text_hi, audio_path, photo_path, silent, heard_at, heard_by, reaction, created_at, pending, deliver_at")
     .in("circle_id", circleIds)
     .order("id", { ascending: false })
     .limit(80);
@@ -576,6 +626,8 @@ async function inbox(d: Device, b: Body) {
   const { data: circles } = await db.from("circles").select("id, elder_id").in("id", circleIds);
   const elderOf = new Map((circles ?? []).map((c) => [c.id, c.elder_id]));
   const out = (rows ?? []).filter((m) => {
+    // a held voice note is seen only by the one who recorded it, until its time
+    if (m.pending && m.from_device !== d.id) return false;
     if (m.from_device && hidden.has(m.from_device)) return false;
     if (m.to_device && m.to_device !== d.id && m.from_device !== d.id) return false;
     if (d.role === "family") {
@@ -597,6 +649,7 @@ async function inbox(d: Device, b: Body) {
       en: m.text_en,
       hi: m.text_hi,
       voice: Boolean(m.audio_path),
+      scheduledFor: m.pending ? m.deliver_at : null,
       photo: Boolean(m.photo_path),
       silent: m.silent,
       heardAt: m.heard_at,
@@ -759,9 +812,10 @@ async function cron(req: Request) {
       await db.from("circles").update({ last_nudge_day: now.day }).eq("id", c.id);
     }
   }
+  const released = await releaseHeld();
   // keep 90 days only
   await db.from("messages").delete().lt("created_at", new Date(Date.now() - 90 * 24 * 3600 * 1000).toISOString());
-  return json({ ok: true, digests, nudges });
+  return json({ ok: true, digests, nudges, released });
 }
 
 // ---------- router ----------

@@ -13,6 +13,8 @@ export type Contact = {
   name: string;
   relation: string;
   phone: string;
+  /** when a photo of them was saved for the call buttons (the photo is in IndexedDB, see faces.ts) */
+  photoAt?: number;
 };
 
 export type Med = {
@@ -31,6 +33,23 @@ export type Med = {
   photoAt?: number;
   /** who added the photo, when it came from family ("Priya") */
   photoBy?: string;
+};
+
+/** A prescription the person kept: what the doctor wrote, so the fairy can answer "what did the doctor say?" */
+export type Prescription = {
+  id: string;
+  /** date written on the page, YYYY-MM-DD, or "" */
+  date: string;
+  doctor: string;
+  /** one line per medicine, as it was added */
+  meds: string[];
+  /** the doctor's other advice */
+  instructions: string[];
+  /** next visit, YYYY-MM-DD, or "" */
+  followUp: string;
+  savedAt: number;
+  /** a photo of the page is kept on this phone */
+  hasPhoto: boolean;
 };
 
 export type MealPreset = "breakfast" | "lunch" | "snack" | "dinner";
@@ -143,4 +162,5 @@ export type Persist = {
   coachDismissed: boolean;
   sample: boolean;
   chat: ChatTurn[];
+  prescriptions: Prescription[];
 };
