@@ -1,0 +1,97 @@
+Anonymous analytics enabled. To opt out, set MAESTRO_CLI_NO_ANALYTICS environment variable to any value before running Maestro.
+
+Running on test
+ > Flow 01_setup
+Launch app "com.agastyaray.asha" with clear state... COMPLETED
+Assert that "Wake the fairy" is visible... FAILED
+
+Assertion is false: "Wake the fairy" is visible
+
+Assertion '"Wake the fairy" is visible' failed. Check the UI hierarchy in debug artifacts to verify the element state and properties.
+
+Possible causes:
+- Element selector may be incorrect - check if there are similar elements with slightly different names/properties.
+- Element may be temporarily unavailable due to loading state
+- This could be a real regression that needs to be addressed
+
+==== Debug output (logs & screenshots) ====
+
+/home/runner/work/Asha/Asha/results/maestro-01_setup/2026-10-24_113857
+Running on test
+ > Flow 01_setup
+Launch app "com.agastyaray.asha" with clear state... COMPLETED
+Assert that "Wake the fairy" is visible... FAILED
+
+Assertion is false: "Wake the fairy" is visible
+
+Assertion '"Wake the fairy" is visible' failed. Check the UI hierarchy in debug artifacts to verify the element state and properties.
+
+Possible causes:
+- Element selector may be incorrect - check if there are similar elements with slightly different names/properties.
+- Element may be temporarily unavailable due to loading state
+- This could be a real regression that needs to be addressed
+
+==== Debug output (logs & screenshots) ====
+
+/home/runner/work/Asha/Asha/results/maestro-01_setup/2026-10-24_114128
+Running on test
+ > Flow 02_permissions
+Launch app "com.agastyaray.asha"... COMPLETED
+Wait for animation to end... COMPLETED
+Take screenshot 20-today-reminder-card... COMPLETED
+Tap on (Optional) "1. Allow reminders on screen"... WARNED
+
+
+ Warning: Element not found: Text matching regex: 1. Allow reminders on screen
+Take screenshot 21-notification-permission-dialog... COMPLETED
+Tap on (Optional) "Allow"... WARNED
+
+
+ Warning: Element not found: Text matching regex: Allow
+Wait for animation to end... COMPLETED
+Take screenshot 22-after-allow-notifications... COMPLETED
+Tap on (Optional) "2. Allow exact times"... WARNED
+
+
+ Warning: Element not found: Text matching regex: 2. Allow exact times
+Wait for animation to end... COMPLETED
+Take screenshot 23-exact-alarm-settings... COMPLETED
+Press back... COMPLETED
+Wait for animation to end... COMPLETED
+Take screenshot 24-back-from-exact-alarm... COMPLETED
+Running on test
+ > Flow fairy_home_ask
+Scrolling DOWN until "Yes, live on my screen" is visible with speed 40, visibility percentage 100%, timeout 20000 ms, with centering enabled... FAILED
+
+No visible element found: "Yes, live on my screen"
+
+Could not find a visible element matching selector: "Yes, live on my screen"
+Tip: Try adjusting the following settings to improve detection:
+- `timeout`: current = 20000ms → Increase if you need more time to find the element
+- `speed`: current = 40 (0-100 scale) → Increase for faster scrolling if element is far away
+- `waitToSettleTimeoutMs`: current = Not defined → Set this value (e.g., 500ms) if your UI updates frequently between scrolls
+- `visibilityPercentage`: current = 100% → Lower this value if you want to detect partially visible elements
+- `centerElement`: current = true → Disable if you don't need the element to be centered after finding it
+
+
+==== Debug output (logs & screenshots) ====
+
+/home/runner/work/Asha/Asha/results/maestro-fairy_home_ask/2026-10-24_114636
+Running on test
+ > Flow fairy_home_ask
+Scrolling DOWN until "Yes, live on my screen" is visible with speed 40, visibility percentage 100%, timeout 20000 ms, with centering enabled... FAILED
+
+No visible element found: "Yes, live on my screen"
+
+Could not find a visible element matching selector: "Yes, live on my screen"
+Tip: Try adjusting the following settings to improve detection:
+- `timeout`: current = 20000ms → Increase if you need more time to find the element
+- `speed`: current = 40 (0-100 scale) → Increase for faster scrolling if element is far away
+- `waitToSettleTimeoutMs`: current = Not defined → Set this value (e.g., 500ms) if your UI updates frequently between scrolls
+- `visibilityPercentage`: current = 100% → Lower this value if you want to detect partially visible elements
+- `centerElement`: current = true → Disable if you don't need the element to be centered after finding it
+
+
+==== Debug output (logs & screenshots) ====
+
+/home/runner/work/Asha/Asha/results/maestro-fairy_home_ask/2026-10-24_114729
