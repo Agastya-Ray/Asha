@@ -292,6 +292,9 @@ relaunch() { adb shell am force-stop $PKG; adb shell monkey -p $PKG -c android.i
 setclock 101608302026.00
 adb shell "sed -i '/name=\"bubble\"/d' $PREFS"
 adb shell am force-stop $PKG
+# 08:30 brings the morning dose up full screen over Today; take it so the checks below can see Today
+relaunch
+for i in 1 2 3; do xy=$(center_webview "^(I've taken it|ले ली) ✓"); [ -n "$xy" ] || break; adb shell input tap $xy; log "stress: took the dose shown full screen"; sleep 3; done
 
 # 1. notifications refused
 adb shell pm revoke $PKG android.permission.POST_NOTIFICATIONS && log "stress: notifications refused"
