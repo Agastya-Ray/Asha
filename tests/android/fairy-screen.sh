@@ -54,9 +54,9 @@ find_webview() {
 }
 run_flow() { (cd "$OUT" && maestro test --test-output-dir "$OUT/maestro-${1%.yaml}" "$FLOWS/$1" >> "$OUT/maestro.log" 2>&1); }
 flow() { log "flow $1"; run_flow "$1" || { log "flow $1 retry"; run_flow "$1" || { fail "flow $1 (see maestro.log)"; shot "fail-${1%.yaml}"; }; }; }
-# The times below are written for 15 Oct 2026 (16 Oct = the next day) but run on today's date, so the phone's
-# clock is never behind a server's freshly renewed TLS certificate (that broke the family calls on 24 Oct).
-DAY0=$(TZ=Asia/Kolkata date +%m%d); DAY1=$(TZ=Asia/Kolkata date -d tomorrow +%m%d); YEAR=$(TZ=Asia/Kolkata date +%Y); YEAR1=$(TZ=Asia/Kolkata date -d tomorrow +%Y)
+# The times below are written for 15 Oct 2026 (16 Oct = the next day) but run from tomorrow's date, so the phone's
+# 07:30 is never earlier than a server certificate renewed today (on 24 Oct one from 13:22 UTC broke every family call).
+DAY0=$(TZ=Asia/Kolkata date -d "+1 day" +%m%d); DAY1=$(TZ=Asia/Kolkata date -d "+2 days" +%m%d); YEAR=$(TZ=Asia/Kolkata date -d "+1 day" +%Y); YEAR1=$(TZ=Asia/Kolkata date -d "+2 days" +%Y)
 setclock() {
   local t="$1"
   case "$t" in 1015????2026.*) t="$DAY0${t:4:4}$YEAR${t:12}" ;; 1016????2026.*) t="$DAY1${t:4:4}$YEAR1${t:12}" ;; esac
