@@ -1,8 +1,9 @@
 import { useCallback, useEffect, useState } from "react";
 import { App as NativeApp } from "@capacitor/app";
-import { HeartHandshake, HeartPulse, Leaf, MessageCircle, Pill, Settings, Sun } from "lucide-react";
+import { HeartHandshake, Leaf, MessageCircle, Pill, Settings, Sun } from "lucide-react";
 import { CareScreen } from "@/components/asha/care";
 import { ReminderEngine } from "@/components/asha/engine";
+import { runBack } from "@/lib/asha/back";
 import { QuietBanner, QuietSheet } from "@/components/asha/quiet";
 import { MedsScreen } from "@/components/asha/meds";
 import { FairyDock, FamilyEngine } from "@/components/asha/family-engine";
@@ -10,6 +11,7 @@ import { FamilyHome } from "@/components/asha/family-home";
 import { FamilyScreen } from "@/components/asha/family-screen";
 import { FairyIntro } from "@/components/asha/fairy-intro";
 import { FairyTour } from "@/components/asha/fairy-guide";
+import { PetRoam } from "@/components/asha/roam";
 import { AskHow } from "@/components/asha/ideas/ask-how";
 import { RoleChoice } from "@/components/asha/role-choice";
 import { Onboarding } from "@/components/asha/onboarding";
@@ -67,10 +69,16 @@ function Shell() {
     if (!isNative) return;
     let remove: (() => void) | undefined;
     void NativeApp.addListener("backButton", () => {
+      if (runBack()) return;
       const s = useAsha.getState();
+      const family = s.introSeen && s.roleChosen && s.appRole === "family";
       if (s.tab === "settings") s.closeSettings();
-      else if (s.tab !== "today" && s.onboarded) s.setTab("today");
-      else void NativeApp.minimizeApp();
+      else if (s.tab !== "today" && s.onboarded && !family) s.setTab("today");
+      // during setup, back goes one step back, and from the first step to "who will use this phone?"
+      else if (s.introSeen && s.roleChosen && !s.onboarded && !family) {
+        if (s.setupStep > 1) s.setSetupStep((s.setupStep - 1) as 1 | 2 | 3);
+        else s.unchooseRole();
+      } else void NativeApp.minimizeApp();
     }).then((h) => {
       remove = () => void h.remove();
     });
@@ -82,7 +90,9 @@ function Shell() {
       <div className="mx-auto flex min-h-dvh w-full max-w-lg flex-col">
         <Header />
         {onboarded && introSeen && roleChosen && !familyMode ? <QuietBanner /> : null}
-        <main className="flex-1 px-4 pb-36">
+        <main
+          className={`flex-1 px-4 ${onboarded && introSeen && roleChosen && !familyMode ? "pb-36" : !introSeen ? "" : "pb-8"}`}
+        >
           {!introSeen ? (
             <FairyIntro />
           ) : !roleChosen ? (
@@ -110,7 +120,8 @@ function Shell() {
       </div>
       {onboarded && introSeen && roleChosen && !familyMode ? <Nav /> : null}
       {onboarded && introSeen && roleChosen && !familyMode && tourDone ? <FairyDock /> : null}
-      {onboarded && introSeen && roleChosen && !familyMode && !tourDone && tab === "today" ? <FairyTour /> : null}
+      {onboarded && introSeen && roleChosen && !familyMode && tourDone ? <PetRoam /> : null}
+      {onboarded && introSeen && roleChosen && !familyMode && !tourDone ? <FairyTour /> : null}
       <FamilyEngine />
       {/* in the intro and setup the fairy talks in her own bubble (with Again); the dark bar covered her words and the headings */}
       {introSeen && roleChosen && (onboarded || familyMode) ? <Speaking docked={onboarded && !familyMode} /> : null}
@@ -150,6 +161,7 @@ function Header() {
             <button
               type="button"
               aria-label={t(lang, { en: "Settings", hi: "सेटिंग" })}
+              data-tour="settings"
               onClick={() => openSettings()}
               className={cn(
                 "inline-flex size-12 items-center justify-center rounded-full border border-line",
@@ -162,10 +174,8 @@ function Header() {
               type="button"
               data-tour="help"
               onClick={() => setTab("sos")}
-              className={cn(
-                "min-h-12 rounded-full px-4 text-lg font-bold",
-                tab === "sos" ? "bg-ink text-paper" : "bg-sos text-paper",
-              )}
+              aria-current={tab === "sos" ? "page" : undefined}
+              className="btn-sos min-h-12 rounded-full bg-sos px-4 text-lg font-bold text-paper"
             >
               {t(lang, { en: "Help", hi: "मदद" })}
             </button>
@@ -179,7 +189,6 @@ function Header() {
 const TABS: { id: Tab; en: string; hi: string; icon: typeof Sun }[] = [
   { id: "today", en: "Today", hi: "आज", icon: Sun },
   { id: "meds", en: "Meds", hi: "दवा", icon: Pill },
-  { id: "care", en: "Care", hi: "देखभाल", icon: HeartPulse },
   { id: "family", en: "Family", hi: "परिवार", icon: HeartHandshake },
   { id: "talk", en: "Talk", hi: "बात", icon: MessageCircle },
 ];
@@ -190,7 +199,7 @@ function Nav() {
   const setTab = useAsha((s) => s.setTab);
   return (
     <nav data-tour="nav" aria-label={lang === "hi" ? "मुख्य" : "Main"} className="dock fixed inset-x-0 bottom-0 z-20 px-3">
-      <div className="nav-float mx-auto grid w-full max-w-lg grid-cols-5 p-1.5">
+      <div className="nav-float mx-auto grid w-full max-w-lg grid-cols-4 p-1.5">
         {TABS.map((item) => {
           const Icon = item.icon;
           const on = tab === item.id;
@@ -198,10 +207,12 @@ function Nav() {
             <button
               key={item.id}
               type="button"
+              data-tour-tab={item.id}
               onClick={() => setTab(item.id)}
-              className={cn("flex min-h-14 flex-col items-center justify-center gap-0.5 text-sm font-bold transition-colors", on ? "tab-on text-sage" : "text-quiet")}
+              aria-current={on ? "page" : undefined}
+              className={cn("flex min-h-[4.25rem] flex-col items-center justify-center gap-1 text-base font-bold transition-colors", on ? "tab-on text-sage" : "text-quiet")}
             >
-              <Icon className="size-5" aria-hidden />
+              <Icon className="size-7" aria-hidden strokeWidth={2.2} />
               {lang === "hi" ? item.hi : item.en}
             </button>
           );

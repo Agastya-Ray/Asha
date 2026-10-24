@@ -8,6 +8,7 @@ import { useAsha } from "@/lib/asha/store";
 import { clockLabel } from "@/lib/asha/time";
 import type { Lang } from "@/lib/asha/types";
 import { speak } from "@/lib/asha/voice";
+import { useBack } from "@/lib/asha/back";
 
 /** Opens the "how long should I be quiet?" sheet, from her voice, Talk, or her own button. */
 export const useQuietSheet = create<{ open: boolean; minutes: number; show: (minutes?: number) => void; hide: () => void }>((set) => ({
@@ -37,16 +38,25 @@ export function QuietSheet() {
   const lang = s.lang;
   const fairy = s.fairyName || t(lang, { en: "Your fairy", hi: "आपकी परी" });
   const quiet = isQuiet(s, now.getTime());
-  const sayV = (en: string, hi: string, loud = false) => void speak(s.voiceLang === "hi" ? hi : en, s.voiceLang, "fairy", loud);
+  useBack(() => {
+    hide();
+    return true;
+  }, open);
+  const sayV = (en: string, hi: string, loud = false) =>
+    void speak(s.voiceLang === "hi" ? hi : en, s.voiceLang, "fairy", loud);
 
   useEffect(() => {
     if (!open) return;
     setMinutes(asked);
-    // move focus into the sheet: screen readers (and Android's accessibility tree) then pick it up straight away
-    window.requestAnimationFrame(() => sheet.current?.focus());
+    // move focus onto the sheet's first button once it is laid out, so a screen reader starts on something
+    // it can press
+    const focus = window.setTimeout(() => {
+      const first = sheet.current?.querySelector<HTMLElement>("button");
+      (first ?? sheet.current)?.focus({ preventScroll: true });
+    }, 150);
     const st = useAsha.getState();
-    if (isQuiet(st)) return;
-    if (!asked) sayV("Shh, okay. For how long should I be quiet?", "श्श, ठीक है. कितनी देर चुप रहूँ?");
+    if (!isQuiet(st) && !asked) sayV("Shh, okay. For how long should I be quiet?", "श्श, ठीक है. कितनी देर चुप रहूँ?");
+    return () => window.clearTimeout(focus);
   }, [open, asked]);
 
   if (!open) return null;

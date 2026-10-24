@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { useBack } from "@/lib/asha/back";
 import { Settings } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, Choice, FieldLabel, LangSwitch, SpeakField, t } from "@/components/asha/bits";
@@ -29,6 +30,14 @@ export function FamilyHome() {
   const circles = useFamily((s) => s.circles);
   const [settings, setSettings] = useState(false);
   const [loading, setLoading] = useState(!circles.length);
+  const unchoose = useAsha((s) => s.unchooseRole);
+  // back key: out of settings first; before joining anyone, back to "who will use this phone?"
+  useBack(() => {
+    if (settings) setSettings(false);
+    else if (!circles.length) unchoose();
+    else return false;
+    return true;
+  });
 
   useEffect(() => {
     void refreshState().then(() => {
@@ -75,6 +84,7 @@ const RELATIONS = [
 
 function Join() {
   const lang = useAsha((s) => s.lang);
+  const unchoose = useAsha((s) => s.unchooseRole);
   const myName = useAsha((s) => s.name);
   const setName = useAsha((s) => s.setName);
   const [code, setCode] = useState("");
@@ -86,10 +96,41 @@ function Join() {
       <div className="flex items-center gap-4">
         <FairyScene news={false} mood="happy" size="md" />
         <div>
-          <h1 className="display text-4xl leading-tight">{t(lang, { en: "Join your family", hi: "परिवार से जुड़ें" })}</h1>
-          <p className="mt-1 text-lg text-quiet">{t(lang, { en: "Ask them for the 6-digit code from their Asha (Family tab).", hi: "उनकी आशा (परिवार टैब) से 6 अंकों का कोड माँगें." })}</p>
+          <h1 className="display text-4xl leading-tight">
+            {t(lang, { en: "Join your family", hi: "परिवार से जुड़ें" })}
+          </h1>
         </div>
       </div>
+      {/* where the code comes from, step by step: the person cared for makes it on their own phone */}
+      <ol className="mt-4 flex flex-col gap-2 rounded-2xl bg-paper p-4 text-lg">
+        <li>
+          <b>1.</b>{" "}
+          {t(lang, {
+            en: "On their phone (Maa, Papa…), open Asha and go to the Family tab.",
+            hi: "उनके फ़ोन पर (माँ, पापा…) आशा खोलें और परिवार टैब पर जाएँ.",
+          })}
+        </li>
+        <li>
+          <b>2.</b>{" "}
+          {t(lang, {
+            en: "Press “Make an invite code”. A 6-digit code appears.",
+            hi: "“बुलाने का कोड बनाएँ” दबाएँ. 6 अंकों का कोड आएगा.",
+          })}
+        </li>
+        <li>
+          <b>3.</b>{" "}
+          {t(lang, {
+            en: "Type that code below. It works for 2 days.",
+            hi: "वह कोड नीचे लिखें. यह 2 दिन चलता है.",
+          })}
+        </li>
+      </ol>
+      <p className="mt-2 text-base text-quiet">
+        {t(lang, {
+          en: "Once you join, you see how their day is going and can send them love notes. The fairy reads them out on their phone.",
+          hi: "जुड़ने के बाद आप उनका दिन देख सकेंगे और प्यार भरे संदेश भेज सकेंगे. परी उनके फ़ोन पर पढ़कर सुनाएगी.",
+        })}
+      </p>
       <div className="mt-6">
         <FieldLabel>{t(lang, { en: "Invite code", hi: "कोड" })}</FieldLabel>
         <input
@@ -134,6 +175,12 @@ function Join() {
           }}
         >
           {busy ? t(lang, { en: "Joining…", hi: "जुड़ रहे…" }) : t(lang, { en: "Join", hi: "जुड़ें" })}
+        </Button>
+      </div>
+      {/* picked "I'm family" by mistake */}
+      <div className="mt-3">
+        <Button variant="ghost" onClick={unchoose}>
+          {t(lang, { en: "← No, this phone is for me", hi: "← नहीं, यह फ़ोन मेरे लिए है" })}
         </Button>
       </div>
     </div>
