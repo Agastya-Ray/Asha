@@ -189,6 +189,34 @@ function phoneVoice(text: string, lang: Lang, mine: number, fairy = false) {
   });
 }
 
+function playClip(b64: string) {
+  return new Promise<void>((resolve, reject) => {
+    const next = new Audio(`data:audio/mpeg;base64,${b64}`);
+    audio = next;
+    next.onended = () => resolve();
+    next.onpause = () => resolve();
+    next.onerror = () => reject(new Error("play"));
+    next.play().then(() => set({ active: true, source: "warm" }), reject);
+  });
+}
+
+const knownNames = () => {
+  const s = useAsha.getState();
+  return [s.name, s.fairyName].map((n) => n?.trim() ?? "").filter((n) => n.length >= 2);
+};
+
+/** Splits a line around the names in it: "What a lovely name, Ami. Every…" becomes three parts, and "Ami" is
+ * one short clip of its own. Only the name changes from person to person, so the rest can be kept. */
+function splitAroundNames(text: string, names: string[]) {
+  const found = names.filter((n) => text.includes(n));
+  if (!found.length) return [text];
+  const re = new RegExp(`(${found.map((n) => n.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")).join("|")})`);
+  return text
+    .split(re)
+    .map((p) => p.trim())
+    .filter((p) => /[\p{L}\p{N}]/u.test(p));
+}
+
 export async function speak(text: string, lang: Lang, prefer: "warm" | "device" | "fairy", loud = false) {
   const clean = text.replace(/\s+/g, " ").trim();
   if (!clean || (!loud && hushUntil > Date.now())) return;
@@ -202,17 +230,14 @@ export async function speak(text: string, lang: Lang, prefer: "warm" | "device" 
   const fairyVoice = prefer === "fairy" && chosen?.id !== PHONE_VOICE ? (chosen ?? DEFAULT_FAIRY) : null;
   if (prefer === "warm" || fairyVoice) {
     try {
-      const b64 = await warmClip(clean, lang, fairyVoice ?? undefined);
-      if (mine !== generation) return;
-      const next = new Audio(`data:audio/mpeg;base64,${b64}`);
-      audio = next;
-      await new Promise<void>((resolve, reject) => {
-        next.onended = () => resolve();
-        next.onpause = () => resolve();
-        next.onerror = () => reject(new Error("play"));
-        next.play().then(() => set({ active: true, source: "warm" }), reject);
-      });
-      if (audio === next && mine === generation) set({ active: false });
+      // Titli's name is said on its own, so the rest of the line is one clip the phone keeps for good
+      const parts = fairyVoice ? splitAroundNames(clean, knownNames()) : [clean];
+      const clips = await Promise.all(parts.map((p) => warmClip(p, lang, fairyVoice ?? undefined)));
+      for (const b64 of clips) {
+        if (mine !== generation) return;
+        await playClip(b64);
+      }
+      if (mine === generation) set({ active: false });
       return;
     } catch {
       if (mine !== generation) return;
