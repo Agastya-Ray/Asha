@@ -57,6 +57,21 @@ public class ReminderAlarmActivity extends Activity {
         });
     }
 
+    /**
+     * Another reminder rang while she is already on the full screen: Android will not open the full screen
+     * a second time over itself, so hand it to her directly; she shows it after this one. False = not showing.
+     */
+    static boolean offer(String k, int attempt) {
+        ReminderAlarmActivity a = showing;
+        if (a == null || a.isFinishing()) return false;
+        a.main.post(() -> {
+            if (k.equals(a.key)) return;
+            for (Object[] w : a.waiting) if (k.equals(w[0])) { w[1] = attempt; return; }
+            a.waiting.add(new Object[]{k, attempt});
+        });
+        return true;
+    }
+
     /** After reminders change in the app: put away one that was marked there. */
     static void recheck(Context ctx) {
         ReminderAlarmActivity a = showing;

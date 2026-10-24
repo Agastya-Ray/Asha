@@ -127,6 +127,8 @@ if (!manifest.includes(MARK)) {
     <queries>
         <intent><action android:name="android.speech.RecognitionService" /></intent>
         <intent><action android:name="android.intent.action.TTS_SERVICE" /></intent>
+        <intent><action android:name="android.service.wallpaper.CHANGE_LIVE_WALLPAPER" /></intent>
+        <intent><action android:name="android.service.wallpaper.LIVE_WALLPAPER_CHOOSER" /></intent>
     </queries>
 `;
   manifest = manifest

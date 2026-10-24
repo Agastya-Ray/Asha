@@ -240,7 +240,8 @@ public class ReminderService extends Service {
         // Not lost among old notifications: on a locked or sleeping phone the fairy opens full screen, like an
         // alarm clock (in use, Android shows a big card at the top). Not in quiet mode, not while Asha is open,
         // and not when the floating fairy is about to fly in with it herself.
-        if (alarm && !AlarmStore.quiet(ctx) && !FairyBubbleService.appOnScreen() && !FairyBubbleService.wouldPop(ctx)) {
+        if (alarm && !AlarmStore.quiet(ctx) && !FairyBubbleService.appOnScreen() && !FairyBubbleService.wouldPop(ctx)
+            && !ReminderAlarmActivity.offer(key, attempt)) {
             b.setFullScreenIntent(ReminderAlarmActivity.pending(ctx, key, attempt), true);
         }
         nm.notify(AlarmStore.notificationId(key), b.build());

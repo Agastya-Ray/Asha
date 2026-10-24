@@ -54,12 +54,13 @@ public class FairyWallpaper extends WallpaperService {
         Intent i = new Intent(WallpaperManager.ACTION_CHANGE_LIVE_WALLPAPER)
             .putExtra(WallpaperManager.EXTRA_LIVE_WALLPAPER_COMPONENT, component(ctx))
             .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        try { ctx.startActivity(i); return true; } catch (Exception e) { }
+        try { ctx.startActivity(i); return true; } catch (Exception e) { android.util.Log.w("AshaFairy", "no live wallpaper preview: " + e); }
         try {
             // some phones only have the general live-wallpaper list
             ctx.startActivity(new Intent(WallpaperManager.ACTION_LIVE_WALLPAPER_CHOOSER).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK));
             return true;
         } catch (Exception e) {
+            android.util.Log.w("AshaFairy", "no live wallpaper chooser: " + e);
             return false;
         }
     }

@@ -149,7 +149,8 @@ public class AshaNativePlugin extends Plugin {
     /** Android's preview of the fairy wallpaper, with its own "Set wallpaper" button. */
     @PluginMethod
     public void openWallpaper(PluginCall call) {
-        call.resolve(ok(FairyWallpaper.openPicker(getContext())));
+        android.content.Context c = getActivity() != null ? getActivity() : getContext();
+        call.resolve(ok(FairyWallpaper.openPicker(c)));
     }
 
     /** Asha's App info page (where Android 13+ hides "Allow restricted settings" in the ⋮ menu). */

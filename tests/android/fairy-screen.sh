@@ -129,6 +129,7 @@ xy=$(center "(?i)home and lock|home screen and lock")
 [ -n "$xy" ] && { adb shell input tap $xy; log "chose home and lock at $xy"; sleep 4; }
 adb shell dumpsys wallpaper | grep -m3 -iE "mWallpaperComponent|component" > "$OUT/wallpaper-now.txt"
 grep -q "FairyWallpaper" "$OUT/wallpaper-now.txt" && pass "the fairy is the wallpaper" || fail "the fairy is not the wallpaper ($(cat "$OUT/wallpaper-now.txt"))"
+grep -E "AshaFairy.*no live wallpaper" "$OUT/logcat-stream.txt" | tail -2 >> "$OUT/after-yes-activity.txt"
 top_activity | grep -q "$PKG" || launch
 sleep 4; shot F04-back-in-asha
 said 2 > "$OUT/said-after-wallpaper.txt"
