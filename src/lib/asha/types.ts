@@ -37,6 +37,26 @@ export type Med = {
   addedOn?: string;
 };
 
+/** Something the person asked the fairy to remember, or a plan they told her about. */
+export type Memory = {
+  id: string;
+  /** their words */
+  said: string;
+  /** what to remind about ("call Ravi"), "" if not said */
+  what: string;
+  kind: "remind" | "plan";
+  /** the day it is about, YYYY-MM-DD, or "" */
+  day: string;
+  /** when to remind (ms), 0 = no reminder */
+  at: number;
+  createdAt: number;
+  done: boolean;
+  /** a plan's own time, if one was said ("Ravi comes at 4") */
+  eventAt?: number;
+  /** she already asked "how was it?" */
+  askedAfter?: boolean;
+};
+
 /** A prescription the person kept: what the doctor wrote, so the fairy can answer "what did the doctor say?" */
 export type Prescription = {
   id: string;
@@ -168,6 +188,7 @@ export type Persist = {
   coachDismissed: boolean;
   sample: boolean;
   chat: ChatTurn[];
+  memories: Memory[];
   prescriptions: Prescription[];
   /** days spent together (only ever goes up) and the last one counted */
   growth: { days: number; last: string };

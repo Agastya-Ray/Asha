@@ -16,6 +16,7 @@ import { greeting } from "@/lib/asha/speech";
 import { speakClock } from "@/lib/asha/time";
 import { useAsha } from "@/lib/asha/store";
 import type { AgendaItem } from "@/lib/asha/types";
+import { Remembered } from "@/components/asha/ideas/remember";
 
 export function TodayScreen() {
   const now = useNow();
@@ -152,6 +153,7 @@ export function TodayScreen() {
       ) : null}
       </section>
 
+      <Remembered />
       <FamilyPhotoOffer />
       <VisitSoon />
       <YesterdayNote />

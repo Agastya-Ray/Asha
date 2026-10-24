@@ -12,6 +12,7 @@ import { FamilyScreen } from "@/components/asha/family-screen";
 import { FairyIntro } from "@/components/asha/fairy-intro";
 import { FairyTour } from "@/components/asha/fairy-guide";
 import { PetRoam } from "@/components/asha/roam";
+import { RememberSheet } from "@/components/asha/ideas/remember";
 import { AskHow } from "@/components/asha/ideas/ask-how";
 import { DoseSpotlight } from "@/components/asha/ideas/dose-spotlight";
 import { CrownKeeper } from "@/components/asha/ideas/crown";
@@ -129,6 +130,7 @@ function Shell() {
       {/* in the intro and setup the fairy talks in her own bubble (with Again); the dark bar covered her words and the headings */}
       {introSeen && roleChosen && (onboarded || familyMode) ? <Speaking docked={onboarded && !familyMode} /> : null}
       <QuietSheet />
+      <RememberSheet />
       <AskHow />
       <CrownKeeper />
       <ReminderEngine />

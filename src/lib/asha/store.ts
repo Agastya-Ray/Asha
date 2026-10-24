@@ -7,6 +7,7 @@ import type {
   Food,
   Lang,
   Med,
+  Memory,
   Persist,
   Prescription,
   AppRole,
@@ -59,6 +60,7 @@ export const initialPersist = (): Persist => ({
   coachDismissed: false,
   sample: false,
   chat: [],
+  memories: [],
   growth: { days: 0, last: "" },
   crownSeen: 0,
   prescriptions: [],
@@ -97,6 +99,9 @@ type State = Persist & {
   removeMed: (id: string) => void;
   setMedPhoto: (id: string, photoAt: number | undefined, photoBy?: string) => void;
   saveMeds: (meds: Med[]) => void;
+  remember: (m: Memory) => void;
+  updateMemory: (id: string, patch: Partial<Memory>) => void;
+  forget: (id: string) => void;
   savePrescription: (p: Prescription) => void;
   removePrescription: (id: string) => void;
   updateMeal: (id: string, patch: Partial<{ name: string; time: string; note: string }>) => void;
@@ -147,6 +152,8 @@ function prune(p: Persist): Persist {
     mealLogs: p.mealLogs.slice(-400),
     checkins: p.checkins.slice(-120),
     chat: p.chat.slice(-24),
+    // finished ones are kept two weeks, open ones until done
+    memories: p.memories.filter((m) => !m.done || Date.now() - (m.at || m.createdAt) < 14 * 86400000).slice(0, 60),
   };
 }
 
@@ -206,6 +213,11 @@ function sanitize(raw: unknown): Persist {
     reminded: Array.isArray(r.reminded) ? r.reminded : [],
     snooze: r.snooze && typeof r.snooze === "object" ? r.snooze : {},
     chat: Array.isArray(r.chat) ? r.chat : [],
+    memories: Array.isArray(r.memories)
+      ? r.memories
+          .filter((m) => m && typeof m === "object" && typeof m.id === "string")
+          .map((m) => ({ ...m, said: String(m.said ?? ""), what: String(m.what ?? ""), kind: m.kind === "plan" ? ("plan" as const) : ("remind" as const), day: String(m.day ?? ""), at: Number(m.at) || 0, createdAt: Number(m.createdAt) || 0, done: m.done === true }))
+      : [],
     growth: r.growth && typeof r.growth.days === "number" ? { days: Math.max(0, r.growth.days), last: String(r.growth.last ?? "") } : seedGrowth(r),
     crownSeen: typeof r.crownSeen === "number" ? r.crownSeen : 0,
     prescriptions: Array.isArray(r.prescriptions)
@@ -325,6 +337,9 @@ export const useAsha = create<State>((set) => ({
       }
       return { meds };
     }),
+  remember: (m) => set((s) => ({ memories: [m, ...s.memories.filter((x) => x.id !== m.id)] })),
+  updateMemory: (id, patch) => set((s) => ({ memories: s.memories.map((m) => (m.id === id ? { ...m, ...patch } : m)) })),
+  forget: (id) => set((s) => ({ memories: s.memories.filter((m) => m.id !== id) })),
   // newest first; the same id replaces the old copy
   savePrescription: (p) => set((s) => ({ prescriptions: [p, ...s.prescriptions.filter((x) => x.id !== p.id)].slice(0, 30) })),
   removePrescription: (id) => set((s) => ({ prescriptions: s.prescriptions.filter((x) => x.id !== id) })),
