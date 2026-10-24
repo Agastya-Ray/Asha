@@ -147,12 +147,12 @@ export function Choice({
       onClick={onClick}
       aria-pressed={selected}
       className={cn(
-        "w-full rounded-2xl border px-4 py-3 text-left transition-transform duration-150 active:scale-[0.96]",
+        "w-full rounded-2xl border px-5 py-4 text-left transition-transform duration-150 active:scale-[0.96]",
         selected ? "border-sage bg-sage-soft" : "border-line bg-paper",
       )}
     >
-      <span className="block text-lg font-bold">{title}</span>
-      {detail ? <span className="mt-1 block text-base text-quiet">{detail}</span> : null}
+      <span className="block text-xl font-bold">{title}</span>
+      {detail ? <span className="mt-1 block text-lg leading-snug text-quiet">{detail}</span> : null}
     </button>
   );
 }
