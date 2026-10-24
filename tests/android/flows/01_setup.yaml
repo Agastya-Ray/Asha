@@ -109,8 +109,10 @@ appId: com.agastyaray.asha
 - inputText: "500 mg"
 - hideKeyboard
 - takeScreenshot: 10-med-editor
+# centre it: at the very bottom edge the tap can land on Android's gesture bar instead
 - scrollUntilVisible:
     element: "Save this medicine"
+    centerElement: true
 - tapOn: "Save this medicine"
 - takeScreenshot: 11-med-saved
 - scrollUntilVisible:
