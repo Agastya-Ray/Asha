@@ -42,9 +42,8 @@ export function QuietSheet() {
   useEffect(() => {
     if (!open) return;
     setMinutes(asked);
-    // move focus onto the sheet's first button once it is laid out: Android's WebView only refreshes its
-    // accessibility tree (what TalkBack, and the Android test, read) when focus lands on a real control,
-    // and a sheet opened over Today otherwise stays invisible to it
+    // move focus onto the sheet's first button once it is laid out, so a screen reader starts on something
+    // it can press
     const focus = window.setTimeout(() => {
       const first = sheet.current?.querySelector<HTMLElement>("button");
       (first ?? sheet.current)?.focus({ preventScroll: true });
