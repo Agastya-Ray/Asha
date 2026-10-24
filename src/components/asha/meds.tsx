@@ -384,7 +384,7 @@ export function MedsScreen() {
         })}
       </p>
 
-      <div className="mt-5 flex flex-col gap-3">
+      <div data-tour="meds-list" className="mt-5 flex flex-col gap-3">
         {meds.length === 0 ? (
           <Card>
             <p className="text-lg">

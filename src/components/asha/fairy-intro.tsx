@@ -64,6 +64,15 @@ const KEYFRAMES: Partial<Record<Step, Frame[]>> = {
   invite: [["17-standing", 1000]],
 };
 
+const HOME_INTRO: Localized = {
+  en: "From here, I'll take care of you:",
+  hi: "यहाँ से मैं आपका ख़याल रखूँगी:",
+};
+const NOT_DOCTOR: Localized = {
+  en: "I'm not a doctor, so I never change your prescription.",
+  hi: "मैं डॉक्टर नहीं हूँ, इसलिए मैं आपकी पर्ची कभी नहीं बदलती.",
+};
+
 const HOME_ROWS: { icon: string; text: Localized }[] = [
   {
     icon: "💊",
@@ -112,8 +121,17 @@ export function FairyIntro() {
   const line = step in LINES ? LINES[step as keyof typeof LINES](name) : null;
 
   // She says each line out loud in her own voice (the screen was already tapped to wake her, so sound is allowed).
+  // In her home she also reads out what she will do, one item at a time, so nobody has to read the list.
   useEffect(() => {
-    if (line && voiceOn) void speak(t(voiceLang, line), voiceLang, "fairy");
+    if (!line || !voiceOn) return;
+    const parts = [t(voiceLang, line)];
+    if (step === "home")
+      parts.push(
+        t(voiceLang, HOME_INTRO),
+        ...HOME_ROWS.map((r) => t(voiceLang, r.text) + "."),
+        t(voiceLang, NOT_DOCTOR),
+      );
+    void speak(parts.join(" … "), voiceLang, "fairy");
   }, [step, voiceLang]);
   useEffect(() => () => stopSpeaking(), []);
   // a new step starts at the top, so her face is never scrolled away (the naming card can be long)
@@ -228,6 +246,7 @@ export function FairyIntro() {
               </video>
               <video
                 ref={wakeClip}
+                poster={gardenFirst}
                 muted
                 playsInline
                 preload="auto"
@@ -345,12 +364,7 @@ export function FairyIntro() {
 
       {step === "home" ? (
         <div className="mt-4 flex flex-col gap-2">
-          <p className="text-lg text-quiet">
-            {t(lang, {
-              en: "From here, I'll take care of you:",
-              hi: "यहाँ से मैं आपका ख़याल रखूँगी:",
-            })}
-          </p>
+          <p className="text-lg text-quiet">{t(lang, HOME_INTRO)}</p>
           {HOME_ROWS.map((r, i) => (
             <div
               key={r.icon}
@@ -366,12 +380,7 @@ export function FairyIntro() {
               {t(lang, r.text)}
             </div>
           ))}
-          <p className="text-base text-quiet">
-            {t(lang, {
-              en: "I'm not a doctor, so I never change your prescription.",
-              hi: "मैं डॉक्टर नहीं हूँ, इसलिए मैं आपकी पर्ची कभी नहीं बदलती.",
-            })}
-          </p>
+          <p className="text-base text-quiet">{t(lang, NOT_DOCTOR)}</p>
         </div>
       ) : null}
     </div>
