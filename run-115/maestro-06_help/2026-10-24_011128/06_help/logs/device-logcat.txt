@@ -1,0 +1,875 @@
+--------- beginning of system
+10-15 08:04:47.753 I/ActivityManager(  519): Force stopping com.agastyaray.asha appid=10193 user=0: from pid 9866
+10-15 08:04:47.754 I/ActivityManager(  519): Killing 9333:com.agastyaray.asha/u0a193 (adj 0): stop com.agastyaray.asha due to from pid 9866
+10-15 08:04:47.754 D/DisplayManagerService(  519): Drop pending events for gone uid 10193
+--------- beginning of main
+10-15 08:04:47.763 I/cr_ChildProcessService( 9375): Destroying ChildProcessService pid=9375
+10-15 08:04:47.764 I/ocessService0:0( 9375): System.exit called, status: 0
+10-15 08:04:47.764 I/ActivityManager(  519): Killing 9375:com.google.android.webview:sandboxed_process0:org.chromium.content.app.SandboxedProcessService0:0/u0a193i5 (adj 0): isolated not needed
+10-15 08:04:47.765 I/AndroidRuntime( 9375): VM exiting with result code 0, cleanup skipped.
+10-15 08:04:47.766 I/libprocessgroup(  519): Successfully killed process cgroup uid 99005 pid 9375 in 0ms
+10-15 08:04:47.767 W/ActivityTaskManager(  519): Force removing ActivityRecord{4af3252 u0 com.agastyaray.asha/.MainActivity t14 f}}: app died, no saved state
+10-15 08:04:47.769 V/WindowManagerShell(  840): Transition requested: android.os.BinderProxy@837fd59 TransitionRequestInfo { type = CLOSE, triggerTask = TaskInfo{userId=0 taskId=14 displayId=0 isRunning=false baseIntent=Intent { act=android.intent.action.MAIN cat=[android.intent.category.LAUNCHER] flg=0x10000000 pkg=com.agastyaray.asha cmp=com.agastyaray.asha/.MainActivity } baseActivity=null topActivity=null origActivity=null realActivity=ComponentInfo{com.agastyaray.asha/com.agastyaray.asha.MainActivity} numActivities=0 lastActiveTime=665947 supportsMultiWindow=true resizeMode=1 isResizeable=true minWidth=-1 minHeight=-1 defaultMinSize=220 token=WCT{android.window.IWindowContainerToken$Stub$Proxy@ade2d1e} topActivityType=1 pictureInPictureParams=null shouldDockBigOverlays=false launchIntoPipHostTaskId=-1 lastParentTaskIdBeforePip=-1 displayCutoutSafeInsets=null topActivityInfo=null launchCookies=[] positionInParent=Point(0, 0) parentTaskId=-1 isFocused=true isVisible=true isVisibleRequested=true isSleeping=false topActivityInSizeCompat=false topActivityEligibleForLetterboxEducation= false topActivityLetterboxed= false isFromDoubleTap= false topActivityLetterboxVerticalPosition= -1 topActivityLetterboxHorizontalPosition= -1 topActivityLetterboxWidth=-1 topActivityLetterboxHeight=-1 locusId=null displayAreaFeatureId=1 cameraCompatControlState=hidden}, remoteTransition = null, displayChange = null }
+--------- beginning of kernel
+10-15 08:04:47.970 I/logd    (    0): start watching /data/system/packages.list ...
+10-15 08:04:47.972 I/logd    (    0): ReadPackageList, total packages: 202
+10-15 08:04:47.787 I/Zygote  (  993): Process 9375 exited cleanly (0)
+10-15 08:04:47.800 I/ImeTracker(  519): com.agastyaray.asha:c78c1f93: onRequestHide at ORIGIN_SERVER_HIDE_INPUT reason HIDE_REMOVE_CLIENT
+10-15 08:04:47.800 I/ImeTracker(  519): com.agastyaray.asha:c78c1f93: onCancelled at PHASE_SERVER_SHOULD_HIDE
+10-15 08:04:47.801 D/TextToSpeechManagerPerUserService(  519): Unbinding TTS engine: com.google.android.tts. Reason: client process death is reported
+10-15 08:04:47.805 D/ConnectivityService(  519): releasing NetworkRequest [ REQUEST id=164, [ Capabilities: INTERNET&NOT_RESTRICTED&TRUSTED&NOT_VCN_MANAGED Uid: 10193 RequestorUid: 10193 RequestorPkg: com.agastyaray.asha UnderlyingNetworks: Null] ] (release request)
+10-15 08:04:47.806 I/Zygote  (  336): Process 9333 exited due to signal 9 (Killed)
+10-15 08:04:47.810 I/BpBinder(  399): onLastStrongRef automatically unlinking death recipients: 
+10-15 08:04:47.816 W/ProcessStats(  519): Tracking association SourceState{f3bbd16 com.google.android.gms.persistent/10131 BTop #16790} whose proc state 2 is better than process ProcessState{78f1890 com.google.android.gms/10131 pkg=com.google.android.gms} proc state 6 (923 skipped)
+10-15 08:04:47.822 W/WindowManager(  519): Failed to deliver inset control state change to w=Window{2a48eeb u0 com.agastyaray.asha/com.agastyaray.asha.MainActivity}
+10-15 08:04:47.822 W/WindowManager(  519): android.os.DeadObjectException
+10-15 08:04:47.822 W/WindowManager(  519): 	at android.os.BinderProxy.transactNative(Native Method)
+10-15 08:04:47.822 W/WindowManager(  519): 	at android.os.BinderProxy.transact(BinderProxy.java:584)
+10-15 08:04:47.822 W/WindowManager(  519): 	at android.view.IWindow$Stub$Proxy.insetsControlChanged(IWindow.java:479)
+10-15 08:04:47.822 W/WindowManager(  519): 	at com.android.server.wm.WindowState.notifyInsetsControlChanged(WindowState.java:3802)
+10-15 08:04:47.822 W/WindowManager(  519): 	at com.android.server.wm.InsetsStateController.lambda$notifyPendingInsetsControlChanged$3(InsetsStateController.java:343)
+10-15 08:04:47.822 W/WindowManager(  519): 	at com.android.server.wm.InsetsStateController.$r8$lambda$8yykPRG1GyNq_J17QvL9d5xANMc(InsetsStateController.java:0)
+10-15 08:04:47.822 W/WindowManager(  519): 	at com.android.server.wm.InsetsStateController$$ExternalSyntheticLambda2.run(R8$$SyntheticClass:0)
+10-15 08:04:47.822 W/WindowManager(  519): 	at com.android.server.wm.WindowAnimator.executeAfterPrepareSurfacesRunnables(WindowAnimator.java:294)
+10-15 08:04:47.822 W/WindowManager(  519): 	at com.android.server.wm.RootWindowContainer.performSurfacePlacementNoTrace(RootWindowContainer.java:811)
+10-15 08:04:47.822 W/WindowManager(  519): 	at com.android.server.wm.RootWindowContainer.performSurfacePlacement(RootWindowContainer.java:756)
+10-15 08:04:47.822 W/WindowManager(  519): 	at com.android.server.wm.WindowSurfacePlacer.performSurfacePlacementLoop(WindowSurfacePlacer.java:177)
+10-15 08:04:47.822 W/WindowManager(  519): 	at com.android.server.wm.WindowSurfacePlacer.performSurfacePlacement(WindowSurfacePlacer.java:126)
+10-15 08:04:47.822 W/WindowManager(  519): 	at com.android.server.wm.WindowSurfacePlacer.performSurfacePlacement(WindowSurfacePlacer.java:115)
+10-15 08:04:47.822 W/WindowManager(  519): 	at com.android.server.wm.WindowSurfacePlacer$Traverser.run(WindowSurfacePlacer.java:57)
+10-15 08:04:47.822 W/WindowManager(  519): 	at android.os.Handler.handleCallback(Handler.java:958)
+10-15 08:04:47.822 W/WindowManager(  519): 	at android.os.Handler.dispatchMessage(Handler.java:99)
+10-15 08:04:47.822 W/WindowManager(  519): 	at android.os.Looper.loopOnce(Looper.java:205)
+10-15 08:04:47.822 W/WindowManager(  519): 	at android.os.Looper.loop(Looper.java:294)
+10-15 08:04:47.822 W/WindowManager(  519): 	at android.os.HandlerThread.run(HandlerThread.java:67)
+10-15 08:04:47.822 W/WindowManager(  519): 	at com.android.server.ServiceThread.run(ServiceThread.java:46)
+10-15 08:04:47.824 I/WindowManager(  519): WIN DEATH: Window{2a48eeb u0 com.agastyaray.asha/com.agastyaray.asha.MainActivity}
+10-15 08:04:47.824 W/InputManager-JNI(  519): Input channel object '2a48eeb com.agastyaray.asha/com.agastyaray.asha.MainActivity (client)' was disposed without first being removed with the input manager!
+10-15 08:04:47.864 D/DisplayManagerService(  519): Drop pending events for gone uid 99005
+10-15 08:04:47.866 V/WindowManager(  519): Unknown focus tokens, dropping reportFocusChanged
+10-15 08:04:47.866 W/TextToSpeechManagerPerUserService(  519): Disconnected from TTS engine
+10-15 08:04:47.866 I/TextToSpeechManagerPerUserService(  519): Failed running callback method: android.os.DeadObjectException
+10-15 08:04:47.866 W/ServiceConnector.Impl(  519): mayInterruptIfRunning not supported - ignoring
+10-15 08:04:47.882 W/AppSearchIcing(  519): icing-search-engine.cc:283: Error: 5, Message: Document (com.google.android.googlequicksearchbox$OneSearchZeroStateGoogleSuggestions/default, zp) not found.
+10-15 08:04:47.883 D/OneSearchSuggestProvider( 1108): Created the binder channel successfully for end point service =com.google.android.apps.search.googleapp.search.suggest.plugins.onesearch.server.OneSearchSuggestService , mChannel=z1{delegate=s1{logId=37, target=directaddress:///AndroidComponentAddress%5BIntent%20%7B%20act=grpc.io.action.BIND%20cmp=com.google.android.googlequicksearchbox/com.google.android.apps.search.googleapp.search.suggest.plugins.onesearch.server.OneSearchSuggestService%20%7D%5D}} , mOneSearchConnection=X1.T@d3164fe
+10-15 08:04:47.886 V/ActivityManager(  519): Got obituary of 9333:com.agastyaray.asha
+10-15 08:04:47.888 D/CarrierSvcBindHelper( 1057): onHandleForceStop: [com.agastyaray.asha]
+10-15 08:04:47.899 D/CarrierSvcBindHelper( 1057): No carrier app for: 0
+10-15 08:04:47.900 I/GsaVoiceInteractionSrv( 1676): Handling ACTION_START_HOTWORD
+10-15 08:04:47.901 I/GsaVoiceInteractionSrv( 1676): disregardVoiceMatch: false
+10-15 08:04:47.901 I/GsaVoiceInteractionSrv( 1676): Cannot start hotword, hotword has been explicitly disabled.
+10-15 08:04:47.934 V/WindowManager(  519): Sent Transition #27 createdAt=10-15 08:04:47.768 via request=TransitionRequestInfo { type = CLOSE, triggerTask = TaskInfo{userId=0 taskId=14 displayId=0 isRunning=false baseIntent=Intent { act=android.intent.action.MAIN cat=[android.intent.category.LAUNCHER] flg=0x10000000 pkg=com.agastyaray.asha cmp=com.agastyaray.asha/.MainActivity } baseActivity=null topActivity=null origActivity=null realActivity=ComponentInfo{com.agastyaray.asha/com.agastyaray.asha.MainActivity} numActivities=0 lastActiveTime=665947 supportsMultiWindow=true resizeMode=1 isResizeable=true minWidth=-1 minHeight=-1 defaultMinSize=220 token=WCT{RemoteToken{3926503 Task{d599923 #14 type=standard A=10193:com.agastyaray.asha}}} topActivityType=1 pictureInPictureParams=null shouldDockBigOverlays=false launchIntoPipHostTaskId=-1 lastParentTaskIdBeforePip=-1 displayCutoutSafeInsets=null topActivityInfo=null launchCookies=[] positionInParent=Point(0, 0) parentTaskId=-1 isFocused=true isVisible=true isVisibleRequested=true isSleeping=false topActivityInSizeCompat=false topActivityEligibleForLetterboxEducation= false topActivityLetterboxed= false isFromDoubleTap= false topActivityLetterboxVerticalPosition= -1 topActivityLetterboxHorizontalPosition= -1 topActivityLetterboxWidth=-1 topActivityLetterboxHeight=-1 locusId=null displayAreaFeatureId=1 cameraCompatControlState=hidden}, remoteTransition = null, displayChange = null }
+10-15 08:04:47.934 V/WindowManager(  519):     startWCT=WindowContainerTransaction { changes = {} hops = [] errorCallbackToken=null taskFragmentOrganizer=null }
+10-15 08:04:47.934 V/WindowManager(  519):     info={id=27 t=CLOSE f=0x0 trk=0 r=[0@Point(0, 0)] c=[{WCT{RemoteToken{3926503 Task{d599923 #14 type=standard A=10193:com.agastyaray.asha}}} m=CLOSE f=NONE leash=Surface(name=Task=14)/@0xaaf9967 sb=Rect(0, 0 - 1080, 2400) eb=Rect(0, 0 - 1080, 2400) d=0},{WCT{RemoteToken{ccffdbf Task{a956c11 #1 type=home}}} m=TO_FRONT f=SHOW_WALLPAPER leash=Surface(name=Task=1)/@0xd3293bd sb=Rect(0, 0 - 1080, 2400) eb=Rect(0, 0 - 1080, 2400) d=0},{null m=TO_FRONT f=IS_WALLPAPER leash=Surface(name=WallpaperWindowToken{578e4a1 token=android.os.Binder@ab1c7f0})/@0xfdeab13 sb=Rect(0, 0 - 1080, 2400) eb=Rect(0, 0 - 1080, 2400) d=0}]}
+10-15 08:04:47.934 D/ConditionProviders.SCP(  519): onReceive android.app.action.NEXT_ALARM_CLOCK_CHANGED
+10-15 08:04:47.934 D/ConditionProviders.SCP(  519): evaluateSubscriptionLocked cal=ScheduleCalendar[mDays={1, 2, 3, 4, 5, 6, 7}, mSchedule=ScheduleInfo{days=[1, 2, 3, 4, 5, 6, 7], startHour=22, startMinute=0, endHour=7, endMinute=0, exitAtAlarm=true, nextAlarm=Thu Oct 15 13:00:00 GMT+05:30 2026 (1792049400000)}], now=Thu Oct 15 08:04:47 GMT+05:30 2026 (1792031687934), nextUserAlarmTime=Thu Jan 01 05:30:00 GMT+05:30 1970 (0)
+10-15 08:04:47.934 D/ConditionProviders.SCP(  519): notifyCondition condition://android/schedule?days=1.2.3.4.5.6.7&start=22.0&end=7.0&exitAtAlarm=true STATE_FALSE reason=!meetsSchedule
+10-15 08:04:47.935 D/ConditionProviders.SCP(  519): Scheduling evaluate for Thu Oct 15 22:00:00 GMT+05:30 2026 (1792081800000), in +13h55m12s66ms, now=Thu Oct 15 08:04:47 GMT+05:30 2026 (1792031687934)
+10-15 08:04:47.937 I/A       ( 3523): Created gRPC endpoint to "search" for service class com.google.android.apps.search.googleapp.search.suggest.plugins.onesearch.server.OneSearchSuggestService
+10-15 08:04:47.940 D/audioserver(  396): FGS Logger Transaction failed
+10-15 08:04:47.940 D/audioserver(  396): -129
+10-15 08:04:47.945 V/WindowManagerShell(  840): onTransitionReady android.os.BinderProxy@837fd59: {id=27 t=CLOSE f=0x0 trk=0 r=[0@Point(0, 0)] c=[{WCT{android.window.IWindowContainerToken$Stub$Proxy@b29c71b} m=CLOSE f=NONE leash=Surface(name=Task=14)/@0x58c89ff sb=Rect(0, 0 - 1080, 2400) eb=Rect(0, 0 - 1080, 2400) d=0},{WCT{android.window.IWindowContainerToken$Stub$Proxy@55630b8} m=TO_FRONT f=SHOW_WALLPAPER leash=Surface(name=Task=1)/@0x91ca3cc sb=Rect(0, 0 - 1080, 2400) eb=Rect(0, 0 - 1080, 2400) d=0},{null m=TO_FRONT f=IS_WALLPAPER leash=Surface(name=WallpaperWindowToken{578e4a1 token=android.os.Binder@ab1c7f0})/@0x6e21615 sb=Rect(0, 0 - 1080, 2400) eb=Rect(0, 0 - 1080, 2400) d=0}]}
+10-15 08:04:47.946 V/WindowManagerShell(  840): Playing animation for (#27)android.os.BinderProxy@837fd59@0
+10-15 08:04:47.947 V/WindowManagerShell(  840):  try handler com.android.wm.shell.transition.DefaultMixedHandler@dca8266
+10-15 08:04:47.947 V/WindowManagerShell(  840):  try handler com.android.wm.shell.keyguard.KeyguardTransitionHandler@3d8c9a7
+10-15 08:04:47.947 V/WindowManagerShell(  840):  try handler com.android.wm.shell.activityembedding.ActivityEmbeddingController@ee8ee54
+10-15 08:04:47.947 V/WindowManagerShell(  840):  try handler com.android.wm.shell.recents.RecentsTransitionHandler@ac341fd
+10-15 08:04:47.947 V/ShellRecents(  840): RecentsTransitionHandler.startAnimation: no controller found
+10-15 08:04:47.948 V/WindowManagerShell(  840):  try handler com.android.wm.shell.pip.PipTransition@9ec5ef2
+10-15 08:04:47.948 V/WindowManagerShell(  840):  try handler com.android.wm.shell.splitscreen.StageCoordinator@fbe5943
+10-15 08:04:47.948 V/WindowManagerShell(  840):  try handler com.android.wm.shell.transition.RemoteTransitionHandler@109bc0
+10-15 08:04:47.948 V/WindowManagerShell(  840): Transition doesn't have explicit remote, search filters for match for {id=27 t=CLOSE f=0x0 trk=0 r=[0@Point(0, 0)] c=[{WCT{android.window.IWindowContainerToken$Stub$Proxy@b29c71b} m=CLOSE f=NONE leash=Surface(name=Task=14)/@0x58c89ff sb=Rect(0, 0 - 1080, 2400) eb=Rect(0, 0 - 1080, 2400) d=0},{WCT{android.window.IWindowContainerToken$Stub$Proxy@55630b8} m=TO_FRONT f=SHOW_WALLPAPER leash=Surface(name=Task=1)/@0x91ca3cc sb=Rect(0, 0 - 1080, 2400) eb=Rect(0, 0 - 1080, 2400) d=0},{null m=TO_FRONT f=IS_WALLPAPER leash=Surface(name=WallpaperWindowToken{578e4a1 token=android.os.Binder@ab1c7f0})/@0x6e21615 sb=Rect(0, 0 - 1080, 2400) eb=Rect(0, 0 - 1080, 2400) d=0}]}
+10-15 08:04:47.948 V/WindowManagerShell(  840):  Checking filter Pair{{types=[] flags=0x0] notFlags=0x0 checks=[{atype=dream independent=true modes=[OPEN,TO_FRONT] flags=NONE mustBeTask=false order=ANY topActivity=null},{atype=home independent=true modes=[CLOSE,TO_BACK] flags=NONE mustBeTask=false order=ANY topActivity=null}]} RemoteTransition { remoteTransition = android.window.IRemoteTransition$Stub$Proxy@6c8d8c, appThread = android.app.IApplicationThread$Stub$Proxy@7a11cd5, debugName = LauncherToDream }}
+10-15 08:04:47.948 V/WindowManagerShell(  840):  Checking filter Pair{{types=[] flags=0x0] notFlags=0x100 checks=[{atype=home independent=true modes=[OPEN,TO_FRONT] flags=NONE mustBeTask=false order=TOP topActivity=ComponentInfo{com.google.android.apps.nexuslauncher/com.google.android.apps.nexuslauncher.NexusLauncherActivity}},{atype=standard independent=true modes=[CLOSE,TO_BACK] flags=NONE mustBeTask=false order=ANY topActivity=null}]} RemoteTransition { remoteTransition = android.window.IRemoteTransition$Stub$Proxy@8205cea, appThread = android.app.IApplicationThread$Stub$Proxy@9130bdb, debugName = QuickstepLaunchHome }}
+10-15 08:04:47.948 V/WindowManagerShell(  840):  Delegate animation for #27 to null
+10-15 08:04:47.948 V/WindowManagerShell(  840):  try handler com.android.wm.shell.transition.DefaultTransitionHandler@12db3b5
+10-15 08:04:47.948 V/WindowManagerShell(  840): start default transition animation, info = {id=27 t=CLOSE f=0x0 trk=0 r=[0@Point(0, 0)] c=[{WCT{android.window.IWindowContainerToken$Stub$Proxy@b29c71b} m=CLOSE f=NONE leash=Surface(name=Task=14)/@0x58c89ff sb=Rect(0, 0 - 1080, 2400) eb=Rect(0, 0 - 1080, 2400) d=0},{WCT{android.window.IWindowContainerToken$Stub$Proxy@55630b8} m=TO_FRONT f=SHOW_WALLPAPER leash=Surface(name=Task=1)/@0x91ca3cc sb=Rect(0, 0 - 1080, 2400) eb=Rect(0, 0 - 1080, 2400) d=0},{null m=TO_FRONT f=IS_WALLPAPER leash=Surface(name=WallpaperWindowToken{578e4a1 token=android.os.Binder@ab1c7f0})/@0x6e21615 sb=Rect(0, 0 - 1080, 2400) eb=Rect(0, 0 - 1080, 2400) d=0}]}
+10-15 08:04:47.949 V/WindowManagerShell(  840): loadAnimation: anim=android.view.animation.AnimationSet@1f4c1f6 animAttr=0x10 type=CLOSE isEntrance=true
+10-15 08:04:47.949 I/AiAiEcho( 1667): Predicting[0]: 
+10-15 08:04:47.949 I/AiAiEcho( 1667): EchoTargets: 
+10-15 08:04:47.949 I/AiAiEcho( 1667): Filtered by AiAi flag check: 
+10-15 08:04:47.949 V/WindowManagerShell(  840): loadAnimation: anim=android.view.animation.AnimationSet@c9ff2cd animAttr=0x11 type=CLOSE isEntrance=false
+10-15 08:04:47.949 I/AiAiEcho( 1667): Ranked targets strategy: SORT, count: 0, ranking metadata: 
+10-15 08:04:47.952 V/WindowManagerShell(  840):  animated by com.android.wm.shell.transition.DefaultTransitionHandler@12db3b5
+10-15 08:04:47.956 D/audioserver(  396): FGS Logger Transaction failed
+10-15 08:04:47.956 D/audioserver(  396): -129
+10-15 08:04:47.959 V/WindowManagerShell(  840): Transition animation finished (aborted=false), notifying core (#27)android.os.BinderProxy@837fd59@0
+10-15 08:04:47.960 V/WindowManager(  519): Finish Transition #27: created at 10-15 08:04:47.768 collect-started=0.033ms request-sent=0.208ms started=26.156ms ready=26.142ms sent=161.358ms finished=191.465ms
+10-15 08:04:47.960 W/WindowManager(  519): Exception thrown during dispatchAppVisibility Window{2a48eeb u0 com.agastyaray.asha/com.agastyaray.asha.MainActivity EXITING}
+10-15 08:04:47.960 W/WindowManager(  519): android.os.DeadObjectException
+10-15 08:04:47.960 W/WindowManager(  519): 	at android.os.BinderProxy.transactNative(Native Method)
+10-15 08:04:47.960 W/WindowManager(  519): 	at android.os.BinderProxy.transact(BinderProxy.java:584)
+10-15 08:04:47.960 W/WindowManager(  519): 	at android.view.IWindow$Stub$Proxy.dispatchAppVisibility(IWindow.java:546)
+10-15 08:04:47.960 W/WindowManager(  519): 	at com.android.server.wm.WindowState.sendAppVisibilityToClients(WindowState.java:3271)
+10-15 08:04:47.960 W/WindowManager(  519): 	at com.android.server.wm.WindowContainer.sendAppVisibilityToClients(WindowContainer.java:1221)
+10-15 08:04:47.960 W/WindowManager(  519): 	at com.android.server.wm.WindowToken.setClientVisible(WindowToken.java:409)
+10-15 08:04:47.960 W/WindowManager(  519): 	at com.android.server.wm.ActivityRecord.setClientVisible(ActivityRecord.java:6946)
+10-15 08:04:47.960 W/WindowManager(  519): 	at com.android.server.wm.ActivityRecord.postApplyAnimation(ActivityRecord.java:5637)
+10-15 08:04:47.960 W/WindowManager(  519): 	at com.android.server.wm.ActivityRecord.commitVisibility(ActivityRecord.java:5580)
+10-15 08:04:47.960 W/WindowManager(  519): 	at com.android.server.wm.Transition.finishTransition(Transition.java:1151)
+10-15 08:04:47.960 W/WindowManager(  519): 	at com.android.server.wm.TransitionController.finishTransition(TransitionController.java:868)
+10-15 08:04:47.960 W/WindowManager(  519): 	at com.android.server.wm.WindowOrganizerController.finishTransition(WindowOrganizerController.java:396)
+10-15 08:04:47.960 W/WindowManager(  519): 	at android.window.IWindowOrganizerController$Stub.onTransact(IWindowOrganizerController.java:286)
+10-15 08:04:47.960 W/WindowManager(  519): 	at com.android.server.wm.WindowOrganizerController.onTransact(WindowOrganizerController.java:181)
+10-15 08:04:47.960 W/WindowManager(  519): 	at android.os.Binder.execTransactInternal(Binder.java:1344)
+10-15 08:04:47.960 W/WindowManager(  519): 	at android.os.Binder.execTransact(Binder.java:1275)
+10-15 08:04:47.960 I/Process (  519): Sending signal. PID: 9333 SIG: 9
+10-15 08:04:47.968 I/AiAiEcho( 1667): #postPredictionTargets: Sending updates to UISurface home with targets# 0 (types=[])
+10-15 08:04:47.968 I/AiAiEcho( 1667): Predicting[0]: 
+10-15 08:04:47.968 I/AiAiEcho( 1667): EchoTargets: 
+10-15 08:04:47.968 I/AiAiEcho( 1667): Filtered by AiAi flag check: 
+10-15 08:04:47.969 I/AiAiEcho( 1667): Ranked targets strategy: SORT, count: 0, ranking metadata: 
+10-15 08:04:47.970 I/AiAiEcho( 1667): #postPredictionTargets: Sending updates to UISurface lockscreen with targets# 0 (types=[])
+10-15 08:04:47.970 I/ImeTracker(  519): com.google.android.apps.nexuslauncher:4983429b: onRequestHide at ORIGIN_SERVER_HIDE_INPUT reason HIDE_UNSPECIFIED_WINDOW
+10-15 08:04:47.970 I/ImeTracker(  519): com.google.android.apps.nexuslauncher:4983429b: onCancelled at PHASE_SERVER_SHOULD_HIDE
+10-15 08:04:47.971 I/GoogleInputMethodService( 1559): GoogleInputMethodService.onFinishInput():3227 
+10-15 08:04:47.971 W/ActivityManager(  519): setHasOverlayUi called on unknown pid: 9333
+10-15 08:04:47.972 I/GoogleInputMethodService( 1559): GoogleInputMethodService.updateDeviceLockedStatus():2087 repeatCheckTimes = 0, unlocked = true
+10-15 08:04:47.972 I/GoogleInputMethodService( 1559): GoogleInputMethodService.onStartInput():1877 onStartInput(EditorInfo{inputType=0x0(NULL) imeOptions=0x0 privateImeOptions=null actionName=UNSPECIFIED actionLabel=null actionId=0 initialSelStart=-1 initialSelEnd=-1 initialCapsMode=0x0 hintText=null label=null packageName=com.google.android.apps.nexuslauncher fieldId=0 fieldName=null extras=null}, false)
+10-15 08:04:47.972 I/GoogleInputMethodService( 1559): GoogleInputMethodService.shouldHideHeaderOnInitialState():4008 ShouldHideHeaderOnInitialState = false
+10-15 08:04:47.975 I/GoogleInputMethodService( 1559): GoogleInputMethodService.updateDeviceLockedStatus():2087 repeatCheckTimes = 2, unlocked = true
+10-15 08:04:47.978 V/WindowManagerShell(  840): Track 0 became idle
+10-15 08:04:47.978 V/WindowManagerShell(  840): All active transition animations finished
+10-15 08:04:48.011 W/PageIndicator(  840): Total number of pages invalid: 0. Assuming 1 page.
+10-15 08:04:48.030 D/ColorDisplayService(  519): Setting saturation level: 100
+10-15 08:04:48.041 D/WallpaperManagerService(  519): WPMS.saveSettingsLocked-0
+10-15 08:04:48.042 D/ColorDisplayService(  519): GlobalSaturationTintController Animation cancelled: false to matrix: 
+10-15 08:04:48.042 D/ColorDisplayService(  519):        1.000000 0.000000 0.000000 0.000000 0.000000 1.000000 0.000000 0.000000 0.000000 0.000000 1.000000 0.000000 0.000000 0.000000 0.000000 1.000000 min matrix coefficients: 
+10-15 08:04:48.042 D/ColorDisplayService(  519):        1.000000 0.000000 0.000000 0.000000 0.000000 1.000000 0.000000 0.000000 0.000000 0.000000 1.000000 0.000000 0.000000 0.000000 0.000000 1.000000 max matrix coefficients: 
+10-15 08:04:48.042 D/ColorDisplayService(  519):        1.000000 0.000000 0.000000 0.000000 0.000000 1.000000 0.000000 0.000000 0.000000 0.000000 1.000000 0.000000 0.000000 0.000000 0.000000 1.000000
+10-15 08:04:48.047 V/WallpaperService(  840): Setting wallpaper dimming: 0
+10-15 08:04:48.049 V/WallpaperManagerService(  519): WPMS.saveSettingsLocked-0 took to complete: 7ms
+10-15 08:04:48.050 D/WallpaperManagerService(  519): WPMS.saveSettingsLocked-0
+10-15 08:04:48.058 E/BpTransactionCompletedListener(  399): Failed to transact (-32)
+10-15 08:04:48.067 V/WallpaperManagerService(  519): WPMS.saveSettingsLocked-0 took to complete: 16ms
+10-15 08:04:48.078 D/Tonal   (  840): Tonal Palette - index: 4. Main color: ff343e65
+10-15 08:04:48.078 D/Tonal   (  840): Colors: ff0b0c16, ff141627, ff1d2138, ff272d4c, ff343e65, ff41477e, ff4e5597, ff8184a4, ff898cc3, ff9e9ecd, ffb7b6d9, ffd9d7eb, ffefeef7
+10-15 08:04:48.152 D/Tonal   (  840): Gradients: 
+10-15 08:04:48.152 D/Tonal   (  840): 	Normal GradientColors(ff343e65, ff343e65)
+10-15 08:04:48.152 D/Tonal   (  840): 	Dark GradientColors(ff272d4c, ff272d4c)
+10-15 08:04:48.152 D/Tonal   (  840): 	Extra dark: GradientColors(ff1d2138, ff1d2138)
+10-15 08:04:48.152 D/StatusBarIconController(  840): ignoring old pipeline callback because the new wifi icon is enabled
+10-15 08:04:48.153 E/OpenGLRenderer(  840): Unable to match the desired swap behavior.
+10-15 08:04:48.159 D/CompatibilityChangeReporter(  519): Compat change id reported: 244637991; UID 10204; state: ENABLED
+10-15 08:04:48.161 D/CompatibilityChangeReporter(  519): Compat change id reported: 265464455; UID 10193; state: DISABLED
+10-15 08:04:48.162 D/CompatibilityChangeReporter(  519): Compat change id reported: 265452344; UID 10193; state: DISABLED
+10-15 08:04:48.162 D/CompatibilityChangeReporter(  519): Compat change id reported: 266124927; UID 10193; state: DISABLED
+10-15 08:04:48.162 D/CompatibilityChangeReporter(  519): Compat change id reported: 265451093; UID 10193; state: DISABLED
+10-15 08:04:48.166 D/CompatibilityChangeReporter(  519): Compat change id reported: 265456536; UID 10193; state: DISABLED
+10-15 08:04:48.167 D/CompatibilityChangeReporter(  519): Compat change id reported: 255940284; UID 10193; state: DISABLED
+10-15 08:04:48.167 D/CompatibilityChangeReporter(  519): Compat change id reported: 236283604; UID 10193; state: DISABLED
+10-15 08:04:48.167 D/CompatibilityChangeReporter(  519): Compat change id reported: 263959004; UID 10193; state: DISABLED
+10-15 08:04:48.167 D/CompatibilityChangeReporter(  519): Compat change id reported: 264304459; UID 10193; state: DISABLED
+10-15 08:04:48.169 D/CompatibilityChangeReporter(  519): Compat change id reported: 264301586; UID 10193; state: DISABLED
+10-15 08:04:48.169 D/CompatibilityChangeReporter(  519): Compat change id reported: 254631730; UID 10193; state: DISABLED
+10-15 08:04:48.170 D/CompatibilityChangeReporter(  519): Compat change id reported: 273509367; UID 10193; state: DISABLED
+10-15 08:04:48.172 D/CompatibilityChangeReporter(  519): Compat change id reported: 263259275; UID 10193; state: DISABLED
+10-15 08:04:48.172 D/CompatibilityChangeReporter(  519): Compat change id reported: 174042980; UID 10193; state: DISABLED
+10-15 08:04:48.173 D/CompatibilityChangeReporter(  519): Compat change id reported: 174042936; UID 10193; state: DISABLED
+10-15 08:04:48.173 D/CompatibilityChangeReporter(  519): Compat change id reported: 181136395; UID 10193; state: DISABLED
+10-15 08:04:48.177 D/CompatibilityChangeReporter(  519): Compat change id reported: 194480991; UID 10193; state: ENABLED
+10-15 08:04:48.185 D/CompatibilityChangeReporter(  519): Compat change id reported: 184838306; UID 10193; state: DISABLED
+10-15 08:04:48.186 D/CompatibilityChangeReporter(  519): Compat change id reported: 185004937; UID 10193; state: DISABLED
+10-15 08:04:48.191 V/SplashScreenExceptionList(  519): SplashScreen checking exception for package com.agastyaray.asha (target sdk:35) -> false
+10-15 08:04:48.191 D/CompatibilityChangeReporter(  519): Compat change id reported: 205907456; UID 10193; state: ENABLED
+10-15 08:04:48.193 V/WindowManagerShell(  840): Transition requested: android.os.BinderProxy@d5bcdbf TransitionRequestInfo { type = OPEN, triggerTask = TaskInfo{userId=0 taskId=15 displayId=0 isRunning=true baseIntent=Intent { act=android.intent.action.MAIN cat=[android.intent.category.LAUNCHER] flg=0x10000000 pkg=com.agastyaray.asha cmp=com.agastyaray.asha/.MainActivity } baseActivity=ComponentInfo{com.agastyaray.asha/com.agastyaray.asha.MainActivity} topActivity=ComponentInfo{com.agastyaray.asha/com.agastyaray.asha.MainActivity} origActivity=null realActivity=ComponentInfo{com.agastyaray.asha/com.agastyaray.asha.MainActivity} numActivities=1 lastActiveTime=683220 supportsMultiWindow=true resizeMode=1 isResizeable=true minWidth=-1 minHeight=-1 defaultMinSize=220 token=WCT{android.window.IWindowContainerToken$Stub$Proxy@980fc8c} topActivityType=1 pictureInPictureParams=null shouldDockBigOverlays=false launchIntoPipHostTaskId=-1 lastParentTaskIdBeforePip=-1 displayCutoutSafeInsets=Rect(0, 128 - 0, 0) topActivityInfo=ActivityInfo{9265fd5 com.agastyaray.asha.MainActivity} launchCookies=[] positionInParent=Point(0, 0) parentTaskId=-1 isFocused=false isVisible=false isVisibleRequested=false isSleeping=false topActivityInSizeCompat=false topActivityEligibleForLetterboxEducation= false topActivityLetterboxed= false isFromDoubleTap= false topActivityLetterboxVerticalPosition= -1 topActivityLetterboxHorizontalPosition= -1 topActivityLetterboxWidth=-1 topActivityLetterboxHeight=-1 locusId=null displayAreaFeatureId=1 cameraCompatControlState=hidden}, remoteTransition = null, displayChange = null }
+10-15 08:04:48.207 D/SplashScreenView(  840): Build android.window.SplashScreenView{8875578 V.E...... ......ID 0,0-0,0}
+10-15 08:04:48.207 D/SplashScreenView(  840): Icon: view: null drawable: null size: 0
+10-15 08:04:48.207 D/SplashScreenView(  840): Branding: view: android.view.View{7a2451 G.ED..... ......I. 0,0-0,0 #10204ef android:id/splashscreen_branding_view} drawable: null size w: 0 h: 0
+10-15 08:04:48.215 D/CompatibilityChangeReporter(  519): Compat change id reported: 194833441; UID 10193; state: ENABLED
+10-15 08:04:48.215 I/ActivityTaskManager(  519): START u0 {act=android.intent.action.MAIN cat=[android.intent.category.LAUNCHER] flg=0x10000000 pkg=com.agastyaray.asha cmp=com.agastyaray.asha/.MainActivity} with LAUNCH_SINGLE_TASK from uid 10204 (BAL_ALLOW_PERMISSION) result code=0
+10-15 08:04:48.216 D/CompatibilityChangeReporter(  519): Compat change id reported: 135634846; UID 10193; state: DISABLED
+10-15 08:04:48.216 D/CompatibilityChangeReporter(  519): Compat change id reported: 177438394; UID 10193; state: DISABLED
+10-15 08:04:48.216 D/CompatibilityChangeReporter(  519): Compat change id reported: 135772972; UID 10193; state: DISABLED
+10-15 08:04:48.216 D/CompatibilityChangeReporter(  519): Compat change id reported: 135754954; UID 10193; state: ENABLED
+10-15 08:04:48.288 D/ActivityManager(  519): freezing 2775 com.android.chrome
+10-15 08:04:48.289 D/CompatibilityChangeReporter(  519): Compat change id reported: 143937733; UID 10193; state: ENABLED
+10-15 08:04:48.297 D/ActivityManager(  519): freezing 2895 com.google.android.documentsui
+10-15 08:04:48.299 W/FileUtils(  519): Failed to chmod(AtomicFile[/data/system_de/0/system/game-manager-service.xml]): android.system.ErrnoException: chmod failed: ENOENT (No such file or directory)
+10-15 08:04:48.299 D/CompatibilityChangeReporter(  519): Compat change id reported: 168419799; UID 10193; state: DISABLED
+10-15 08:04:48.301 D/CompatibilityChangeReporter(  519): Compat change id reported: 273564678; UID 10193; state: DISABLED
+10-15 08:04:48.315 D/Zygote  (  336): Forked child process 9884
+10-15 08:04:48.356 W/AccessibilityManagerService(  519):  wait for adding window timeout: 123
+10-15 08:04:48.362 W/system_server(  519): Long monitor contention with owner binder:519_1 (532) at int com.android.server.wm.WindowManagerService.addWindow(com.android.server.wm.Session, android.view.IWindow, android.view.WindowManager$LayoutParams, int, int, int, int, android.view.InputChannel, android.view.InsetsState, android.view.InsetsSourceControl$Array, android.graphics.Rect, float[])(WindowManagerService.java:1860) waiters=1 in java.util.HashMap com.android.server.wm.AccessibilityWindowsPopulator.getWindowsTransformMatrix(java.util.List) for 113ms
+10-15 08:04:48.375 W/Looper  (  840): Slow dispatch took 181ms wmshell.main h=android.os.Handler c=com.android.wm.shell.transition.Transitions$TransitionPlayerImpl$$ExternalSyntheticLambda1@b985124 m=0
+10-15 08:04:48.375 W/Looper  (  840): Slow delivery took 178ms wmshell.main h=android.os.Handler c=com.android.wm.shell.bubbles.BubbleController$BubblesImpl$$ExternalSyntheticLambda5@e6bb48d m=0
+10-15 08:04:48.378 D/TileServices(  840): Couldn't find tile for ComponentInfo{com.google.android.apps.wellbeing/com.google.android.apps.wellbeing.screen.ui.GrayscaleTileService}(0)
+10-15 08:04:48.380 W/ActivityManager(  519): Slow operation: 164ms so far, now at startProcess: returned from zygote!
+10-15 08:04:48.383 W/ActivityManager(  519): Slow operation: 167ms so far, now at startProcess: done updating battery stats
+10-15 08:04:48.383 W/ActivityManager(  519): Slow operation: 167ms so far, now at startProcess: building log message
+10-15 08:04:48.383 I/ActivityManager(  519): Start proc 9884:com.agastyaray.asha/u0a193 for next-top-activity {com.agastyaray.asha/com.agastyaray.asha.MainActivity}
+10-15 08:04:48.383 W/ActivityManager(  519): Slow operation: 167ms so far, now at startProcess: starting to update pids map
+10-15 08:04:48.383 W/ActivityManager(  519): Slow operation: 167ms so far, now at startProcess: done updating pids map
+10-15 08:04:48.383 D/ActivityManager(  519): freezing 2112 android.process.media
+10-15 08:04:48.415 I/BpBinder(  399): onLastStrongRef automatically unlinking death recipients: 
+10-15 08:04:48.417 W/system_server(  519): Long monitor contention with owner binder:519_1 (532) at int com.android.server.wm.WindowManagerService.addWindow(com.android.server.wm.Session, android.view.IWindow, android.view.WindowManager$LayoutParams, int, int, int, int, android.view.InputChannel, android.view.InsetsState, android.view.InsetsSourceControl$Array, android.graphics.Rect, float[])(WindowManagerService.java:1860) waiters=2 in void com.android.server.wm.ActivityClientController.activityTopResumedStateLost() for 120ms
+10-15 08:04:48.420 D/SearchTargetUtil( 1108):  query= size=15
+10-15 08:04:48.420 D/SearchTargetUtil( 1108): layoutType=short_icon_row resultType=131072 packageName=com.google.android.googlequicksearchbox extras=Bundle{suggestion_type=33,suggest_truncate_start=false,is_answer=false,is_entity=false,is_personal=false,suggest_raw_text=ben lamm palmer luckey warhound,group_id=web317980,response_id=31172a1c-39f2-4a2f-b287-5c1f28d1c78d,support_query_builder=false,} searchAction=ben lamm palmer luckey warhound searchActionExtras=Bundle{learn_more_url=https://support.google.com/websearch/answer/106230?hl=106230,suggestion_action_text=Report this,should_start_for_result=true,allow_pinning=true,skip_logging_in_target_handler=false,suggestion_action_rpc=2,}ParentID: null targetID: a239c520-8c19-43e6-901f-d69b3b038343
+10-15 08:04:48.420 D/SearchTargetUtil( 1108): layoutType=short_icon_row resultType=131072 packageName=com.google.android.googlequicksearchbox extras=Bundle{suggestion_type=33,suggest_truncate_start=false,is_answer=false,is_entity=false,is_personal=false,suggest_raw_text=blue bell christmas cookies flavor,group_id=web317980,response_id=31172a1c-39f2-4a2f-b287-5c1f28d1c78d,support_query_builder=false,} searchAction=blue bell christmas cookies flavor searchActionExtras=Bundle{learn_more_url=https://support.google.com/websearch/answer/106230?hl=106230,suggestion_action_text=Report this,should_start_for_result=true,allow_pinning=true,skip_logging_in_target_handler=false,suggestion_action_rpc=2,}ParentID: null targetID: 3240c898-7498-4ab1-94e7-486e0b28acbc
+10-15 08:04:48.420 D/SearchTargetUtil( 1108): layoutType=short_icon_row resultType=131072 packageName=com.google.android.googlequicksearchbox extras=Bundle{suggestion_type=33,suggest_truncate_start=false,is_answer=false,is_entity=false,is_personal=false,suggest_raw_text=gladiator ii netflix release date,group_id=web317980,response_id=31172a1c-39f2-4a2f-b287-5c1f28d1c78d,support_query_builder=false,} searchAction=gladiator ii netflix release date searchActionExtras=Bundle{learn_more_url=https://support.google.com/websearch/answer/106230?hl=106230,suggestion_action_text=Report this,should_start_for_result=true,allow_pinning=true,skip_logging_in_target_handler=false,suggestion_action_rpc=2,}ParentID: null targetID: c44e2045-fa7e-4885-bb3a-eb05955ef063
+10-15 08:04:48.420 D/SearchTargetUtil( 1108): layoutType=short_icon_row resultType=131072 packageName=com.google.android.googlequicksearchbox extras=Bundle{suggestion_type=33,suggest_truncate_start=false,is_answer=false,is_entity=false,is_personal=false,suggest_raw_text=atlanta falcons logo,group_id=web317980,response_id=31172a1c-39f2-4a2f-b287-5c1f28d1c78d,support_query_builder=false,} searchAction=atlanta falcons logo searchActionExtras=Bundle{learn_more_url=https://support.google.com/websearch/answer/106230?hl=106230,suggestion_action_text=Report this,should_start_for_result=true,allow_pinning=true,skip_logging_in_target_handler=false,suggestion_action_rpc=2,}ParentID: null targetID: 3da050e4-c0e8-4dc1-91fd-54107ca94afa
+10-15 08:04:48.420 D/SearchTargetUtil( 1108): layoutType=short_icon_row resultType=131072 packageName=com.google.android.googlequicksearchbox extras=Bundle{suggestion_type=33,suggest_truncate_start=false,is_answer=false,is_entity=false,is_personal=false,suggest_raw_text=g shock gmc 2500,group_id=web317980,response_id=31172a1c-39f2-4a2f-b287-5c1f28d1c78d,support_query_builder=false,} searchAction=g shock gmc 2500 searchActionExtras=Bundle{learn_more_url=https://support.google.com/websearch/answer/106230?hl=106230,suggestion_action_text=Report this,should_start_for_result=true,allow_pinning=true,skip_logging_in_target_handler=false,suggestion_action_rpc=2,}ParentID: null targetID: eb347253-7e0c-45ca-9d1a-73f85cd1263d
+10-15 08:04:48.420 D/SearchTargetUtil( 1108): layoutType=short_icon_row resultType=131072 packageName=com.google.android.googlequicksearchbox extras=Bundle{suggestion_type=33,suggest_truncate_start=false,is_answer=false,is_entity=false,is_personal=false,suggest_raw_text=air jordan 11 green screen release,group_id=web317980,response_id=31172a1c-39f2-4a2f-b287-5c1f28d1c78d,support_query_builder=false,} searchAction=air jordan 11 green screen release searchActionExtras=Bundle{learn_more_url=https://support.google.com/websearch/answer/106230?hl=106230,suggestion_action_text=Report this,should_start_for_result=true,allow_pinning=true,skip_logging_in_target_handler=false,suggestion_action_rpc=2,}ParentID: null targetID: b96ac399-7609-4397-9d09-c1c41a44dc15
+10-15 08:04:48.420 D/SearchTargetUtil( 1108): layoutType=short_icon_row resultType=131072 packageName=com.google.android.googlequicksearchbox extras=Bundle{suggestion_type=33,suggest_truncate_start=false,is_answer=false,is_entity=false,is_personal=false,suggest_raw_text=aldi dark chocolate peanut butter cups,group_id=web317980,response_id=31172a1c-39f2-4a2f-b287-5c1f28d1c78d,support_query_builder=false,} searchAction=aldi dark chocolate peanut butter cups searchActionExtras=Bundle{learn_more_url=https://support.google.com/websearch/answer/106230?hl=106230,suggestion_action_text=Report this,should_start_for_result=true,allow_pinning=true,skip_logging_in_target_handler=false,suggestion_action_rpc=2,}ParentID: null targetID: 4a37d800-6075-4ae7-abd8-6d6b781368c2
+10-15 08:04:48.420 D/SearchTargetUtil( 1108): layoutType=extra_tall_icon_row resultType=131072 packageName=com.google.android.googlequicksearchbox extras=Bundle{bitmap_url=data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wCEAAkGBwgHBgkIBwgKCgkLDRYPDQwMDRsUFRAWIB0iIiAdHx8kKDQsJCYxJx8fLT0tMTU3Ojo6Iys/RD84QzQ5OjcBCgoKDQwNGg8PGjclHyU3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3N//AABEIAHwAfAMBIgACEQEDEQH/xAAcAAACAgMBAQAAAAAAAAAAAAAFBgMEAQIHAAj/xABAEAACAQMCBAIHBgIHCQAAAAABAgMABBEFIQYSMUETURQiMmFxkaEHFSNCgbHB8CQzNFJT0eEWJkNicnOCkrL/xAAbAQABBQEBAAAAAAAAAAAAAAACAAEDBAUGB//EAC4RAAICAQMDAQQLAAAAAAAAAAECABEDBBIhBTFRE0FSYbEGFBUiQkNxkaHB0f/aAAwDAQACEQMRAD8ADYrGK27V6syemTGK9is16lFNcVqxVBliAPfWtxMIV2GWPQVURWZ/EmbmfsOw+FP7LlLU61cJ2jky4p5/ZG3maIWdgsykvzHHXlqtZRiTBY4HlTDZQgKAP2qJslTKya3O3ZqlI6Gjr+HK6N/zjaqF1pV1bZLJzKPzLvTjFA2AcAjoQam9F2yFyPKoxmIix9Qzp3N/rOd4rGKa9V0JZkM1sArjqMYzSxJG0UjJIpVlOCDVhWDCxNnTatNQOOD4kOK9y1visYopbqaEVjlFbmsYpRqlrcdqxT/pl1ZahIyC3C46ZFFPu61/wk+VS/V28zih9NMB/KP7zlhr1Op0i1l4mgiMY8MqWK42JFNmr6dYWWi3twtvHmG2kcer3CkimTCWubL9cxKqMFJ3C5wxpPGmLE7Z2/hWC++KrISjco7VuSc5oGmYzlmLH2w5ppyBvTRpaliMmlHTlc4IGaa9MZ0AztVZhzGuH44x2qfdFzVe3lOOu9STO7JkdPhTUJGbubAo4O3xpN4rtgkyTqMZ9Vvf5UyCRlLUI4gXxbJ8jcHNOjUZY0rnHnRvj84pVg1N4a1dtNImulygwKmU7jQnWO6oLYwZWpohd6dJaNiUfrVXkWkWCmjHUhhaxv4XjKX39Z4h747U50Isn06yBFuoB71ftbyO4JCVqTwVSLg5R/vRB/2m/hRXiDxJdKvrdWJaS2kVR5kqaGKM8TwY/wANv4UkfbObuHiXTlDypH6L4kLoSOVwzZII7+z9KpuGOM7TXM7pFDJhB92KPMC+R3qWNohl5G2XsO9VoEJRMnJI61pceJDj8HnPu3zQsATLJYgQ9Ya9plseVg+f+mm7TNQtbtA0DZBHcYpI0fTb7UdUS0nSKG1KEm5A2QcueuQOu2MVY06G/wBN1uG3kJaF22bP1/nHwqN8YAsQUdieZ0G4u1s4fEwXIGwHeqEfGsJcwXNlIrdiBUnFFjP92wm1ZRtl2JpS03S9U++1gjWH0Ujma6ZnwPVz15hvnAwB+lDjUERZDHU3lvdBZITytndKGazMTC6ea1FpdtqMjMLiLwwD55PzGM/IURhtxNfFW5MohYBz32H69aiYANJsbUQfEVY0/ECsCN9wa6DoVpB6Kr53I6Ujz+Ms0bXT+JLuWbAGfWONvhTzoM8Hoi4Iq3odu43NXq+TLk0qsnBMo8U28JtzgAGkUjBNPnFNzC9qVGM0jlck0Gtr1OJb6KX+rDf3juNc0gDb/wCa3i4g0uEkoxH/AI1zb70j/kV4aon8ipN+ac59jdD97+Y8DiKIa5HdhT4KAqdqrfanq2n63w/BLaODeWkwZDjflYYYfPlP6UurMDEZPKq8zPcxNDyj8Qco779qLCuVwQoudAej4cmNWx/hHEA6SSI15jk55vh5imqztY70rvh+5xmgGo6bdaLd26XYwZk5x7wTiiui3XhXAyaiyqZggAEqYy2+kR2qGQ5O3liq0Crc6nDiNgCSQxG23lUut38p0x/RN5WXlVh+Xal63v8AXGu7aG1toWhjxmPOHHv5s4qBQWEK1WdcaD+jKk6ZUjBBXqKFR8O2RcXFrzKDvgHI/wBKHWt9xOk1sRY2klqTyyc1zllHw6fImmEMbdw0RBB9oDpmlW2R34kb26QR+/FCbO1hmm9KfJdZSoA7LiruqXXO4wcChMWoix0e4umjdld2RSpHUbfvUYBYmpJjUlgo7mL+pTrLfTsPZDlR8BtXrXU5rXaNsjyoBLqQRypIzWn3qnmKnXGy8idEdXpAvpsw4h+6v5Lk/iHbyqtzihH3ovmKx96L5ik2MsbMJdfpFFBxOnnhHQVcQ+jrmQZodqvDWisklrbIqzIM5XqKant29LhIIwAMnPlQW9sXh1O5vZHURFMDf4mtUgeJ59ZiI8Rggkif2kOD86zp7BL63ZvZEik/OpLyQXDzvGMh3HKB33ovZaBLb8kt4hEh3WP+78ffTaXKmLGxbzPRsWpx4NEpyHuP6gz7VbkXFzpsyAqBEy9MZwQR+5pcspskMDg1b4ruLiacWl3MX8Akx83UKT099LiyvE4YNjBxVV6c2Jx2Rgr2BxGi81AxWvrc53GyqTUWlcUR2c3OunTShti3hPn9q0029FxbmKVMP3PnRO0a6tIXktnAx5jINQfdHBEdbPNw5pPFoZORdHvwmc/1Eg+vLg/Sjdrr0N25jiEynGcTRFCfmN6raDNezxZkERjP91MY+NWNWuLWBVE5Ak/Ke4oGIugIRA7yvrd0LWPnYj3CotTgaHgSzMi4eX8U7deY5H0NLcLXPEutW1qgJErlDjog7n5U/faJEttokcMYwkYVVHuFTYsW3GSYWmy7tWgEVND0CwCiS+VGeTqX6Cj/APsnouQno8WD2x1qhp6JqVrC8cgXBBNM3hDnQlxsOlXkA2iZWYn1GvzAzcLaMFZzBFlO+OlL97wvps83iQgBCPynanSSANFOniDLA7+VLwRbUeDz+zTkDxIwTFP7/wCIOUj0psn82BmrNtHxTxGnotuks0ecOw9VR8WronDvBtrbIs+owxzz9Qr7ov6d/wBaaFRYQiwgcobJAGBVdWcjmX9QmlRtuKz8fZEnQ+Dp9GvIJ7meGdV2KhDsTsCD7jRy/t1MmSKO3EQZSrD1HGD7jQ28jPKhcDnxhgOme+KEoBGOpfKwLnsKnPPtK4Se40satpkTGe2GZo16vH3I946/DNcmMpkQb7jp76+n2uJFTwoUB5R6zHoPdXIvtQ4Ot7O2fXNKhECrIPSoU9n1jgOB23IyOm+exyqA7QN5PBiFY3xt3YuW2OwxRaPX5GhyNs9vKgkKJKAj+rn8wqU6XLzfhyIy/GkQh7xrdRQjhpfF01ovMhHUDlPwqlr3EUus3S4yDgKqJ+1A7PRry4fBZVUfmByae+F+HobFxcN+JJjZ2HT4eVAxROYSjI/Eavs40Yafa+n3Q8O4lJHL5Dap/tHu4prERI4LFugo5punW+tcORwPI0R5mMU0RwynJ+Y91K+t8DaxA5ktZBfx+eeVx+hP7Gid39OgJf6cumGfe70R7D/s53b3Wo2Mrm0mKK3VT0qf771zH9r+B5elXLyJ7Ocw3cEkUo6pIhU/WsJDLIoaO2mYHoRGaBcmWuBNh+h6dzvvvKZ1vW9v6X8fV61VnvdUnk53uDn3bUUmjeEAzW8qDzZCKh8SPyPyp9+XxHX6P4DyLnfZkbGcbDsO1bxpgAnvU0o2wO+1b8nqADtVmpxtyGUZiOaGpbvcc+HKHJwR1Hwovyhh61aNGFOVAHwpiLiBqAxavBGYIiFx7Jbp+tUdf059W0C/09SqyXFu8a56BsbfXFMV1bs48SM79xWsUCypzdG7++mqEGny+bGW3leK4iaOWNirow3UjqDVyCF3IVc5zXWeOOGI31EXyxf2geucfmA/iMfWlR9ESNgU
+10-15 08:04:48.420 D/SearchTargetUtil( 1108): layoutType=short_icon_row resultType=131072 packageName=com.google.android.googlequicksearchbox extras=Bundle{suggestion_type=33,suggest_truncate_start=false,is_answer=false,is_entity=false,is_personal=false,suggest_raw_text=buried soviet aircraft törtel hungary,group_id=web317980,response_id=31172a1c-39f2-4a2f-b287-5c1f28d1c78d,support_query_builder=false,} searchAction=buried soviet aircraft törtel hungary searchActionExtras=Bundle{learn_more_url=https://support.google.com/websearch/answer/106230?hl=106230,suggestion_action_text=Report this,should_start_for_result=true,allow_pinning=true,skip_logging_in_target_handler=false,suggestion_action_rpc=2,}ParentID: null targetID: 7e43e5c9-6e95-4bd0-ade9-efc606433eee
+10-15 08:04:48.420 D/SearchTargetUtil( 1108): layoutType=short_icon_row resultType=131072 packageName=com.google.android.googlequicksearchbox extras=Bundle{suggestion_type=33,suggest_truncate_start=false,is_answer=false,is_entity=false,is_personal=false,suggest_raw_text=abandoned german shepherd finds home,group_id=web317980,response_id=31172a1c-39f2-4a2f-b287-5c1f28d1c78d,support_query_builder=false,} searchAction=abandoned german shepherd finds home searchActionExtras=Bundle{learn_more_url=https://support.google.com/websearch/answer/106230?hl=106230,suggestion_action_text=Report this,should_start_for_result=true,allow_pinning=true,skip_logging_in_target_handler=false,suggestion_action_rpc=2,}ParentID: null targetID: ae5aa028-48fe-496b-bf01-d6cc4ff08f72
+10-15 08:04:48.420 D/SearchTargetUtil( 1108): layoutType=short_icon_row resultType=131072 packageName=com.google.android.googlequicksearchbox extras=Bundle{suggestion_type=33,suggest_truncate_start=false,is_answer=false,is_entity=false,is_personal=false,suggest_raw_text=border collie puppy surrendered shelter,group_id=web317980,response_id=31172a1c-39f2-4a2f-b287-5c1f28d1c78d,support_query_builder=false,} searchAction=border collie puppy surrendered shelter searchActionExtras=Bundle{learn_more_url=https://support.google.com/websearch/answer/106230?hl=106230,suggestion_action_text=Report this,should_start_for_result=true,allow_pinning=true,skip_logging_in_target_handler=false,suggestion_action_rpc=2,}ParentID: null targetID: bd7b0643-765a-483c-80d5-777c0d00d162
+10-15 08:04:48.420 D/SearchTargetUtil( 1108): layoutType=short_icon_row resultType=131072 packageName=com.google.android.googlequicksearchbox extras=Bundle{suggestion_type=33,suggest_truncate_start=false,is_answer=false,is_entity=false,is_personal=false,suggest_raw_text=banks ai agents,group_id=web317980,response_id=31172a1c-39f2-4a2f-b287-5c1f28d1c78d,support_query_builder=false,} searchAction=banks ai agents searchActionExtras=Bundle{learn_more_url=https://support.google.com/websearch/answer/106230?hl=106230,suggestion_action_text=Report this,should_start_for_result=true,allow_pinning=true,skip_logging_in_target_handler=false,suggestion_action_rpc=2,}ParentID: null targetID: c95723c1-fc7f-4bae-a9e8-51b001f91e8e
+10-15 08:04:48.420 D/SearchTargetUtil( 1108): layoutType=short_icon_row resultType=131072 packageName=com.google.android.googlequicksearchbox extras=Bundle{suggestion_type=33,suggest_truncate_start=false,is_answer=false,is_entity=false,is_personal=false,suggest_raw_text=nintendo switch,group_id=web317980,response_id=31172a1c-39f2-4a2f-b287-5c1f28d1c78d,support_query_builder=false,} searchAction=nintendo switch searchActionExtras=Bundle{learn_more_url=https://support.google.com/websearch/answer/106230?hl=106230,suggestion_action_text=Report this,should_start_for_result=true,allow_pinning=true,skip_logging_in_target_handler=false,suggestion_action_rpc=2,}ParentID: null targetID: 7461b5bb-c394-46ca-bbe3-b992f635a6ea
+10-15 08:04:48.420 D/SearchTargetUtil( 1108): layoutType=short_icon_row resultType=131072 packageName=com.google.android.googlequicksearchbox extras=Bundle{suggestion_type=33,suggest_truncate_start=false,is_answer=false,is_entity=false,is_personal=false,suggest_raw_text=chicago bulls vs milwaukee bucks,group_id=web317980,response_id=31172a1c-39f2-4a2f-b287-5c1f28d1c78d,support_query_builder=false,} searchAction=chicago bulls vs milwaukee bucks searchActionExtras=Bundle{learn_more_url=https://support.google.com/websearch/answer/106230?hl=106230,suggestion_action_text=Report this,should_start_for_result=true,allow_pinning=true,skip_logging_in_target_handler=false,suggestion_action_rpc=2,}ParentID: null targetID: 4c237665-af46-407f-baca-6ef6dae905aa
+10-15 08:04:48.420 D/SearchTargetUtil( 1108): layoutType=short_icon_row resultType=131072 packageName=com.google.android.googlequicksearchbox extras=Bundle{suggestion_type=33,suggest_truncate_start=false,is_answer=false,is_entity=false,is_personal=false,suggest_raw_text=cadillac mountain summit sign removed,group_id=web317980,response_id=31172a1c-39f2-4a2f-b287-5c1f28d1c78d,support_query_builder=false,} searchAction=cadillac mountain summit sign removed searchActionExtras=Bundle{learn_more_url=https://support.google.com/websearch/answer/106230?hl=106230,suggestion_action_text=Report this,should_start_for_result=true,allow_pinning=true,skip_logging_in_target_handler=false,suggestion_action_rpc=2,}ParentID: null targetID: 07d26f8a-8786-440a-b30e-e5db275cfbbc
+10-15 08:04:48.422 D/CoreBackPreview(  519): Window{4833c9e u0 Splash Screen com.agastyaray.asha}: Setting back callback OnBackInvokedCallbackInfo{mCallback=android.window.IOnBackInvokedCallback$Stub$Proxy@89acc11, mPriority=0, mIsAnimationCallback=false}
+10-15 08:04:48.422 W/Looper  (  840): Slow dispatch took 47ms wmshell.main h=android.os.Handler c=android.window.TaskOrganizer$1$$ExternalSyntheticLambda3@369a4af m=0
+10-15 08:04:48.426 W/Looper  (  840): Drained
+10-15 08:04:48.536 I/agastyaray.asha( 9884): Late-enabling -Xcheck:jni
+10-15 08:04:48.542 W/system_server(  519): Long monitor contention with owner CachedAppOptimizerThread (609) at void com.android.server.am.CachedAppOptimizer$FreezeHandler.handleMessage(android.os.Message)(CachedAppOptimizer.java:2144) waiters=0 in void com.android.server.am.ActivityManagerService$LocalService.startProcess(java.lang.String, android.content.pm.ApplicationInfo, boolean, boolean, java.lang.String, android.content.ComponentName) for 119ms
+10-15 08:04:48.549 D/CompatibilityChangeReporter(  519): Compat change id reported: 265195908; UID 10193; state: ENABLED
+10-15 08:04:48.554 V/WindowManagerShell(  840): onTransitionReady android.os.BinderProxy@d5bcdbf: {id=28 t=OPEN f=0x0 trk=0 r=[0@Point(0, 0)] c=[{WCT{android.window.IWindowContainerToken$Stub$Proxy@e3bc3c1} m=OPEN f=NONE leash=Surface(name=Task=15)/@0xf191b9a sb=Rect(0, 0 - 1080, 2400) eb=Rect(0, 0 - 1080, 2400) d=0},{WCT{android.window.IWindowContainerToken$Stub$Proxy@d5d5766} m=TO_BACK f=SHOW_WALLPAPER leash=Surface(name=Task=1)/@0x735dccb sb=Rect(0, 0 - 1080, 2400) eb=Rect(0, 0 - 1080, 2400) d=0}]}
+10-15 08:04:48.554 V/WindowManagerShell(  840): Playing animation for (#28)android.os.BinderProxy@d5bcdbf@0
+10-15 08:04:48.554 V/WindowManagerShell(  840):  try handler com.android.wm.shell.transition.DefaultMixedHandler@dca8266
+10-15 08:04:48.555 V/WindowManagerShell(  840):  try handler com.android.wm.shell.keyguard.KeyguardTransitionHandler@3d8c9a7
+10-15 08:04:48.555 V/WindowManagerShell(  840):  try handler com.android.wm.shell.activityembedding.ActivityEmbeddingController@ee8ee54
+10-15 08:04:48.555 V/WindowManagerShell(  840):  try handler com.android.wm.shell.recents.RecentsTransitionHandler@ac341fd
+10-15 08:04:48.555 V/ShellRecents(  840): RecentsTransitionHandler.startAnimation: no controller found
+10-15 08:04:48.555 V/WindowManagerShell(  840):  try handler com.android.wm.shell.pip.PipTransition@9ec5ef2
+10-15 08:04:48.555 V/WindowManagerShell(  840):  try handler com.android.wm.shell.splitscreen.StageCoordinator@fbe5943
+10-15 08:04:48.555 V/WindowManagerShell(  840):  try handler com.android.wm.shell.transition.RemoteTransitionHandler@109bc0
+10-15 08:04:48.555 V/WindowManagerShell(  840): Transition doesn't have explicit remote, search filters for match for {id=28 t=OPEN f=0x0 trk=0 r=[0@Point(0, 0)] c=[{WCT{android.window.IWindowContainerToken$Stub$Proxy@e3bc3c1} m=OPEN f=NONE leash=Surface(name=Task=15)/@0xf191b9a sb=Rect(0, 0 - 1080, 2400) eb=Rect(0, 0 - 1080, 2400) d=0},{WCT{android.window.IWindowContainerToken$Stub$Proxy@d5d5766} m=TO_BACK f=SHOW_WALLPAPER leash=Surface(name=Task=1)/@0x735dccb sb=Rect(0, 0 - 1080, 2400) eb=Rect(0, 0 - 1080, 2400) d=0}]}
+10-15 08:04:48.555 V/WindowManagerShell(  840):  Checking filter Pair{{types=[] flags=0x0] notFlags=0x0 checks=[{atype=dream independent=true modes=[OPEN,TO_FRONT] flags=NONE mustBeTask=false order=ANY topActivity=null},{atype=home independent=true modes=[CLOSE,TO_BACK] flags=NONE mustBeTask=false order=ANY topActivity=null}]} RemoteTransition { remoteTransition = android.window.IRemoteTransition$Stub$Proxy@6c8d8c, appThread = android.app.IApplicationThread$Stub$Proxy@7a11cd5, debugName = LauncherToDream }}
+10-15 08:04:48.555 V/WindowManagerShell(  840):  Checking filter Pair{{types=[] flags=0x0] notFlags=0x100 checks=[{atype=home independent=true modes=[OPEN,TO_FRONT] flags=NONE mustBeTask=false order=TOP topActivity=ComponentInfo{com.google.android.apps.nexuslauncher/com.google.android.apps.nexuslauncher.NexusLauncherActivity}},{atype=standard independent=true modes=[CLOSE,TO_BACK] flags=NONE mustBeTask=false order=ANY topActivity=null}]} RemoteTransition { remoteTransition = android.window.IRemoteTransition$Stub$Proxy@8205cea, appThread = android.app.IApplicationThread$Stub$Proxy@9130bdb, debugName = QuickstepLaunchHome }}
+10-15 08:04:48.555 V/WindowManagerShell(  840):  Delegate animation for #28 to null
+10-15 08:04:48.555 V/WindowManagerShell(  840):  try handler com.android.wm.shell.transition.DefaultTransitionHandler@12db3b5
+10-15 08:04:48.555 V/WindowManagerShell(  840): start default transition animation, info = {id=28 t=OPEN f=0x0 trk=0 r=[0@Point(0, 0)] c=[{WCT{android.window.IWindowContainerToken$Stub$Proxy@e3bc3c1} m=OPEN f=NONE leash=Surface(name=Task=15)/@0xf191b9a sb=Rect(0, 0 - 1080, 2400) eb=Rect(0, 0 - 1080, 2400) d=0},{WCT{android.window.IWindowContainerToken$Stub$Proxy@d5d5766} m=TO_BACK f=SHOW_WALLPAPER leash=Surface(name=Task=1)/@0x735dccb sb=Rect(0, 0 - 1080, 2400) eb=Rect(0, 0 - 1080, 2400) d=0}]}
+10-15 08:04:48.555 V/WindowManagerShell(  840): loadAnimation: anim=android.view.animation.AnimationSet@444b54 animAttr=0x13 type=OPEN isEntrance=false
+10-15 08:04:48.555 V/WindowManagerShell(  840): loadAnimation: anim=android.view.animation.AnimationSet@844c8c0 animAttr=0x12 type=OPEN isEntrance=true
+10-15 08:04:48.557 V/WindowManagerShell(  840):  animated by com.android.wm.shell.transition.DefaultTransitionHandler@12db3b5
+10-15 08:04:48.561 V/WindowManager(  519): Sent Transition #28 createdAt=10-15 08:04:48.177 via request=TransitionRequestInfo { type = OPEN, triggerTask = TaskInfo{userId=0 taskId=15 displayId=0 isRunning=true baseIntent=Intent { act=android.intent.action.MAIN cat=[android.intent.category.LAUNCHER] flg=0x10000000 pkg=com.agastyaray.asha cmp=com.agastyaray.asha/.MainActivity } baseActivity=ComponentInfo{com.agastyaray.asha/com.agastyaray.asha.MainActivity} topActivity=ComponentInfo{com.agastyaray.asha/com.agastyaray.asha.MainActivity} origActivity=null realActivity=ComponentInfo{com.agastyaray.asha/com.agastyaray.asha.MainActivity} numActivities=1 lastActiveTime=683220 supportsMultiWindow=true resizeMode=1 isResizeable=true minWidth=-1 minHeight=-1 defaultMinSize=220 token=WCT{RemoteToken{e9febe4 Task{3adfddd #15 type=standard A=10193:com.agastyaray.asha}}} topActivityType=1 pictureInPictureParams=null shouldDockBigOverlays=false launchIntoPipHostTaskId=-1 lastParentTaskIdBeforePip=-1 displayCutoutSafeInsets=Rect(0, 128 - 0, 0) topActivityInfo=ActivityInfo{a4f184d com.agastyaray.asha.MainActivity} launchCookies=[] positionInParent=Point(0, 0) parentTaskId=-1 isFocused=false isVisible=false isVisibleRequested=false isSleeping=false topActivityInSizeCompat=false topActivityEligibleForLetterboxEducation= false topActivityLetterboxed= false isFromDoubleTap= false topActivityLetterboxVerticalPosition= -1 topActivityLetterboxHorizontalPosition= -1 topActivityLetterboxWidth=-1 topActivityLetterboxHeight=-1 locusId=null displayAreaFeatureId=1 cameraCompatControlState=hidden}, remoteTransition = null, displayChange = null }
+10-15 08:04:48.561 V/WindowManager(  519):     startWCT=WindowContainerTransaction { changes = {} hops = [] errorCallbackToken=null taskFragmentOrganizer=null }
+10-15 08:04:48.561 V/WindowManager(  519):     info={id=28 t=OPEN f=0x0 trk=0 r=[0@Point(0, 0)] c=[{WCT{RemoteToken{e9febe4 Task{3adfddd #15 type=standard A=10193:com.agastyaray.asha}}} m=OPEN f=NONE leash=Surface(name=Task=15)/@0xa3c4176 sb=Rect(0, 0 - 1080, 2400) eb=Rect(0, 0 - 1080, 2400) d=0},{WCT{RemoteToken{ccffdbf Task{a956c11 #1 type=home}}} m=TO_BACK f=SHOW_WALLPAPER leash=Surface(name=Task=1)/@0xd3293bd sb=Rect(0, 0 - 1080, 2400) eb=Rect(0, 0 - 1080, 2400) d=0}]}
+10-15 08:04:48.660 I/GsaVoiceInteractionSrv( 1676): Handling ACTION_STOP_HOTWORD
+10-15 08:04:48.661 E/HwDetectorWithState( 1676): a: 3
+10-15 08:04:48.679 W/Looper  (  840): Slow dispatch took 86ms wmshell.anim h=android.view.Choreographer$FrameHandler c=android.view.Choreographer$FrameDisplayEventReceiver@391a004 m=0
+10-15 08:04:48.679 W/Looper  (  840): Slow delivery took 53ms wmshell.main h=android.os.Handler c=com.android.wm.shell.pip.phone.PipController$$ExternalSyntheticLambda1@fa327a7 m=0
+10-15 08:04:48.681 W/Looper  (  840): Drained
+10-15 08:04:48.681 V/WindowManagerShell(  840): Transition animation finished (aborted=false), notifying core (#28)android.os.BinderProxy@d5bcdbf@0
+10-15 08:04:48.682 D/EGL_emulation(  840): app_time_stats: avg=9294.41ms min=12.43ms max=36196.14ms count=4
+10-15 08:04:48.766 V/WindowManager(  519): Finish Transition #28: created at 10-15 08:04:48.177 collect-started=0.048ms request-sent=15.611ms started=194.984ms ready=371.089ms sent=376.305ms finished=588.774ms
+10-15 08:04:48.802 I/agastyaray.asha( 9884): Using CollectorTypeCC GC.
+10-15 08:04:48.803 W/agastyaray.asha( 9884): Unexpected CPU variant for x86: x86_64.
+10-15 08:04:48.803 W/agastyaray.asha( 9884): Known variants: atom, sandybridge, silvermont, goldmont, goldmont-plus, tremont, kabylake, default
+10-15 08:04:48.814 V/WindowManagerShell(  840): Track 0 became idle
+10-15 08:04:48.814 V/WindowManagerShell(  840): All active transition animations finished
+10-15 08:04:48.814 W/Looper  (  840): Slow dispatch took 133ms wmshell.main h=android.os.Handler c=com.android.wm.shell.transition.DefaultTransitionHandler$$ExternalSyntheticLambda0@4db8ebb m=0
+10-15 08:04:48.889 D/EGL_emulation(  840): app_time_stats: avg=17703.35ms min=17703.35ms max=17703.35ms count=1
+10-15 08:04:48.891 I/adbd    ( 1778): jdwp connection from 9884
+10-15 08:04:48.918 W/AccessibilityManagerService(  519):  wait for adding window timeout: 135
+10-15 08:04:48.957 I/AppsFilter(  519): interaction: PackageSetting{5fd6c5a com.agastyaray.asha/10193} -> PackageSetting{b86be8b dev.mobile.maestro/10204} BLOCKED
+10-15 08:04:48.984 D/CompatibilityChangeReporter( 9884): Compat change id reported: 171979766; UID 10193; state: ENABLED
+10-15 08:04:48.984 D/CompatibilityChangeReporter( 9884): Compat change id reported: 242716250; UID 10193; state: ENABLED
+10-15 08:04:49.002 D/CompatibilityChangeReporter(  519): Compat change id reported: 170503758; UID 10193; state: ENABLED
+10-15 08:04:49.010 W/ziparchive( 9884): Unable to open '/data/app/~~zphPPP93OAP7tuZOJxIECw==/com.agastyaray.asha-cbtU53CMKe3R9IUp1F8H-Q==/base.dm': No such file or directory
+10-15 08:04:49.010 W/ziparchive( 9884): Unable to open '/data/app/~~zphPPP93OAP7tuZOJxIECw==/com.agastyaray.asha-cbtU53CMKe3R9IUp1F8H-Q==/base.dm': No such file or directory
+10-15 08:04:49.049 D/Maestro ( 9726): Requesting view hierarchy
+10-15 08:04:49.055 W/QueryController( 9726): Could not detect idle state.
+10-15 08:04:49.055 W/QueryController( 9726): Could not detect idle state.
+10-15 08:04:49.059 W/UiDevice( 9726): Active window root not found.
+10-15 08:04:49.116 D/nativeloader( 9884): Configuring clns-6 for other apk /data/app/~~zphPPP93OAP7tuZOJxIECw==/com.agastyaray.asha-cbtU53CMKe3R9IUp1F8H-Q==/base.apk. target_sdk_version=35, uses_libraries=, library_path=/data/app/~~zphPPP93OAP7tuZOJxIECw==/com.agastyaray.asha-cbtU53CMKe3R9IUp1F8H-Q==/lib/x86_64, permitted_path=/data:/mnt/expand:/data/user/0/com.agastyaray.asha
+10-15 08:04:49.122 V/GraphicsEnvironment( 9884): Currently set values for:
+10-15 08:04:49.122 V/GraphicsEnvironment( 9884):   angle_gl_driver_selection_pkgs=[]
+10-15 08:04:49.122 V/GraphicsEnvironment( 9884):   angle_gl_driver_selection_values=[]
+10-15 08:04:49.122 V/GraphicsEnvironment( 9884): ANGLE GameManagerService for com.agastyaray.asha: false
+10-15 08:04:49.122 V/GraphicsEnvironment( 9884): com.agastyaray.asha is not listed in per-application setting
+10-15 08:04:49.122 V/GraphicsEnvironment( 9884): Neither updatable production driver nor prerelease driver is supported.
+10-15 08:04:49.131 D/CompatibilityChangeReporter( 9884): Compat change id reported: 183155436; UID 10193; state: ENABLED
+10-15 08:04:49.133 D/Maestro ( 9726): View hierarchy received in 84 ms
+10-15 08:04:49.144 I/FirebaseApp( 9884): Device unlocked: initializing all Firebase APIs for app [DEFAULT]
+10-15 08:04:49.152 I/FirebaseInitProvider( 9884): FirebaseApp initialization successful
+10-15 08:04:49.154 D/WM-WrkMgrInitializer( 9884): Initializing WorkManager with default configuration.
+10-15 08:04:49.174 D/WM-PackageManagerHelper( 9884): Skipping component enablement for androidx.work.impl.background.systemjob.SystemJobService
+10-15 08:04:49.174 D/WM-Schedulers( 9884): Created SystemJobScheduler and enabled SystemJobService
+10-15 08:04:49.184 I/ActivityManager(  519): Flag disabled. Ignoring finishAttachApplication from uid: 10193. pid: 9884
+10-15 08:04:49.209 D/AppCompatDelegate( 9884): Checking for metadata for AppLocalesMetadataHolderService : Service not found
+10-15 08:04:49.211 D/libEGL  ( 9884): loaded /vendor/lib64/egl/libEGL_emulation.so
+10-15 08:04:49.214 D/CompatibilityChangeReporter( 9884): Compat change id reported: 160794467; UID 10193; state: ENABLED
+10-15 08:04:49.215 D/libEGL  ( 9884): loaded /vendor/lib64/egl/libGLESv1_CM_emulation.so
+10-15 08:04:49.220 D/libEGL  ( 9884): loaded /vendor/lib64/egl/libGLESv2_emulation.so
+10-15 08:04:49.254 W/agastyaray.asha( 9884): Accessing hidden method Landroid/view/ViewGroup;->makeOptionalFitsSystemWindows()V (unsupported, reflection, allowed)
+10-15 08:04:49.262 D/Maestro ( 9726): Requesting view hierarchy
+10-15 08:04:49.263 W/QueryController( 9726): Could not detect idle state.
+10-15 08:04:49.263 W/QueryController( 9726): Could not detect idle state.
+10-15 08:04:49.265 W/UiDevice( 9726): Active window root not found.
+10-15 08:04:49.266 I/WebViewFactory( 9884): Loading com.google.android.webview version 113.0.5672.136 (code 567263637)
+10-15 08:04:49.271 W/ziparchive( 9884): Unable to open '/data/app/~~zpriZ9SnndRgJBLfNXsWxA==/com.google.android.trichromelibrary_567263637-RtwrOgVwYUwvOChoEeigGw==/TrichromeLibrary.dm': No such file or directory
+10-15 08:04:49.271 W/ziparchive( 9884): Unable to open '/data/app/~~zpriZ9SnndRgJBLfNXsWxA==/com.google.android.trichromelibrary_567263637-RtwrOgVwYUwvOChoEeigGw==/TrichromeLibrary.dm': No such file or directory
+10-15 08:04:49.271 W/agastyaray.asha( 9884): Entry not found
+10-15 08:04:49.273 D/nativeloader( 9884): Configuring clns-7 for other apk /data/app/~~zpriZ9SnndRgJBLfNXsWxA==/com.google.android.trichromelibrary_567263637-RtwrOgVwYUwvOChoEeigGw==/TrichromeLibrary.apk. target_sdk_version=34, uses_libraries=ALL, library_path=/data/app/~~lEMbEKsCghk7OVO4q7SqjA==/com.google.android.webview-wE2px5NjJE0PGUJq7xRhbw==/lib/x86_64:/data/app/~~lEMbEKsCghk7OVO4q7SqjA==/com.google.android.webview-wE2px5NjJE0PGUJq7xRhbw==/WebViewGoogle.apk!/lib/x86_64:/data/app/~~zpriZ9SnndRgJBLfNXsWxA==/com.google.android.trichromelibrary_567263637-RtwrOgVwYUwvOChoEeigGw==/TrichromeLibrary.apk!/lib/x86_64, permitted_path=/data:/mnt/expand
+10-15 08:04:49.274 I/AppsFilter(  519): interaction: PackageSetting{5fd6c5a com.agastyaray.asha/10193} -> PackageSetting{d6813ac com.android.cts.priv.ctsshim/10180} BLOCKED
+10-15 08:04:49.275 I/AppsFilter(  519): interaction: PackageSetting{5fd6c5a com.agastyaray.asha/10193} -> PackageSetting{e56f875 com.google.android.youtube/10139} BLOCKED
+10-15 08:04:49.275 I/AppsFilter(  519): interaction: PackageSetting{5fd6c5a com.agastyaray.asha/10193} -> PackageSetting{c6d3501 com.android.internal.display.cutout.emulation.corner/10025} BLOCKED
+10-15 08:04:49.275 I/AppsFilter(  519): interaction: PackageSetting{5fd6c5a com.agastyaray.asha/10193} -> PackageSetting{6c0fa6 com.android.internal.display.cutout.emulation.double/10048} BLOCKED
+10-15 08:04:49.275 I/AppsFilter(  519): interaction: PackageSetting{5fd6c5a com.agastyaray.asha/10193} -> PackageSetting{a39a00a com.google.android.onetimeinitializer/10126} BLOCKED
+10-15 08:04:49.275 I/AppsFilter(  519): interaction: PackageSetting{5fd6c5a com.agastyaray.asha/10193} -> PackageSetting{b08607b com.google.android.ext.shared/10100} BLOCKED
+10-15 08:04:49.275 I/AppsFilter(  519): interaction: PackageSetting{5fd6c5a com.agastyaray.asha/10193} -> PackageSetting{2f7203d com.android.internal.systemui.navbar.gestural_wide_back/10007} BLOCKED
+10-15 08:04:49.275 I/AppsFilter(  519): interaction: PackageSetting{5fd6c5a com.agastyaray.asha/10193} -> PackageSetting{a18be98 com.android.virtualmachine.res/10174} BLOCKED
+10-15 08:04:49.275 I/AppsFilter(  519): interaction: PackageSetting{5fd6c5a com.agastyaray.asha/10193} -> PackageSetting{82ba6f1 com.google.android.federatedcompute/10172} BLOCKED
+10-15 08:04:49.275 I/AppsFilter(  519): interaction: PackageSetting{5fd6c5a com.agastyaray.asha/10193} -> PackageSetting{933bf00 com.android.managedprovisioning.auto_generated_rro_product__/10024} BLOCKED
+10-15 08:04:49.275 I/AppsFilter(  519): interaction: PackageSetting{5fd6c5a com.agastyaray.asha/10193} -> PackageSetting{93a8339 com.android.carrierconfig.auto_generated_rro_vendor__/10078} BLOCKED
+10-15 08:04:49.275 I/AppsFilter(  519): interaction: PackageSetting{5fd6c5a com.agastyaray.asha/10193} -> PackageSetting{de75c1c dev.mobile.maestro.test/10205} BLOCKED
+10-15 08:04:49.275 I/AppsFilter(  519): interaction: PackageSetting{5fd6c5a com.agastyaray.asha/10193} -> PackageSetting{8fb6d7e com.android.systemui.emulation.pixel_3_xl/10034} BLOCKED
+10-15 08:04:49.275 I/AppsFilter(  519): interaction: PackageSetting{5fd6c5a com.agastyaray.asha/10193} -> PackageSetting{bde32df com.android.systemui.emulation.pixel_4_xl/10059} BLOCKED
+10-15 08:04:49.275 I/AppsFilter(  519): interaction: PackageSetting{5fd6c5a com.agastyaray.asha/10193} -> PackageSetting{895cb2c com.android.systemui.emulation.pixel_fold/10009} BLOCKED
+10-15 08:04:49.275 I/AppsFilter(  519): interaction: PackageSetting{5fd6c5a com.agastyaray.asha/10193} -> PackageSetting{bb719f5 com.android.simappdialog.auto_generated_rro_product__/10030} BLOCKED
+10-15 08:04:49.275 I/AppsFilter(  519): interaction: PackageSetting{5fd6c5a com.agastyaray.asha/10193} -> PackageSetting{6d9b2d6 com.android.htmlviewer/10115} BLOCKED
+10-15 08:04:49.275 I/AppsFilter(  519): interaction: PackageSetting{5fd6c5a com.agastyaray.asha/10193} -> PackageSetting{6b28957 com.google.android.health.connect.backuprestore/10176} BLOCKED
+10-15 08:04:49.275 I/AppsFilter(  519): interaction: PackageSetting{5fd6c5a com.agastyaray.asha/10193} -> PackageSetting{32a6e18 com.android.systemui.auto_generated_rro_product__/10031} BLOCKED
+10-15 08:04:49.275 I/AppsFilter(  519): interaction: PackageSetting{5fd6c5a com.agastyaray.asha/10193} -> PackageSetting{272c44 com.google.android.apps.messaging/10129} BLOCKED
+10-15 08:04:49.275 I/AppsFilter(  519): interaction: PackageSetting{5fd6c5a com.agastyaray.asha/10193} -> PackageSetting{c2c12d com.google.android.soundpicker/10137} BLOCKED
+10-15 08:04:49.275 I/AppsFilter(  519): interaction: PackageSetting{5fd6c5a com.agastyaray.asha/10193} -> PackageSetting{e959ed7 com.google.android.marvin.talkbackoverlay/10077} BLOCKED
+10-15 08:04:49.275 I/AppsFilter(  519): interaction: PackageSetting{5fd6c5a com.agastyaray.asha/10193} -> PackageSetting{f962662 com.google.android.configupdater/10130} BLOCKED
+10-15 08:04:49.275 I/AppsFilter(  519): interaction: PackageSetting{5fd6c5a com.agastyaray.asha/10193} -> PackageSetting{2d592ad com.android.internal.emulation.pixel_3a_xl/10044} BLOCKED
+10-15 08:04:49.275 I/AppsFilter(  519): interaction: PackageSetting{5fd6c5a com.agastyaray.asha/10193} -> PackageSetting{66e59e2 com.android.internal.emulation.pixel_6_pro/10018} BLOCKED
+10-15 08:04:49.275 I/AppsFilter(  519): interaction: PackageSetting{5fd6c5a com.agastyaray.asha/10193} -> PackageSetting{32b5173 com.android.internal.emulation.pixel_7_pro/10004} BLOCKED
+10-15 08:04:49.275 I/AppsFilter(  519): interaction: PackageSetting{5fd6c5a com.agastyaray.asha/10193} -> PackageSetting{e34e830 com.android.internal.emulation.pixel_8_pro/10058} BLOCKED
+10-15 08:04:49.275 I/AppsFilter(  519): interaction: PackageSetting{5fd6c5a com.agastyaray.asha/10193} -> PackageSetting{65aca9 com.android.internal.emulation.pixel_3a/10053} BLOCKED
+10-15 08:04:49.275 I/AppsFilter(  519): interaction: PackageSetting{5fd6c5a com.agastyaray.asha/10193} -> PackageSetting{99c322e com.android.internal.emulation.pixel_4a/10011} BLOCKED
+10-15 08:04:49.275 I/AppsFilter(  519): interaction: PackageSetting{5fd6c5a com.agastyaray.asha/10193} -> PackageSetting{c5f91cf com.android.internal.emulation.pixel_6a/10023} BLOCKED
+10-15 08:04:49.275 I/AppsFilter(  519): interaction: PackageSetting{5fd6c5a com.agastyaray.asha/10193} -> PackageSetting{838575c com.android.internal.emulation.pixel_7a/10033} BLOCKED
+10-15 08:04:49.275 I/AppsFilter(  519): interaction: PackageSetting{5fd6c5a com.agastyaray.asha/10193} -> PackageSetting{7c36a65 com.google.android.overlay.googlewebview/10049} BLOCKED
+10-15 08:04:49.275 I/AppsFilter(  519): interaction: PackageSetting{5fd6c5a com.agastyaray.asha/10193} -> PackageSetting{b86be8b dev.mobile.maestro/10204} BLOCKED
+10-15 08:04:49.275 I/AppsFilter(  519): interaction: PackageSetting{5fd6c5a com.agastyaray.asha/10193} -> PackageSetting{46c63f3 com.google.android.hotspot2.osulogin/10184} BLOCKED
+10-15 08:04:49.275 I/AppsFilter(  519): interaction: PackageSetting{5fd6c5a com.agastyaray.asha/10193} -> PackageSetting{98cc8b0 com.android.simappdialog/10112} BLOCKED
+10-15 08:04:49.275 I/AppsFilter(  519): interaction: PackageSetting{5fd6c5a com.agastyaray.asha/10193} -> PackageSetting{9a18d48 com.android.internal.display.cutout.emulation.hole/10073} BLOCKED
+10-15 08:04:49.275 I/AppsFilter(  519): interaction: PackageSetting{5fd6c5a com.agastyaray.asha/10193} -> PackageSetting{8547e1 com.android.internal.display.cutout.emulation.tall/10065} BLOCKED
+10-15 08:04:49.275 I/AppsFilter(  519): interaction: PackageSetting{5fd6c5a com.agastyaray.asha/10193} -> PackageSetting{dac5906 com.android.internal.systemui.navbar.threebutton/10068} BLOCKED
+10-15 08:04:49.275 I/AppsFilter(  519): interaction: PackageSetting{5fd6c5a com.agastyaray.asha/10193} -> PackageSetting{e374329 com.android.camera2/10146} BLOCKED
+10-15 08:04:49.275 I/AppsFilter(  519): interaction: PackageSetting{5fd6c5a com.agastyaray.asha/10193} -> PackageSetting{ee635f4 com.android.systemui.auto_generated_rro_vendor__/10076} BLOCKED
+10-15 08:04:49.275 I/AppsFilter(  519): interaction: PackageSetting{5fd6c5a com.agastyaray.asha/10193} -> PackageSetting{eb446ae com.google.android.deskclock/10152} BLOCKED
+10-15 08:04:49.275 I/AppsFilter(  519): interaction: PackageSetting{5fd6c5a com.agastyaray.asha/10193} -> PackageSetting{924ff92 com.android.internal.systemui.navbar.twobutton/10020} BLOCKED
+10-15 08:04:49.275 I/AppsFilter(  519): interaction: PackageSetting{5fd6c5a com.agastyaray.asha/10193} -> PackageSetting{8df4c4f com.google.android.gm/10141} BLOCKED
+10-15 08:04:49.275 I/AppsFilter(  519): interaction: PackageSetting{5fd6c5a com.agastyaray.asha/10193} -> PackageSetting{42abd60 com.android.internal.systemui.navbar.gestural_extra_wide_back/10045} BLOCKED
+10-15 08:04:49.275 I/AppsFilter(  519): interaction: PackageSetting{5fd6c5a com.agastyaray.asha/10193} -> PackageSetting{4261219 com.android.systemui.emulation.pixel_3/10015} BLOCKED
+10-15 08:04:49.275 I/AppsFilter(  519): interaction: PackageSetting{5fd6c5a com.agastyaray.asha/10193} -> PackageSetting{60f82de com.android.systemui.emulation.pixel_4/10037} BLOCKED
+10-15 08:04:49.275 I/AppsFilter(  519): interaction: PackageSetting{5fd6c5a com.agastyaray.asha/10193} -> PackageSetting{42e8cbf com.android.systemui.emulation.pixel_5/10071} BLOCKED
+10-15 08:04:49.275 I/AppsFilter(  519): interaction: PackageSetting{5fd6c5a com.agastyaray.asha/10193} -> PackageSetting{16e4f8c com.android.systemui.emulation.pixel_6/10074} BLOCKED
+10-15 08:04:49.275 I/AppsFilter(  519): interaction: PackageSetting{5fd6c5a com.agastyaray.asha/10193} -> PackageSetting{a7cb6d5 com.android.systemui.emulation.pixel_7/10072} BLOCKED
+10-15 08:04:49.275 I/AppsFilter(  519): interaction: PackageSetting{5fd6c5a com.agastyaray.asha/10193} -> PackageSetting{48ceeea com.android.systemui.emulation.pixel_8/10070} BLOCKED
+10-15 08:04:49.275 I/AppsFilter(  519): interaction: PackageSetting{5fd6c5a com.agastyaray.asha/10193} -> PackageSetting{3c935db com.android.nfc.auto_generated_rro_product__/10027} BLOCKED
+10-15 08:04:49.275 I/AppsFilter(  519): interaction: PackageSetting{5fd6c5a com.agastyaray.asha/10193} -> PackageSetting{46dbfdc com.android.printspooler/10103} BLOCKED
+10-15 08:04:49.275 I/AppsFilter(  519): interaction: PackageSetting{5fd6c5a com.agastyaray.asha/10193} -> PackageSetting{65eeb51 com.android.emergency.auto_generated_rro_product__/10041} BLOCKED
+10-15 08:04:49.275 I/AppsFilter(  519): interaction: PackageSetting{5fd6c5a com.agastyaray.asha/10193} -> PackageSetting{3c30fb6 com.google.android.connectivity.resources.goldfish.overlay/10079} BLOCKED
+10-15 08:04:49.275 I/AppsFilter(  519): interaction: PackageSetting{5fd6c5a com.agastyaray.asha/10193} -> PackageSetting{357e8e5 com.android.dreams.basic/10104} BLOCKED
+10-15 08:04:49.275 I/AppsFilter(  519): interaction: PackageSetting{5fd6c5a com.agastyaray.asha/10193} -> PackageSetting{37d0424 com.google.android.networkstack.tethering.emulator/10022} BLOCKED
+10-15 08:04:49.275 I/AppsFilter(  519): interaction: PackageSetting{5fd6c5a com.agastyaray.asha/10193} -> PackageSetting{b55eb8d com.android.providers.settings.auto_generated_rro_product__/10002} BLOCKED
+10-15 08:04:49.275 I/AppsFilter(  519): interaction: PackageSetting{5fd6c5a com.agastyaray.asha/10193} -> PackageSetting{b821fba com.google.android.as.oss/10121} BLOCKED
+10-15 08:04:49.275 I/AppsFilter(  519): interaction: PackageSetting{5fd6c5a com.agastyaray.asha/10193} -> PackageSetting{3068553 com.android.traceur.auto_generated_rro_product__/10005} BLOCKED
+10-15 08:04:49.275 I/AppsFilter(  519): interaction: PackageSetting{5fd6c5a com.agastyaray.asha/10193} -> PackageSetting{fee5e6b com.google.android.devicelockcontroller/10189} BLOCKED
+10-15 08:04:49.275 I/AppsFilter(  519): interaction: PackageSetting{5fd6c5a com.agastyaray.asha/10193} -> PackageSetting{b04fdc8 com.google.android.dialer/10128} BLOCKED
+10-15 08:04:49.275 I/AppsFilter(  519): interaction: PackageSetting{5fd6c5a com.agastyaray.asha/10193} -> PackageSetting{e105f8e com.android.internal.emulation.pixel_3/10046} BLOCKED
+10-15 08:04:49.275 I/AppsFilter(  519): interaction: PackageSetting{5fd6c5a com.agastyaray.asha/10193} -> PackageSetting{fea23af com.android.internal.emulation.pixel_4/10060} BLOCKED
+10-15 08:04:49.275 I/AppsFilter(  519): interaction: PackageSetting{5fd6c5a com.agastyaray.asha/10193} -> PackageSetting{5eab3bc com.android.internal.emulation.pixel_5/10012} BLOCKED
+10-15 08:04:49.275 I/AppsFilter(  519): interaction: PackageSetting{5fd6c5a com.agastyaray.asha/10193} -> PackageSetting{719ff45 com.android.internal.emulation.pixel_6/10038} BLOCKED
+10-15 08:04:49.275 I/AppsFilter(  519): interaction: PackageSetting{5fd6c5a com.agastyaray.asha/10193} -> PackageSetting{636e69a com.android.internal.emulation.pixel_7/10067} BLOCKED
+10-15 08:04:49.275 I/AppsFilter(  519): interaction: PackageSetting{5fd6c5a com.agastyaray.asha/10193} -> PackageSetting{4bf4bcb com.android.internal.emulation.pixel_8/10039} BLOCKED
+10-15 08:04:49.275 I/AppsFilter(  519): interaction: PackageSetting{5fd6c5a com.agastyaray.asha/10193} -> PackageSetting{7232e61 com.google.android.captiveportallogin/10116} BLOCKED
+10-15 08:04:49.275 I/AppsFilter(  519): interaction: PackageSetting{5fd6c5a com.agastyaray.asha/10193} -> PackageSetting{2227d86 com.android.musicfx/10088} BLOCKED
+10-15 08:04:49.275 I/AppsFilter(  519): interaction: PackageSetting{5fd6c5a com.agastyaray.asha/10193} -> PackageSetting{6927647 com.google.android.apps.docs/10153} BLOCKED
+10-15 08:04:49.275 I/AppsFilter(  519): interaction: PackageSetting{5fd6c5a com.agastyaray.asha/10193} -> PackageSetting{b2cbe19 com.google.android.apps.maps/10155} BLOCKED
+10-15 08:04:49.275 I/AppsFilter(  519): interaction: PackageSetting{5fd6c5a com.agastyaray.asha/10193} -> PackageSetting{e502e74 com.google.android.modulemetadata/10147} BLOCKED
+10-15 08:04:49.275 I/AppsFilter(  519): interaction: PackageSetting{5fd6c5a com.agastyaray.asha/10193} -> PackageSetting{8034f9d com.google.android.markup/10135} BLOCKED
+10-15 08:04:49.275 I/AppsFilter(  519): interaction: PackageSetting{5fd6c5a com.agastyaray.asha/10193} -> PackageSetting{665d1fd com.android.providers.settings.auto_generated_rro_vendor__/10080} BLOCKED
+10-15 08:04:49.275 I/AppsFilter(  519): interaction: PackageSetting{5fd6c5a com.agastyaray.asha/10193} -> PackageSetting{c18ec12 com.google.android.rkpdapp/10188} BLOCKED
+10-15 08:04:49.275 I/AppsFilter(  519): interaction: PackageSetting{5fd6c5a com.agastyaray.asha/10193} -> PackageSetting{6762fe3 com.google.android.contacts/10154} BLOCKED
+10-15 08:04:49.275 I/AppsFilter(  519): interaction: PackageSetting{5fd6c5a com.agastyaray.asha/10193} -> PackageSetting{bc06bc0 com.android.server.telecom.auto_generated_rro_product__/10032} BLOCKED
+10-15 08:04:49.275 I/AppsFilter(  519): interaction: PackageSetting{5fd6c5a com.agastyaray.asha/10193} -> PackageSetting{84290f9 com.google.android.overlay.googleconfig/10055} BLOCKED
+10-15 08:04:49.275 I/AppsFilter(  519): interaction: PackageSetting{5fd6c5a com.agastyaray.asha/10193} -> PackageSetting{f7bbde0 com.android.chrome/10150} BLOCKED
+10-15 08:04:49.275 I/AppsFilter(  519): interaction: PackageSetting{5fd6c5a com.agastyaray.asha/10193} -> PackageSetting{1f1569f com.android.bips.auto_generated_rro_product__/10035} BLOCKED
+10-15 08:04:49.275 I/AppsFilter(  519): interaction: PackageSetting{5fd6c5a com.agastyaray.asha/10193} -> PackageSetting{6ca4899 com.google.android.apps.customization.pixel/10144} BLOCKED
+10-15 08:04:49.275 I/AppsFilter(  519): interaction: PackageSetting{5fd6c5a com.agastyaray.asha/10193} -> PackageSetting{595b75e com.google.android.tag/10082} BLOCKED
+10-15 08:04:49.275 I/AppsFilter(  519): interaction: PackageSetting{5fd6c5a com.agastyaray.asha/10193} -> PackageSetting{de62a4a com.google.android.overlay.permissioncontroller/10003} BLOCKED
+10-15 08:04:49.275 I/AppsFilter(  519): interaction: PackageSetting{5fd6c5a com.agastyaray.asha/10193} -> PackageSetting{f51e73f com.google.android.partnersetup/10124} BLOCKED
+10-15 08:04:49.275 I/AppsFilter(  519): interaction: PackageSetting{5fd6c5a com.agastyaray.asha/10193} -> PackageSetting{40ed80c com.google.android.apps.wallpaper.nexus/10142} BLOCKED
+10-15 08:04:49.275 I/AppsFilter(  519): interaction: PackageSetting{5fd6c5a com.agastyaray.asha/10193} -> PackageSetting{56dd555 com.google.android.apps.nexuslauncher/10169} BLOCKED
+10-15 08:04:49.275 I/AppsFilter(  519): interaction: PackageSetting{5fd6c5a com.agastyaray.asha/10193} -> PackageSetting{b81eb6a com.google.android.nearby.halfsheet/10178} BLOCKED
+10-15 08:04:49.275 I/AppsFilter(  519): interaction: PackageSetting{5fd6c5a com.agastyaray.asha/10193} -> PackageSetting{ff17a97 com.android.theme.font.notoserifsource/10066} BLOCKED
+10-15 08:04:49.275 I/AppsFilter(  519): interaction: PackageSetting{5fd6c5a com.agastyaray.asha/10193} -> PackageSetting{a07b85b com.google.android.safetycenter.resources/10186} BLOCKED
+10-15 08:04:49.275 I/AppsFilter(  519): interaction: PackageSetting{5fd6c5a com.agastyaray.asha/10193} -> PackageSetting{334346d com.android.internal.display.cutout.emulation.waterfall/10040} BLOCKED
+10-15 08:04:49.275 I/AppsFilter(  519): interaction: PackageSetting{5fd6c5a com.agastyaray.asha/10193} -> PackageSetting{e81b8a2 com.android.internal.systemui.navbar.transparent/10029} BLOCKED
+10-15 08:04:49.275 I/AppsFilter(  519): interaction: PackageSetting{5fd6c5a com.agastyaray.asha/10193} -> PackageSetting{d768f8 com.google.android.connectivity.resources/10177} BLOCKED
+10-15 08:04:49.275 I/AppsFilter(  519): interaction: PackageSetting{5fd6c5a com.agastyaray.asha/10193} -> PackageSetting{aa644f0 com.android.providers.contacts.auto_generated_rro_product__/10019} BLOCKED
+10-15 08:04:49.275 I/AppsFilter(  519): interaction: PackageSetting{5fd6c5a com.agastyaray.asha/10193} -> PackageSetting{58371d1 com.google.android.feedback/10162} BLOCKED
+10-15 08:04:49.275 I/AppsFilter(  519): interaction: PackageSetting{5fd6c5a com.agastyaray.asha/10193} -> PackageSetting{e4b5436 com.google.android.printservice.recommendation/10108} BLOCKED
+10-15 08:04:49.275 I/AppsFilter(  519): interaction: PackageSetting{5fd6c5a com.agastyaray.asha/10193} -> PackageSetting{17f7f37 com.google.android.apps.photos/10140} BLOCKED
+10-15 08:04:49.275 I/AppsFilter(  519): interaction: PackageSetting{5fd6c5a com.agastyaray.asha/10193} -> PackageSetting{ce16d1d com.google.android.calendar/10145} BLOCKED
+10-15 08:04:49.275 I/AppsFilter(  519): interaction: PackageSetting{5fd6c5a com.agastyaray.asha/10193} -> PackageSetting{7961ca4 com.google.android.documentsui/10098} BLOCKED
+10-15 08:04:49.275 I/AppsFilter(  519): interaction: PackageSetting{5fd6c5a com.agastyaray.asha/10193} -> PackageSetting{1f68bab com.android.systemui.emulation.pixel_3a_xl/10021} BLOCKED
+10-15 08:04:49.275 I/AppsFilter(  519): interaction: PackageSetting{5fd6c5a com.agastyaray.asha/10193} -> PackageSetting{5c9c208 com.android.systemui.emulation.pixel_6_pro/10063} BLOCKED
+10-15 08:04:49.275 I/AppsFilter(  519): interaction: PackageSetting{5fd6c5a com.agastyaray.asha/10193} -> PackageSetting{a363da1 com.android.systemui.emulation.pixel_7_pro/10054} BLOCKED
+10-15 08:04:49.275 I/AppsFilter(  519): interaction: PackageSetting{5fd6c5a com.agastyaray.asha/10193} -> PackageSetting{b657bc6 com.android.systemui.emulation.pixel_8_pro/10001} BLOCKED
+10-15 08:04:49.275 I/AppsFilter(  519): interaction: PackageSetting{5fd6c5a com.agastyaray.asha/10193} -> PackageSetting{27c5a0d com.google.mainline.telemetry/10151} BLOCKED
+10-15 08:04:49.275 I/AppsFilter(  519): interaction: PackageSetting{5fd6c5a com.agastyaray.asha/10193} -> PackageSetting{c3cf6b4 com.android.carrierconfig.auto_generated_rro_product__/10064} BLOCKED
+10-15 08:04:49.275 I/AppsFilter(  519): interaction: PackageSetting{5fd6c5a com.agastyaray.asha/10193} -> PackageSetting{5707dc2 com.android.providers.partnerbookmarks/10101} BLOCKED
+10-15 08:04:49.275 I/AppsFilter(  519): interaction: PackageSetting{5fd6c5a com.agastyaray.asha/10193} -> PackageSetting{d42d7d3 com.android.wallpaper.livepicker/10090} BLOCKED
+10-15 08:04:49.275 I/AppsFilter(  519): interaction: PackageSetting{5fd6c5a com.agastyaray.asha/10193} -> PackageSetting{92ec523 com.android.providers.telephony.auto_generated_rro_product__/10062} BLOCKED
+10-15 08:04:49.275 I/AppsFilter(  519): interaction: PackageSetting{5fd6c5a com.agastyaray.asha/10193} -> PackageSetting{50cca20 com.android.phone.auto_generated_rro_vendor__/10081} BLOCKED
+10-15 08:04:49.275 I/AppsFilter(  519): interaction: PackageSetting{5fd6c5a com.agastyaray.asha/10193} -> PackageSetting{36a5f10 com.google.mainline.adservices/10136} BLOCKED
+10-15 08:04:49.275 I/AppsFilter(  519): interaction: PackageSetting{5fd6c5a com.agastyaray.asha/10193} -> PackageSetting{3a18a09 com.android.imsserviceentitlement/10117} BLOCKED
+10-15 08:04:49.275 I/AppsFilter(  519): interaction: PackageSetting{5fd6c5a com.agastyaray.asha/10193} -> PackageSetting{fccb40e com.google.android.healthconnect.controller/10175} BLOCKED
+10-15 08:04:49.275 I/AppsFilter(  519): interaction: PackageSetting{5fd6c5a com.agastyaray.asha/10193} -> PackageSetting{144684c com.android.internal.emulation.pixel_2_xl/10016} BLOCKED
+10-15 08:04:49.275 I/AppsFilter(  519): interaction: PackageSetting{5fd6c5a com.agastyaray.asha/10193} -> PackageSetting{8afc095 com.android.internal.emulation.pixel_3_xl/10056} BLOCKED
+10-15 08:04:49.275 I/AppsFilter(  519): interaction: PackageSetting{5fd6c5a com.agastyaray.asha/10193} -> PackageSetting{7c095aa com.android.internal.emulation.pixel_4_xl/10047} BLOCKED
+10-15 08:04:49.275 I/AppsFilter(  519): interaction: PackageSetting{5fd6c5a com.agastyaray.asha/10193} -> PackageSetting{615b59b com.android.internal.emulation.pixel_fold/10006} BLOCKED
+10-15 08:04:49.275 I/AppsFilter(  519): interaction: PackageSetting{5fd6c5a com.agastyaray.asha/10193} -> PackageSetting{9d91e2f com.android.bookmarkprovider/10113} BLOCKED
+10-15 08:04:49.275 I/AppsFilter(  519): interaction: PackageSetting{5fd6c5a com.agastyaray.asha/10193} -> PackageSetting{418d111 com.google.android.overlay.pixelconfigcommon/10014} BLOCKED
+10-15 08:04:49.276 I/AppsFilter(  519): interaction: PackageSetting{5fd6c5a com.agastyaray.asha/10193} -> PackageSetting{26a6276 com.android.systemui.accessibility.accessibilitymenu.auto_generated_rro_product__/10050} BLOCKED
+10-15 08:04:49.276 I/AppsFilter(  519): interaction: PackageSetting{5fd6c5a com.agastyaray.asha/10193} -> PackageSetting{e901077 com.android.systemui.emulation.pixel_3a/10013} BLOCKED
+10-15 08:04:49.276 I/AppsFilter(  519): interaction: PackageSetting{5fd6c5a com.agastyaray.asha/10193} -> PackageSetting{b6574e4 com.android.systemui.emulation.pixel_4a/10000} BLOCKED
+10-15 08:04:49.276 I/AppsFilter(  519): interaction: PackageSetting{5fd6c5a com.agastyaray.asha/10193} -> PackageSetting{286d4d com.android.systemui.emulation.pixel_6a/10042} BLOCKED
+10-15 08:04:49.276 I/AppsFilter(  519): interaction: PackageSetting{5fd6c5a com.agastyaray.asha/10193} -> PackageSetting{9123002 com.android.systemui.emulation.pixel_7a/10017} BLOCKED
+10-15 08:04:49.276 I/AppsFilter(  519): interaction: PackageSetting{5fd6c5a com.agastyaray.asha/10193} -> PackageSetting{ffe5c3c com.google.android.settings.intelligence/10118} BLOCKED
+10-15 08:04:49.276 I/AppsFilter(  519): interaction: PackageSetting{5fd6c5a com.agastyaray.asha/10193} -> PackageSetting{c19da54 com.google.android.projection.gearhead/10123} BLOCKED
+10-15 08:04:49.276 I/AppsFilter(  519): interaction: PackageSetting{5fd6c5a com.agastyaray.asha/10193} -> PackageSetting{1cfbdc5 com.google.android.uwb.resources/10170} BLOCKED
+10-15 08:04:49.276 I/AppsFilter(  519): interaction: PackageSetting{5fd6c5a com.agastyaray.asha/10193} -> PackageSetting{87fbdfd com.android.cts.ctsshim/10181} BLOCKED
+10-15 08:04:49.276 I/AppsFilter(  519): interaction: PackageSetting{5fd6c5a com.agastyaray.asha/10193} -> PackageSetting{ca4031a com.google.android.wifi.resources/10182} BLOCKED
+10-15 08:04:49.276 I/AppsFilter(  519): interaction: PackageSetting{5fd6c5a com.agastyaray.asha/10193} -> PackageSetting{ae36e4b com.google.android.wifi.dialog/10183} BLOCKED
+10-15 08:04:49.276 I/AppsFilter(  519): interaction: PackageSetting{5fd6c5a com.agastyaray.asha/10193} -> PackageSetting{7730028 com.google.android.apps.wallpaper/10161} BLOCKED
+10-15 08:04:49.276 I/AppsFilter(  519): interaction: PackageSetting{5fd6c5a com.agastyaray.asha/10193} -> PackageSetting{cf37141 com.google.android.odad/10122} BLOCKED
+10-15 08:04:49.276 I/AppsFilter(  519): interaction: PackageSetting{5fd6c5a com.agastyaray.asha/10193} -> PackageSetting{802f905 com.android.settings.auto_generated_rro_product__/10028} BLOCKED
+10-15 08:04:49.276 I/AppsFilter(  519): interaction: PackageSetting{5fd6c5a com.agastyaray.asha/10193} -> PackageSetting{1bd5a com.android.internal.systemui.navbar.gestural/10051} BLOCKED
+10-15 08:04:49.276 I/AppsFilter(  519): interaction: PackageSetting{5fd6c5a com.agastyaray.asha/10193} -> PackageSetting{96f36e6 com.google.android.apps.youtube.music/10156} BLOCKED
+10-15 08:04:49.276 I/AppsFilter(  519): interaction: PackageSetting{5fd6c5a com.agastyaray.asha/10193} -> PackageSetting{2f8a427 com.android.bluetoothmidiservice/10110} BLOCKED
+10-15 08:04:49.276 I/AppsFilter(  519): interaction: PackageSetting{5fd6c5a com.agastyaray.asha/10193} -> PackageSetting{43f2081 com.android.storagemanager.auto_generated_rro_product__/10026} BLOCKED
+10-15 08:04:49.276 I/AppsFilter(  519): interaction: PackageSetting{5fd6c5a com.agastyaray.asha/10193} -> PackageSetting{30bf6d4 com.google.android.cellbroadcastreceiver/10179} BLOCKED
+10-15 08:04:49.276 I/AppsFilter(  519): interaction: PackageSetting{5fd6c5a com.agastyaray.asha/10193} -> PackageSetting{ef00567 com.android.phone.auto_generated_rro_product__/10061} BLOCKED
+10-15 08:04:49.276 I/AppsFilter(  519): interaction: PackageSetting{5fd6c5a com.agastyaray.asha/10193} -> PackageSetting{281df14 android.auto_generated_rro_product__/10069} BLOCKED
+10-15 08:04:49.276 I/AppsFilter(  519): interaction: PackageSetting{5fd6c5a com.agastyaray.asha/10193} -> PackageSetting{bc43bd com.android.internal.systemui.navbar.gestural_narrow_back/10052} BLOCKED
+10-15 08:04:49.276 I/AppsFilter(  519): interaction: PackageSetting{5fd6c5a com.agastyaray.asha/10193} -> PackageSetting{d44e07d com.google.android.inputmethod.latin/10143} BLOCKED
+10-15 08:04:49.276 I/AppsFilter(  519): interaction: PackageSetting{5fd6c5a com.agastyaray.asha/10193} -> PackageSetting{96d9103 android.auto_generated_rro_vendor__/10075} BLOCKED
+10-15 08:04:49.276 I/AppsFilter(  519): interaction: PackageSetting{5fd6c5a com.agastyaray.asha/10193} -> PackageSetting{67db72 com.google.android.apps.restore/10119} BLOCKED
+10-15 08:04:49.276 D/nativeloader( 9884): Configuring clns-8 for other apk /data/app/~~lEMbEKsCghk7OVO4q7SqjA==/com.google.android.webview-wE2px5NjJE0PGUJq7xRhbw==/WebViewGoogle.apk. target_sdk_version=34, uses_libraries=, library_path=/data/app/~~lEMbEKsCghk7OVO4q7SqjA==/com.google.android.webview-wE2px5NjJE0PGUJq7xRhbw==/lib/x86_64:/data/app/~~lEMbEKsCghk7OVO4q7SqjA==/com.google.android.webview-wE2px5NjJE0PGUJq7xRhbw==/WebViewGoogle.apk!/lib/x86_64:/data/app/~~zpriZ9SnndRgJBLfNXsWxA==/com.google.android.trichromelibrary_567263637-RtwrOgVwYUwvOChoEeigGw==/TrichromeLibrary.apk!/lib/x86_64, permitted_path=/data:/mnt/expand
+10-15 08:04:49.288 W/agastyaray.asha( 9884): Accessing hidden method Landroid/os/Trace;->isTagEnabled(J)Z (unsupported, reflection, allowed)
+10-15 08:04:49.288 W/agastyaray.asha( 9884): Accessing hidden method Landroid/os/Trace;->traceBegin(JLjava/lang/String;)V (unsupported, reflection, allowed)
+10-15 08:04:49.288 W/agastyaray.asha( 9884): Accessing hidden method Landroid/os/Trace;->traceEnd(J)V (unsupported, reflection, allowed)
+10-15 08:04:49.288 W/agastyaray.asha( 9884): Accessing hidden method Landroid/os/Trace;->asyncTraceBegin(JLjava/lang/String;I)V (unsupported, reflection, allowed)
+10-15 08:04:49.288 W/agastyaray.asha( 9884): Accessing hidden method Landroid/os/Trace;->asyncTraceEnd(JLjava/lang/String;I)V (unsupported, reflection, allowed)
+10-15 08:04:49.292 I/cr_WVCFactoryProvider( 9884): Loaded version=113.0.5672.136 minSdkVersion=29 isBundle=false multiprocess=true packageId=2
+10-15 08:04:49.298 D/Maestro ( 9726): View hierarchy received in 36 ms
+10-15 08:04:49.301 I/cr_VariationsUtils( 9884): Failed reading seed file "/data/user/0/com.agastyaray.asha/app_webview/variations_seed_new"
+10-15 08:04:49.309 I/cr_LibraryLoader( 9884): Successfully loaded native library
+10-15 08:04:49.310 I/cr_CachingUmaRecorder( 9884): Flushed 8 samples from 8 histograms.
+10-15 08:04:49.315 I/cr_VariationsUtils( 9884): Loaded seed with age -771974s
+10-15 08:04:49.318 D/CompatibilityChangeReporter(  519): Compat change id reported: 161145287; UID 10193; state: ENABLED
+10-15 08:04:49.321 D/CompatibilityChangeReporter(  519): Compat change id reported: 135634846; UID 99006; state: DISABLED
+10-15 08:04:49.321 D/CompatibilityChangeReporter(  519): Compat change id reported: 143937733; UID 10193; state: ENABLED
+10-15 08:04:49.325 D/Zygote  (  993): Forked child process 9924
+10-15 08:04:49.328 I/ocessService0:0( 9924): Using CollectorTypeCC GC.
+10-15 08:04:49.328 W/ocessService0:0( 9924): Unexpected CPU variant for x86: x86_64.
+10-15 08:04:49.328 W/ocessService0:0( 9924): Known variants: atom, sandybridge, silvermont, goldmont, goldmont-plus, tremont, kabylake, default
+10-15 08:04:49.330 E/ocessService0:0( 9924): Not starting debugger since process cannot load the jdwp agent.
+10-15 08:04:49.336 D/CompatibilityChangeReporter(  519): Compat change id reported: 261072174; UID 10193; state: ENABLED
+10-15 08:04:49.346 I/ActivityManager(  519): Start proc 9924:com.google.android.webview:sandboxed_process0:org.chromium.content.app.SandboxedProcessService0:0/u0i6 for  {com.agastyaray.asha/org.chromium.content.app.SandboxedProcessService0:0}
+10-15 08:04:49.351 D/CompatibilityChangeReporter( 9924): Compat change id reported: 171979766; UID 99006; state: ENABLED
+10-15 08:04:49.351 D/CompatibilityChangeReporter( 9924): Compat change id reported: 242716250; UID 99006; state: ENABLED
+10-15 08:04:49.366 I/LoadedApk( 9924): No resource references to update in package com.google.android.trichromelibrary
+10-15 08:04:49.370 I/cr_WebViewApkApp( 9924): Launched version=113.0.5672.136 minSdkVersion=29 isBundle=false processName=com.google.android.webview:sandboxed_process0:org.chromium.content.app.SandboxedProcessService0:0
+10-15 08:04:49.371 I/ActivityManager(  519): Flag disabled. Ignoring finishAttachApplication from uid: 99006. pid: 9924
+10-15 08:04:49.372 W/SystemServiceRegistry( 9924): No service published for: virtualdevice
+10-15 08:04:49.372 I/cr_ChildProcessService( 9924): Creating new ChildProcessService pid=9924
+10-15 08:04:49.382 D/Maestro ( 9726): Requesting view hierarchy
+10-15 08:04:49.383 W/QueryController( 9726): Could not detect idle state.
+10-15 08:04:49.383 W/QueryController( 9726): Could not detect idle state.
+10-15 08:04:49.384 W/UiDevice( 9726): Active window root not found.
+10-15 08:04:49.407 D/Maestro ( 9726): View hierarchy received in 25 ms
+10-15 08:04:49.433 D/ActivityManager(  519): sync unfroze 2946 com.google.android.webview:webview_service for 6
+10-15 08:04:49.439 D/CompatibilityChangeReporter( 9884): Compat change id reported: 214741472; UID 10193; state: ENABLED
+10-15 08:04:49.443 D/CompatibilityChangeReporter( 9884): Compat change id reported: 171228096; UID 10193; state: ENABLED
+10-15 08:04:49.448 D/ConnectivityService(  519): requestNetwork for uid/pid:10193/9884 activeRequest: null callbackRequest: 166 [NetworkRequest [ REQUEST id=167, [ Capabilities: INTERNET&NOT_RESTRICTED&TRUSTED&NOT_VCN_MANAGED Uid: 10193 RequestorUid: 10193 RequestorPkg: com.agastyaray.asha UnderlyingNetworks: Null] ]] callback flags: 0 order: 2147483647
+10-15 08:04:49.450 D/ConnectivityService(  519): NetReassign [167 : null → 101] [c 0] [a 0] [i 1]
+10-15 08:04:49.450 D/WifiNetworkFactory(  519): got request NetworkRequest [ REQUEST id=167, [ Capabilities: INTERNET&NOT_RESTRICTED&TRUSTED&NOT_VCN_MANAGED Uid: 10193 RequestorUid: 10193 RequestorPkg: com.agastyaray.asha UnderlyingNetworks: Null] ]
+10-15 08:04:49.450 D/UntrustedWifiNetworkFactory(  519): got request NetworkRequest [ REQUEST id=167, [ Capabilities: INTERNET&NOT_RESTRICTED&TRUSTED&NOT_VCN_MANAGED Uid: 10193 RequestorUid: 10193 RequestorPkg: com.agastyaray.asha UnderlyingNetworks: Null] ]
+10-15 08:04:49.450 D/OemPaidWifiNetworkFactory(  519): got request NetworkRequest [ REQUEST id=167, [ Capabilities: INTERNET&NOT_RESTRICTED&TRUSTED&NOT_VCN_MANAGED Uid: 10193 RequestorUid: 10193 RequestorPkg: com.agastyaray.asha UnderlyingNetworks: Null] ]
+10-15 08:04:49.451 D/MultiInternetWifiNetworkFactory(  519): got request NetworkRequest [ REQUEST id=167, [ Capabilities: INTERNET&NOT_RESTRICTED&TRUSTED&NOT_VCN_MANAGED Uid: 10193 RequestorUid: 10193 RequestorPkg: com.agastyaray.asha UnderlyingNetworks: Null] ]
+10-15 08:04:49.453 D/ConnectivityService(  519): NetReassign [no changes] [c 0] [a 0] [i 0]
+10-15 08:04:49.466 D/AutofillManager( 9884): Fill dialog is enabled:false, hints=[password, passwordAuto, creditCardNumber, creditCardSecurityCode, creditCardExpirationDate]
+10-15 08:04:49.472 D/Maestro ( 9726): Requesting view hierarchy
+10-15 08:04:49.472 W/QueryController( 9726): Could not detect idle state.
+10-15 08:04:49.473 W/QueryController( 9726): Could not detect idle state.
+10-15 08:04:49.473 W/UiDevice( 9726): Active window root not found.
+10-15 08:04:49.479 D/Capacitor( 9884): Starting BridgeActivity
+10-15 08:04:49.494 D/Capacitor( 9884): Registering plugin instance: CapacitorCookies
+10-15 08:04:49.498 D/Capacitor( 9884): Registering plugin instance: WebView
+10-15 08:04:49.500 D/Capacitor( 9884): Registering plugin instance: CapacitorHttp
+10-15 08:04:49.502 D/Capacitor( 9884): Registering plugin instance: AshaNative
+10-15 08:04:49.507 D/Capacitor( 9884): Registering plugin instance: App
+10-15 08:04:49.509 D/Capacitor( 9884): Registering plugin instance: Geolocation
+10-15 08:04:49.523 D/Maestro ( 9726): View hierarchy received in 51 ms
+10-15 08:04:49.552 W/Capacitor( 9884): Unable to read file at path public/plugins
+10-15 08:04:49.555 D/Capacitor( 9884): Loading app at https://localhost
+10-15 08:04:49.562 W/cr_media( 9884): BLUETOOTH_CONNECT permission is missing.
+10-15 08:04:49.562 W/cr_media( 9884): registerBluetoothIntentsIfNeeded: Requires BLUETOOTH permission
+10-15 08:04:49.571 I/cr_LibraryLoader( 9924): Successfully loaded native library
+10-15 08:04:49.571 I/cr_CachingUmaRecorder( 9924): Flushed 2 samples from 2 histograms.
+10-15 08:04:49.581 W/SystemServiceRegistry( 9924): No service published for: uimode
+10-15 08:04:49.584 D/Capacitor( 9884): App started
+10-15 08:04:49.588 W/WindowOnBackDispatcher( 9884): OnBackInvokedCallback is not enabled for the application.
+10-15 08:04:49.588 W/WindowOnBackDispatcher( 9884): Set 'android:enableOnBackInvokedCallback="true"' in the application manifest.
+10-15 08:04:49.592 D/Capacitor/AppPlugin( 9884): Firing change: true
+10-15 08:04:49.593 V/Capacitor/AppPlugin( 9884): Notifying listeners for event appStateChange
+10-15 08:04:49.594 D/Capacitor/AppPlugin( 9884): No listeners found for event appStateChange
+10-15 08:04:49.595 D/Capacitor( 9884): App resumed
+10-15 08:04:49.600 D/CompatibilityChangeReporter( 9884): Compat change id reported: 237531167; UID 10193; state: DISABLED
+10-15 08:04:49.602 W/OpenGLRenderer( 9884): Unknown dataspace 0
+10-15 08:04:49.618 D/Maestro ( 9726): Requesting view hierarchy
+10-15 08:04:49.618 W/QueryController( 9726): Could not detect idle state.
+10-15 08:04:49.618 W/QueryController( 9726): Could not detect idle state.
+10-15 08:04:49.619 W/UiDevice( 9726): Active window root not found.
+10-15 08:04:49.629 D/CompatibilityChangeReporter( 9884): Compat change id reported: 193247900; UID 10193; state: ENABLED
+10-15 08:04:49.633 D/CoreBackPreview(  519): Window{59e5ffb u0 com.agastyaray.asha/com.agastyaray.asha.MainActivity}: Setting back callback OnBackInvokedCallbackInfo{mCallback=android.window.IOnBackInvokedCallback$Stub$Proxy@5fd33cf, mPriority=0, mIsAnimationCallback=false}
+10-15 08:04:49.638 D/Capacitor( 9884): Handling local request: https://localhost/
+10-15 08:04:49.663 W/OpenGLRenderer( 9884): Failed to initialize 101010-2 format, error = EGL_SUCCESS
+10-15 08:04:49.690 I/FontLog ( 6032): Received query name=Google Sans&weight=700&besteffort=false, URI content://com.google.android.gms.fonts [CONTEXT service_id=132 ]
+10-15 08:04:49.690 I/FontLog ( 6032): Query [name=Google Sans&weight=700&besteffort=false] resolved to {Google Sans, wdth 100.0, wght 700, ital 0.0, bestEffort false} [CONTEXT service_id=132 ]
+10-15 08:04:49.696 I/FontLog ( 6032): Fetch {Google Sans, wdth 100.0, wght 700, ital 0.0, bestEffort false} end status Status{statusCode=SUCCESS, resolution=null} [CONTEXT service_id=132 ]
+10-15 08:04:49.883 I/servicemanager(    0): Could not find android.hardware.graphics.allocator.IAllocator/default in the VINTF manifest.
+10-15 08:04:49.697 I/hwservicemanager(  135): getTransport: Cannot find entry android.hardware.graphics.mapper@4.0::IMapper/default in either framework or device VINTF manifest.
+10-15 08:04:49.698 I/Gralloc4( 9884): mapper 4.x is not supported
+10-15 08:04:49.721 D/Maestro ( 9726): View hierarchy received in 103 ms
+10-15 08:04:49.725 I/FontLog ( 6032): Pulling font file for id = 30, cache size = 10 [CONTEXT service_id=132 ]
+10-15 08:04:49.755 I/FontLog ( 6032): Received query name=Noto Color Emoji Compat&weight=400&besteffort=false, URI content://com.google.android.gms.fonts [CONTEXT service_id=132 ]
+10-15 08:04:49.755 I/FontLog ( 6032): Query [name=Noto Color Emoji Compat&weight=400&besteffort=false] resolved to {Noto Color Emoji Compat, wdth 100.0, wght 400, ital 0.0, bestEffort false} [CONTEXT service_id=132 ]
+10-15 08:04:49.756 I/FontLog ( 6032): Fetch {Noto Color Emoji Compat, wdth 100.0, wght 400, ital 0.0, bestEffort false} end status Status{statusCode=SUCCESS, resolution=null} [CONTEXT service_id=132 ]
+10-15 08:04:49.762 I/FontLog ( 6032): Pulling font file for id = 31, cache size = 9 [CONTEXT service_id=132 ]
+10-15 08:04:49.765 I/FontLog ( 6032): Received query name=Google Sans&weight=400&besteffort=false, URI content://com.google.android.gms.fonts [CONTEXT service_id=132 ]
+10-15 08:04:49.765 I/FontLog ( 6032): Query [name=Google Sans&weight=400&besteffort=false] resolved to {Google Sans, wdth 100.0, wght 400, ital 0.0, bestEffort false} [CONTEXT service_id=132 ]
+10-15 08:04:49.766 I/FontLog ( 6032): Font PFD returned from cache for {Google Sans, wdth 100.0, wght 400, ital 0.0, bestEffort false} [CONTEXT service_id=132 ]
+10-15 08:04:49.766 I/FontLog ( 6032): Fetch {Google Sans, wdth 100.0, wght 400, ital 0.0, bestEffort false} end status Status{statusCode=SUCCESS, resolution=null} [CONTEXT service_id=132 ]
+10-15 08:04:49.769 I/FontLog ( 6032): Pulling font file for id = 32, cache size = 8 [CONTEXT service_id=132 ]
+10-15 08:04:49.772 I/FontLog ( 6032): Received query name=Google Sans&weight=500&besteffort=false, URI content://com.google.android.gms.fonts [CONTEXT service_id=132 ]
+10-15 08:04:49.773 I/FontLog ( 6032): Query [name=Google Sans&weight=500&besteffort=false] resolved to {Google Sans, wdth 100.0, wght 500, ital 0.0, bestEffort false} [CONTEXT service_id=132 ]
+10-15 08:04:49.773 I/FontLog ( 6032): Font PFD returned from cache for {Google Sans, wdth 100.0, wght 500, ital 0.0, bestEffort false} [CONTEXT service_id=132 ]
+10-15 08:04:49.773 I/FontLog ( 6032): Fetch {Google Sans, wdth 100.0, wght 500, ital 0.0, bestEffort false} end status Status{statusCode=SUCCESS, resolution=null} [CONTEXT service_id=132 ]
+10-15 08:04:49.781 I/FontLog ( 6032): Pulling font file for id = 33, cache size = 9 [CONTEXT service_id=132 ]
+10-15 08:04:49.906 W/ziparchive(  519): Unable to open '/data/app/~~zphPPP93OAP7tuZOJxIECw==/com.agastyaray.asha-cbtU53CMKe3R9IUp1F8H-Q==/base.dm': No such file or directory
+10-15 08:04:49.920 I/ActivityTaskManager(  519): Displayed com.agastyaray.asha/.MainActivity for user 0: +1s743ms
+10-15 08:04:49.927 D/CompatibilityChangeReporter(  519): Compat change id reported: 214016041; UID 10193; state: ENABLED
+10-15 08:04:49.927 I/ImeTracker(  519): com.agastyaray.asha:f737570: onRequestHide at ORIGIN_SERVER_HIDE_INPUT reason HIDE_UNSPECIFIED_WINDOW
+10-15 08:04:49.927 I/ImeTracker(  519): com.agastyaray.asha:f737570: onCancelled at PHASE_SERVER_SHOULD_HIDE
+10-15 08:04:49.956 W/WindowOnBackDispatcher(  840): sendCancelIfRunning: isInProgress=falsecallback=android.view.ViewRootImpl$$ExternalSyntheticLambda17@6ed0642
+10-15 08:04:49.957 W/InputManager-JNI(  519): Input channel object '4833c9e Splash Screen com.agastyaray.asha (client)' was disposed without first being removed with the input manager!
+10-15 08:04:49.967 D/CoreBackPreview(  519): Window{4833c9e u0 Splash Screen com.agastyaray.asha EXITING}: Setting back callback null
+10-15 08:04:49.977 D/EGL_emulation(  840): app_time_stats: avg=647.44ms min=143.21ms max=1151.67ms count=2
+10-15 08:04:49.984 I/GoogleInputMethodService( 1559): GoogleInputMethodService.onFinishInput():3227 
+10-15 08:04:49.985 I/GoogleInputMethodService( 1559): GoogleInputMethodService.updateDeviceLockedStatus():2087 repeatCheckTimes = 0, unlocked = true
+10-15 08:04:49.985 I/GoogleInputMethodService( 1559): GoogleInputMethodService.onStartInput():1877 onStartInput(EditorInfo{inputType=0x0(NULL) imeOptions=0x12000000 privateImeOptions=null actionName=UNSPECIFIED actionLabel=null actionId=0 initialSelStart=-1 initialSelEnd=-1 initialCapsMode=0x0 hintText=null label=null packageName=com.agastyaray.asha fieldId=0 fieldName=null extras=null}, false)
+10-15 08:04:49.985 I/GoogleInputMethodService( 1559): GoogleInputMethodService.shouldHideHeaderOnInitialState():4008 ShouldHideHeaderOnInitialState = false
+10-15 08:04:49.986 I/GoogleInputMethodService( 1559): GoogleInputMethodService.updateDeviceLockedStatus():2087 repeatCheckTimes = 2, unlocked = true
+10-15 08:04:50.009 D/OneSearchSuggestProvider( 1108): Shut down the binder channel
+10-15 08:04:50.011 I/IPCThreadState( 1108): oneway function results for code 2 on binder at 0x758ce2c53ef0 will be dropped but finished with status UNKNOWN_TRANSACTION
+10-15 08:04:50.033 I/ImeTracker( 1108): com.google.android.apps.nexuslauncher:5941ee10: onRequestHide at ORIGIN_CLIENT_HIDE_SOFT_INPUT reason HIDE_SOFT_INPUT
+10-15 08:04:50.033 I/ImeTracker( 1108): com.google.android.apps.nexuslauncher:5941ee10: onFailed at PHASE_CLIENT_VIEW_SERVED
+10-15 08:04:50.106 D/EGL_emulation(  840): app_time_stats: avg=1216.01ms min=1216.01ms max=1216.01ms count=1
+10-15 08:04:50.138 I/resolv  (  335): GetAddrInfoHandler::run: {101 101 101 983141 10193 0}
+10-15 08:04:50.139 I/resolv  (  335): GetAddrInfoHandler::run: {101 101 101 983141 10193 0}
+10-15 08:04:50.143 I/resolv  (  335): res_nmkquery: (QUERY, IN, AAAA)
+10-15 08:04:50.143 I/resolv  (  335): resolv_cache_lookup: FOUND IN CACHE entry=0x776b146c58b0
+10-15 08:04:50.143 I/resolv  (  335): doQuery: rcode=0, ancount=1, return value=63
+10-15 08:04:50.144 I/FontLog ( 6032): Received query Noto Color Emoji Compat, URI content://com.google.android.gms.fonts [CONTEXT service_id=132 ]
+10-15 08:04:50.144 I/FontLog ( 6032): Query [emojicompat-emoji-font] resolved to {Noto Color Emoji Compat, wdth 100.0, wght 400, ital 0.0, bestEffort false} [CONTEXT service_id=132 ]
+10-15 08:04:50.144 I/FontLog ( 6032): Fetch {Noto Color Emoji Compat, wdth 100.0, wght 400, ital 0.0, bestEffort false} end status Status{statusCode=SUCCESS, resolution=null} [CONTEXT service_id=132 ]
+10-15 08:04:50.152 I/FontLog ( 6032): Pulling font file for id = 34, cache size = 10 [CONTEXT service_id=132 ]
+10-15 08:04:50.153 I/resolv  (  335): res_nmkquery: (QUERY, IN, A)
+10-15 08:04:50.153 I/resolv  (  335): resolv_cache_lookup: FOUND IN CACHE entry=0x776c746c9390
+10-15 08:04:50.153 I/resolv  (  335): doQuery: rcode=0, ancount=1, return value=54
+10-15 08:04:50.156 I/FontLog ( 6032): Pulling font file for id = 34, cache size = 10 [CONTEXT service_id=132 ]
+10-15 08:04:50.158 I/resolv  (  335): res_nmkquery: (QUERY, IN, AAAA)
+10-15 08:04:50.162 I/resolv  (  335): res_nmkquery: (QUERY, IN, A)
+10-15 08:04:50.162 I/resolv  (  335): resolv_cache_lookup: FOUND IN CACHE entry=0x776c746c8850
+10-15 08:04:50.162 I/resolv  (  335): doQuery: rcode=0, ancount=1, return value=51
+10-15 08:04:50.165 D/Capacitor( 9884): Handling local request: https://localhost/assets/index-BRrNMV8n.js
+10-15 08:04:50.173 I/resolv  (  335): res_nsend: used send_dg 66 terrno: 0
+10-15 08:04:50.173 I/resolv  (  335): doQuery: rcode=0, ancount=1, return value=66
+10-15 08:04:50.190 D/Capacitor( 9884): Handling local request: https://localhost/assets/index-CL3RaPWx.css
+10-15 08:04:50.337 W/QueryController( 9726): Could not detect idle state.
+10-15 08:04:50.337 D/Maestro ( 9726): Requesting view hierarchy
+10-15 08:04:50.338 W/QueryController( 9726): Could not detect idle state.
+10-15 08:04:50.338 W/QueryController( 9726): Could not detect idle state.
+10-15 08:04:50.351 I/Maestro ( 9726): Skipping invisible child: android.view.accessibility.AccessibilityNodeInfo@9691; boundsInParent: Rect(0, 0 - 1080, 128); boundsInScreen: Rect(0, 0 - 1080, 128); boundsInWindow: Rect(0, 0 - 1080, 128); packageName: com.agastyaray.asha; className: android.view.View; text: null; error: null; maxTextLength: -1; stateDescription: null; contentDescription: null; tooltipText: null; containerTitle: null; viewIdResName: android:id/statusBarBackground; uniqueId: null; checkable: false; checked: false; focusable: false; focused: false; selected: false; clickable: false; longClickable: false; contextClickable: false; enabled: true; password: false; scrollable: false; importantForAccessibility: false; visible: false; actions: [AccessibilityAction: ACTION_SELECT - null, AccessibilityAction: ACTION_CLEAR_SELECTION - null, AccessibilityAction: ACTION_ACCESSIBILITY_FOCUS - null, AccessibilityAction: ACTION_SHOW_ON_SCREEN - null]; isTextSelectable: false
+10-15 08:04:50.398 D/Maestro ( 9726): View hierarchy received in 61 ms
+10-15 08:04:50.539 D/Capacitor( 9884): Handling local request: https://localhost/assets/point-D1DQuuhT.webp
+10-15 08:04:50.544 D/Capacitor( 9884): Handling local request: https://localhost/favicon.png
+10-15 08:04:50.781 D/android.hardware.audio@7.1-impl.ranchu(  341): threadLoop: entering standby, frames: 13622848
+10-15 08:04:50.981 W/QueryController( 9726): Could not detect idle state.
+10-15 08:04:50.981 D/Maestro ( 9726): Requesting view hierarchy
+10-15 08:04:50.982 W/QueryController( 9726): Could not detect idle state.
+10-15 08:04:50.982 W/QueryController( 9726): Could not detect idle state.
+10-15 08:04:51.048 D/EGL_emulation( 9884): app_time_stats: avg=388.76ms min=63.24ms max=962.60ms count=3
+10-15 08:04:51.051 V/Capacitor/Plugin( 9884): To native (Capacitor plugin): callbackId: 27146873, pluginId: AshaNative, methodName: status
+10-15 08:04:51.051 V/Capacitor( 9884): callback: 27146873, pluginId: AshaNative, methodName: status, methodData: {}
+10-15 08:04:51.052 V/Capacitor/Plugin( 9884): To native (Capacitor plugin): callbackId: 27146874, pluginId: App, methodName: addListener
+10-15 08:04:51.052 V/Capacitor( 9884): callback: 27146874, pluginId: App, methodName: addListener, methodData: {"eventName":"resume"}
+10-15 08:04:51.053 D/CompatibilityChangeReporter(  519): Compat change id reported: 171306433; UID 10193; state: ENABLED
+10-15 08:04:51.054 D/CompatibilityChangeReporter(  519): Compat change id reported: 226439802; UID 10193; state: ENABLED
+10-15 08:04:51.056 V/Capacitor/Plugin( 9884): To native (Capacitor plugin): callbackId: 27146875, pluginId: AshaNative, methodName: getPushToken
+10-15 08:04:51.057 V/Capacitor( 9884): callback: 27146875, pluginId: AshaNative, methodName: getPushToken, methodData: {}
+10-15 08:04:51.058 V/Capacitor/Plugin( 9884): To native (Capacitor plugin): callbackId: 27146876, pluginId: App, methodName: addListener
+10-15 08:04:51.058 V/Capacitor( 9884): callback: 27146876, pluginId: App, methodName: addListener, methodData: {"eventName":"resume"}
+10-15 08:04:51.060 V/Capacitor/Plugin( 9884): To native (Capacitor plugin): callbackId: 27146877, pluginId: AshaNative, methodName: addListener
+10-15 08:04:51.060 V/Capacitor( 9884): callback: 27146877, pluginId: AshaNative, methodName: addListener, methodData: {"eventName":"family"}
+10-15 08:04:51.060 V/Capacitor/Plugin( 9884): To native (Capacitor plugin): callbackId: 27146878, pluginId: AshaNative, methodName: drainFamily
+10-15 08:04:51.061 V/Capacitor( 9884): callback: 27146878, pluginId: AshaNative, methodName: drainFamily, methodData: {}
+10-15 08:04:51.062 V/Capacitor/Plugin( 9884): To native (Capacitor plugin): callbackId: 27146879, pluginId: AshaNative, methodName: setFamilyConfig
+10-15 08:04:51.063 V/Capacitor( 9884): callback: 27146879, pluginId: AshaNative, methodName: setFamilyConfig, methodData: {"url":"https:\/\/qheqzgxtzcagpayelfxn.supabase.co\/functions\/v1\/family","deviceId":"359f78ee-c957-4f9a-b828-0377ac3c41c6","secret":"decf59b71b3b01ec3c85bd992b5aeef5ac6df314783041a8","role":"elder","lang":"en","voiceLang":"en","voiceOn":true,"quietStart":"21:30","quietEnd":"07:30","inCircle":true,"poll":false,"lastId":0,"bubble":false}
+10-15 08:04:51.063 V/Capacitor/Plugin( 9884): To native (Capacitor plugin): callbackId: 27146880, pluginId: AshaNative, methodName: drainActions
+10-15 08:04:51.063 V/Capacitor( 9884): callback: 27146880, pluginId: AshaNative, methodName: drainActions, methodData: {}
+10-15 08:04:51.064 V/Capacitor/Plugin( 9884): To native (Capacitor plugin): callbackId: 27146881, pluginId: App, methodName: addListener
+10-15 08:04:51.064 V/Capacitor( 9884): callback: 27146881, pluginId: App, methodName: addListener, methodData: {"eventName":"resume"}
+10-15 08:04:51.071 V/Capacitor/Plugin( 9884): To native (Capacitor plugin): callbackId: 27146882, pluginId: App, methodName: addListener
+10-15 08:04:51.071 V/Capacitor( 9884): callback: 27146882, pluginId: App, methodName: addListener, methodData: {"eventName":"backButton"}
+10-15 08:04:51.098 I/Choreographer( 9884): Skipped 35 frames!  The application may be doing too much work on its main thread.
+10-15 08:04:51.971 E/TaskPersister(  519): File error accessing recents directory (directory doesn't exist?).
+10-15 08:04:53.163 D/StatusBarIconController(  840): ignoring old pipeline callbacks, because the new mobile icons are enabled
+10-15 08:04:54.090 D/StatusBarIconController(  840): ignoring old pipeline callback because the new wifi icon is enabled
+10-15 08:04:54.767 D/EGL_emulation( 9884): app_time_stats: avg=1859.21ms min=23.92ms max=3694.50ms count=2
+10-15 08:04:54.788 I/Choreographer( 9884): Skipped 218 frames!  The application may be doing too much work on its main thread.
+10-15 08:04:54.791 I/resolv  (  335): GetAddrInfoHandler::run: {101 101 101 983141 10193 0}
+10-15 08:04:54.791 I/resolv  (  335): res_nmkquery: (QUERY, IN, AAAA)
+10-15 08:04:54.791 I/resolv  (  335): resolv_cache_lookup: FOUND IN CACHE entry=0x776b346c1f10
+10-15 08:04:54.791 I/resolv  (  335): doQuery: rcode=0, ancount=0, return value=118
+10-15 08:04:54.797 I/resolv  (  335): res_nmkquery: (QUERY, IN, A)
+10-15 08:04:54.797 I/resolv  (  335): resolv_cache_lookup: FOUND IN CACHE entry=0x776b146c2eb0
+10-15 08:04:54.798 I/resolv  (  335): doQuery: rcode=0, ancount=2, return value=69
+10-15 08:04:54.917 D/ActivityManager(  519): freezing 8566 com.google.process.gservices
+10-15 08:04:55.026 I/OpenGLRenderer( 9884): Davey! duration=4269ms; Flags=0, FrameTimelineVsyncId=53420, IntendedVsync=685535996672, Vsync=686119329982, InputEventId=0, HandleInputStart=686126352202, AnimationStart=686126355178, PerformTraversalsStart=686127904782, DrawStart=686128056505, FrameDeadline=686152663314, FrameInterval=686126111793, FrameStartTime=16666666, SyncQueued=686129218275, SyncStart=686129291710, IssueDrawCommandsStart=686129319032, SwapBuffers=689790375477, FrameCompleted=689805658074, DequeueBufferDuration=2685, QueueBufferDuration=137557, GpuCompleted=689805658074, SwapBuffersCompleted=689795081918, DisplayPresentTime=0, CommandSubmissionCompleted=689790375477, 
+10-15 08:04:55.047 I/Capacitor/Console( 9884): File:  - Line 333 - Msg: undefined
+10-15 08:04:55.049 V/Capacitor/Plugin( 9884): To native (Capacitor plugin): callbackId: 27146883, pluginId: AshaNative, methodName: setFamilyConfig
+10-15 08:04:55.051 V/Capacitor( 9884): callback: 27146883, pluginId: AshaNative, methodName: setFamilyConfig, methodData: {"url":"https:\/\/qheqzgxtzcagpayelfxn.supabase.co\/functions\/v1\/family","deviceId":"359f78ee-c957-4f9a-b828-0377ac3c41c6","secret":"decf59b71b3b01ec3c85bd992b5aeef5ac6df314783041a8","role":"elder","lang":"en","voiceLang":"en","voiceOn":true,"quietStart":"21:30","quietEnd":"07:30","inCircle":true,"poll":false,"lastId":0,"bubble":false}
+10-15 08:04:55.089 I/Capacitor/Console( 9884): File:  - Line 333 - Msg: undefined
+10-15 08:04:55.105 I/resolv  (  335): GetAddrInfoHandler::run: {101 101 101 983141 10193 0}
+10-15 08:04:55.106 I/resolv  (  335): res_nmkquery: (QUERY, IN, A)
+10-15 08:04:55.106 I/resolv  (  335): resolv_cache_lookup: FOUND IN CACHE entry=0x776b346c3b30
+10-15 08:04:55.106 I/resolv  (  335): doQuery: rcode=0, ancount=2, return value=82
+10-15 08:04:55.106 I/resolv  (  335): res_nmkquery: (QUERY, IN, AAAA)
+10-15 08:04:55.137 I/resolv  (  335): res_nsend: used send_dg 117 terrno: 0
+10-15 08:04:55.137 I/resolv  (  335): doQuery: rcode=0, ancount=0, return value=117
+10-15 08:04:55.388 I/netd    (  335): setProcSysNet(4, 2, wlan0, retrans_time_ms, 750) <0.07ms>
+10-15 08:04:55.388 I/netd    (  335): setProcSysNet(4, 2, wlan0, ucast_solicit, 10) <0.02ms>
+10-15 08:04:55.389 I/netd    (  335): setProcSysNet(6, 2, wlan0, retrans_time_ms, 750) <0.03ms>
+10-15 08:04:55.389 I/netd    (  335): setProcSysNet(6, 2, wlan0, ucast_solicit, 10) <0.02ms>
+10-15 08:04:56.107 I/keystore2(  157): system/security/keystore2/src/watchdog.rs:319 - Watchdog thread idle -> terminating. Have a great day.
+10-15 08:04:56.144 D/EGL_emulation( 9884): app_time_stats: avg=459.11ms min=40.30ms max=1058.27ms count=3
+10-15 08:04:56.154 V/Capacitor/Plugin( 9884): To native (Capacitor plugin): callbackId: 27146884, pluginId: AshaNative, methodName: setReminders
+10-15 08:04:56.187 V/Capacitor( 9884): callback: 27146884, pluginId: AshaNative, methodName: setReminders, methodData: {"items":[{"key":"med|b3e8623a-39f4-4c59-ba6b-37bcc07e68c3|08:00","hour":8,"minute":0,"kind":"med","title":"Metformin · 500 mg","body":"Kamla, it's eight in the morning. Time for your Metformin, 500 mg. Take it with food, not on an empty stomach. When you have taken it, press the green button.","say":"Kamla, it's eight in the morning. Time for your Metformin, 500 mg. Take it with food, not on an empty stomach. When you have taken it, press the green button.","again":"Kamla, Metformin is still waiting. When it's done, press the green button. No rush.","lang":"en","skipUntil":1792088999000,"missedText":"Message from Asha: Kamla has not marked their eight in the morning Metformin as taken yet. A quick call might help.","alertTimeEn":"8 am","alertTimeHi":"सुबह 8 बजे","doneLabel":"Taken ✓","snoozeLabel":"10 min later","againLabel":"Gentle reminder"},{"key":"meal|breakfast|08:00","hour":8,"minute":0,"kind":"meal","title":"breakfast · eight in the morning","body":"Eat before or with morning tablets that need food.","say":"Kamla, it's eight in the morning. Time for breakfast. Eat before or with morning tablets that need food. Eat slowly. When you finish, press the green button.","again":"Kamla, breakfast is still waiting. When it's done, press the green button. No rush.","lang":"en","skipUntil":0,"doneLabel":"Eaten ✓","snoozeLabel":"10 min later","againLabel":"Gentle reminder"},{"key":"meal|lunch|13:00","hour":13,"minute":0,"kind":"meal","title":"lunch · one in the afternoon","body":"Vegetables first, then the rest of the plate.","say":"Kamla, it's one in the afternoon. Time for lunch. Vegetables first, then the rest of the plate. Eat slowly. When you finish, press the green button.","again":"Kamla, lunch is still waiting. When it's done, press the green button. No rush.","lang":"en","skipUntil":0,"doneLabel":"Eaten ✓","snoozeLabel":"10 min later","againLabel":"Gentle reminder"},{"key":"meal|snack|16:30","hour":16,"minute":30,"kind":"meal","title":"a small snack · four thirty in the afternoon","body":"Tea is fine if something small is with it, not only biscuits.","say":"Kamla, it's four thirty in the afternoon. Time for a small snack. Tea is fine if something small is with it, not only biscuits. Eat slowly. When you finish, press the green button.","again":"Kamla, a small snack is still waiting. When it's done, press the green button. No rush.","lang":"en","skipUntil":0,"doneLabel":"Eaten ✓","snoozeLabel":"10 min later","againLabel":"Gentle reminder"},{"key":"meal|dinner|19:30","hour":19,"minute":30,"kind":"meal","title":"dinner · seven thirty in the evening","body":"Try to finish a while before you lie down.","say":"Kamla, it's seven thirty in the evening. Time for dinner. Try to finish a while before you lie down. Eat slowly. When you finish, press the green button.","again":"Kamla, dinner is still waiting. When it's done, press the green button. No rush.","lang":"en","skipUntil":0,"doneLabel":"Eaten ✓","snoozeLabel":"10 min later","againLabel":"Gentle reminder"},{"key":"greet|morning|x","hour":7,"minute":30,"kind":"greet","title":"Good morning","body":"Good morning, Kamla. A new day. Start with a glass of water. I'll remind you about medicines and meals as the day goes.","say":"Good morning, Kamla. A new day. Start with a glass of water. I'll remind you about medicines and meals as the day goes.","lang":"en"},{"key":"greet|night|x","hour":21,"minute":30,"kind":"greet","title":"Good night","body":"Good night, Kamla. That's enough for today. Rest well. I'll be here in the morning.","say":"Good night, Kamla. That's enough for today. Rest well. I'll be here in the morning.","lang":"en"}],"config":{"speak":true,"repeats":2,"repeatMinutes":10,"snoozeMinutes":10,"rate":0.92,"quietUntil":0,"quietBack":"I'm back, Kamla! I hope it went well.","quietLang":"en"}}
+10-15 08:04:56.200 I/Choreographer( 9884): Skipped 64 frames!  The application may be doing too much work on its main thread.
+10-15 08:04:56.211 I/OpenGLRenderer( 9884): Davey! duration=1348ms; Flags=0, FrameTimelineVsyncId=53465, IntendedVsync=689835996500, Vsync=690119329822, InputEventId=0, HandleInputStart=690123618606, AnimationStart=690123622422, PerformTraversalsStart=690124722477, DrawStart=690124952157, FrameDeadline=690135996488, FrameInterval=690120219517, FrameStartTime=16666666, SyncQueued=690125545565, SyncStart=690127673036, IssueDrawCommandsStart=690127714604, SwapBuffers=691169940669, FrameCompleted=691186156884, DequeueBufferDuration=5090, QueueBufferDuration=356306, GpuCompleted=691186156884, SwapBuffersCompleted=691172623259, DisplayPresentTime=0, CommandSubmissionCompleted=691169940669, 
+10-15 08:04:56.222 D/ProfileInstaller( 9884): Installing profile for com.agastyaray.asha
+10-15 08:04:56.291 I/OpenGLRenderer( 9884): Davey! duration=1140ms; Flags=0, FrameTimelineVsyncId=53488, IntendedVsync=690152663154, Vsync=691219329778, InputEventId=0, HandleInputStart=691240365923, AnimationStart=691240371383, PerformTraversalsStart=691241085778, DrawStart=691241324033, FrameDeadline=691269329776, FrameInterval=691228241320, FrameStartTime=16666666, SyncQueued=691242115531, SyncStart=691243624652, IssueDrawCommandsStart=691243652374, SwapBuffers=691287559069, FrameCompleted=691295158565, DequeueBufferDuration=3767, QueueBufferDuration=300080, GpuCompleted=691295077551, SwapBuffersCompleted=691295158565, DisplayPresentTime=0, CommandSubmissionCompleted=691287559069, 
+10-15 08:04:56.355 W/agastyaray.asha( 9884): Long monitor contention with owner ThreadPoolForeg (9936) at org.chromium.net.AndroidCertVerifyResult OB0.h(byte[][], java.lang.String, java.lang.String)(chromium-TrichromeWebViewGoogle6432.apk-stable-567263637:242) waiters=0 in org.chromium.net.AndroidCertVerifyResult OB0.h(byte[][], java.lang.String, java.lang.String) for 165ms
+10-15 08:04:56.362 D/CompatibilityChangeReporter(  519): Compat change id reported: 218533173; UID 10193; state: ENABLED
+10-15 08:04:56.374 D/ConditionProviders.SCP(  519): onReceive android.app.action.NEXT_ALARM_CLOCK_CHANGED
+10-15 08:04:56.374 D/ConditionProviders.SCP(  519): evaluateSubscriptionLocked cal=ScheduleCalendar[mDays={1, 2, 3, 4, 5, 6, 7}, mSchedule=ScheduleInfo{days=[1, 2, 3, 4, 5, 6, 7], startHour=22, startMinute=0, endHour=7, endMinute=0, exitAtAlarm=true, nextAlarm=Thu Jan 01 05:30:00 GMT+05:30 1970 (0)}], now=Thu Oct 15 08:04:56 GMT+05:30 2026 (1792031696374), nextUserAlarmTime=Thu Oct 15 13:00:00 GMT+05:30 2026 (1792049400000)
+10-15 08:04:56.374 D/ConditionProviders.SCP(  519): notifyCondition condition://android/schedule?days=1.2.3.4.5.6.7&start=22.0&end=7.0&exitAtAlarm=true STATE_FALSE reason=!meetsSchedule
+10-15 08:04:56.374 D/ConditionProviders.SCP(  519): Scheduling evaluate for Thu Oct 15 22:00:00 GMT+05:30 2026 (1792081800000), in +13h55m3s626ms, now=Thu Oct 15 08:04:56 GMT+05:30 2026 (1792031696374)
+10-15 08:04:56.389 I/AiAiEcho( 1667): Predicting[0]: 
+10-15 08:04:56.390 I/AiAiEcho( 1667): EchoTargets: 
+10-15 08:04:56.390 I/AiAiEcho( 1667): Filtered by AiAi flag check: 
+10-15 08:04:56.391 I/AiAiEcho( 1667): Ranked targets strategy: SORT, count: 0, ranking metadata: 
+10-15 08:04:56.396 I/AiAiEcho( 1667): #postPredictionTargets: Sending updates to UISurface lockscreen with targets# 0 (types=[])
+10-15 08:04:56.410 D/ColorDisplayService(  519): Setting saturation level: 100
+10-15 08:04:56.417 W/PageIndicator(  840): Total number of pages invalid: 0. Assuming 1 page.
+10-15 08:04:56.418 V/WallpaperService(  840): Setting wallpaper dimming: 0
+10-15 08:04:56.421 D/WallpaperManagerService(  519): WPMS.saveSettingsLocked-0
+10-15 08:04:56.425 D/ColorDisplayService(  519): GlobalSaturationTintController Animation cancelled: false to matrix: 
+10-15 08:04:56.425 D/ColorDisplayService(  519):        1.000000 0.000000 0.000000 0.000000 0.000000 1.000000 0.000000 0.000000 0.000000 0.000000 1.000000 0.000000 0.000000 0.000000 0.000000 1.000000 min matrix coefficients: 
+10-15 08:04:56.425 D/ColorDisplayService(  519):        1.000000 0.000000 0.000000 0.000000 0.000000 1.000000 0.000000 0.000000 0.000000 0.000000 1.000000 0.000000 0.000000 0.000000 0.000000 1.000000 max matrix coefficients: 
+10-15 08:04:56.425 D/ColorDisplayService(  519):        1.000000 0.000000 0.000000 0.000000 0.000000 1.000000 0.000000 0.000000 0.000000 0.000000 1.000000 0.000000 0.000000 0.000000 0.000000 1.000000
+10-15 08:04:56.425 V/WallpaperManagerService(  519): WPMS.saveSettingsLocked-0 took to complete: 4ms
+10-15 08:04:56.426 D/WallpaperManagerService(  519): WPMS.saveSettingsLocked-0
+10-15 08:04:56.429 V/WallpaperManagerService(  519): WPMS.saveSettingsLocked-0 took to complete: 3ms
+10-15 08:04:56.432 D/Tonal   (  840): Tonal Palette - index: 4. Main color: ff343e65
+10-15 08:04:56.432 D/Tonal   (  840): Colors: ff0b0c16, ff141627, ff1d2138, ff272d4c, ff343e65, ff41477e, ff4e5597, ff8184a4, ff898cc3, ff9e9ecd, ffb7b6d9, ffd9d7eb, ffefeef7
+10-15 08:04:56.432 D/Tonal   (  840): Gradients: 
+10-15 08:04:56.432 D/Tonal   (  840): 	Normal GradientColors(ff343e65, ff343e65)
+10-15 08:04:56.432 D/Tonal   (  840): 	Dark GradientColors(ff272d4c, ff272d4c)
+10-15 08:04:56.432 D/Tonal   (  840): 	Extra dark: GradientColors(ff1d2138, ff1d2138)
+10-15 08:04:56.441 D/TileServices(  840): Couldn't find tile for ComponentInfo{com.google.android.apps.wellbeing/com.google.android.apps.wellbeing.screen.ui.GrayscaleTileService}(0)
+10-15 08:04:56.458 I/Maestro ( 9726): Null child 3/6, parent: android.view.accessibility.AccessibilityNodeInfo@8faa; boundsInParent: Rect(0, 0 - 413, 2276); boundsInScreen: Rect(0, 128 - 1084, 2339); boundsInWindow: Rect(0, 128 - 1084, 2339); packageName: com.agastyaray.asha; className: android.view.View; text: ; error: null; maxTextLength: -1; stateDescription: null; contentDescription: null; tooltipText: null; containerTitle: null; viewIdResName: root; uniqueId: null; checkable: false; checked: false; focusable: false; focused: false; selected: false; clickable: true; longClickable: false; contextClickable: false; enabled: true; password: false; scrollable: false; importantForAccessibility: false; visible: true; actions: [AccessibilityAction: ACTION_SHOW_ON_SCREEN - null, AccessibilityAction: ACTION_CONTEXT_CLICK - null, AccessibilityAction: ACTION_NEXT_HTML_ELEMENT - null, AccessibilityAction: ACTION_PREVIOUS_HTML_ELEMENT - null, AccessibilityAction: ACTION_ACCESSIBILITY_FOCUS - null, AccessibilityAction: ACTION_CLICK - null]; isTextSelectable: false
+10-15 08:04:56.459 I/Maestro ( 9726): Null child 4/6, parent: android.view.accessibility.AccessibilityNodeInfo@8faa; boundsInParent: Rect(0, 0 - 413, 2276); boundsInScreen: Rect(0, 128 - 1084, 2339); boundsInWindow: Rect(0, 128 - 1084, 2339); packageName: com.agastyaray.asha; className: android.view.View; text: ; error: null; maxTextLength: -1; stateDescription: null; contentDescription: null; tooltipText: null; containerTitle: null; viewIdResName: root; uniqueId: null; checkable: false; checked: false; focusable: false; focused: false; selected: false; clickable: true; longClickable: false; contextClickable: false; enabled: true; password: false; scrollable: false; importantForAccessibility: false; visible: true; actions: [AccessibilityAction: ACTION_SHOW_ON_SCREEN - null, AccessibilityAction: ACTION_CONTEXT_CLICK - null, AccessibilityAction: ACTION_NEXT_HTML_ELEMENT - null, AccessibilityAction: ACTION_PREVIOUS_HTML_ELEMENT - null, AccessibilityAction: ACTION_ACCESSIBILITY_FOCUS - null, AccessibilityAction: ACTION_CLICK - null]; isTextSelectable: false
+10-15 08:04:56.460 I/Maestro ( 9726): Null child 5/6, parent: android.view.accessibility.AccessibilityNodeInfo@8faa; boundsInParent: Rect(0, 0 - 413, 2276); boundsInScreen: Rect(0, 128 - 1084, 2339); boundsInWindow: Rect(0, 128 - 1084, 2339); packageName: com.agastyaray.asha; className: android.view.View; text: ; error: null; maxTextLength: -1; stateDescription: null; contentDescription: null; tooltipText: null; containerTitle: null; viewIdResName: root; uniqueId: null; checkable: false; checked: false; focusable: false; focused: false; selected: false; clickable: true; longClickable: false; contextClickable: false; enabled: true; password: false; scrollable: false; importantForAccessibility: false; visible: true; actions: [AccessibilityAction: ACTION_SHOW_ON_SCREEN - null, AccessibilityAction: ACTION_CONTEXT_CLICK - null, AccessibilityAction: ACTION_NEXT_HTML_ELEMENT - null, AccessibilityAction: ACTION_PREVIOUS_HTML_ELEMENT - null, AccessibilityAction: ACTION_ACCESSIBILITY_FOCUS - null, AccessibilityAction: ACTION_CLICK - null]; isTextSelectable: false
+10-15 08:04:56.461 I/Maestro ( 9726): Skipping invisible child: android.view.accessibility.AccessibilityNodeInfo@9691; boundsInParent: Rect(0, 0 - 1080, 128); boundsInScreen: Rect(0, 0 - 1080, 128); boundsInWindow: Rect(0, 0 - 1080, 128); packageName: com.agastyaray.asha; className: android.view.View; text: null; error: null; maxTextLength: -1; stateDescription: null; contentDescription: null; tooltipText: null; containerTitle: null; viewIdResName: android:id/statusBarBackground; uniqueId: null; checkable: false; checked: false; focusable: false; focused: false; selected: false; clickable: false; longClickable: false; contextClickable: false; enabled: true; password: false; scrollable: false; importantForAccessibility: false; visible: false; actions: [AccessibilityAction: ACTION_SELECT - null, AccessibilityAction: ACTION_CLEAR_SELECTION - null, AccessibilityAction: ACTION_ACCESSIBILITY_FOCUS - null, AccessibilityAction: ACTION_SHOW_ON_SCREEN - null]; isTextSelectable: false
+10-15 08:04:56.464 E/OpenGLRenderer(  840): Unable to match the desired swap behavior.
+10-15 08:04:56.487 V/Capacitor/Plugin( 9884): To native (Capacitor plugin): callbackId: 27146885, pluginId: AshaNative, methodName: speak
+10-15 08:04:56.487 V/Capacitor( 9884): callback: 27146885, pluginId: AshaNative, methodName: speak, methodData: {"text":"Good morning, Kamla. I'm here. One dose and one meal at a time.","lang":"en","rate":0.92}
+10-15 08:04:56.488 I/AshaSpeaker( 9884): Good morning, Kamla. I'm here. One dose and one meal at a time.
+10-15 08:04:56.491 D/TextToSpeechManagerPerUserService(  519): Trying to start connection to TTS engine: com.google.android.tts
+10-15 08:04:56.500 I/TextToSpeech( 9884): Sucessfully bound to com.google.android.tts
+10-15 08:04:56.504 I/GoogleTtsServicePeer( 2892): Creating Google TTS service, version googletts.google-speech-apk_20230123.02_p3.506463867
+10-15 08:04:56.514 D/TextToSpeechManagerPerUserService(  519): Connected successfully to TTS engine: com.google.android.tts
+10-15 08:04:56.514 I/TextToSpeech( 9884): Connected to TTS engine
+10-15 08:04:56.516 D/Maestro ( 9726): View hierarchy received in 5535 ms
+10-15 08:04:56.517 W/RankedDispatcher( 2892): The requested voice is not available for this app identifier
+10-15 08:04:56.517 I/GoogleTTSServiceImpl( 2892): currentLocale = en-US
+10-15 08:04:56.517 W/RankedDispatcher( 2892): The requested voice is not available for this app identifier
+10-15 08:04:56.518 I/GoogleTTSServiceImpl( 2892): For default lang en-us is name en-US-language (en-us-x-iog-server)
+10-15 08:04:56.518 I/TextToSpeech( 9884): Setting up the connection to TTS engine...
+10-15 08:04:56.521 W/RankedDispatcher( 2892): The requested voice is not available for this app identifier
+10-15 08:04:56.521 I/GoogleTTSServiceImpl( 2892): currentLocale = en-IN
+10-15 08:04:56.522 W/RankedDispatcher( 2892): The requested voice is not available for this app identifier
+10-15 08:04:56.522 I/GoogleTTSServiceImpl( 2892): currentLocale = en-IN
+10-15 08:04:56.523 W/RankedDispatcher( 2892): The requested voice is not available for this app identifier
+10-15 08:04:56.523 I/GoogleTTSServiceImpl( 2892): For default lang en-in is name en-IN-language (en-in-x-enc-server)
+10-15 08:04:56.524 W/RankedDispatcher( 2892): The requested voice is not available for this app identifier
+10-15 08:04:56.524 I/GoogleTTSServiceImpl( 2892): currentLocale = en-IN
+10-15 08:04:56.528 I/PipelineReaderImpl( 2892): Initializing en-in-x-cxx-lstm-embedded from disk
+10-15 08:04:56.617 W/QueryController( 9726): Could not detect idle state.
+10-15 08:04:56.680 W/DeviceIdleController(  519): motion timeout went off and device isn't stationary
+10-15 08:04:56.891 D/UiDevice( 9726): Waiting 500ms for window update of package com.agastyaray.asha.
+10-15 08:04:56.986 E/tflite  ( 2892): third_party/tensorflow/lite/core/subgraph.cc:903 tensor.data.raw != nullptr was not true.
+10-15 08:04:57.092 D/StatusBarIconController(  840): ignoring old pipeline callback because the new wifi icon is enabled
+10-15 08:04:57.127 I/ControllerWrapperImpl( 2892): Done initializing en-in-x-cxx-lstm-embedded
+10-15 08:04:57.128 I/GoogleTTSServiceImpl( 2892): Synthesis request for locale eng-IND and name en-IN-language
+10-15 08:04:57.129 I/GoogleTTSServiceImpl( 2892): TTS dispatch: en-in-x-enc-lstm-embedded
+10-15 08:04:57.165 D/AudioFlinger(  396): Client defaulted notificationFrames to 2048 for frameCount 4096
+10-15 08:04:57.166 D/AF::TrackHandle(  396): OpPlayAudio: track:90 usage:4 not muted
+10-15 08:04:57.169 D/FlashNotifController(  519): alarm state changed: true
+10-15 08:04:57.169 D/FlashNotifController(  519): requestStartFlashNotification
+10-15 08:04:57.169 I/FlashNotifController(  519): startFlashNotification: type=2, tag=alarm
+10-15 08:04:57.169 D/FlashNotifController(  519): Flash notification is disabled
+10-15 08:04:57.170 D/audioserver(  396): FGS Logger Transaction failed
+10-15 08:04:57.170 D/audioserver(  396): -129
+10-15 08:04:57.238 D/AudioFlinger(  396): mixer(0x7e7f2b41a930) throttle end: throttle time(33)
+10-15 08:04:57.392 W/UiDevice( 9726): Timed out waiting 500ms on window update.
+10-15 08:04:57.392 W/UiDevice( 9726): java.util.concurrent.TimeoutException: Expected event not received within: 500 ms among: []
+10-15 08:04:57.392 W/UiDevice( 9726): 	at android.app.UiAutomation.executeAndWaitForEvent(UiAutomation.java:1071)
+10-15 08:04:57.392 W/UiDevice( 9726): 	at androidx.test.uiautomator.UiDevice.waitForWindowUpdate(UiDevice.java:1253)
+10-15 08:04:57.392 W/UiDevice( 9726): 	at dev.mobile.maestro.Service.isWindowUpdating(MaestroDriverService.kt:359)
+10-15 08:04:57.392 W/UiDevice( 9726): 	at maestro_android.MaestroDriverGrpc$MethodHandlers.invoke(MaestroDriverGrpc.java:965)
+10-15 08:04:57.392 W/UiDevice( 9726): 	at io.grpc.stub.ServerCalls$UnaryServerCallHandler$UnaryServerCallListener.onHalfClose(ServerCalls.java:182)
+10-15 08:04:57.392 W/UiDevice( 9726): 	at io.grpc.internal.ServerCallImpl$ServerStreamListenerImpl.halfClosed(ServerCallImpl.java:355)
+10-15 08:04:57.392 W/UiDevice( 9726): 	at io.grpc.internal.ServerImpl$JumpToApplicationThreadServerStreamListener$1HalfClosed.runInContext(ServerImpl.java:867)
+10-15 08:04:57.392 W/UiDevice( 9726): 	at io.grpc.internal.ContextRunnable.run(ContextRunnable.java:37)
+10-15 08:04:57.392 W/UiDevice( 9726): 	at io.grpc.internal.SerializingExecutor.run(SerializingExecutor.java:133)
+10-15 08:04:57.392 W/UiDevice( 9726): 	at java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1145)
+10-15 08:04:57.392 W/UiDevice( 9726): 	at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:644)
+10-15 08:04:57.392 W/UiDevice( 9726): 	at java.lang.Thread.run(Thread.java:1012)
+10-15 08:04:57.458 D/Maestro ( 9726): Requesting view hierarchy
+10-15 08:04:57.459 W/QueryController( 9726): Could not detect idle state.
+10-15 08:04:57.460 W/QueryController( 9726): Could not detect idle state.
+10-15 08:04:57.514 I/Maestro ( 9726): Skipping invisible child: android.view.accessibility.AccessibilityNodeInfo@9691; boundsInParent: Rect(0, 0 - 1080, 128); boundsInScreen: Rect(0, 0 - 1080, 128); boundsInWindow: Rect(0, 0 - 1080, 128); packageName: com.agastyaray.asha; className: android.view.View; text: null; error: null; maxTextLength: -1; stateDescription: null; contentDescription: null; tooltipText: null; containerTitle: null; viewIdResName: android:id/statusBarBackground; uniqueId: null; checkable: false; checked: false; focusable: false; focused: false; selected: false; clickable: false; longClickable: false; contextClickable: false; enabled: true; password: false; scrollable: false; importantForAccessibility: false; visible: false; actions: [AccessibilityAction: ACTION_SELECT - null, AccessibilityAction: ACTION_CLEAR_SELECTION - null, AccessibilityAction: ACTION_ACCESSIBILITY_FOCUS - null, AccessibilityAction: ACTION_SHOW_ON_SCREEN - null]; isTextSelectable: false
+10-15 08:04:57.528 D/Maestro ( 9726): View hierarchy received in 70 ms
+10-15 08:04:57.795 D/Maestro ( 9726): Requesting view hierarchy
+10-15 08:04:57.795 W/QueryController( 9726): Could not detect idle state.
+10-15 08:04:57.796 W/QueryController( 9726): Could not detect idle state.
+10-15 08:04:57.856 I/Maestro ( 9726): Skipping invisible child: android.view.accessibility.AccessibilityNodeInfo@9691; boundsInParent: Rect(0, 0 - 1080, 128); boundsInScreen: Rect(0, 0 - 1080, 128); boundsInWindow: Rect(0, 0 - 1080, 128); packageName: com.agastyaray.asha; className: android.view.View; text: null; error: null; maxTextLength: -1; stateDescription: null; contentDescription: null; tooltipText: null; containerTitle: null; viewIdResName: android:id/statusBarBackground; uniqueId: null; checkable: false; checked: false; focusable: false; focused: false; selected: false; clickable: false; longClickable: false; contextClickable: false; enabled: true; password: false; scrollable: false; importantForAccessibility: false; visible: false; actions: [AccessibilityAction: ACTION_SELECT - null, AccessibilityAction: ACTION_CLEAR_SELECTION - null, AccessibilityAction: ACTION_ACCESSIBILITY_FOCUS - null, AccessibilityAction: ACTION_SHOW_ON_SCREEN - null]; isTextSelectable: false
+10-15 08:04:57.871 D/Maestro ( 9726): View hierarchy received in 76 ms
+10-15 08:04:57.970 W/agastyaray.asha( 9884): Accessing hidden method Landroid/view/MotionEvent;->getEventTimeNano()J (unsupported, reflection, allowed)
+10-15 08:04:57.972 D/TaplEvents( 1108): TIS / TouchInteractionService.onInputEvent: MotionEvent { action=ACTION_DOWN, actionButton=0, id[0]=0, x[0]=946.0, y[0]=227.0, toolType[0]=TOOL_TYPE_FINGER, buttonState=0, classification=NONE, metaState=0, flags=0x0, edgeFlags=0x0, pointerCount=1, historySize=0, eventTime=692970, downTime=692970, deviceId=-1, source=0x1002, displayId=0, eventId=-588628605 }
+10-15 08:04:57.982 I/chromium( 9924): [INFO:audio_latency.cc(179)] audioHardwareBufferSize = 4360
+10-15 08:04:57.988 I/AAudio  ( 9884): AAudioStreamBuilder_openStream() called ----------------------------------------
+10-15 08:04:57.988 I/AudioStreamBuilder( 9884): rate   =  48000, channels  = 2, channelMask = 0x80000003, format   = 5, sharing = SH, dir = OUTPUT
+10-15 08:04:57.988 I/AudioStreamBuilder( 9884): device =      0, sessionId = -1, perfMode = 12, callback: ON with frames = 4360
+10-15 08:04:57.988 I/AudioStreamBuilder( 9884): usage  =      1, contentType = 0, inputPreset = 0, allowedCapturePolicy = 0
+10-15 08:04:57.988 I/AudioStreamBuilder( 9884): privacy sensitive = false, opPackageName = (null), attributionTag = (null)
+10-15 08:04:57.988 D/agastyaray.asha( 9884): PlayerBase::PlayerBase()
+10-15 08:04:57.989 D/AudioStreamTrack( 9884): open(), request notificationFrames = -8, frameCount = 0
+10-15 08:04:57.990 W/AudioFlinger(  396): createTrack_l(): mismatch between requested flags (00000104) and output flags (00000002)
+10-15 08:04:57.991 D/AudioFlinger(  396): Client defaulted notificationFrames to 960 for frameCount 4360
+10-15 08:04:57.991 D/AF::TrackHandle(  396): OpPlayAudio: track:91 usage:1 not muted
+10-15 08:04:57.993 D/AudioStreamTrack( 9884): open() flags changed from 0x00000104 to 0x00000000
+10-15 08:04:57.993 D/AudioStreamTrack( 9884): open() perfMode changed from 12 to 10
+10-15 08:04:57.993 D/AAudioStream( 9884): setState(s#1) from 0 to 2
+10-15 08:04:57.994 I/AAudio  ( 9884): AAudioStreamBuilder_openStream() returns 0 = AAUDIO_OK for s#1 ----------------
+10-15 08:04:57.997 D/AAudio  ( 9884): AAudioStream_requestStart(s#1) called --------------
+10-15 08:04:57.997 D/AAudioStream( 9884): setState(s#1) from 2 to 3
+10-15 08:04:57.998 D/audioserver(  396): FGS Logger Transaction failed
+10-15 08:04:57.998 D/audioserver(  396): -129
+10-15 08:04:57.998 D/AAudio  ( 9884): AAudioStream_requestStart(s#1) returned 0 ---------
+10-15 08:04:58.009 D/AudioStreamLegacy( 9884): onAudioDeviceUpdate(deviceId = 2)
+10-15 08:04:58.014 D/AAudioStream( 9884): setState(s#1) from 3 to 4
+10-15 08:04:58.018 I/MediaFocusControl(  519): requestAudioFocus() from uid/pid 10193/9884 AA=USAGE_MEDIA/CONTENT_TYPE_UNKNOWN clientId=android.media.AudioManager@ecaed4aorg.chromium.content.browser.AudioFocusDelegate@1efc4bb callingPack=com.agastyaray.asha req=1 flags=0x0 sdk=35
+10-15 08:04:58.019 I/AudioService.FadeOutManager(  519): unfadeOutUid() uid:10193
+10-15 08:04:58.020 I/MediaFocusControl(  519): abandonAudioFocus() from uid/pid 10193/9884 clientId=android.media.AudioManager@ecaed4aorg.chromium.content.browser.AudioFocusDelegate@1efc4bb
+10-15 08:04:58.021 I/AAudio  ( 9884): AAudioStreamBuilder_openStream() called ----------------------------------------
+10-15 08:04:58.022 I/AudioStreamBuilder( 9884): rate   =   8000, channels  = 1, channelMask = 0x80000001, format   = 5, sharing = SH, dir = OUTPUT
+10-15 08:04:58.022 I/AudioStreamBuilder( 9884): device =      0, sessionId = -1, perfMode = 11, callback: ON with frames = 4360
+10-15 08:04:58.022 I/AudioStreamBuilder( 9884): usage  =      1, contentType = 0, inputPreset = 0, allowedCapturePolicy = 0
+10-15 08:04:58.022 I/AudioStreamBuilder( 9884): privacy sensitive = false, opPackageName = (null), attributionTag = (null)
+10-15 08:04:58.022 D/AudioStreamBuilder( 9884): build() MMAP not used because AAUDIO_PERFORMANCE_MODE_LOW_LATENCY not requested.
+10-15 08:04:58.022 D/agastyaray.asha( 9884): PlayerBase::PlayerBase()
+10-15 08:04:58.023 D/AudioStreamTrack( 9884): open(), request notificationFrames = 0, frameCount = 0
+10-15 08:04:58.027 W/AudioFlinger(  396): createTrack_l(): mismatch between requested flags (00000008) and output flags (00000002)
+10-15 08:04:58.028 D/AudioFlinger(  396): Client defaulted notificationFrames to 370 for frameCount 740
+10-15 08:04:58.028 D/AF::TrackHandle(  396): OpPlayAudio: track:92 usage:1 not muted
+10-15 08:04:58.033 D/AudioStreamTrack( 9884): open() flags changed from 0x00000008 to 0x00000000
+10-15 08:04:58.034 D/AudioStreamTrack( 9884): open() perfMode changed from 11 to 10
+10-15 08:04:58.034 D/AAudioStream( 9884): setState(s#2) from 0 to 2
+10-15 08:04:58.035 I/AAudio  ( 9884): AAudioStreamBuilder_openStream() returns 0 = AAUDIO_OK for s#2 ----------------
+10-15 08:04:58.036 D/AAudio  ( 9884): AAudioStream_requestStart(s#2) called --------------
+10-15 08:04:58.037 D/AAudioStream( 9884): setState(s#2) from 2 to 3
+10-15 08:04:58.037 D/audioserver(  396): FGS Logger Transaction failed
+10-15 08:04:58.037 D/audioserver(  396): -129
+10-15 08:04:58.039 D/AAudio  ( 9884): AAudioStream_requestStart(s#2) returned 0 ---------
+10-15 08:04:58.043 D/EGL_emulation( 9884): app_time_stats: avg=474.75ms min=51.56ms max=1707.83ms count=4
+10-15 08:04:58.055 D/AudioStreamLegacy( 9884): onAudioDeviceUpdate(deviceId = 2)
+10-15 08:04:58.097 D/TaplEvents( 1108): TIS / TouchInteractionService.onInputEvent: MotionEvent { action=ACTION_UP, actionButton=0, id[0]=0, x[0]=946.0, y[0]=227.0, toolType[0]=TOOL_TYPE_FINGER, buttonState=0, classification=NONE, metaState=0, flags=0x0, edgeFlags=0x0, pointerCount=1, historySize=0, eventTime=693121, downTime=692970, deviceId=-1, source=0x1002, displayId=0, eventId=-160257105 }
+10-15 08:04:58.099 I/WorkerManager( 3523): dispose()
+10-15 08:04:58.099 W/A       ( 3523): Queue length for executor EventBus is now 11. Perhaps some tasks are too long, or the pool is too small.
+10-15 08:04:58.128 D/AAudioStream( 9884): setState(s#2) from 3 to 4
+10-15 08:04:58.128 D/AudioFlinger(  396): mixer(0x7e7f2b41a930) throttle end: throttle time(1)
+10-15 08:04:58.143 V/Capacitor/Plugin( 9884): To native (Capacitor plugin): callbackId: 27146886, pluginId: App, methodName: removeListener
+10-15 08:04:58.143 V/Capacitor( 9884): callback: 27146886, pluginId: App, methodName: removeListener, methodData: {"eventName":"resume","callbackId":"27146874"}
+10-15 08:04:58.153 D/Maestro ( 9726): Requesting view hierarchy
+10-15 08:04:58.158 W/QueryController( 9726): Could not detect idle state.
+10-15 08:04:58.161 W/QueryController( 9726): Could not detect idle state.
+10-15 08:04:58.591 I/netd    (  335): tetherGetStats() -> {[]} <0.46ms>
+10-15 08:04:58.606 I/netd    (  335): bandwidthSetGlobalAlert(2097152) <0.09ms>
+10-15 08:04:58.765 I/Maestro ( 9726): Null child 0/1, parent: android.view.accessibility.AccessibilityNodeInfo@995a; boundsInParent: Rect(291, 8 - 372, 106); boundsInScreen: Rect(805, 3180 - 1018, 2339); boundsInWindow: Rect(805, 3180 - 1018, 2339); packageName: com.agastyaray.asha; className: android.view.View; text: ; error: null; maxTextLength: -1; stateDescription: null; contentDescription: null; tooltipText: null; containerTitle: null; viewIdResName: null; uniqueId: null; checkable: false; checked: false; focusable: false; focused: false; selected: false; clickable: true; longClickable: false; contextClickable: false; enabled: true; password: false; scrollable: false; importantForAccessibility: false; visible: false; actions: [AccessibilityAction: ACTION_SHOW_ON_SCREEN - null, AccessibilityAction: ACTION_CONTEXT_CLICK - null, AccessibilityAction: ACTION_NEXT_HTML_ELEMENT - null, AccessibilityAction: ACTION_PREVIOUS_HTML_ELEMENT - null, AccessibilityAction: ACTION_CLICK - null, AccessibilityAction: ACTION_ACCESSIBILITY_FOCUS - null]; isTextSelectable: false
+10-15 08:04:58.767 I/Maestro ( 9726): Null child 1/8, parent: android.view.accessibility.AccessibilityNodeInfo@993b; boundsInParent: Rect(0, 0 - 381, 471); boundsInScreen: Rect(42, 3159 - 1042, 2339); boundsInWindow: Rect(42, 3159 - 1042, 2339); packageName: com.agastyaray.asha; className: android.view.View; text: ; error: null; maxTextLength: -1; stateDescription: null; contentDescription: null; tooltipText: null; containerTitle: null; viewIdResName: null; uniqueId: null; checkable: false; checked: false; focusable: false; focused: false; selected: false; clickable: false; longClickable: false; contextClickable: false; enabled: true; password: false; scrollable: false; importantForAccessibility: false; visible: false; actions: [AccessibilityAction: ACTION_SHOW_ON_SCREEN - null, AccessibilityAction: ACTION_CONTEXT_CLICK - null, AccessibilityAction: ACTION_NEXT_HTML_ELEMENT - null, AccessibilityAction: ACTION_PREVIOUS_HTML_ELEMENT - null, AccessibilityAction: ACTION_ACCESSIBILITY_FOCUS - null]; isTextSelectable: false
+10-15 08:04:58.769 I/Maestro ( 9726): Null child 2/8, parent: android.view.accessibility.AccessibilityNodeInfo@993b; boundsInParent: Rect(0, 0 - 381, 471); boundsInScreen: Rect(42, 3159 - 1042, 2339); boundsInWindow: Rect(42, 3159 - 1042, 2339); packageName: com.agastyaray.asha; className: android.view.View; text: ; error: null; maxTextLength: -1; stateDescription: null; contentDescription: null; tooltipText: null; containerTitle: null; viewIdResName: null; uniqueId: null; checkable: false; checked: false; focusable: false; focused: false; selected: false; clickable: false; longClickable: false; contextClickable: false; enabled: true; password: false; scrollable: false; importantForAccessibility: false; visible: false; actions: [AccessibilityAction: ACTION_SHOW_ON_SCREEN - null, AccessibilityAction: ACTION_CONTEXT_CLICK - null, AccessibilityAction: ACTION_NEXT_HTML_ELEMENT - null, AccessibilityAction: ACTION_PREVIOUS_HTML_ELEMENT - null, AccessibilityAction: ACTION_ACCESSIBILITY_FOCUS - null]; isTextSelectable: false
+10-15 08:04:58.771 I/Maestro ( 9726): Null child 3/8, parent: android.view.accessibility.AccessibilityNodeInfo@993b; boundsInParent: Rect(0, 0 - 381, 471); boundsInScreen: Rect(42, 3159 - 1042, 2339); boundsInWindow: Rect(42, 3159 - 1042, 2339); packageName: com.agastyaray.asha; className: android.view.View; text: ; error: null; maxTextLength: -1; stateDescription: null; contentDescription: null; tooltipText: null; containerTitle: null; viewIdResName: null; uniqueId: null; checkable: false; checked: false; focusable: false; focused: false; selected: false; clickable: false; longClickable: false; contextClickable: false; enabled: true; password: false; scrollable: false; importantForAccessibility: false; visible: false; actions: [AccessibilityAction: ACTION_SHOW_ON_SCREEN - null, AccessibilityAction: ACTION_CONTEXT_CLICK - null, AccessibilityAction: ACTION_NEXT_HTML_ELEMENT - null, AccessibilityAction: ACTION_PREVIOUS_HTML_ELEMENT - null, AccessibilityAction: ACTION_ACCESSIBILITY_FOCUS - null]; isTextSelectable: false
+10-15 08:04:58.772 I/Maestro ( 9726): Null child 4/8, parent: android.view.accessibility.AccessibilityNodeInfo@993b; boundsInParent: Rect(0, 0 - 381, 471); boundsInScreen: Rect(42, 3159 - 1042, 2339); boundsInWindow: Rect(42, 3159 - 1042, 2339); packageName: com.agastyaray.asha; className: android.view.View; text: ; error: null; maxTextLength: -1; stateDescription: null; contentDescription: null; tooltipText: null; containerTitle: null; viewIdResName: null; uniqueId: null; checkable: false; checked: false; focusable: false; focused: false; selected: false; clickable: false; longClickable: false; contextClickable: false; enabled: true; password: false; scrollable: false; importantForAccessibility: false; visible: false; actions: [AccessibilityAction: ACTION_SHOW_ON_SCREEN - null, AccessibilityAction: ACTION_CONTEXT_CLICK - null, AccessibilityAction: ACTION_NEXT_HTML_ELEMENT - null, AccessibilityAction: ACTION_PREVIOUS_HTML_ELEMENT - null, AccessibilityAction: ACTION_ACCESSIBILITY_FOCUS - null]; isTextSelectable: false
+10-15 08:04:58.774 I/Maestro ( 9726): Null child 5/8, parent: android.view.accessibility.AccessibilityNodeInfo@993b; boundsInParent: Rect(0, 0 - 381, 471); boundsInScreen: Rect(42, 3159 - 1042, 2339); boundsInWindow: Rect(42, 3159 - 1042, 2339); packageName: com.agastyaray.asha; className: android.view.View; text: ; error: null; maxTextLength: -1; stateDescription: null; contentDescription: null; tooltipText: null; containerTitle: null; viewIdResName: null; uniqueId: null; checkable: false; checked: false; focusable: false; focused: false; selected: false; clickable: false; longClickable: false; contextClickable: false; enabled: true; password: false; scrollable: false; importantForAccessibility: false; visible: false; actions: [AccessibilityAction: ACTION_SHOW_ON_SCREEN - null, AccessibilityAction: ACTION_CONTEXT_CLICK - null, AccessibilityAction: ACTION_NEXT_HTML_ELEMENT - null, AccessibilityAction: ACTION_PREVIOUS_HTML_ELEMENT - null, AccessibilityAction: ACTION_ACCESSIBILITY_FOCUS - null]; isTextSelectable: false
+10-15 08:04:58.775 I/Maestro ( 9726): Null child 6/8, parent: android.view.accessibility.AccessibilityNodeInfo@993b; boundsInParent: Rect(0, 0 - 381, 471); boundsInScreen: Rect(42, 3159 - 1042, 2339); boundsInWindow: Rect(42, 3159 - 1042, 2339); packageName: com.agastyaray.asha; className: android.view.View; text: ; error: null; maxTextLength: -1; stateDescription: null; contentDescription: null; tooltipText: null; containerTitle: null; viewIdResName: null; uniqueId: null; checkable: false; checked: false; focusable: false; focused: false; selected: false; clickable: false; longClickable: false; contextClickable: false; enabled: true; password: false; scrollable: false; importantForAccessibility: false; visible: false; actions: [AccessibilityAction: ACTION_SHOW_ON_SCREEN - null, AccessibilityAction: ACTION_CONTEXT_CLICK - null, AccessibilityAction: ACTION_NEXT_HTML_ELEMENT - null, AccessibilityAction: ACTION_PREVIOUS_HTML_ELEMENT - null, AccessibilityAction: ACTION_ACCESSIBILITY_FOCUS - null]; isTextSelectable: false
+10-15 08:04:58.778 I/Maestro ( 9726): Null child 7/8, parent: android.view.accessibility.AccessibilityNodeInfo@993b; boundsInParent: Rect(0, 0 - 381, 471); boundsInScreen: Rect(42, 3159 - 1042, 2339); boundsInWindow: Rect(42, 3159 - 1042, 2339); packageName: com.agastyaray.asha; className: android.view.View; text: ; error: null; maxTextLength: -1; stateDescription: null; contentDescription: null; tooltipText: null; containerTitle: null; viewIdResName: null; uniqueId: null; checkable: false; checked: false; focusable: false; focused: false; selected: false; clickable: false; longClickable: false; contextClickable: false; enabled: true; password: false; scrollable: false; importantForAccessibility: false; visible: false; actions: [AccessibilityAction: ACTION_SHOW_ON_SCREEN - null, AccessibilityAction: ACTION_CONTEXT_CLICK - null, AccessibilityAction: ACTION_NEXT_HTML_ELEMENT - null, AccessibilityAction: ACTION_PREVIOUS_HTML_ELEMENT - null, AccessibilityAction: ACTION_ACCESSIBILITY_FOCUS - null]; isTextSelectable: false
+10-15 08:04:58.779 I/Maestro ( 9726): Null child 8/20, parent: android.view.accessibility.AccessibilityNodeInfo@91b9; boundsInParent: Rect(0, 76 - 413, 2571); boundsInScreen: Rect(0, 327 - 1084, 2339); boundsInWindow: Rect(0, 327 - 1084, 2339); packageName: com.agastyaray.asha; className: android.view.View; text: ; error: null; maxTextLength: -1; stateDescription: null; contentDescription: null; tooltipText: null; containerTitle: null; viewIdResName: null; uniqueId: null; checkable: false; checked: false; focusable: false; focused: false; selected: false; clickable: false; longClickable: false; contextClickable: false; enabled: true; password: false; scrollable: false; importantForAccessibility: false; visible: true; actions: [AccessibilityAction: ACTION_SHOW_ON_SCREEN - null, AccessibilityAction: ACTION_CONTEXT_CLICK - null, AccessibilityAction: ACTION_NEXT_HTML_ELEMENT - null, AccessibilityAction: ACTION_PREVIOUS_HTML_ELEMENT - null, AccessibilityAction: ACTION_ACCESSIBILITY_FOCUS - null]; isTextSelectable: false
+10-15 08:04:58.780 I/Maestro ( 9726): Null child 9/20, parent: android.view.accessibility.AccessibilityNodeInfo@91b9; boundsInParent: Rect(0, 76 - 413, 2571); boundsInScreen: Rect(0, 327 - 1084, 2339); boundsInWindow: Rect(0, 327 - 1084, 2339); packageName: com.agastyaray.asha; className: android.view.View; text: ; error: null; maxTextLength: -1; stateDescription: null; contentDescription: null; tooltipText: null; containerTitle: null; viewIdResName: null; uniqueId: null; checkable: false; checked: false; focusable: false; focused: false; selected: false; clickable: false; longClickable: false; contextClickable: false; enabled: true; password: false; scrollable: false; importantForAccessibility: false; visible: true; actions: [AccessibilityAction: ACTION_SHOW_ON_SCREEN - null, AccessibilityAction: ACTION_CONTEXT_CLICK - null, AccessibilityAction: ACTION_NEXT_HTML_ELEMENT - null, AccessibilityAction: ACTION_PREVIOUS_HTML_ELEMENT - null, AccessibilityAction: ACTION_ACCESSIBILITY_FOCUS - null]; isTextSelectable: false
+10-15 08:04:58.782 I/Maestro ( 9726): Null child 10/20, parent: android.view.accessibility.AccessibilityNodeInfo@91b9; boundsInParent: Rect(0, 76 - 413, 2571); boundsInScreen: Rect(0, 327 - 1084, 2339); boundsInWindow: Rect(0, 327 - 1084, 2339); packageName: com.agastyaray.asha; className: android.view.View; text: ; error: null; maxTextLength: -1; stateDescription: null; contentDescription: null; tooltipText: null; containerTitle: null; viewIdResName: null; uniqueId: null; checkable: false; checked: false; focusable: false; focused: false; selected: false; clickable: false; longClickable: false; contextClickable: false; enabled: true; password: false; scrollable: false; importantForAccessibility: false; visible: true; actions: [AccessibilityAction: ACTION_SHOW_ON_SCREEN - null, AccessibilityAction: ACTION_CONTEXT_CLICK - null, AccessibilityAction: ACTION_NEXT_HTML_ELEMENT - null, AccessibilityAction: ACTION_PREVIOUS_HTML_ELEMENT - null, AccessibilityAction: ACTION_ACCESSIBILITY_FOCUS - null]; isTextSelectable: false
+10-15 08:04:58.783 I/Maestro ( 9726): Null child 11/20, parent: android.view.accessibility.AccessibilityNodeInfo@91b9; boundsInParent: Rect(0, 76 - 413, 2571); boundsInScreen: Rect(0, 327 - 1084, 2339); boundsInWindow: Rect(0, 327 - 1084, 2339); packageName: com.agastyaray.asha; className: android.view.View; text: ; error: null; maxTextLength: -1; stateDescription: null; contentDescription: null; tooltipText: null; containerTitle: null; viewIdResName: null; uniqueId: null; checkable: false; checked: false; focusable: false; focused: false; selected: false; clickable: false; longClickable: false; contextClickable: false; enabled: true; password: false; scrollable: false; importantForAccessibility: false; visible: true; actions: [AccessibilityAction: ACTION_SHOW_ON_SCREEN - null, AccessibilityAction: ACTION_CONTEXT_CLICK - null, AccessibilityAction: ACTION_NEXT_HTML_ELEMENT - null, AccessibilityAction: ACTION_PREVIOUS_HTML_ELEMENT - null, AccessibilityAction: ACTION_ACCESSIBILITY_FOCUS - null]; isTextSelectable: false
+10-15 08:04:58.784 I/Maestro ( 9726): Null child 12/20, parent: android.view.accessibility.AccessibilityNodeInfo@91b9; boundsInParent: Rect(0, 76 - 413, 2571); boundsInScreen: Rect(0, 327 - 1084, 2339); boundsInWindow: Rect(0, 327 - 1084, 2339); packageName: com.agastyaray.asha; className: android.view.View; text: ; error: null; maxTextLength: -1; stateDescription: null; contentDescription: null; tooltipText: null; containerTitle: null; viewIdResName: null; uniqueId: null; checkable: false; checked: false; focusable: false; focused: false; selected: false; clickable: false; longClickable: false; contextClickable: false; enabled: true; password: false; scrollable: false; importantForAccessibility: false; visible: true; actions: [AccessibilityAction: ACTION_SHOW_ON_SCREEN - null, AccessibilityAction: ACTION_CONTEXT_CLICK - null, AccessibilityAction: ACTION_NEXT_HTML_ELEMENT - null, AccessibilityAction: ACTION_PREVIOUS_HTML_ELEMENT - null, AccessibilityAction: ACTION_ACCESSIBILITY_FOCUS - null]; isTextSelectable: false
+10-15 08:04:58.786 I/Maestro ( 9726): Null child 13/20, parent: android.view.accessibility.AccessibilityNodeInfo@91b9; boundsInParent: Rect(0, 76 - 413, 2571); boundsInScreen: Rect(0, 327 - 1084, 2339); boundsInWindow: Rect(0, 327 - 1084, 2339); packageName: com.agastyaray.asha; className: android.view.View; text: ; error: null; maxTextLength: -1; stateDescription: null; contentDescription: null; tooltipText: null; containerTitle: null; viewIdResName: null; uniqueId: null; checkable: false; checked: false; focusable: false; focused: false; selected: false; clickable: false; longClickable: false; contextClickable: false; enabled: true; password: false; scrollable: false; importantForAccessibility: false; visible: true; actions: [AccessibilityAction: ACTION_SHOW_ON_SCREEN - null, AccessibilityAction: ACTION_CONTEXT_CLICK - null, AccessibilityAction: ACTION_NEXT_HTML_ELEMENT - null, AccessibilityAction: ACTION_PREVIOUS_HTML_ELEMENT - null, AccessibilityAction: ACTION_ACCESSIBILITY_FOCUS - null]; isTextSelectable: false
+10-15 08:04:58.787 I/Maestro ( 9726): Null child 14/20, parent: android.view.accessibility.AccessibilityNodeInfo@91b9; boundsInParent: Rect(0, 76 - 413, 2571); boundsInScreen: Rect(0, 327 - 1084, 2339); boundsInWindow: Rect(0, 327 - 1084, 2339); packageName: com.agastyaray.asha; className: android.view.View; text: ; error: null; maxTextLength: -1; stateDescription: null; contentDescription: null; tooltipText: null; containerTitle: null; viewIdResName: null; uniqueId: null; checkable: false; checked: false; focusable: false; focused: false; selected: false; clickable: false; longClickable: false; contextClickable: false; enabled: true; password: false; scrollable: false; importantForAccessibility: false; visible: true; actions: [AccessibilityAction: ACTION_SHOW_ON_SCREEN - null, AccessibilityAction: ACTION_CONTEXT_CLICK - null, AccessibilityAction: ACTION_NEXT_HTML_ELEMENT - null, AccessibilityAction: ACTION_PREVIOUS_HTML_ELEMENT - null, AccessibilityAction: ACTION_ACCESSIBILITY_FOCUS - null]; isTextSelectable: false
+10-15 08:04:58.788 I/Maestro ( 9726): Null child 15/20, parent: android.view.accessibility.AccessibilityNodeInfo@91b9; boundsInParent: Rect(0, 76 - 413, 2571); boundsInScreen: Rect(0, 327 - 1084, 2339); boundsInWindow: Rect(0, 327 - 1084, 2339); packageName: com.agastyaray.asha; className: android.view.View; text: ; error: null; maxTextLength: -1; stateDescription: null; contentDescription: null; tooltipText: null; containerTitle: null; viewIdResName: null; uniqueId: null; checkable: false; checked: false; focusable: false; focused: false; selected: false; clickable: false; longClickable: false; contextClickable: false; enabled: true; password: false; scrollable: false; importantForAccessibility: false; visible: true; actions: [AccessibilityAction: ACTION_SHOW_ON_SCREEN - null, AccessibilityAction: ACTION_CONTEXT_CLICK - null, AccessibilityAction: ACTION_NEXT_HTML_ELEMENT - null, AccessibilityAction: ACTION_PREVIOUS_HTML_ELEMENT - null, AccessibilityAction: ACTION_ACCESSIBILITY_FOCUS - null]; isTextSelectable: false
+10-15 08:04:58.789 I/Maestro ( 9726): Null child 16/20, parent: android.view.accessibility.AccessibilityNodeInfo@91b9; boundsInParent: Rect(0, 76 - 413, 2571); boundsInScreen: Rect(0, 327 - 1084, 2339); boundsInWindow: Rect(0, 327 - 1084, 2339); packageName: com.agastyaray.asha; className: android.view.View; text: ; error: null; maxTextLength: -1; stateDescription: null; contentDescription: null; tooltipText: null; containerTitle: null; viewIdResName: null; uniqueId: null; checkable: false; checked: false; focusable: false; focused: false; selected: false; clickable: false; longClickable: false; contextClickable: false; enabled: true; password: false; scrollable: false; importantForAccessibility: false; visible: true; actions: [AccessibilityAction: ACTION_SHOW_ON_SCREEN - null, AccessibilityAction: ACTION_CONTEXT_CLICK - null, AccessibilityAction: ACTION_NEXT_HTML_ELEMENT - null, AccessibilityAction: ACTION_PREVIOUS_HTML_ELEMENT - null, AccessibilityAction: ACTION_ACCESSIBILITY_FOCUS - null]; isTextSelectable: false
+10-15 08:04:58.791 I/Maestro ( 9726): Null child 17/20, parent: android.view.accessibility.AccessibilityNodeInfo@91b9; boundsInParent: Rect(0, 76 - 413, 2571); boundsInScreen: Rect(0, 327 - 1084, 2339); boundsInWindow: Rect(0, 327 - 1084, 2339); packageName: com.agastyaray.asha; className: android.view.View; text: ; error: null; maxTextLength: -1; stateDescription: null; contentDescription: null; tooltipText: null; containerTitle: null; viewIdResName: null; uniqueId: null; checkable: false; checked: false; focusable: false; focused: false; selected: false; clickable: false; longClickable: false; contextClickable: false; enabled: true; password: false; scrollable: false; importantForAccessibility: false; visible: true; actions: [AccessibilityAction: ACTION_SHOW_ON_SCREEN - null, AccessibilityAction: ACTION_CONTEXT_CLICK - null, AccessibilityAction: ACTION_NEXT_HTML_ELEMENT - null, AccessibilityAction: ACTION_PREVIOUS_HTML_ELEMENT - null, AccessibilityAction: ACTION_ACCESSIBILITY_FOCUS - null]; isTextSelectable: false
+10-15 08:04:58.792 I/Maestro ( 9726): Null child 18/20, parent: android.view.accessibility.AccessibilityNodeInfo@91b9; boundsInParent: Rect(0, 76 - 413, 2571); boundsInScreen: Rect(0, 327 - 1084, 2339); boundsInWindow: Rect(0, 327 - 1084, 2339); packageName: com.agastyaray.asha; className: android.view.View; text: ; error: null; maxTextLength: -1; stateDescription: null; contentDescription: null; tooltipText: null; containerTitle: null; viewIdResName: null; uniqueId: null; checkable: false; checked: false; focusable: false; focused: false; selected: false; clickable: false; longClickable: false; contextClickable: false; enabled: true; password: false; scrollable: false; importantForAccessibility: false; visible: true; actions: [AccessibilityAction: ACTION_SHOW_ON_SCREEN - null, AccessibilityAction: ACTION_CONTEXT_CLICK - null, AccessibilityAction: ACTION_NEXT_HTML_ELEMENT - null, AccessibilityAction: ACTION_PREVIOUS_HTML_ELEMENT - null, AccessibilityAction: ACTION_ACCESSIBILITY_FOCUS - null]; isTextSelectable: false
+10-15 08:04:58.794 I/Maestro ( 9726): Null child 19/20, parent: android.view.accessibility.AccessibilityNodeInfo@91b9; boundsInParent: Rect(0, 76 - 413, 2571); boundsInScreen: Rect(0, 327 - 1084, 2339); boundsInWindow: Rect(0, 327 - 1084, 2339); packageName: com.agastyaray.asha; className: android.view.View; text: ; error: null; maxTextLength: -1; stateDescription: null; contentDescription: null; tooltipText: null; containerTitle: null; viewIdResName: null; uniqueId: null; checkable: false; checked: false; focusable: false; focused: false; selected: false; clickable: false; longClickable: false; contextClickable: false; enabled: true; password: false; scrollable: false; importantForAccessibility: false; visible: true; actions: [AccessibilityAction: ACTION_SHOW_ON_SCREEN - null, AccessibilityAction: ACTION_CONTEXT_CLICK - null, AccessibilityAction: ACTION_NEXT_HTML_ELEMENT - null, AccessibilityAction: ACTION_PREVIOUS_HTML_ELEMENT - null, AccessibilityAction: ACTION_ACCESSIBILITY_FOCUS - null]; isTextSelectable: false
+10-15 08:04:58.821 I/Maestro ( 9726): Skipping invisible child: android.view.accessibility.AccessibilityNodeInfo@9691; boundsInParent: Rect(0, 0 - 1080, 128); boundsInScreen: Rect(0, 0 - 1080, 128); boundsInWindow: Rect(0, 0 - 1080, 128); packageName: com.agastyaray.asha; className: android.view.View; text: null; error: null; maxTextLength: -1; stateDescription: null; contentDescription: null; tooltipText: null; containerTitle: null; viewIdResName: android:id/statusBarBackground; uniqueId: null; checkable: false; checked: false; focusable: false; focused: false; selected: false; clickable: false; longClickable: false; contextClickable: false; enabled: true; password: false; scrollable: false; importantForAccessibility: false; visible: false; actions: [AccessibilityAction: ACTION_SELECT - null, AccessibilityAction: ACTION_CLEAR_SELECTION - null, AccessibilityAction: ACTION_ACCESSIBILITY_FOCUS - null, AccessibilityAction: ACTION_SHOW_ON_SCREEN - null]; isTextSelectable: false
+10-15 08:04:58.846 D/Maestro ( 9726): View hierarchy received in 693 ms
+10-15 08:04:59.265 D/Maestro ( 9726): Requesting view hierarchy
+10-15 08:04:59.266 W/QueryController( 9726): Could not detect idle state.
+10-15 08:04:59.266 W/QueryController( 9726): Could not detect idle state.
+10-15 08:04:59.302 I/Maestro ( 9726): Skipping invisible child: android.view.accessibility.AccessibilityNodeInfo@9691; boundsInParent: Rect(0, 0 - 1080, 128); boundsInScreen: Rect(0, 0 - 1080, 128); boundsInWindow: Rect(0, 0 - 1080, 128); packageName: com.agastyaray.asha; className: android.view.View; text: null; error: null; maxTextLength: -1; stateDescription: null; contentDescription: null; tooltipText: null; containerTitle: null; viewIdResName: android:id/statusBarBackground; uniqueId: null; checkable: false; checked: false; focusable: false; focused: false; selected: false; clickable: false; longClickable: false; contextClickable: false; enabled: true; password: false; scrollable: false; importantForAccessibility: false; visible: false; actions: [AccessibilityAction: ACTION_SELECT - null, AccessibilityAction: ACTION_CLEAR_SELECTION - null, AccessibilityAction: ACTION_ACCESSIBILITY_FOCUS - null, AccessibilityAction: ACTION_SHOW_ON_SCREEN - null]; isTextSelectable: false
+10-15 08:04:59.316 D/Maestro ( 9726): View hierarchy received in 51 ms
+10-15 08:04:59.579 D/Maestro ( 9726): Requesting view hierarchy
+10-15 08:04:59.580 W/QueryController( 9726): Could not detect idle state.
+10-15 08:04:59.580 W/QueryController( 9726): Could not detect idle state.
+10-15 08:04:59.606 I/Maestro ( 9726): Skipping invisible child: android.view.accessibility.AccessibilityNodeInfo@9691; boundsInParent: Rect(0, 0 - 1080, 128); boundsInScreen: Rect(0, 0 - 1080, 128); boundsInWindow: Rect(0, 0 - 1080, 128); packageName: com.agastyaray.asha; className: android.view.View; text: null; error: null; maxTextLength: -1; stateDescription: null; contentDescription: null; tooltipText: null; containerTitle: null; viewIdResName: android:id/statusBarBackground; uniqueId: null; checkable: false; checked: false; focusable: false; focused: false; selected: false; clickable: false; longClickable: false; contextClickable: false; enabled: true; password: false; scrollable: false; importantForAccessibility: false; visible: false; actions: [AccessibilityAction: ACTION_SELECT - null, AccessibilityAction: ACTION_CLEAR_SELECTION - null, AccessibilityAction: ACTION_ACCESSIBILITY_FOCUS - null, AccessibilityAction: ACTION_SHOW_ON_SCREEN - null]; isTextSelectable: false
+10-15 08:04:59.620 D/Maestro ( 9726): View hierarchy received in 41 ms
+10-15 08:04:59.698 D/WindowManager(  519): captureDisplay
+10-15 08:04:59.712 I/hwservicemanager(  135): getTransport: Cannot find entry android.hardware.graphics.mapper@4.0::IMapper/default in either framework or device VINTF manifest.
+10-15 08:04:59.712 I/Gralloc4( 9689): mapper 4.x is not supported
+10-15 08:04:59.901 I/servicemanager(    0): Could not find android.hardware.graphics.allocator.IAllocator/default in the VINTF manifest.
+10-15 08:04:59.732 D/libEGL  ( 9689): loaded /vendor/lib64/egl/libEGL_emulation.so
+10-15 08:04:59.733 D/libEGL  ( 9689): loaded /vendor/lib64/egl/libGLESv1_CM_emulation.so
+10-15 08:04:59.735 D/libEGL  ( 9689): loaded /vendor/lib64/egl/libGLESv2_emulation.so
+10-15 08:04:59.750 W/OpenGLRenderer( 9689): Failed to initialize 101010-2 format, error = EGL_SUCCESS
+10-15 08:04:59.931 D/ActivityManager(  519): freezing 2946 com.google.android.webview:webview_service
+10-15 08:05:00.006 I/AiAiEcho( 1667): Predicting[0]: 
+10-15 08:05:00.007 I/AiAiEcho( 1667): EchoTargets: 
+10-15 08:05:00.007 I/AiAiEcho( 1667): Filtered by AiAi flag check: 
+10-15 08:05:00.007 I/AiAiEcho( 1667): Ranked targets strategy: SORT, count: 0, ranking metadata: 
+10-15 08:05:00.008 I/AiAiEcho( 1667): #postPredictionTargets: Sending updates to UISurface lockscreen with targets# 0 (types=[])
+10-15 08:05:00.017 W/PageIndicator(  840): Total number of pages invalid: 0. Assuming 1 page.
+10-15 08:05:00.021 D/EGL_emulation(  840): app_time_stats: avg=5014.20ms min=14.85ms max=10013.56ms count=2
+10-15 08:05:00.097 D/StatusBarIconController(  840): ignoring old pipeline callback because the new wifi icon is enabled
+10-15 08:05:00.376 I/Capacitor/Console( 9884): File: https://localhost/assets/index-BRrNMV8n.js - Line 66 - Msg: [family] state http 200 in 5290 ms
+10-15 08:05:00.798 I/logd    (    0): logdr: UID=0 GID=0 PID=10025 n tail=0 logMask=99 pid=0 start=0ns deadline=0ns
