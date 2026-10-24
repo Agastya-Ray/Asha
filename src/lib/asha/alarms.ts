@@ -1,7 +1,7 @@
 // Hands the day's reminders to Android, so Asha speaks even when the app is closed or the phone is locked.
 import { AshaNative, isNative, type NativeReminder } from "@/lib/asha/native";
-import { timeWords } from "@/lib/asha/family";
-import { againSentence, doseSentence, mealNote, mealSentence, mealTitle, missedText, morningLine, nightLine } from "@/lib/asha/speech";
+import { timeWords, useFamily } from "@/lib/asha/family";
+import { againSentence, doseSentence, lastAgainSentence, mealNote, mealSentence, mealTitle, missedText, morningLine, nightLine } from "@/lib/asha/speech";
 import { backLine } from "@/lib/asha/quiet";
 import { dueLine } from "@/lib/asha/remember";
 import { useAsha } from "@/lib/asha/store";
@@ -25,6 +25,7 @@ export function buildReminders(s: S): NativeReminder[] {
   const eatenLabel = lang === "hi" ? "खा लिया ✓" : "Eaten ✓";
   const snoozeLabel = lang === "hi" ? "10 मिनट बाद" : "10 min later";
   const againLabel = lang === "hi" ? "दोबारा याद" : "Gentle reminder";
+  const familyTold = useFamily.getState().circles.length > 0;
 
   for (const med of s.meds) {
     if (med.asNeeded) continue;
@@ -45,6 +46,7 @@ export function buildReminders(s: S): NativeReminder[] {
         body: doseSentence(lang, s.name, med, time) + lowLine,
         say: doseSentence(v, s.name, med, time) + lowSay,
         again: againSentence(v, s.name, med.name),
+        lastAgain: lastAgainSentence(v, s.name, med.name, familyTold),
         lang: v,
         skipUntil: done ? endOfToday() : 0,
         missedText: missedText(lang, s.name, med.name, time),

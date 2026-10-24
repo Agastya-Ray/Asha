@@ -218,7 +218,7 @@ public final class AlarmStore {
 
     // ---------- actions pressed on the notification, read by the app later ----------
 
-    public static synchronized void pushAction(Context ctx, String key, String action) {
+    public static synchronized void pushAction(Context ctx, String key, String action, String day) {
         JSONArray list;
         try { list = new JSONArray(prefs(ctx).getString(KEY_ACTIONS, "[]")); }
         catch (JSONException e) { list = new JSONArray(); }
@@ -227,6 +227,7 @@ public final class AlarmStore {
             o.put("key", key);
             o.put("action", action);
             o.put("at", System.currentTimeMillis());
+            if (day != null) o.put("day", day);
         } catch (JSONException ignored) { }
         list.put(o);
         prefs(ctx).edit().putString(KEY_ACTIONS, list.toString()).apply();
