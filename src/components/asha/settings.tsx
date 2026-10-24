@@ -1,4 +1,6 @@
 import { useEffect, useState } from "react";
+import { deleteFace } from "@/lib/asha/faces";
+import { FacePicker } from "@/components/asha/ideas/call-faces";
 import { Button } from "@/components/ui/button";
 import { Card, Choice, FieldLabel, LangSwitch, SpeakField, t } from "@/components/asha/bits";
 import { useQuietSheet } from "@/components/asha/quiet";
@@ -155,8 +157,9 @@ export function SettingsScreen() {
 
       <h2 className="mt-6 text-2xl font-bold">{t(lang, { en: "Loved ones", hi: "अपने लोग" })}</h2>
       <div className="mt-3 flex flex-col gap-3">
-        {s.contacts.map((person) => (
+        {s.contacts.map((person, i) => (
           <Card key={person.id}>
+            <FacePicker person={person} i={i} />
             <FieldLabel>{t(lang, { en: "Name", hi: "नाम" })}</FieldLabel>
             <SpeakField value={person.name} onChange={(v) => s.upsertContact({ ...person, name: v })} />
             <div className="mt-3">
@@ -167,7 +170,10 @@ export function SettingsScreen() {
               <FieldLabel>{t(lang, { en: "Phone", hi: "फ़ोन" })}</FieldLabel>
               <input className="field" inputMode="tel" value={person.phone} onChange={(e) => s.upsertContact({ ...person, phone: e.target.value })} />
             </div>
-            <button type="button" className="mt-3 min-h-12 font-bold text-clay" onClick={() => s.removeContact(person.id)}>
+            <button type="button" className="mt-3 min-h-12 font-bold text-clay" onClick={() => {
+                void deleteFace(person.id);
+                s.removeContact(person.id);
+              }}>
               {t(lang, { en: "Remove this person", hi: "इस व्यक्ति को हटाएँ" })}
             </button>
           </Card>

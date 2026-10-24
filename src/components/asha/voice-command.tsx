@@ -7,6 +7,7 @@ import { QUIET, minutesSaid } from "@/lib/asha/quiet";
 import { buildAgenda, digits } from "@/lib/asha/schedule";
 import { useQuietSheet } from "@/components/asha/quiet";
 import { useAsha } from "@/lib/asha/store";
+import { rxSpoken } from "@/lib/asha/rx";
 import { speak } from "@/lib/asha/voice";
 
 /** "Call now" from her voice: the Help screen picks it up and starts the call straight away. who = a contact id, or "" for the usual first number. */
@@ -38,11 +39,13 @@ export const URGENT =
   /chest (pain|hurts?|pressure|tight)|pain in (my )?chest|can'?t breathe|cannot breathe|can'?t catch my breath|short of breath|fainted|passed out|face (is )?drooping|can'?t (speak|talk|move my)|arm (is )?(weak|numb)|stroke|heart attack|bleeding (a lot|heavily|won'?t stop)|fell and can'?t get up|सीने में दर्द|छाती में दर्द|सांस नहीं|साँस नहीं|बेहोश|लकवा|दिल का दौरा/i;
 const TAKEN = /\b(took|taken|done|finished)\b|ले ली|ले लिया|ले ली है|ली है|खा ली|ले चुकी|ले चुका/i;
 const ATE = /\b(ate|eaten|had (my )?(breakfast|lunch|dinner|food))\b|खा लिया|खाना खा|नाश्ता कर/i;
+// "what did the doctor say?", "read my prescription"
+const DOCTOR = /\b(doctor|prescription)\b|डॉक्टर|डाक्टर|पर्ची/i;
 const WATER = /\b(water|glass)\b|पानी/i;
 // "I haven't taken it", "remind me later", "दवा नहीं ली": never mark these as done
 const NOT_YET = /n't\b|\b(not|never|yet|later|remind|forgot|forget|skip)\b|नहीं|नही\b|भूल|बाद में|याद दिला/i;
 
-export type Heard = "call" | "help" | "quiet" | "taken" | "ate" | "not-yet" | "water" | "other";
+export type Heard = "call" | "help" | "quiet" | "taken" | "ate" | "not-yet" | "water" | "doctor" | "other";
 
 /** What a short spoken sentence asks for. Help wins; a "not yet" stops a dose or meal being marked. */
 export function intentOf(said: string): Heard {
@@ -55,6 +58,7 @@ export function intentOf(said: string): Heard {
   if (taken) return "taken";
   if (ate) return "ate";
   if (WATER.test(said)) return "water";
+  if (DOCTOR.test(said)) return "doctor";
   return "other";
 }
 
@@ -167,6 +171,11 @@ export function actOnSpoken(said: string) {
   if (want === "water") {
     s.addWater();
     reply("One more glass of water. Good.", "एक गिलास पानी और. बढ़िया.");
+    return;
+  }
+  // a short ask is read from the saved page, even offline; a longer question goes to Talk, which knows the page too
+  if (want === "doctor" && !(s.pro && said.split(/\s+/).length > 6)) {
+    void speak(rxSpoken(s.prescriptions[0], v), v, s.richVoice ? "warm" : "device");
     return;
   }
   if (s.pro) {
