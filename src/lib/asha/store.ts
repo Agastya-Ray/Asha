@@ -25,6 +25,7 @@ export const initialPersist = (): Persist => ({
   voiceLang: "en",
   introSeen: false,
   fairyName: "",
+  fairyVoice: null,
   tourDone: false,
   appRole: "elder",
   roleChosen: false,
@@ -72,8 +73,11 @@ type State = Persist & {
   setTextSize: (size: TextSize) => void;
   finishIntro: () => void;
   chooseRole: (role: AppRole) => void;
+  /** back to "who will use this phone?" (picked the wrong one) */
+  unchooseRole: () => void;
   replayIntro: () => void;
   setFairyName: (name: string) => void;
+  setFairyVoice: (voice: Persist["fairyVoice"]) => void;
   finishTour: () => void;
   applyNativeActions: (actions: { key: string; action: string; at: number; day?: string }[]) => void;
   setName: (name: string) => void;
@@ -161,6 +165,7 @@ function sanitize(raw: unknown): Persist {
     // people who used the older version already know Asha
     introSeen: typeof r.introSeen === "boolean" ? r.introSeen : Boolean(r.onboarded),
     fairyName: typeof r.fairyName === "string" ? r.fairyName.slice(0, 24) : "",
+    fairyVoice: r.fairyVoice && typeof r.fairyVoice === "object" && typeof r.fairyVoice.id === "string" ? r.fairyVoice : null,
     tourDone: typeof r.tourDone === "boolean" ? r.tourDone : Boolean(r.onboarded),
     appRole: r.appRole === "family" ? "family" : "elder",
     // people who already set up meds are the person cared for
@@ -213,9 +218,12 @@ export const useAsha = create<State>((set) => ({
   setTextSize: (textSize) => set({ textSize }),
   finishIntro: () => set({ introSeen: true }),
   setQuiet: (quietUntil) => set({ quietUntil: Math.max(0, Math.round(quietUntil)) }),
-  chooseRole: (appRole) => set({ appRole, roleChosen: true, tab: appRole === "family" ? "family" : "today" }),
+  chooseRole: (appRole) =>
+    set({ appRole, roleChosen: true, tab: appRole === "family" ? "family" : "today" }),
+  unchooseRole: () => set({ appRole: "elder", roleChosen: false, tab: "today" }),
   replayIntro: () => set({ introSeen: false }),
   setFairyName: (fairyName) => set({ fairyName: fairyName.trim().slice(0, 24) }),
+  setFairyVoice: (fairyVoice) => set({ fairyVoice }),
   finishTour: () => set({ tourDone: true }),
   applyNativeActions: (actions) =>
     set((s) => {

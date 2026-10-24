@@ -8,8 +8,13 @@ import android.content.Intent;
 
 import java.util.Calendar;
 
-/** "Taken" and "10 min later" buttons on the reminder notification. */
+/** "Taken" and "10 min later" buttons on the reminder notification and on the home-screen fairy. */
 public class ActionReceiver extends BroadcastReceiver {
+    /** today's dose (the home-screen fairy) */
+    static PendingIntent pending(Context ctx, String key, String action) {
+        return pending(ctx, key, action, null);
+    }
+
     /** day = the day the card's dose belongs to (see ReminderService.doseDay) */
     static PendingIntent pending(Context ctx, String key, String action, String day) {
         Intent i = new Intent(ctx, ActionReceiver.class);
@@ -44,5 +49,7 @@ public class ActionReceiver extends BroadcastReceiver {
             AlarmStore.scheduleFollowUp(ctx, key, 1, System.currentTimeMillis() + gap * 60_000L);
         }
         AlarmStore.pushAction(ctx, key, action, day);
+        AlarmStore.clearDue(ctx, key);
+        FairyWidget.refreshAll(ctx);
     }
 }

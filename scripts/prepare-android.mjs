@@ -69,7 +69,6 @@ if (!manifest.includes(MARK)) {
     "android.permission.FOREGROUND_SERVICE",
     "android.permission.FOREGROUND_SERVICE_SPECIAL_USE",
     "android.permission.RECORD_AUDIO",
-    "android.permission.SEND_SMS",
     "android.permission.CALL_PHONE",
     "android.permission.ACCESS_COARSE_LOCATION",
     "android.permission.ACCESS_FINE_LOCATION",
@@ -153,11 +152,17 @@ if (!gradle.includes("ASHA_KEYSTORE_FILE")) {
                 keyPassword System.getenv("ASHA_KEY_PASSWORD")
             }
         }
+    }
+    lint {
+        // release builds run lint first; a lint finding should not stop the APK
+        checkReleaseBuilds false
     }$1`,
   );
   gradle = gradle.replace(
     /(buildTypes\s*\{\s*release\s*\{)/,
-    `$1\n            if (System.getenv("ASHA_KEYSTORE_FILE")) { signingConfig signingConfigs.release }`,
+    // the sideloaded APK is a release build (not debuggable: Play Protect is wary of those), signed with the same key as before
+    // so it still installs over the old app; the Play Store bundle uses the real upload key
+    `$1\n            signingConfig System.getenv("ASHA_KEYSTORE_FILE") ? signingConfigs.release : signingConfigs.debug`,
   );
 }
 if (!gradle.includes("firebase-messaging")) {

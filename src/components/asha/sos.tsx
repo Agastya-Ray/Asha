@@ -9,6 +9,8 @@ import { digits, latinDigits, smsHref, telHref, todayCheckin } from "@/lib/asha/
 import { sosText } from "@/lib/asha/speech";
 import { useAsha } from "@/lib/asha/store";
 import { speak } from "@/lib/asha/voice";
+import { useSosNow } from "@/components/asha/voice-command";
+import type { Contact } from "@/lib/asha/types";
 
 const HOLD_MS = 1800;
 
@@ -44,7 +46,6 @@ export function SosScreen() {
   const name = useAsha((s) => s.name);
   const contacts = useAsha((s) => s.contacts);
   const emergency = useAsha((s) => s.emergencyNumber);
-  const autoSms = useAsha((s) => s.sosAutoSms);
   const checkins = useAsha((s) => s.checkins);
   const openSettings = useAsha((s) => s.openSettings);
   const tight = todayCheckin(checkins)?.chestOk === false;
@@ -59,42 +60,47 @@ export function SosScreen() {
 
   useEffect(() => () => window.clearInterval(holdTimer.current), []);
 
+  // she heard "I'm not well" (or "call Riya"): no button to find or hold, the call starts now
+  const sosNow = useSosNow((q) => q.pending);
+  useEffect(() => {
+    if (!sosNow || running) return;
+    const { who, clear } = useSosNow.getState();
+    clear();
+    void runHelp(contacts.find((c) => c.id === who));
+  }, [sosNow]);
+
   const log = (line: string) => setSteps((s) => [...s, line]);
 
-  async function runHelp() {
+  async function runHelp(person?: Contact) {
     setRunning(true);
     setSteps([]);
+    const first = person?.phone || (hasEmergency ? emergency : people[0]?.phone);
+    const calling = person?.name || first || "";
     void speak(
-      voiceLang === "hi" ? "मैं आपके अपनों को बुला रही हूँ. जहाँ हैं वहीं रहिए." : "I'm getting your people now. Stay where you are.",
+      voiceLang === "hi"
+        ? `मैं यहीं हूँ. ${calling ? `${calling} को फ़ोन कर रही हूँ.` : "आपके अपनों को बुला रही हूँ."} जहाँ हैं वहीं रहिए.`
+        : `I'm right here. ${calling ? `I'm calling ${calling} now.` : "I'm getting your people now."} Stay where you are.`,
       voiceLang,
       "device",
     );
     log(t(lang, { en: "Finding where you are…", hi: "आपकी जगह ढूँढ रही हूँ…" }));
-    const link = await whereAmI();
+    // the call must not wait long for a location: a few seconds, then go without it
+    const link = await Promise.race([
+      whereAmI(),
+      new Promise<string>((r) => setTimeout(() => r(""), 3000)),
+    ]);
     setMapLink(link);
     log(link ? t(lang, { en: "Location found.", hi: "जगह मिल गई." }) : t(lang, { en: "Location not found. Sending without it.", hi: "जगह नहीं मिली. उसके बिना भेज रही हूँ." }));
     // family who use the Asha app get an urgent alert first (free, instant)
     const pushed = await familyAlert("sos", { where: link });
     if (pushed > 0) log(lang === "hi" ? `परिवार ऐप पर ${pushed} लोगों को सूचना गई.` : `Alert sent to ${pushed} family phone${pushed > 1 ? "s" : ""} in Asha.`);
-    const text = sosText(lang, name, link);
     const numbers = people.map((p) => latinDigits(p.phone));
 
-    if (numbers.length && isNative && autoSms) {
-      try {
-        const { sent } = await AshaNative.sendSms({ numbers, text });
-        log(
-          lang === "hi"
-            ? `${sent} लोगों को संदेश भेजा.`
-            : `Message sent to ${sent} ${sent === 1 ? "person" : "people"}.`,
-        );
-      } catch {
-        log(t(lang, { en: "Could not send messages by itself. Use the Message buttons below.", hi: "खुद संदेश नहीं भेज पाई. नीचे संदेश बटन दबाएँ." }));
-      }
-    } else if (numbers.length) {
+    // Asha does not text by itself (Play Protect blocks apps that can); each person has a ready Message button
+    if (numbers.length) {
       log(t(lang, { en: "Press Message under each person to send your location.", hi: "जगह भेजने के लिए हर व्यक्ति के नीचे संदेश दबाएँ." }));
     }
 
-    const first = hasEmergency ? emergency : people[0]?.phone;
     if (first) {
       log(lang === "hi" ? `कॉल लगा रही हूँ: ${first}` : `Calling ${first}…`);
       await callNumber(first);
@@ -175,12 +181,8 @@ export function SosScreen() {
         </button>
         <p className="mt-4 text-center text-lg">
           {t(lang, {
-            en: isNative && autoSms
-              ? "Asha texts your loved ones where you are, then calls."
-              : "Asha finds where you are, then calls. Messages go with one more press.",
-            hi: isNative && autoSms
-              ? "आशा आपके अपनों को आपकी जगह भेजती है, फिर कॉल करती है."
-              : "आशा आपकी जगह ढूँढती है, फिर कॉल करती है. संदेश एक और बटन से जाते हैं.",
+            en: "Asha finds where you are, then calls. Messages go with one more press.",
+            hi: "आशा आपकी जगह ढूँढती है, फिर कॉल करती है. संदेश एक और बटन से जाते हैं.",
           })}
         </p>
       </div>

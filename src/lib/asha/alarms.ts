@@ -1,7 +1,6 @@
 // Hands the day's reminders to Android, so Asha speaks even when the app is closed or the phone is locked.
 import { AshaNative, isNative, type NativeReminder } from "@/lib/asha/native";
 import { timeWords, useFamily } from "@/lib/asha/family";
-import { digits, latinDigits } from "@/lib/asha/schedule";
 import { againSentence, doseSentence, lastAgainSentence, mealNote, mealSentence, mealTitle, missedText, morningLine, nightLine } from "@/lib/asha/speech";
 import { backLine } from "@/lib/asha/quiet";
 import { useAsha } from "@/lib/asha/store";
@@ -25,7 +24,7 @@ export function buildReminders(s: S): NativeReminder[] {
   const eatenLabel = lang === "hi" ? "खा लिया ✓" : "Eaten ✓";
   const snoozeLabel = lang === "hi" ? "10 मिनट बाद" : "10 min later";
   const againLabel = lang === "hi" ? "दोबारा याद" : "Gentle reminder";
-  const familyTold = s.familyAlert || useFamily.getState().circles.length > 0;
+  const familyTold = useFamily.getState().circles.length > 0;
 
   for (const med of s.meds) {
     if (med.asNeeded) continue;
@@ -124,8 +123,6 @@ export function syncReminders(force = false) {
       repeatMinutes: 10,
       snoozeMinutes: 10,
       rate: 0.92,
-      familyAlert: s.familyAlert,
-      familyNumbers: s.contacts.map((c) => latinDigits(c.phone)).filter((p) => digits(p).length >= 6),
       // quiet mode: Android buzzes silently until then, and says "I'm back" plus anything not yet taken
       quietUntil: s.quietUntil,
       quietBack: backLine(s.voiceLang, s.name),

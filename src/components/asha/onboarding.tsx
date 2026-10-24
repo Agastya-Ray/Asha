@@ -1,12 +1,54 @@
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Choice, FieldLabel, SpeakField, t } from "@/components/asha/bits";
-import { FairyGuide } from "@/components/asha/fairy-guide";
+import { FairyGuide, guideDelay } from "@/components/asha/fairy-guide";
+import type { PixieMood } from "@/components/asha/pixie";
+import type { Localized } from "@/lib/asha/plans";
 import { MedEditor, medSummary } from "@/components/asha/meds";
 import { CONDITIONS } from "@/lib/asha/plans";
 import { digits } from "@/lib/asha/schedule";
 import { blankMed, newId, useAsha } from "@/lib/asha/store";
 import type { Contact } from "@/lib/asha/types";
+
+/** The four parts of setup, told like a short story: who you are, your body, your people, your medicines. */
+const CHAPTER: Localized[] = [
+  { en: "Getting to know you", hi: "आपसे पहचान" },
+  { en: "Your body", hi: "आपका शरीर" },
+  { en: "Your people", hi: "आपके अपने" },
+  { en: "Your medicines", hi: "आपकी दवाइयाँ" },
+];
+
+/** What she says at each step: warm first, then the ask. */
+const GUIDE = (name: string): { mood: PixieMood; line: Localized }[] => [
+  {
+    mood: "asking",
+    line: {
+      en: "Before anything else, I'd love to know you a little. What do your loved ones call you?",
+      hi: "सबसे पहले, मैं आपको थोड़ा जानना चाहूँगी. आपके अपने आपको किस नाम से बुलाते हैं?",
+    },
+  },
+  {
+    mood: "thinking",
+    line: {
+      en: `What a lovely name${name ? `, ${name}` : ""}. Every body is a little different, and I want to look after yours just right. Do any of these sound like you? It's okay if none do.`,
+      hi: `कितना प्यारा नाम है${name ? `, ${name}` : ""}. हर शरीर थोड़ा अलग होता है, और मैं आपका ठीक से ध्यान रखना चाहती हूँ. क्या इनमें से कुछ आपको है? कोई न हो तो भी ठीक है.`,
+    },
+  },
+  {
+    mood: "talk",
+    line: {
+      en: `I'm here to take care of you${name ? `, ${name}` : ""}, every single day. But some days are harder than others. That's why I'd love the number of someone who loves you. So if you ever feel unwell, for any reason, I can call them for you straight away. Who should that be?`,
+      hi: `मैं हर दिन आपका ख्याल रखने के लिए हूँ${name ? `, ${name}` : ""}. पर कुछ दिन बाकी दिनों से मुश्किल होते हैं. इसलिए मुझे किसी अपने का नंबर चाहिए, जो आपसे प्यार करता हो. ताकि कभी भी, किसी भी वजह से तबीयत ठीक न लगे, तो मैं उसी पल उन्हें फ़ोन कर सकूँ. वह कौन हो?`,
+    },
+  },
+  {
+    mood: "point",
+    line: {
+      en: "Last one. Remembering every medicine can be tiring, so let me carry that for you. Write each name the way it's printed on the strip.",
+      hi: "बस आखिरी. हर दवा याद रखना थका देता है, तो यह मुझ पर छोड़ दीजिए. हर नाम वैसे ही लिखिए जैसे पत्ते पर छपा है.",
+    },
+  },
+];
 
 export function Onboarding() {
   const lang = useAsha((s) => s.lang);
@@ -30,26 +72,26 @@ export function Onboarding() {
   const meds = useAsha((s) => s.meds);
 
   const steps = t(lang, { en: "Step", hi: "कदम" });
+  const first = name.trim();
+  const guide = GUIDE(first)[step - 1];
+  const after = guide ? guideDelay(lang, guide.line) : 0;
 
   return (
     <div className="py-6">
-      <p className="text-base font-bold text-sage">
+      <div className="flex items-center gap-3">
+        <div className="flex gap-1.5" aria-hidden>
+          {[1, 2, 3, 4].map((k) => (
+            <span key={k} className={`ob-dot h-2.5 rounded-full ${k === step ? "w-8 bg-sage" : k < step ? "w-2.5 bg-sage" : "w-2.5 bg-line"}`} />
+          ))}
+        </div>
+        <p className="text-base font-bold text-sage">{t(lang, CHAPTER[step - 1] ?? CHAPTER[0])}</p>
+      </div>
+      <span className="sr-only">
         {steps} {step} / 4
-      </p>
-      {step === 1 ? <FairyGuide mood="asking" line={{ en: "What should I call you?", hi: "मैं आपको क्या कहकर बुलाऊँ?" }} /> : null}
-      {step === 2 ? (
-        <FairyGuide
-          mood="thinking"
-          line={{
-            en: "Do you have any of these? Tap the ones that are yours. It's okay to tap none. It helps me choose good food for you.",
-            hi: "क्या इनमें से कुछ आपको है? जो हैं, उन पर टैप करें. कोई न हो तो भी ठीक है. इससे मैं आपके लिए अच्छा खाना चुन पाऊँगी.",
-          }}
-        />
-      ) : null}
-      {step === 3 ? <FairyGuide mood="talk" line={{ en: "If you ever feel unwell, who should I call?", hi: "कभी तबीयत ठीक न लगे, तो मैं किसे फ़ोन करूँ?" }} /> : null}
-      {step === 4 ? (
-        <FairyGuide mood="point" line={{ en: "Now your medicines. Write each name the way it is printed on the strip.", hi: "अब आपकी दवाएँ. हर नाम वैसे ही लिखिए जैसे पत्ते पर छपा है." }} />
-      ) : null}
+      </span>
+      {guide ? <FairyGuide mood={guide.mood} line={guide.line} /> : null}
+      {/* the form waits for her to finish her sentences, then rises in */}
+      <div key={step} className="ob-after" style={{ animationDelay: `${after}s` }}>
       {step === 1 && (
         <div className="mt-3">
           <div className="mt-2">
@@ -91,7 +133,7 @@ export function Onboarding() {
 
       {step === 2 && (
         <div className="mt-3">
-          <h1 className="display text-4xl">{t(lang, { en: "Which of these are yours?", hi: "इनमें से कौन सी आपकी हैं?" })}</h1>
+          <h1 className="display text-4xl">{t(lang, { en: "A little about your health", hi: "आपकी सेहत के बारे में थोड़ा" })}</h1>
           <p className="mt-3 text-lg text-quiet">
             {t(lang, {
               en: "Tap every one that applies. You can change this later. None is also allowed.",
@@ -126,11 +168,11 @@ export function Onboarding() {
 
       {step === 3 && (
         <div className="mt-3">
-          <h1 className="display text-4xl">{t(lang, { en: "Who should the phone call?", hi: "फ़ोन किसे लगना चाहिए?" })}</h1>
+          <h1 className="display text-4xl">{t(lang, { en: "Someone to be there for you", hi: "कोई जो आपके पास रहे" })}</h1>
           <p className="mt-3 text-lg text-quiet">
             {t(lang, {
-              en: "Add at least one number. A daughter, a neighbour, or the emergency number. In India 112 reaches police, fire and ambulance.",
-              hi: "कम से कम एक नंबर डालें. बेटी, पड़ोसी, या इमरजेंसी नंबर. भारत में 112 पर पुलिस, फ़ायर और एम्बुलेंस मिलती है.",
+              en: "A daughter, a son, a neighbour, a friend. Anyone who would come. Add at least one number. In India 112 reaches police, fire and ambulance.",
+              hi: "बेटी, बेटा, पड़ोसी, कोई दोस्त. कोई भी जो आ सके. कम से कम एक नंबर डालें. भारत में 112 पर पुलिस, फ़ायर और एम्बुलेंस मिलती है.",
             })}
           </p>
           <div className="mt-5">
@@ -220,11 +262,11 @@ export function Onboarding() {
 
       {step === 4 && (
         <div className="mt-3">
-          <h1 className="display text-4xl">{t(lang, { en: "Medicines can wait one minute.", hi: "दवा एक मिनट रुक सकती है." })}</h1>
+          <h1 className="display text-4xl">{t(lang, { en: "Let me remember for you", hi: "याद मैं रखूँगी" })}</h1>
           <p className="mt-3 text-lg text-quiet">
             {t(lang, {
-              en: "You can type the first one now. Or finish, and on Meds take a photo of the prescription. Asha reads the names and waits for you to check each one. Handwriting is easy to misread.",
-              hi: "पहली दवा अभी लिख सकते हैं. या खत्म करें, और दवा वाले पन्ने पर पर्ची की फ़ोटो लें. आशा नाम पढ़ेगी और हर नाम आपकी जाँच का इंतज़ार करेगी. लिखावट आसानी से गलत पढ़ी जाती है.",
+              en: "Add one now, or later on Meds with a photo of the prescription.",
+              hi: "अभी एक जोड़ें, या बाद में दवा वाले पन्ने पर पर्ची की फ़ोटो से.",
             })}
           </p>
           {meds.length > 0 && !adding ? (
@@ -263,6 +305,7 @@ export function Onboarding() {
           )}
         </div>
       )}
+      </div>
     </div>
   );
 }

@@ -78,6 +78,8 @@ jobs:
           git init -q -b android-test-results
           git remote add origin "https://x-access-token:${{ github.token }}@github.com/${{ github.repository }}.git"
           git fetch -q --depth 1 origin android-test-results && git reset -q FETCH_HEAD || true
-          git -c user.name=ci -c user.email=ci@users.noreply.github.com add "run-${{ github.run_number }}"
+          # Screenshots only, nothing for Vercel to build: tell it to skip this branch
+          echo '{"git":{"deploymentEnabled":false}}' > vercel.json
+          git -c user.name=ci -c user.email=ci@users.noreply.github.com add vercel.json "run-${{ github.run_number }}"
           git -c user.name=ci -c user.email=ci@users.noreply.github.com commit -qm "user test run ${{ github.run_number }}"
           git push -q origin android-test-results
