@@ -1,0 +1,54 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <meta name="theme-color" content="#1d6b45" />
+    <meta
+      name="description"
+      content="Asha is a calm voice for medicines, meals, and help. A daily companion for arthritis, diabetes, PCOD, PCOS, and life after a heart attack."
+    />
+    <title>Asha</title>
+    <link rel="icon" type="image/png" href="./favicon.png" />
+    <link rel="apple-touch-icon" href="./icon-512.png" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400;1,700&family=Fraunces:opsz,wght@9..144,560;9..144,640&family=Nunito:wght@700;800&display=swap"
+    />
+    <script type="module" crossorigin src="./assets/index-BZDnyh9A.js"></script>
+    <link rel="stylesheet" crossorigin href="./assets/index-BDxf7gGM.css">
+  </head>
+  <body class="bg-linen text-ink antialiased">
+    <div id="root"></div>
+    <!--
+      Old phones (Android 6/7 with the WebView that came in the box) cannot run Asha and showed a blank cream screen.
+      This plain script runs on any browser and, if the page's colours cannot work, explains what to update instead.
+    -->
+    <script>
+      (function () {
+        var ok = window.CSS && CSS.supports && CSS.supports("color", "oklch(50% 0.1 120)");
+        if (ok) return;
+        var android = /Android/i.test(navigator.userAgent);
+        var link = android
+          ? "https://play.google.com/store/apps/details?id=com.google.android.webview"
+          : "https://www.google.com/chrome/";
+        var box = document.createElement("div");
+        box.setAttribute("role", "alert");
+        box.style.cssText = "position:fixed;top:0;left:0;right:0;bottom:0;z-index:2147483647;overflow:auto;padding:32px 20px;font:20px/1.5 sans-serif;color:#1c1915;background:#f3eee4;min-height:100vh;box-sizing:border-box";
+        box.innerHTML =
+          '<p style="font-size:30px;font-weight:bold;margin:0 0 12px">Asha needs one update</p>' +
+          '<p style="margin:0 0 16px">This phone\'s ' + (android ? "<b>Android System WebView</b>" : "browser") +
+          " is too old to show Asha. Please update it, then open Asha again.</p>" +
+          '<p style="font-size:26px;font-weight:bold;margin:24px 0 12px">आशा को एक अपडेट चाहिए</p>' +
+          '<p style="margin:0 0 24px">इस फ़ोन का ' + (android ? "<b>Android System WebView</b>" : "ब्राउज़र") +
+          " बहुत पुराना है. इसे अपडेट करें, फिर आशा दोबारा खोलें.</p>" +
+          '<a href="' + link + '" style="display:block;text-align:center;padding:18px;border-radius:18px;background:#1d6b45;color:#fff;font-weight:bold;text-decoration:none">' +
+          (android ? "Update in Play Store · प्ले स्टोर में अपडेट करें" : "Get a newer browser · नया ब्राउज़र लें") +
+          "</a>";
+        document.body.appendChild(box);
+      })();
+    </script>
+  </body>
+</html>
