@@ -23,19 +23,21 @@ appId: com.agastyaray.asha
 - assertVisible:
     text: ".*is quiet until.*"
 - takeScreenshot: 81-quiet-banner
-# the banner opens the sheet, which can wake her too
+# the banner opens the sheet, which can wake her too. Android's WebView leaves that sheet out of the
+# accessibility tree Maestro reads when it opens over Today while she is quiet (runs 108, 114, 115: the sheet
+# is on screen, focus and a scroll don't bring it in), so the sheet is checked by screenshot, closed by tapping
+# the dimmed page above it, and she is woken with the banner's own "Wake her" button.
 - tapOn:
     text: "🤫.*is quiet until.*"
     retryTapIfNoChange: false
-# The sheet is on screen now (run 108 and 114 screenshots), but the WebView doesn't hand a sheet opened over
-# Today to the accessibility tree that Maestro reads until something scrolls. A small scroll of the page
-# behind the sheet makes it send a fresh tree.
 - waitForAnimationToEnd
-- scroll
-- extendedWaitUntil:
-    visible: "Wake her now"
-    timeout: 10000
-- tapOn: "Wake her now"
+- takeScreenshot: 82-quiet-sheet-from-banner
+- tapOn:
+    point: "50%,20%"
+- waitForAnimationToEnd
+- assertVisible:
+    text: ".*is quiet until.*"
+- tapOn: "Wake her"
 - waitForAnimationToEnd
 - assertNotVisible:
     text: ".*is quiet until.*"
