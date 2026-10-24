@@ -77,39 +77,39 @@ Take screenshot 10-med-editor... COMPLETED
 Scrolling DOWN until "Save this medicine" is visible with speed 40, visibility percentage 100%, timeout 20000 ms, with centering disabled... COMPLETED
 Tap on "Save this medicine"... COMPLETED
 Take screenshot 11-med-saved... COMPLETED
-Scrolling UP until "Go to my day" is visible with speed 40, visibility percentage 100%, timeout 20000 ms, with centering disabled... FAILED
-
-No visible element found: "Go to my day"
-
-Could not find a visible element matching selector: "Go to my day"
-Tip: Try adjusting the following settings to improve detection:
-- `timeout`: current = 20000ms → Increase if you need more time to find the element
-- `speed`: current = 40 (0-100 scale) → Increase for faster scrolling if element is far away
-- `waitToSettleTimeoutMs`: current = Not defined → Set this value (e.g., 500ms) if your UI updates frequently between scrolls
-- `visibilityPercentage`: current = 100% → Lower this value if you want to detect partially visible elements
-- `centerElement`: current = false → Enable if you want the element to be centered after finding it
-
-
-==== Debug output (logs & screenshots) ====
-
-/home/runner/work/Asha/Asha/results/maestro-01_setup/2026-10-24_153948
-Running on test
- > Flow 01_setup
-Launch app "com.agastyaray.asha" with clear state... COMPLETED
-Assert that "Wake the fairy" is visible... FAILED
-
-Assertion is false: "Wake the fairy" is visible
-
-Assertion '"Wake the fairy" is visible' failed. Check the UI hierarchy in debug artifacts to verify the element state and properties.
-
-Possible causes:
-- Element selector may be incorrect - check if there are similar elements with slightly different names/properties.
-- Element may be temporarily unavailable due to loading state
-- This could be a real regression that needs to be addressed
-
-==== Debug output (logs & screenshots) ====
-
-/home/runner/work/Asha/Asha/results/maestro-01_setup/2026-10-24_154209
+Scrolling UP until "Go to my day" is visible with speed 40, visibility percentage 100%, timeout 20000 ms, with centering disabled... COMPLETED
+Tap on "Go to my day"... COMPLETED
+Wait for animation to end... COMPLETED
+Take screenshot 12-today-first-open... COMPLETED
+Assert that "Welcome to my home.*" is visible... COMPLETED
+Take screenshot 12-tour-1-today... COMPLETED
+Tap on "Next"... COMPLETED
+Assert that "When it's done.*" is visible... COMPLETED
+Take screenshot 12-tour-2-green... COMPLETED
+Tap on "Next"... COMPLETED
+Assert that "I'm here to take care of you.*" is visible... COMPLETED
+Take screenshot 12-tour-3-help... COMPLETED
+Tap on "Next"... COMPLETED
+Assert that "Come, this is your medicine room.*" is visible... COMPLETED
+Take screenshot 12-tour-4-meds... COMPLETED
+Tap on "Next"... COMPLETED
+Assert that "This is the care room.*" is visible... COMPLETED
+Take screenshot 12-tour-5-care... COMPLETED
+Tap on "Next"... COMPLETED
+Assert that "And this is where your family lives.*" is visible... COMPLETED
+Take screenshot 12-tour-6-family... COMPLETED
+Tap on "Next"... COMPLETED
+Assert that "This is my favourite room.*" is visible... COMPLETED
+Take screenshot 12-tour-7-talk... COMPLETED
+Tap on "Next"... COMPLETED
+Assert that "Behind this little wheel.*" is visible... COMPLETED
+Take screenshot 12-tour-8-settings... COMPLETED
+Tap on "Next"... COMPLETED
+Assert that "That's my whole home.*" is visible... COMPLETED
+Take screenshot 12-tour-9-end... COMPLETED
+Tap on "Thank you"... COMPLETED
+Wait for animation to end... COMPLETED
+Take screenshot 12-today-after-tour... COMPLETED
 Running on test
  > Flow 02_permissions
 Launch app "com.agastyaray.asha"... COMPLETED
@@ -126,10 +126,7 @@ Tap on (Optional) "Allow"... WARNED
  Warning: Element not found: Text matching regex: Allow
 Wait for animation to end... COMPLETED
 Take screenshot 22-after-allow-notifications... COMPLETED
-Tap on (Optional) "2. Allow exact times"... WARNED
-
-
- Warning: Element not found: Text matching regex: 2. Allow exact times
+Tap on (Optional) "2. Allow exact times"... COMPLETED
 Wait for animation to end... COMPLETED
 Take screenshot 23-exact-alarm-settings... COMPLETED
 Press back... COMPLETED
@@ -138,45 +135,95 @@ Take screenshot 24-back-from-exact-alarm... COMPLETED
 Running on test
  > Flow 03_tabs
 Launch app "com.agastyaray.asha"... COMPLETED
-Assert that "Good morning.*" is visible... FAILED
+Assert that "Good morning.*" is visible... COMPLETED
+Wait for animation to end... COMPLETED
+Take screenshot 30-today-top... COMPLETED
+Scrolling DOWN until "Metformin.*" is visible with speed 40, visibility percentage 100%, timeout 20000 ms, with centering disabled... WARNED
 
-Assertion is false: "Good morning.*" is visible
 
-Assertion '"Good morning.*" is visible' failed. Check the UI hierarchy in debug artifacts to verify the element state and properties.
+ Warning: No visible element found: "Metformin.*"
+Take screenshot 30c-today-metformin-dose... COMPLETED
+Scroll vertically... COMPLETED
+Take screenshot 31-today-scrolled... COMPLETED
+Tap on "Meds"... COMPLETED
+Take screenshot 32-meds... COMPLETED
+Tap on "Today"... COMPLETED
+Scrolling DOWN until "Open meals and my chart" is visible with speed 40, visibility percentage 100%, timeout 20000 ms, with centering enabled... COMPLETED
+Tap on "Open meals and my chart"... COMPLETED
+Take screenshot 33-care-top... COMPLETED
+Scrolling DOWN until "Okay" is visible with speed 40, visibility percentage 100%, timeout 20000 ms, with centering disabled... COMPLETED
+Tap on "Okay"... COMPLETED
+Scrolling DOWN until "Fasting sugar" is visible with speed 40, visibility percentage 100%, timeout 20000 ms, with centering disabled... COMPLETED
+Tap on "Fasting sugar"... COMPLETED
+Tap on (Optional) Below "Fasting sugar"... WARNED
 
-Possible causes:
-- Element selector may be incorrect - check if there are similar elements with slightly different names/properties.
-- Element may be temporarily unavailable due to loading state
-- This could be a real regression that needs to be addressed
 
-==== Debug output (logs & screenshots) ====
-
-/home/runner/work/Asha/Asha/results/maestro-03_tabs/2026-10-24_154822
-Running on test
- > Flow 03_tabs
-Launch app "com.agastyaray.asha"... COMPLETED
-Assert that "Good morning.*" is visible... FAILED
-
-Assertion is false: "Good morning.*" is visible
-
-Assertion '"Good morning.*" is visible' failed. Check the UI hierarchy in debug artifacts to verify the element state and properties.
-
-Possible causes:
-- Element selector may be incorrect - check if there are similar elements with slightly different names/properties.
-- Element may be temporarily unavailable due to loading state
-- This could be a real regression that needs to be addressed
-
-==== Debug output (logs & screenshots) ====
-
-/home/runner/work/Asha/Asha/results/maestro-03_tabs/2026-10-24_154906
+ Warning: Element not found: Below: "Fasting sugar"
+Input text 132... COMPLETED
+Hide Keyboard... COMPLETED
+Scroll vertically... COMPLETED
+Take screenshot 34-care-checkin... COMPLETED
+Scroll vertically... COMPLETED
+Take screenshot 35-care-chart... COMPLETED
+Scroll vertically... COMPLETED
+Take screenshot 36-care-plate... COMPLETED
+Tap on "Family"... COMPLETED
+Assert that "Opening your family circle.*" is not visible... COMPLETED
+Take screenshot 37-family... COMPLETED
+Scroll vertically... COMPLETED
+Take screenshot 38-family-scrolled... COMPLETED
+Tap on "Talk"... COMPLETED
+Take screenshot 39-talk... COMPLETED
+Tap on (Optional) "Turn on Pro on this phone"... COMPLETED
+Tap on "Or type here"... COMPLETED
+Input text Hello Asha. My knees hurt a little today.... COMPLETED
+Hide Keyboard... COMPLETED
+Tap on "Send"... COMPLETED
+Assert that "Asha is thinking.*" is not visible... COMPLETED
+Take screenshot 40-talk-reply... COMPLETED
+Tap on "Settings"... COMPLETED
+Take screenshot 41-settings... COMPLETED
+Scroll vertically... COMPLETED
+Take screenshot 42-settings-2... COMPLETED
+Scroll vertically... COMPLETED
+Take screenshot 43-settings-3... COMPLETED
+Scroll vertically... COMPLETED
+Take screenshot 44-settings-4... COMPLETED
 Running on test
  > Flow 04_family
 Launch app "com.agastyaray.asha"... COMPLETED
-Assert that "Good morning.*" is visible... FAILED
+Assert that "Good morning.*" is visible... COMPLETED
+Tap on point (10%,92%)... COMPLETED
+Assert that "Good morning.*" is visible... COMPLETED
+Tap on point (62%,92%)... COMPLETED
+Assert that "Your family circle.*" is visible... COMPLETED
+Assert that "Opening your family circle.*" is not visible... COMPLETED
+Take screenshot 50-family-start... COMPLETED
+Scrolling DOWN until ".*(Start|Create|Make).*" is visible with speed 40, visibility percentage 100%, timeout 20000 ms, with centering enabled... COMPLETED
+Tap on (Optional) ".*(Start|Create|Make).*"... COMPLETED
+Wait for animation to end... COMPLETED
+Take screenshot 51-family-after-start... COMPLETED
+Scroll vertically... COMPLETED
+Take screenshot 52-family-after-start-2... COMPLETED
+Scroll vertically... COMPLETED
+Take screenshot 52b-family-scrolled-more... COMPLETED
+Scroll vertically... COMPLETED
+Take screenshot 52c-family-scrolled-more... COMPLETED
+Scroll vertically... COMPLETED
+Take screenshot 52d-family-scrolled-more... COMPLETED
+Scrolling DOWN until "Make an invite code|Make a new code|Their code.*" is visible with speed 40, visibility percentage 100%, timeout 45000 ms, with centering enabled... WARNED
 
-Assertion is false: "Good morning.*" is visible
 
-Assertion '"Good morning.*" is visible' failed. Check the UI hierarchy in debug artifacts to verify the element state and properties.
+ Warning: No visible element found: "Make an invite code|Make a new code|Their code.*"
+Tap on (Optional) "Make an invite code"... WARNED
+
+
+ Warning: Element not found: Text matching regex: Make an invite code
+Assert that "Their code.*" is visible... FAILED
+
+Assertion is false: "Their code.*" is visible
+
+Assertion '"Their code.*" is visible' failed. Check the UI hierarchy in debug artifacts to verify the element state and properties.
 
 Possible causes:
 - Element selector may be incorrect - check if there are similar elements with slightly different names/properties.
@@ -185,15 +232,42 @@ Possible causes:
 
 ==== Debug output (logs & screenshots) ====
 
-/home/runner/work/Asha/Asha/results/maestro-04_family/2026-10-24_155007
+/home/runner/work/Asha/Asha/results/maestro-04_family/2026-10-24_164805
 Running on test
  > Flow 04_family
 Launch app "com.agastyaray.asha"... COMPLETED
-Assert that "Good morning.*" is visible... FAILED
+Assert that "Good morning.*" is visible... COMPLETED
+Tap on point (10%,92%)... COMPLETED
+Assert that "Good morning.*" is visible... COMPLETED
+Tap on point (62%,92%)... COMPLETED
+Assert that "Your family circle.*" is visible... COMPLETED
+Assert that "Opening your family circle.*" is not visible... COMPLETED
+Take screenshot 50-family-start... COMPLETED
+Scrolling DOWN until ".*(Start|Create|Make).*" is visible with speed 40, visibility percentage 100%, timeout 20000 ms, with centering enabled... COMPLETED
+Tap on (Optional) ".*(Start|Create|Make).*"... COMPLETED
+Wait for animation to end... COMPLETED
+Take screenshot 51-family-after-start... COMPLETED
+Scroll vertically... COMPLETED
+Take screenshot 52-family-after-start-2... COMPLETED
+Scroll vertically... COMPLETED
+Take screenshot 52b-family-scrolled-more... COMPLETED
+Scroll vertically... COMPLETED
+Take screenshot 52c-family-scrolled-more... COMPLETED
+Scroll vertically... COMPLETED
+Take screenshot 52d-family-scrolled-more... COMPLETED
+Scrolling DOWN until "Make an invite code|Make a new code|Their code.*" is visible with speed 40, visibility percentage 100%, timeout 45000 ms, with centering enabled... WARNED
 
-Assertion is false: "Good morning.*" is visible
 
-Assertion '"Good morning.*" is visible' failed. Check the UI hierarchy in debug artifacts to verify the element state and properties.
+ Warning: No visible element found: "Make an invite code|Make a new code|Their code.*"
+Tap on (Optional) "Make an invite code"... WARNED
+
+
+ Warning: Element not found: Text matching regex: Make an invite code
+Assert that "Their code.*" is visible... FAILED
+
+Assertion is false: "Their code.*" is visible
+
+Assertion '"Their code.*" is visible' failed. Check the UI hierarchy in debug artifacts to verify the element state and properties.
 
 Possible causes:
 - Element selector may be incorrect - check if there are similar elements with slightly different names/properties.
@@ -202,75 +276,28 @@ Possible causes:
 
 ==== Debug output (logs & screenshots) ====
 
-/home/runner/work/Asha/Asha/results/maestro-04_family/2026-10-24_155101
+/home/runner/work/Asha/Asha/results/maestro-04_family/2026-10-24_164936
 Running on test
  > Flow 05_prescription
 Launch app "com.agastyaray.asha"... COMPLETED
-Tap on "Meds"... FAILED
-
-Element not found: Text matching regex: Meds
-
-Element with Text matching regex: Meds not found. Check the UI hierarchy in debug artifacts to verify if the element exists.
-
-Possible causes:
-- Element selector may be incorrect - check if there are similar elements with slightly different names/properties.
-- Element may be temporarily unavailable due to loading state.
-- This could be a real regression that needs to be addressed.
-
-==== Debug output (logs & screenshots) ====
-
-/home/runner/work/Asha/Asha/results/maestro-05_prescription/2026-10-24_155210
-Running on test
- > Flow 05_prescription
-Launch app "com.agastyaray.asha"... COMPLETED
-Tap on "Meds"... FAILED
-
-Element not found: Text matching regex: Meds
-
-Element with Text matching regex: Meds not found. Check the UI hierarchy in debug artifacts to verify if the element exists.
-
-Possible causes:
-- Element selector may be incorrect - check if there are similar elements with slightly different names/properties.
-- Element may be temporarily unavailable due to loading state.
-- This could be a real regression that needs to be addressed.
-
-==== Debug output (logs & screenshots) ====
-
-/home/runner/work/Asha/Asha/results/maestro-05_prescription/2026-10-24_155249
+Tap on "Meds"... COMPLETED
+Assert that "Asha is speaking" is not visible... COMPLETED
+Scrolling DOWN until "Choose from gallery" is visible with speed 40, visibility percentage 100%, timeout 20000 ms, with centering enabled... COMPLETED
+Tap on "Choose from gallery"... COMPLETED
+Wait for animation to end... COMPLETED
+Take screenshot 60-gallery-picker... COMPLETED
+Tap on point (18%,30%)... COMPLETED
+Wait for animation to end... COMPLETED
+Take screenshot 61-after-pick... COMPLETED
+Assert that "Check these names|.*could not be read.*|.*No internet.*|.*rest.*" is visible... COMPLETED
+Take screenshot 62-prescription-result... COMPLETED
+Scroll vertically... COMPLETED
+Take screenshot 63-prescription-result-2... COMPLETED
 Running on test
  > Flow 06_help
 Launch app "com.agastyaray.asha"... COMPLETED
-Tap on "Help"... FAILED
-
-Element not found: Text matching regex: Help
-
-Element with Text matching regex: Help not found. Check the UI hierarchy in debug artifacts to verify if the element exists.
-
-Possible causes:
-- Element selector may be incorrect - check if there are similar elements with slightly different names/properties.
-- Element may be temporarily unavailable due to loading state.
-- This could be a real regression that needs to be addressed.
-
-==== Debug output (logs & screenshots) ====
-
-/home/runner/work/Asha/Asha/results/maestro-06_help/2026-10-24_155347
-Running on test
- > Flow 06_help
-Launch app "com.agastyaray.asha"... COMPLETED
-Tap on "Help"... FAILED
-
-Element not found: Text matching regex: Help
-
-Element with Text matching regex: Help not found. Check the UI hierarchy in debug artifacts to verify if the element exists.
-
-Possible causes:
-- Element selector may be incorrect - check if there are similar elements with slightly different names/properties.
-- Element may be temporarily unavailable due to loading state.
-- This could be a real regression that needs to be addressed.
-
-==== Debug output (logs & screenshots) ====
-
-/home/runner/work/Asha/Asha/results/maestro-06_help/2026-10-24_155427
+Tap on "Help"... COMPLETED
+Take screenshot 70-help... COMPLETED
 Running on test
  > Flow 07_quiet
 Launch app "com.agastyaray.asha"... COMPLETED
@@ -278,41 +305,27 @@ Run wake_if_quiet.yaml...
   Run flow when "Wake her" is visible...
   Run flow when "Wake her" is visible... SKIPPED
 Run wake_if_quiet.yaml... COMPLETED
-Tap on "Settings"... FAILED
-
-Element not found: Text matching regex: Settings
-
-Element with Text matching regex: Settings not found. Check the UI hierarchy in debug artifacts to verify if the element exists.
-
-Possible causes:
-- Element selector may be incorrect - check if there are similar elements with slightly different names/properties.
-- Element may be temporarily unavailable due to loading state.
-- This could be a real regression that needs to be addressed.
-
-==== Debug output (logs & screenshots) ====
-
-/home/runner/work/Asha/Asha/results/maestro-07_quiet/2026-10-24_155637
-Running on test
- > Flow 07_quiet
-Launch app "com.agastyaray.asha"... COMPLETED
-Run wake_if_quiet.yaml...
-  Run flow when "Wake her" is visible...
-  Run flow when "Wake her" is visible... SKIPPED
-Run wake_if_quiet.yaml... COMPLETED
-Tap on "Settings"... FAILED
-
-Element not found: Text matching regex: Settings
-
-Element with Text matching regex: Settings not found. Check the UI hierarchy in debug artifacts to verify if the element exists.
-
-Possible causes:
-- Element selector may be incorrect - check if there are similar elements with slightly different names/properties.
-- Element may be temporarily unavailable due to loading state.
-- This could be a real regression that needs to be addressed.
-
-==== Debug output (logs & screenshots) ====
-
-/home/runner/work/Asha/Asha/results/maestro-07_quiet/2026-10-24_155717
+Tap on "Settings"... COMPLETED
+Scrolling DOWN until "🤫 Quiet for a while (meeting, event)" is visible with speed 40, visibility percentage 100%, timeout 20000 ms, with centering enabled... COMPLETED
+Tap on "🤫 Quiet for a while (meeting, event)"... COMPLETED
+Wait for animation to end... COMPLETED
+Assert that "30 minutes" is visible... COMPLETED
+Tap on "30 minutes"... COMPLETED
+Take screenshot 80-quiet-sheet... COMPLETED
+Tap on "Be quiet until.*"... COMPLETED
+Tap on "Today"... COMPLETED
+Assert that ".*is quiet until.*" is visible... COMPLETED
+Take screenshot 81-quiet-banner... COMPLETED
+Tap on "🤫.*is quiet until.*"... COMPLETED
+Wait for animation to end... COMPLETED
+Take screenshot 82-quiet-sheet-from-banner... COMPLETED
+Tap on point (50%,20%)... COMPLETED
+Wait for animation to end... COMPLETED
+Assert that ".*is quiet until.*" is visible... COMPLETED
+Tap on "Wake her"... COMPLETED
+Wait for animation to end... COMPLETED
+Assert that ".*is quiet until.*" is not visible... COMPLETED
+Take screenshot 82-quiet-woken... COMPLETED
 Running on test
  > Flow 08_quiet_stay
 Launch app "com.agastyaray.asha"... COMPLETED
@@ -320,38 +333,12 @@ Run wake_if_quiet.yaml...
   Run flow when "Wake her" is visible...
   Run flow when "Wake her" is visible... SKIPPED
 Run wake_if_quiet.yaml... COMPLETED
-Tap on "Settings"... FAILED
-
-Element not found: Text matching regex: Settings
-
-Element with Text matching regex: Settings not found. Check the UI hierarchy in debug artifacts to verify if the element exists.
-
-Possible causes:
-- Element selector may be incorrect - check if there are similar elements with slightly different names/properties.
-- Element may be temporarily unavailable due to loading state.
-- This could be a real regression that needs to be addressed.
-
-==== Debug output (logs & screenshots) ====
-
-/home/runner/work/Asha/Asha/results/maestro-08_quiet_stay/2026-10-24_155822
-Running on test
- > Flow 08_quiet_stay
-Launch app "com.agastyaray.asha"... COMPLETED
-Run wake_if_quiet.yaml...
-  Run flow when "Wake her" is visible...
-  Run flow when "Wake her" is visible... SKIPPED
-Run wake_if_quiet.yaml... COMPLETED
-Tap on "Settings"... FAILED
-
-Element not found: Text matching regex: Settings
-
-Element with Text matching regex: Settings not found. Check the UI hierarchy in debug artifacts to verify if the element exists.
-
-Possible causes:
-- Element selector may be incorrect - check if there are similar elements with slightly different names/properties.
-- Element may be temporarily unavailable due to loading state.
-- This could be a real regression that needs to be addressed.
-
-==== Debug output (logs & screenshots) ====
-
-/home/runner/work/Asha/Asha/results/maestro-08_quiet_stay/2026-10-24_155904
+Tap on "Settings"... COMPLETED
+Scrolling DOWN until "🤫 Quiet for a while (meeting, event)" is visible with speed 40, visibility percentage 100%, timeout 20000 ms, with centering enabled... COMPLETED
+Tap on "🤫 Quiet for a while (meeting, event)"... COMPLETED
+Wait for animation to end... COMPLETED
+Assert that "30 minutes" is visible... COMPLETED
+Tap on "30 minutes"... COMPLETED
+Tap on "Be quiet until.*"... COMPLETED
+Tap on "Today"... COMPLETED
+Assert that ".*is quiet until.*" is visible... COMPLETED
