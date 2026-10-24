@@ -1,9 +1,11 @@
+import { VisitSoon } from "@/components/asha/ideas/prescriptions";
 import { useState } from "react";
 import { Droplets, HeartPulse } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, Hear, t, useNow } from "@/components/asha/bits";
 import { ReminderHealth } from "@/components/asha/reminder-health";
 import { VoiceCommand } from "@/components/asha/voice-command";
+import { CallFaces } from "@/components/asha/ideas/call-faces";
 import { YesterdayNote } from "@/components/asha/ideas/yesterday-note";
 import { isNative } from "@/lib/asha/native";
 import { plateLine } from "@/lib/asha/plans";
@@ -147,6 +149,7 @@ export function TodayScreen() {
       ) : null}
       </section>
 
+      <VisitSoon />
       <YesterdayNote />
       <VoiceCommand />
 
@@ -191,6 +194,8 @@ export function TodayScreen() {
           </p>
         </Card>
       ) : null}
+
+      <CallFaces />
 
       <Card className="mt-5">
         <div data-pet="water" className="flex flex-wrap items-center gap-3">

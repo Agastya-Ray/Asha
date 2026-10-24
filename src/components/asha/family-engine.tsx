@@ -15,6 +15,7 @@ import { todayKey } from "@/lib/asha/time";
 import {
   drainNative,
   markHeard,
+  playVoiceNote,
   pullInbox,
   pushNativeConfig,
   refreshPushToken,
@@ -339,7 +340,18 @@ export function FairyDock() {
           : "I brought you a love note! Tap me";
     label = t(lang, { en: "Hear family messages", hi: "परिवार के संदेश सुनें" });
     onTap = () => {
-      say([...unread].reverse().map((m) => textOf(m, voiceLang)).join(" ... "));
+      const voices = [...unread].reverse().filter((m) => m.voice);
+      if (voices.length) {
+        // their own voice, not her reading it: she reads any notes, says who sent a voice, then the recording(s) play
+        const texts = [...unread].reverse().filter((m) => !m.voice).map((m) => textOf(m, voiceLang));
+        const from = textOf(voices[0], voiceLang).replace(/^🎙\s*/, "").split(":")[0];
+        const intro = t(voiceLang, { en: `${from} sent you a voice note! Listen.`, hi: `${from} ने आपके लिए आवाज़ भेजी है! सुनिए.` });
+        void speak([...texts, intro].join(" ... "), voiceLang, "fairy").then(async () => {
+          for (const v of voices) await playVoiceNote(v.id);
+        });
+      } else {
+        say([...unread].reverse().map((m) => textOf(m, voiceLang)).join(" ... "));
+      }
       void markHeard(unread.map((m) => m.id));
       setTab("family");
     };
