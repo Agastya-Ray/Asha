@@ -84,7 +84,7 @@ find_webview() {
 # like find_webview, but scrolls on until the control sits above the bottom nav (a tap lower down hits a tab)
 find_above_nav() {
   local xy=""
-  for i in 1 2 3 4 5 6 7 8 9 10; do xy=$(center_webview "$1"); [ -n "$xy" ] && [ "${xy#* }" -lt 1900 ] && break; xy=""; adb shell input swipe 540 1500 540 900 400; sleep 2; done
+  for i in $(seq 1 12); do xy=$(center_webview "$1"); [ -n "$xy" ] && [ "${xy#* }" -lt 1900 ] && break; xy=""; adb shell input swipe 540 1750 540 750 500; sleep 2; done
   echo "$xy"
 }
 setclock() { adb shell "date $1" >/dev/null; log "clock set to $(adb shell date)"; }
