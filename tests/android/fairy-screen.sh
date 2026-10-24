@@ -116,10 +116,8 @@ adb shell appops get $PKG USE_FULL_SCREEN_INTENT >> "$OUT/full-screen-permission
 launch
 
 # ---------- A. she asks to live on the home screen: one press, no permission ----------
-xy=$(find_webview "Yes, live on my screen"); [ -z "$xy" ] && xy=$(center "Yes, live on my screen")
-shot F01-today-she-asks
-[ -n "$xy" ] && pass "Today: she asks to live on the home screen" || fail "Today: no 'Yes, live on my screen'"
-[ -n "$xy" ] && adb shell input tap $xy; sleep 5
+flow fairy_home_ask.yaml && pass "Today: she asks to live on the home screen, and Yes was pressed"
+sleep 5
 shot F02-wallpaper-preview
 top_activity > "$OUT/after-yes-activity.txt"
 grep -qiE "wallpaper" "$OUT/after-yes-activity.txt" && pass "Android's wallpaper preview opened" || fail "no wallpaper preview ($(cat "$OUT/after-yes-activity.txt"))"

@@ -1,0 +1,11 @@
+# Today: the fairy asks to live on the home screen; "Yes" opens Android's wallpaper preview.
+appId: com.agastyaray.asha
+---
+- scrollUntilVisible:
+    element: "Yes, live on my screen"
+    centerElement: true
+    timeout: 20000
+- takeScreenshot: F01-today-she-asks
+- tapOn:
+    text: "Yes, live on my screen"
+    retryTapIfNoChange: false
