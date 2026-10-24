@@ -1,10 +1,18 @@
 # Today: the fairy asks to live on the home screen; "Yes" opens Android's wallpaper preview.
+# The card sits near the top of Today, so look upward first, then downward.
 appId: com.agastyaray.asha
 ---
 - scrollUntilVisible:
     element: "Yes, live on my screen"
+    direction: UP
     centerElement: true
-    timeout: 20000
+    timeout: 15000
+    optional: true
+- scrollUntilVisible:
+    element: "Yes, live on my screen"
+    direction: DOWN
+    centerElement: true
+    timeout: 15000
 - takeScreenshot: F01-today-she-asks
 - tapOn:
     text: "Yes, live on my screen"
