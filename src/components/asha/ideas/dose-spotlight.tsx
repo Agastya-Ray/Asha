@@ -35,9 +35,19 @@ export function DoseSpotlight() {
       role="dialog"
       aria-modal="true"
       aria-label={med.name}
-      className="fixed inset-0 z-40 flex items-end justify-center bg-ink/40 px-3 pb-3 pt-10"
+      className="safe-top fixed inset-0 z-40 flex flex-col items-center justify-end gap-2 bg-ink/40 px-3 pb-3 pt-3"
     >
-      <div className="flex max-h-full w-full max-w-lg flex-col overflow-y-auto rounded-[2rem] bg-paper p-4 shadow-xl">
+      {/* she covers the header's Help button, so Help comes with her: it must always be one tap away */}
+      <div className="flex w-full max-w-lg shrink-0 justify-end">
+        <button
+          type="button"
+          onClick={() => s.setTab("sos")}
+          className="btn-sos min-h-12 rounded-full bg-sos px-5 text-lg font-bold text-paper"
+        >
+          {t(lang, { en: "Help", hi: "मदद" })}
+        </button>
+      </div>
+      <div className="flex min-h-0 w-full max-w-lg flex-col overflow-y-auto rounded-[2rem] bg-paper p-4 shadow-xl">
         <div className="flex items-end gap-2">
           <Pixie mood="point" className="h-24 w-20 shrink-0" />
           <p className="mb-2 flex-1 rounded-3xl border-2 border-[#f3c4d0] bg-linen p-3 text-lg leading-snug">
