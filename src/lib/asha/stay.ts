@@ -96,16 +96,17 @@ export async function settleHome() {
 }
 
 /**
- * On opening Asha and on every return to it: if the permission is there now (and nobody turned her off),
- * switch her on. Says a happy hello the first time, after the person went through Android's page.
+ * On opening Asha and on every return to it: if they asked for her in Settings and the permission is there now
+ * (and nobody turned her off), switch her on with a happy hello.
  */
 export async function settleStay() {
   if (!isNative || useFamily.getState().bubble || get(OFF) === "1") return;
+  // The floating fairy is an extra: only switch her on for people who asked for her in Settings.
+  if (get(WANT) !== "1") return;
   const can = await AshaNative.canDrawOverlays().catch(() => ({ ok: false }));
   if (!can.ok) return;
-  const asked = get(WANT) === "1";
   put(WANT, null);
-  if (!(await switchOn()) || !asked) return;
+  if (!(await switchOn())) return;
   const { voiceLang, name } = useAsha.getState();
   const line =
     voiceLang === "hi"
