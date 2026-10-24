@@ -81,6 +81,12 @@ find_webview() {
   for i in 1 2 3 4; do xy=$(center_webview "$1"); [ -n "$xy" ] && break; adb shell input swipe 540 1500 540 900 400; sleep 2; done
   echo "$xy"
 }
+# like find_webview, but scrolls on until the control sits above the bottom nav (a tap lower down hits a tab)
+find_above_nav() {
+  local xy=""
+  for i in 1 2 3 4 5 6; do xy=$(center_webview "$1"); [ -n "$xy" ] && [ "${xy#* }" -lt 1900 ] && break; xy=""; adb shell input swipe 540 1500 540 900 400; sleep 2; done
+  echo "$xy"
+}
 setclock() { adb shell "date $1" >/dev/null; log "clock set to $(adb shell date)"; }
 
 adb root >/dev/null 2>&1; sleep 3; adb wait-for-device
@@ -238,7 +244,7 @@ shot 41-today-hindi-largest-text
 # Meds from the bottom nav, then Care (meals and chart), which opens from a card on Today, in Hindi
 xy=$(find_webview "^दवा$"); [ -n "$xy" ] && { adb shell input tap $xy; sleep 3; shot 43-meds-hindi-largest-text; } || { FAILED=1; log "no Hindi Meds tab"; }
 xy=$(find_webview "^आज$"); [ -n "$xy" ] && { adb shell input tap $xy; sleep 3; } || { FAILED=1; log "no Hindi Today tab"; }
-xy=""; for i in 1 2 3 4; do xy=$(find_webview "^खाना और मेरा चार्ट खोलें$"); [ -n "$xy" ] && break; done; [ -n "$xy" ] && { adb shell input tap $xy; sleep 3; shot 44-care-hindi-largest-text; } || { FAILED=1; log "no Hindi meals and chart card"; }
+xy=$(find_above_nav "^खाना और मेरा चार्ट खोलें$"); [ -n "$xy" ] && { adb shell input tap $xy; sleep 3; shot 44-care-hindi-largest-text; } || { FAILED=1; log "no Hindi meals and chart card"; }
 # ---- the floating fairy: she must come back after a reboot, after Android kills Asha, after a long idle, and sleep at night ----
 fairy_check() {
   local name=$1
