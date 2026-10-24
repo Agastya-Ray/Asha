@@ -89,8 +89,10 @@ find_above_nav() {
     sleep 2; xy=$(center_webview "$1"); sleep 1; again=$(center_webview "$1")
     log "  looking for $1: $xy / $again" >&2
     [ -n "$xy" ] && [ "$xy" = "$again" ] && [ "${xy#* }" -lt 1950 ] && break
-    xy=""; adb shell input swipe 540 1500 540 1100 600
+    xy=""; adb shell input swipe 300 1500 300 1100 600
   done
+  # leave a picture and the screen's text behind when it is not found, so the next fix is not a guess
+  [ -n "$xy" ] || { local m; m=miss-$(date +%H%M%S); shot "$m" >&2; cp "$OUT/hierarchy-now.json" "$OUT/$m.json"; log "  saved $m for $1" >&2; }
   echo "$xy"
 }
 setclock() { adb shell "date $1" >/dev/null; log "clock set to $(adb shell date)"; }
@@ -304,13 +306,13 @@ clear_dose() { local xy; for i in 1 2 3; do xy=$(center_webview "^(I've taken it
 # 1. notifications refused
 adb shell pm revoke $PKG android.permission.POST_NOTIFICATIONS && log "stress: notifications refused"
 relaunch; clear_dose; shot s1-no-notifications
-[ -n "$(center_webview 'Allow reminders on screen|स्क्रीन पर याद की अनुमति')" ] && log "stress 1: Today asks again to allow reminders" || { FAILED=1; log "stress 1: no 'Allow reminders on screen' step on Today"; }
+[ -n "$(find_above_nav 'Allow reminders on screen|स्क्रीन पर याद की अनुमति')" ] && log "stress 1: Today asks again to allow reminders" || { FAILED=1; log "stress 1: no 'Allow reminders on screen' step on Today"; }
 alive 1-no-notifications
 
 # 2. exact alarms refused
 adb shell appops set $PKG SCHEDULE_EXACT_ALARM deny && log "stress: exact alarms refused"
 relaunch; clear_dose; shot s2-no-exact-alarms
-[ -n "$(center_webview 'Allow exact times|ठीक समय की अनुमति')" ] && log "stress 2: Today asks for exact times" || { FAILED=1; log "stress 2: no 'Allow exact times' step on Today"; }
+[ -n "$(find_above_nav 'Allow exact times|ठीक समय की अनुमति')" ] && log "stress 2: Today asks for exact times" || { FAILED=1; log "stress 2: no 'Allow exact times' step on Today"; }
 alive 2-no-exact-alarms
 
 # 3. microphone refused: tap Tell Asha, answer "Don't allow" in the system prompt
@@ -318,7 +320,7 @@ alive 2-no-exact-alarms
 adb shell pm revoke $PKG android.permission.RECORD_AUDIO && log "stress: microphone permission reset"
 relaunch; clear_dose
 # Tell Asha sits below the reminders now, so it can take more than one round of scrolling to reach
-xy=$(find_webview "^(Tell Asha|आशा को बताएँ)$"); [ -n "$xy" ] || xy=$(find_webview "^(Tell Asha|आशा को बताएँ)$")
+xy=$(find_above_nav "^(Tell Asha|आशा को बताएँ)$"); [ -n "$xy" ] || xy=$(find_above_nav "^(Tell Asha|आशा को बताएँ)$")
 if [ -n "$xy" ]; then
   adb shell input tap $xy; sleep 3; shot s3a-mic-prompt
   xy=$(center "(?i)don.t allow"); [ -n "$xy" ] && { adb shell input tap $xy; log "stress 3: said Don't allow to the microphone"; } || log "stress 3: no microphone prompt shown"
