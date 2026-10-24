@@ -13,13 +13,15 @@ export type FamilyMsg = {
   circleId: string;
   mine: boolean;
   fromElder: boolean;
-  kind: "preset" | "custom" | "status" | "heart" | "voice" | "alert" | "nudge" | "digest";
+  kind: "preset" | "custom" | "status" | "heart" | "voice" | "alert" | "nudge" | "digest" | "photo";
   template: string | null;
   en: string;
   hi: string;
   voice: boolean;
   /** a held voice note: when it will play for the elder (only its sender sees it before then) */
   scheduledFor?: string | null;
+  /** a photo of a medicine (template = the medicine's id) */
+  photo?: boolean;
   silent: boolean;
   heardAt: string | null;
   reaction: string | null;
@@ -41,6 +43,8 @@ export type CircleInfo = {
   relation?: string;
   myName?: string;
   elderLastSeen?: string | null;
+  /** the elder's medicines, so family can add a photo for each */
+  meds?: { id: string; name: string; dose: string }[];
 };
 
 export type Member = { id: string; relation: string; name: string; muted: boolean; blocked: boolean; hasPush: boolean };
@@ -141,6 +145,9 @@ function save() {
 
 if (typeof window !== "undefined") {
   load();
+  useAsha.subscribe((s, p) => {
+    if (s.meds !== p.meds) syncMedsToFamily();
+  });
   useFamily.subscribe((s, p) => {
     if (s.hydrated && (s.messages !== p.messages || s.circles !== p.circles || s.deviceId !== p.deviceId || s.sent !== p.sent || s.heardLocal !== p.heardLocal || s.members !== p.members || s.caps !== p.caps || s.pushToken !== p.pushToken || s.bubble !== p.bubble || s.role !== p.role)) {
       save();
@@ -280,6 +287,7 @@ export async function refreshState() {
   const r = await call<{ circles: CircleInfo[]; members: Member[]; caps: { ai: boolean; push: boolean } }>("state");
   if (!r.ok) return false;
   useFamily.setState({ circles: r.circles, members: r.members, caps: r.caps });
+  syncMedsToFamily();
   return true;
 }
 
@@ -375,6 +383,33 @@ export async function react(id: number, reaction = "❤️") {
   useFamily.setState((s) => ({ messages: s.messages.map((m) => (m.id === id ? { ...m, reaction, heardAt: m.heardAt ?? new Date().toISOString() } : m)) }));
   return call("react", { id, reaction });
 }
+/** Family: a photo of one of the elder's medicines (JPEG data URL). */
+export async function sendMedPhoto(medId: string, dataUrl: string, circle = circleId()) {
+  return afterSend(await call<{ id: number }>("send", { circleId: circle, kind: "photo", medId, image: dataUrl.split(",")[1] ?? "" }, 45000));
+}
+export async function photoUrl(id: number) {
+  const r = await call<{ url: string | null }>("photo-url", { id });
+  return r.ok ? r.url : null;
+}
+
+let medsTimer: number | undefined;
+let medsSent = "";
+/** Elder: tells the circle the medicine names and amounts (nothing else), so family can add photos for them. */
+export function syncMedsToFamily() {
+  const f = useFamily.getState();
+  const a = useAsha.getState();
+  if (!f.deviceId || !f.circles.length || a.appRole !== "elder") return;
+  const meds = a.meds.map((m) => ({ id: m.id, name: m.name, dose: m.dose }));
+  const sig = JSON.stringify(meds);
+  if (sig === medsSent) return;
+  window.clearTimeout(medsTimer);
+  medsTimer = window.setTimeout(() => {
+    void call("meds", { meds }).then((r) => {
+      if (r.ok) medsSent = sig;
+    });
+  }, 2000);
+}
+
 export async function voiceUrl(id: number) {
   const r = await call<{ url: string | null }>("voice-url", { id });
   return r.ok ? r.url : null;
