@@ -251,6 +251,8 @@ public class AshaNativePlugin extends Plugin {
         if (config != null) AlarmStore.saveConfig(getContext(), config);
         AlarmStore.replaceAll(getContext(), items != null ? items : new JSONArray());
         AlarmStore.applyQuiet(getContext(), oldQuiet, AlarmStore.config(getContext()).optLong("quietUntil", 0));
+        // a dose marked inside the app takes its buttons off the home-screen fairy
+        FairyWidget.refreshAll(getContext());
         call.resolve(ok(true));
     }
 

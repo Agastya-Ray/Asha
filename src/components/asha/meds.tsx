@@ -379,12 +379,12 @@ export function MedsScreen() {
       <h1 className="display text-4xl">{t(lang, { en: "Medicines", hi: "दवाइयाँ" })}</h1>
       <p className="mt-2 text-lg text-quiet">
         {t(lang, {
-          en: "Green on Today means taken. If a name looks wrong, change it here. A photo can misread handwriting, so you confirm every name.",
-          hi: "आज वाले पन्ने पर हरा मतलब ले ली. नाम गलत लगे तो यहीं बदलें. फ़ोटो लिखावट गलत पढ़ सकती है, इसलिए हर नाम आप पक्का करते हैं.",
+          en: "Your medicines. If a name looks wrong, change it here.",
+          hi: "आपकी दवाइयाँ. नाम गलत लगे तो यहीं बदलें.",
         })}
       </p>
 
-      <div className="mt-5 flex flex-col gap-3">
+      <div data-tour="meds-list" className="mt-5 flex flex-col gap-3">
         {meds.length === 0 ? (
           <Card>
             <p className="text-lg">

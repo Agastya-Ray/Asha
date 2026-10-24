@@ -124,8 +124,8 @@ function StartCircle() {
       <Card className="mt-5">
         <p className="text-lg">
           {t(lang, {
-            en: "Your son, daughter or husband installs Asha on their phone and joins with a 6-digit code. Then they can send you sweet messages, and you can send them yours. The fairy brings each one and reads it out.",
-            hi: "आपके बेटे, बेटी या पति अपने फ़ोन पर आशा लगाते हैं और 6 अंकों के कोड से जुड़ते हैं. फिर वो आपको प्यार भरे संदेश भेज सकते हैं, और आप उन्हें. परी हर संदेश लाकर पढ़कर सुनाती है.",
+            en: "Your family adds Asha on their phone and joins with a 6-digit code. Then the fairy brings their messages and reads them out.",
+            hi: "आपका परिवार अपने फ़ोन पर आशा लगाकर 6 अंकों के कोड से जुड़ता है. फिर परी उनके संदेश लाकर पढ़कर सुनाती है.",
           })}
         </p>
       </Card>
@@ -236,7 +236,7 @@ function ElderCircle() {
         </div>
       </div>
 
-      <div className="mt-5">
+      <div data-tour="heart" className="mt-5">
         <HeartButton />
       </div>
 

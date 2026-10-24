@@ -1,5 +1,5 @@
 import { useAsha } from "@/lib/asha/store";
-import type { CSSProperties } from "react";
+import { useEffect, useRef, useState, type CSSProperties } from "react";
 import { cn } from "@/lib/cn";
 import { CrownFlowers } from "@/components/asha/ideas/crown";
 import idle from "@/assets/fairy/idle.webp";
@@ -72,12 +72,25 @@ export function Pixie({ mood = "idle", look, className, style }: { mood?: PixieM
   // she leans a little toward whatever was just tapped
   const fairyName = useAsha((s) => s.fairyName);
   const lean = look ? { transform: `translateX(${look.x * 4}%) rotate(${look.x * 5}deg)` } : undefined;
+  // a new pose fades in over the old one, so she never jumps from one picture to the next
+  const [was, setWas] = useState<PixieMood | undefined>();
+  const last = useRef(mood);
+  useEffect(() => {
+    if (last.current === mood) return;
+    setWas(last.current);
+    last.current = mood;
+    const t = window.setTimeout(() => setWas(undefined), 650);
+    return () => window.clearTimeout(t);
+  }, [mood]);
   return (
     <div className={cn("pixie relative", `pixie-${mood}`, className)} style={style} role="img" aria-label={`${fairyName || "Your fairy"}${mood === "sleep" ? ", asleep" : ""}`}>
       <div className="pixie-glow absolute inset-0" />
       <div className="pixie-lean absolute inset-0" style={lean}>
         <div className="pixie-art absolute inset-0">
-          <img src={ART[mood]} alt="" draggable={false} className="absolute inset-0 h-full w-full object-contain object-bottom" />
+          {was && was !== mood ? (
+            <img key={`was-${was}`} src={ART[was]} alt="" draggable={false} className="pixie-was absolute inset-0 h-full w-full object-contain object-bottom" />
+          ) : null}
+          <img key={mood} src={ART[mood]} alt="" draggable={false} className={cn("absolute inset-0 h-full w-full object-contain object-bottom", was && was !== mood && "pixie-in")} />
           <CrownFlowers mood={mood} />
         </div>
       </div>

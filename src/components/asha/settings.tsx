@@ -66,7 +66,7 @@ export function SettingsScreen() {
         </p>
       </div>
 
-      <h2 className="mt-6 text-2xl font-bold">{t(lang, { en: "Text size", hi: "अक्षरों का आकार" })}</h2>
+      <h2 data-tour="set-size" className="mt-6 text-2xl font-bold">{t(lang, { en: "Text size", hi: "अक्षरों का आकार" })}</h2>
       <div className="mt-3 grid grid-cols-3 gap-2">
         {(["normal", "large", "xl"] as TextSize[]).map((size) => (
           <button
