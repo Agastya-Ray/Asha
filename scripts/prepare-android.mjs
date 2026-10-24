@@ -73,6 +73,7 @@ if (!manifest.includes(MARK)) {
     "android.permission.ACCESS_COARSE_LOCATION",
     "android.permission.ACCESS_FINE_LOCATION",
     "android.permission.SYSTEM_ALERT_WINDOW",
+    "android.permission.USE_FULL_SCREEN_INTENT",
   ].filter((p) => !manifest.includes(`"${p}"`));
   const permXml =
     `    ${MARK}\n` +
@@ -109,6 +110,17 @@ if (!manifest.includes(MARK)) {
             </intent-filter>
             <meta-data android:name="android.appwidget.provider" android:resource="@xml/fairy_widget_info" />
         </receiver>
+        <!-- the fairy on the home and lock screen, as a live wallpaper (no special permission needed) -->
+        <service android:name=".FairyWallpaper" android:exported="true" android:label="Asha fairy" android:permission="android.permission.BIND_WALLPAPER">
+            <intent-filter>
+                <action android:name="android.service.wallpaper.WallpaperService" />
+            </intent-filter>
+            <meta-data android:name="android.service.wallpaper" android:resource="@xml/fairy_wallpaper" />
+        </service>
+        <!-- at reminder time the fairy fills the screen like an alarm clock, also over the lock screen -->
+        <activity android:name=".ReminderAlarmActivity" android:exported="false" android:showWhenLocked="true" android:turnScreenOn="true"
+            android:excludeFromRecents="true" android:launchMode="singleTask" android:taskAffinity="com.agastyaray.asha.alarm"
+            android:theme="@android:style/Theme.DeviceDefault.Light.NoActionBar" />
         <meta-data android:name="com.google.firebase.messaging.default_notification_channel_id" android:value="asha_family" />
 `;
   const queries = `

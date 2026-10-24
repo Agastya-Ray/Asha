@@ -31,7 +31,7 @@ public class ReminderReceiver extends BroadcastReceiver {
         if (AlarmStore.quiet(ctx)) {
             if ("greet".equals(t.optString("kind")) && once == 0) return;
             AlarmStore.addQuietMissed(ctx, key);
-            ReminderService.showCard(ctx, t, attempt);
+            ReminderService.showCard(ctx, t, attempt, false);
             return;
         }
         startService(ctx, key, attempt, t);

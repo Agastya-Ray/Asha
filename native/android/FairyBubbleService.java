@@ -26,7 +26,6 @@ import android.view.View;
 import android.view.ViewConfiguration;
 import android.view.WindowManager;
 import android.view.animation.OvershootInterpolator;
-import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -112,6 +111,20 @@ public class FairyBubbleService extends Service {
         if (s != null) s.main.post(s::applyVisibility);
         else if (!visible && FamilyStore.bubbleOn(ctx)) start(ctx);
     }
+
+    /**
+     * Will popUp show the reminder on the screen right now? (The phone is in use, unlocked, outside Asha.)
+     * If not, the reminder notification opens the full-screen alarm instead.
+     */
+    public static boolean wouldPop(Context ctx) {
+        if (appVisible || !canDraw(ctx) || AlarmStore.quiet(ctx)) return false;
+        android.os.PowerManager pm = (android.os.PowerManager) ctx.getSystemService(Context.POWER_SERVICE);
+        android.app.KeyguardManager km = (android.app.KeyguardManager) ctx.getSystemService(Context.KEYGUARD_SERVICE);
+        return pm != null && pm.isInteractive() && (km == null || !km.isKeyguardLocked());
+    }
+
+    /** Asha's own screen is showing (the app shows due reminders itself). */
+    public static boolean appOnScreen() { return appVisible; }
 
     /** A reminder is ringing: fly onto the screen with it. Not while Asha is open (it shows the reminder itself). */
     public static void popUp(Context ctx, JSONObject t, int attempt) {
@@ -322,44 +335,18 @@ public class FairyBubbleService extends Service {
             waiting.add(new Object[]{key, attempt});
             return;
         }
-        boolean greet = "greet".equals(t.optString("kind"));
-        boolean med = "med".equals(t.optString("kind"));
-        boolean hi = hindi(this);
         boolean fresh = pop == null;
         if (fresh) {
             int layout = getResources().getIdentifier("fairy_pop", "layout", getPackageName());
             pop = LayoutInflater.from(this).inflate(layout, null);
         }
         popKey = key;
-        TextView title = pop.findViewById(id("pop_title"));
-        TextView body = pop.findViewById(id("pop_body"));
-        ImageView photoView = pop.findViewById(id("pop_photo"));
         ImageView fairy = pop.findViewById(id("pop_fairy"));
-        Button taken = pop.findViewById(id("pop_taken"));
-        Button later = pop.findViewById(id("pop_later"));
-        title.setText(t.optString("title"));
-        if ((getApplicationInfo().flags & android.content.pm.ApplicationInfo.FLAG_DEBUGGABLE) != 0) android.util.Log.i("AshaFairy", "pop " + key + " | " + t.optString("title"));
-        String text = t.optString("body");
-        if (attempt > 0) text = t.optString("againLabel", "Reminder " + (attempt + 1)) + (text.isEmpty() ? "" : " · " + text);
-        body.setText(text);
-        body.setVisibility(text.isEmpty() ? View.GONE : View.VISIBLE);
-        android.graphics.Bitmap photo = med ? ReminderService.photoFor(this, key) : null;
-        photoView.setVisibility(photo != null ? View.VISIBLE : View.GONE);
-        if (photo != null) photoView.setImageBitmap(photo);
-        String day = ReminderService.doseDay(t, attempt);
-        if (greet) {
-            taken.setText(hi ? "ठीक है" : "Okay");
-            taken.setOnClickListener(v -> closePop(null));
-            later.setVisibility(View.GONE);
-        } else {
-            taken.setText(t.optString("doneLabel", med ? "Taken" : "Eaten"));
-            taken.setOnClickListener(v -> act(ActionReceiver.pending(this, key, "taken", day), fairy));
-            later.setText(t.optString("snoozeLabel", "10 min later"));
-            later.setVisibility(View.VISIBLE);
-            later.setOnClickListener(v -> act(ActionReceiver.pending(this, key, "snooze", day), null));
-        }
-        fairy.setOnClickListener(v -> openAsha("today"));
-        title.setOnClickListener(v -> openAsha("today"));
+        FairyCard.fill(this, pop, t, attempt, new FairyCard.Actions() {
+            @Override public void answer(PendingIntent pi, boolean taken) { act(pi, taken ? fairy : null); }
+            @Override public void dismiss() { closePop(null); }
+            @Override public void open() { openAsha("today"); }
+        });
 
         if (fresh) {
             WindowManager.LayoutParams p = new WindowManager.LayoutParams(WindowManager.LayoutParams.MATCH_PARENT,

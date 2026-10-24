@@ -42,6 +42,14 @@ export type NativeStatus = {
   phone: boolean;
   microphone: boolean;
   speechInput: boolean;
+  /** the fairy is the phone's live wallpaper (home and/or lock screen) */
+  wallpaper?: boolean;
+  /** "Display over other apps" is allowed (the floating fairy) */
+  overlay?: boolean;
+  /** she may open full screen at reminder time (Android 14+ has a switch for it) */
+  fullScreen?: boolean;
+  /** Android API level */
+  sdk?: number;
 };
 
 interface AshaNativePlugin {
@@ -68,6 +76,9 @@ interface AshaNativePlugin {
   canDrawOverlays(): Promise<{ ok: boolean }>;
   openOverlaySettings(): Promise<void>;
   setBubble(o: { on: boolean }): Promise<{ ok: boolean }>;
+  openWallpaper(): Promise<{ ok: boolean }>;
+  openFullScreenSettings(): Promise<void>;
+  openAppInfo(): Promise<void>;
   addListener(eventName: "family" | "listening", fn: () => void): Promise<PluginListenerHandle>;
 }
 

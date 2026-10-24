@@ -198,6 +198,11 @@ public class ReminderService extends Service {
     }
 
     static void showCard(Context ctx, JSONObject t, int attempt) {
+        showCard(ctx, t, attempt, true);
+    }
+
+    /** alarm = false: a silent card only (quiet mode) */
+    static void showCard(Context ctx, JSONObject t, int attempt, boolean alarm) {
         NotificationManager nm = (NotificationManager) ctx.getSystemService(Context.NOTIFICATION_SERVICE);
         if (nm == null) return;
         String key = t.optString("key");
@@ -232,6 +237,12 @@ public class ReminderService extends Service {
                 .setSummaryText(t.optString("body")));
         }
         if (attempt > 0) b.setSubText(t.optString("againLabel", "Reminder " + (attempt + 1)));
+        // Not lost among old notifications: on a locked or sleeping phone the fairy opens full screen, like an
+        // alarm clock (in use, Android shows a big card at the top). Not in quiet mode, not while Asha is open,
+        // and not when the floating fairy is about to fly in with it herself.
+        if (alarm && !AlarmStore.quiet(ctx) && !FairyBubbleService.appOnScreen() && !FairyBubbleService.wouldPop(ctx)) {
+            b.setFullScreenIntent(ReminderAlarmActivity.pending(ctx, key, attempt), true);
+        }
         nm.notify(AlarmStore.notificationId(key), b.build());
         if (!"greet".equals(t.optString("kind"))) {
             AlarmStore.setDue(ctx, key);

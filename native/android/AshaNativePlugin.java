@@ -146,6 +146,32 @@ public class AshaNativePlugin extends Plugin {
         call.resolve();
     }
 
+    /** Android's preview of the fairy wallpaper, with its own "Set wallpaper" button. */
+    @PluginMethod
+    public void openWallpaper(PluginCall call) {
+        call.resolve(ok(FairyWallpaper.openPicker(getContext())));
+    }
+
+    /** Asha's App info page (where Android 13+ hides "Allow restricted settings" in the ⋮ menu). */
+    @PluginMethod
+    public void openAppInfo(PluginCall call) {
+        Intent i = new Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS, Uri.parse("package:" + getContext().getPackageName()));
+        i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        try { getContext().startActivity(i); } catch (Exception ignored) { }
+        call.resolve();
+    }
+
+    /** Android 14+: the switch that lets the fairy open full screen at reminder time. */
+    @PluginMethod
+    public void openFullScreenSettings(PluginCall call) {
+        if (Build.VERSION.SDK_INT >= 34) {
+            Intent i = new Intent(Settings.ACTION_MANAGE_APP_USE_FULL_SCREEN_INTENT, Uri.parse("package:" + getContext().getPackageName()));
+            i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            try { getContext().startActivity(i); } catch (Exception ignored) { }
+        }
+        call.resolve();
+    }
+
     @PluginMethod
     public void setBubble(PluginCall call) {
         boolean on = call.getBoolean("on", false);
@@ -267,6 +293,7 @@ public class AshaNativePlugin extends Plugin {
         // a dose marked inside the app takes its buttons off the home-screen fairy
         FairyWidget.refreshAll(getContext());
         FairyBubbleService.recheck(getContext());
+        ReminderAlarmActivity.recheck(getContext());
         FairyBubbleService.refresh(getContext());
         call.resolve(ok(true));
     }
@@ -296,6 +323,12 @@ public class AshaNativePlugin extends Plugin {
         r.put("phone", getPermissionState("phone") == PermissionState.GRANTED);
         r.put("microphone", getPermissionState("microphone") == PermissionState.GRANTED);
         r.put("speechInput", SpeechRecognizer.isRecognitionAvailable(ctx));
+        // the fairy on the screen: as the wallpaper (no permission), floating over apps, and full screen at reminder time
+        r.put("wallpaper", FairyWallpaper.isSet(ctx));
+        r.put("sdk", Build.VERSION.SDK_INT);
+        r.put("overlay", FairyBubbleService.canDraw(ctx));
+        NotificationManager nm = (NotificationManager) ctx.getSystemService(Context.NOTIFICATION_SERVICE);
+        r.put("fullScreen", Build.VERSION.SDK_INT < 34 || (nm != null && nm.canUseFullScreenIntent()));
         call.resolve(r);
     }
 
