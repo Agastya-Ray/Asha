@@ -81,6 +81,12 @@ find_webview() {
   for i in 1 2 3 4; do xy=$(center_webview "$1"); [ -n "$xy" ] && break; adb shell input swipe 540 1500 540 900 400; sleep 2; done
   echo "$xy"
 }
+# like find_webview, but scrolls until the match sits above the bottom nav (its y under 1900)
+find_above_nav() {
+  local xy=""
+  for i in 1 2 3 4 5 6; do xy=$(center_webview "$1"); [ -n "$xy" ] && [ "${xy#* }" -lt 1900 ] && break; xy=""; adb shell input swipe 540 1500 540 1000 400; sleep 2; done
+  echo "$xy"
+}
 setclock() { adb shell "date $1" >/dev/null; log "clock set to $(adb shell date)"; }
 
 adb root >/dev/null 2>&1; sleep 3; adb wait-for-device
@@ -226,11 +232,11 @@ if [ -z "$xy" ]; then log "Settings not found in the dump; using the header gear
 adb shell input tap $xy; sleep 3; shot 39a-settings-opened
 adb shell input swipe 540 1500 540 900 400; sleep 2
 adb exec-out cat /sdcard/ui.xml > "$OUT/settings-ui.xml"
-xy=$(find_webview "^हिन्दी$")
+xy=$(find_above_nav "^हिन्दी$")
 if [ -n "$xy" ]; then adb shell input tap $xy; log "tapped Hindi at $xy"; sleep 3; else FAILED=1; log "no Hindi switch on screen"; fi
 shot 39b-settings-after-hindi
 adb shell input swipe 540 1500 540 900 400; sleep 2
-xy=$(find_webview "^A\\+\\+$")
+xy=$(find_above_nav "^A\\+\\+$")
 if [ -n "$xy" ]; then adb shell input tap $xy; log "tapped the largest text size at $xy"; sleep 3; else FAILED=1; log "no largest text button on screen"; fi
 shot 40-settings-hindi-largest-text
 adb shell input keyevent KEYCODE_BACK; sleep 3
