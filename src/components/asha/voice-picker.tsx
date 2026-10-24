@@ -4,7 +4,7 @@ import { Card, t } from "@/components/asha/bits";
 import { Pixie } from "@/components/asha/pixie";
 import { apiTts, apiVoices, type VoiceChoice } from "@/lib/asha/api";
 import { useAsha } from "@/lib/asha/store";
-import { speak, stopSpeaking } from "@/lib/asha/voice";
+import { DEFAULT_FAIRY_ID, PHONE_VOICE, speak, stopSpeaking } from "@/lib/asha/voice";
 
 /** What each voice says when you try it: a real Titli line, so you hear her, not a demo. */
 function sampleLine(lang: "en" | "hi", name: string) {
@@ -22,6 +22,9 @@ export function VoicePicker() {
   const voiceLang = useAsha((s) => s.voiceLang);
   const name = useAsha((s) => s.name.trim());
   const chosen = useAsha((s) => s.fairyVoice);
+  // nothing chosen yet means her default ElevenLabs voice
+  const phone = chosen?.id === PHONE_VOICE;
+  const current = phone ? "" : (chosen?.id ?? DEFAULT_FAIRY_ID);
   const setFairyVoice = useAsha((s) => s.setFairyVoice);
   const [open, setOpen] = useState(false);
   const [voices, setVoices] = useState<VoiceChoice[] | null>(null);
@@ -66,7 +69,7 @@ export function VoicePicker() {
 
   function choose(v: VoiceChoice | null) {
     audio.current?.pause();
-    setFairyVoice(v ? { id: v.id, owner: v.owner, name: v.name } : null);
+    setFairyVoice(v ? { id: v.id, owner: v.owner, name: v.name } : { id: PHONE_VOICE, owner: "", name: "" });
     // she says hello in her new voice
     window.setTimeout(() => void speak(sampleLine(voiceLang, name), voiceLang, "fairy"), 100);
   }
@@ -78,7 +81,9 @@ export function VoicePicker() {
         <div className="min-w-0 flex-1">
           <p className="text-lg font-bold">{t(lang, { en: "Titli's voice", hi: "तितली की आवाज़" })}</p>
           <p className="text-base text-quiet">
-            {chosen ? chosen.name : t(lang, { en: "Phone voice (free, works offline)", hi: "फ़ोन की आवाज़ (मुफ़्त, बिना इंटरनेट)" })}
+            {phone
+              ? t(lang, { en: "Phone voice (free, works offline)", hi: "फ़ोन की आवाज़ (मुफ़्त, बिना इंटरनेट)" })
+              : (chosen?.name ?? "Jessica")}
           </p>
         </div>
       </div>
@@ -99,7 +104,7 @@ export function VoicePicker() {
           {problem ? <p className="text-base font-bold text-clay">{problem}</p> : null}
           {!voices && !problem ? <p className="text-base">{t(lang, { en: "Finding voices…", hi: "आवाज़ें ढूँढ रही हूँ…" })}</p> : null}
           {(voices ?? []).map((v) => {
-            const on = chosen?.id === v.id;
+            const on = current === v.id;
             return (
               <div key={v.id} className={`rounded-2xl border p-3 ${on ? "border-sage bg-sage-soft" : "border-line"}`}>
                 <p className="text-lg font-bold">
@@ -117,14 +122,14 @@ export function VoicePicker() {
               </div>
             );
           })}
-          <div className={`rounded-2xl border p-3 ${!chosen ? "border-sage bg-sage-soft" : "border-line"}`}>
+          <div className={`rounded-2xl border p-3 ${phone ? "border-sage bg-sage-soft" : "border-line"}`}>
             <p className="text-lg font-bold">
-              {t(lang, { en: "Phone voice", hi: "फ़ोन की आवाज़" })} {!chosen ? "✓" : ""}
+              {t(lang, { en: "Phone voice", hi: "फ़ोन की आवाज़" })} {phone ? "✓" : ""}
             </p>
             <p className="text-sm text-quiet">{t(lang, { en: "Free, and works without internet.", hi: "मुफ़्त, और बिना इंटरनेट के चलती है." })}</p>
             <div className="mt-2">
-              <Button variant="quiet" className="min-h-12" disabled={!chosen} onClick={() => choose(null)}>
-                {!chosen ? t(lang, { en: "Chosen", hi: "चुनी गई" }) : t(lang, { en: "Use the phone voice", hi: "फ़ोन की आवाज़ लें" })}
+              <Button variant="quiet" className="min-h-12" disabled={phone} onClick={() => choose(null)}>
+                {phone ? t(lang, { en: "Chosen", hi: "चुनी गई" }) : t(lang, { en: "Use the phone voice", hi: "फ़ोन की आवाज़ लें" })}
               </Button>
             </div>
           </div>
