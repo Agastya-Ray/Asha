@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Card, Hear, t, useNow } from "@/components/asha/bits";
 import { ReminderHealth } from "@/components/asha/reminder-health";
 import { VoiceCommand } from "@/components/asha/voice-command";
+import { DayRitual } from "@/components/asha/ideas/day-ritual";
 import { FamilyPhotoOffer } from "@/components/asha/ideas/family-med-photos";
 import { CallFaces } from "@/components/asha/ideas/call-faces";
 import { YesterdayNote } from "@/components/asha/ideas/yesterday-note";
@@ -67,6 +68,7 @@ export function TodayScreen() {
         <Hear round say={`${helloSay.title} ${helloSay.line}`} label={t(lang, { en: "Hear this", hi: "इसे सुनें" })} />
       </div>
 
+      <DayRitual />
       <ReminderHealth />
 
       {conditions.includes("heart") && checkin?.chestOk !== true ? (
