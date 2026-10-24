@@ -19,6 +19,8 @@
 
 @layer base {
   html {
+    /* a touch larger than the browser's 16px, for older eyes */
+    font-size: 106.25%;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
   }
@@ -104,10 +106,10 @@
 
 /* ---------- text size (Settings → Text size) ---------- */
 html[data-size="large"] {
-  font-size: 112.5%;
+  font-size: 118.75%;
 }
 html[data-size="xl"] {
-  font-size: 125%;
+  font-size: 131.25%;
 }
 /* rem grows with the text, so at the biggest size she would squeeze her tour bubble into a thin column */
 html[data-size="xl"] .tour-pixie {
@@ -752,6 +754,19 @@ button.border.border-line.bg-paper {
 }
 .nav-float {
   border-color: transparent;
+}
+
+/* cards that hold a title and a line of text (choices, rows) are rounded boxes, not pills:
+   a pill's curved ends eat into the words, so the text ran almost to the edge */
+button.text-left.border,
+button.text-left.border.border-line.bg-paper {
+  border-radius: 1.5rem;
+  padding-left: 1.25rem;
+  padding-right: 1.25rem;
+}
+/* the header stays solid, so whatever scrolls under it is hidden cleanly, not half-showing */
+header.sticky {
+  background: var(--page);
 }
 
 /* ---------- the pixie (pixie.tsx) ---------- */

@@ -122,7 +122,8 @@ const TOUR: TourStep[] = [
   {
     room: "meds",
     via: '[data-tour-tab="meds"]',
-    target: ['[data-tour="meds-list"]'],
+    // the first medicine's card: the whole list can be taller than the screen, leaving her bubble no room
+    target: ['[data-tour="meds-list"] > :first-child', '[data-tour="meds-list"]'],
     line: () => ({
       en: "Come, this is your medicine room. Every medicine you take lives here, with how many tablets are left.",
       hi: "आइए, यह आपकी दवाओं का कमरा है. आपकी हर दवा यहीं रहती है, और कितनी गोलियाँ बची हैं, वह भी.",
@@ -467,14 +468,17 @@ export function FairyTour() {
   let place: CSSProperties;
   let tail: "up" | "down" | null = null;
   // with nothing to show she floats near the top, and her bubble (taller at a resting place) sits at the bottom
-  if (!rect) place = { bottom: 16 };
+  if (!rect) place = { bottom: 16, maxHeight: vp.h - 32 };
   else if (rect.top + rect.height / 2 < vp.h / 2) {
-    place = { bottom: 16 };
+    place = { bottom: 16, maxHeight: vp.h - rect.bottom - pad - 26 };
     tail = null;
   } else {
-    place = { top: 16 };
+    place = { top: 16, maxHeight: rect.top - pad - 26 };
     tail = null;
   }
+  // with big text there can be too little room on either side: then she talks from the bottom of the screen,
+  // over the page, so her buttons are never pushed off it
+  if ((place.maxHeight as number) < 260) place = { bottom: 8, maxHeight: vp.h - 16 };
   const tailX = Math.max(28, Math.min(vp.w - 44, fx + FW / 2));
   const mood: PixieMood = ear === "listening" ? "asking" : ear === "thinking" ? "thinking" : !rect ? (arrived ? "wave" : "fly") : arrived ? "point" : "flyside";
 
@@ -515,8 +519,8 @@ export function FairyTour() {
         </div>
       </div>
       {via || !ready ? null : (
-        <div className="fixed inset-x-0 mx-auto max-w-lg px-4" style={place}>
-          <div key={i} className="fi-bubble relative rounded-3xl border-2 border-[#f3c4d0] bg-paper p-4 shadow-lg">
+        <div className="fixed inset-x-0 mx-auto flex max-w-lg flex-col px-4" style={place}>
+          <div key={i} className="fi-bubble relative flex min-h-0 flex-col rounded-3xl border-2 border-[#f3c4d0] bg-paper p-4 shadow-lg">
             {tail ? (
               <span
                 className={`tour-tail absolute ${tail === "up" ? "tour-tail-up" : "tour-tail-down"}`}
@@ -525,14 +529,14 @@ export function FairyTour() {
               />
             ) : null}
             <p className="text-sm font-bold uppercase tracking-wide text-[#d9506f]">{label}</p>
-            <p key={answer ?? ""} className="mt-1 text-lg leading-snug">
+            <p key={answer ?? ""} className="mt-1 min-h-0 overflow-y-auto text-lg leading-snug">
               {sentences(answer ?? t(lang, line)).map((part, k, all) => (
                 <span key={k} className="fi-word" style={{ animationDelay: `${sentenceDelays(all)[k]}s` }}>
                   {part}
                 </span>
               ))}
             </p>
-            <div className="mt-3 grid grid-cols-[auto_auto_1fr] gap-2">
+            <div className="mt-3 grid shrink-0 grid-cols-2 gap-2">
               <button
                 type="button"
                 disabled={i === 0}
@@ -549,12 +553,12 @@ export function FairyTour() {
               >
                 🔊 {t(lang, { en: "Again", hi: "फिर से" })}
               </button>
-              <Button className="min-h-12" onClick={next}>
+              <Button className="col-span-2 min-h-14" onClick={next}>
                 {i < TOUR.length - 1 || resume !== null ? t(lang, { en: "Next", hi: "आगे" }) : t(lang, { en: "Thank you", hi: "शुक्रिया" })}
               </Button>
             </div>
             {step.check ? (
-              <div className="mt-3 border-t border-line pt-3">
+              <div className="mt-3 shrink-0 border-t border-line pt-3">
                 <button
                   type="button"
                   disabled={ear !== ""}

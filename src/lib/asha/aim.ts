@@ -5,18 +5,27 @@
 export function aimRect(el: Element): DOMRect {
   const box = el.getBoundingClientRect();
   try {
+    // the first line of its words: for a heading or a button, exactly the words. Only text counts here:
+    // a range over the whole element also returns the boxes of the elements inside, which run full width.
+    const walk = document.createTreeWalker(el, NodeFilter.SHOW_TEXT, {
+      acceptNode: (n) => (n.textContent?.trim() ? NodeFilter.FILTER_ACCEPT : NodeFilter.FILTER_REJECT),
+    });
     const range = document.createRange();
-    range.selectNodeContents(el);
-    // the first line of its text: for a heading or a button, exactly the words
-    const rects = Array.from(range.getClientRects()).filter((r) => r.width > 4 && r.height > 4);
-    const first = rects[0];
-    if (first) {
-      // the whole first line, which can be several pieces (a name in bold, then the rest)
-      const line = rects.filter((r) => Math.abs(r.top - first.top) < first.height / 2);
-      const left = Math.min(...line.map((r) => r.left));
-      const right = Math.max(...line.map((r) => r.right));
-      if (right - left < box.width) return new DOMRect(left, first.top, right - left, first.height);
+    let first: DOMRect | undefined;
+    let left = Infinity;
+    let right = -Infinity;
+    for (let n = walk.nextNode(); n; n = walk.nextNode()) {
+      range.selectNodeContents(n);
+      const rects = Array.from(range.getClientRects()).filter((r) => r.width > 2 && r.height > 4);
+      if (!rects.length) continue;
+      first ??= rects[0];
+      // the rest of the first line, which can be several pieces (a name in bold, then the rest)
+      const line = rects.filter((r) => Math.abs(r.top - first!.top) < first!.height / 2);
+      if (!line.length) break;
+      left = Math.min(left, ...line.map((r) => r.left));
+      right = Math.max(right, ...line.map((r) => r.right));
     }
+    if (first && right - left < box.width) return new DOMRect(left, first.top, right - left, first.height);
   } catch {
     /* no text to measure: the box will do */
   }

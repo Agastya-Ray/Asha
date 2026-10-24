@@ -80,7 +80,8 @@ export async function elevenChoices(): Promise<VoiceChoice[]> {
         voices?: { voice_id: string; name: string; category?: string; description?: string; labels?: Record<string, string>; preview_url?: string }[];
       };
       const all = body.voices ?? [];
-      const mine = all.filter((v) => v.category && v.category !== "premade");
+      // made in this account (Voice Design, or a clone). A library voice added to the account still needs a paid plan.
+      const mine = all.filter((v) => v.category === "generated" || v.category === "cloned");
       const stock = all.filter((v) => v.category === "premade" && v.labels?.gender === "female" && v.labels?.age !== "old" && v.labels?.age !== "middle_aged");
       for (const v of [...mine, ...stock]) {
         if (seen.has(v.voice_id)) continue;
