@@ -101,6 +101,8 @@ export type Persist = {
   introSeen: boolean;
   /** the name the person gave the fairy during the intro ("" until then) */
   fairyName: string;
+  /** Titli's chosen ElevenLabs voice; null = her phone voice */
+  fairyVoice: { id: string; owner: string; name: string } | null;
   /** the fairy has shown the person round Today once */
   tourDone: boolean;
   /** who uses this phone: the person cared for, or a family member */

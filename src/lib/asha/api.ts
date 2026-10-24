@@ -3,7 +3,7 @@ import { isNative } from "@/lib/asha/native";
 import type { Lang } from "@/lib/asha/types";
 
 /** Where the server lives. In the browser it is the same site. In the app it is the Vercel address. */
-const FALLBACK_API = "https://asha-agastya.vercel.app";
+const FALLBACK_API = "https://asha-rho.vercel.app";
 const BASE = (import.meta.env.VITE_API_BASE as string | undefined)?.replace(/\/$/, "") || (isNative ? FALLBACK_API : "");
 const APP_KEY = (import.meta.env.VITE_ASHA_APP_KEY as string | undefined) ?? "";
 
@@ -37,8 +37,19 @@ async function post<T>(path: string, body: unknown, timeoutMs = 25000): Promise<
   }
 }
 
-export function apiTts(text: string, lang: Lang) {
-  return post<{ audio: string; provider: string }>("/api/tts", { text, lang }, 15000);
+export function apiTts(text: string, lang: Lang, fairy?: { id: string; owner: string }) {
+  return post<{ audio: string; provider: string }>(
+    "/api/tts",
+    fairy ? { text, lang, who: "fairy", voice: fairy.id, owner: fairy.owner } : { text, lang },
+    15000,
+  );
+}
+
+export type VoiceChoice = { id: string; owner: string; name: string; about: string; accent: string; preview: string };
+
+/** Childlike voices Titli could have, for "Choose Titli's voice". */
+export function apiVoices() {
+  return post<{ voices: VoiceChoice[] }>("/api/voices", {}, 20000);
 }
 
 export function apiChat(input: { show: Lang; say: Lang; context: string; turns: { role: string; content: string }[] }) {
