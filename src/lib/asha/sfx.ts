@@ -9,10 +9,11 @@ import { useAsha } from "@/lib/asha/store";
  *   sad     — a soft "aww" when you send her away for a bad reason
  *   pop     — Chintu tumbling in with a love note
  *   flutter — her wings when she flies by
+ *   open    — the Asha logo drawing itself when the app opens: a soft swell and four rising bells
  * Soft and short, on the media volume. Silent in quiet hours (bedtime to wake-up) and when switched off in Settings.
  */
 
-export type Sfx = "chime" | "giggle" | "yawn" | "sad" | "pop" | "flutter";
+export type Sfx = "chime" | "giggle" | "yawn" | "sad" | "pop" | "flutter" | "open";
 
 let ctx: AudioContext | null = null;
 let noise: AudioBuffer | null = null;
@@ -32,14 +33,18 @@ function context() {
 if (typeof window !== "undefined")
   window.addEventListener("pointerdown", () => context(), { once: true, capture: true });
 
-function allowed(now = new Date()) {
+function allowed(now = new Date(), anyHour = false) {
   const s = useAsha.getState();
-  return s.fairySounds && !(s.quietUntil > now.getTime()) && awake(s.wakeTime, s.sleepTime, now);
+  return (
+    s.fairySounds &&
+    !(s.quietUntil > now.getTime()) &&
+    (anyHour || awake(s.wakeTime, s.sleepTime, now))
+  );
 }
 
 /** Plays one sound; says whether it was heard (false at night, when switched off, or before the first touch). */
-export function fairySound(name: Sfx) {
-  if (!allowed()) return false;
+export function fairySound(name: Sfx, anyHour = false) {
+  if (!allowed(new Date(), anyHour)) return false;
   const ac = context();
   if (!ac || ac.state !== "running") return false;
   try {
@@ -52,6 +57,19 @@ export function fairySound(name: Sfx) {
     // a sound is a nicety; never let it break the app
     return false;
   }
+}
+
+/** Like fairySound, but waits for a just-made audio context to start (the app opening, before any touch). */
+export function fairySoundSoon(name: Sfx, anyHour = false) {
+  if (!allowed(new Date(), anyHour)) return;
+  const ac = context();
+  if (!ac) return;
+  if (ac.state === "running") fairySound(name, anyHour);
+  else
+    void ac.resume().then(
+      () => fairySound(name, anyHour),
+      () => undefined,
+    );
 }
 
 const heard = new Set<string>();
@@ -126,6 +144,20 @@ function voice(
 
 const PLAY: Record<Sfx, Play> = {
   // a quick rising sparkle: four bell notes
+  // opening the app: a low warm swell under C–E–G–C bells, timed with the leaf drawing itself
+  open: (ac, out, t) => {
+    const pad = ac.createOscillator();
+    const g = ac.createGain();
+    pad.type = "sine";
+    pad.frequency.value = 261.6;
+    g.gain.setValueAtTime(0, t);
+    g.gain.linearRampToValueAtTime(0.35, t + 0.6);
+    g.gain.exponentialRampToValueAtTime(0.0001, t + 2.4);
+    pad.connect(g).connect(out);
+    pad.start(t);
+    pad.stop(t + 2.5);
+    [523.3, 659.3, 784, 1046.5].forEach((f, i) => bell(ac, out, t + 0.25 + i * 0.32, f, 1.4, 0.5));
+  },
   chime: (ac, out, t) => {
     [1568, 1976, 2349, 3136].forEach((f, i) => bell(ac, out, t + i * 0.07, f, 0.7, 0.55));
   },
