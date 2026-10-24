@@ -236,7 +236,7 @@ function ElderCircle() {
         </div>
       </div>
 
-      <div className="mt-5">
+      <div data-tour="heart" className="mt-5">
         <HeartButton />
       </div>
 

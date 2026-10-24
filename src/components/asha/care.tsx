@@ -105,7 +105,7 @@ export function CareScreen() {
         ))}
       </div>
 
-      <h2 className="mt-8 text-2xl font-bold">{t(lang, { en: "How is the body today?", hi: "आज शरीर कैसा है?" })}</h2>
+      <h2 data-tour="care-feel" className="mt-8 text-2xl font-bold">{t(lang, { en: "How is the body today?", hi: "आज शरीर कैसा है?" })}</h2>
       <Card className="mt-3">
         <FieldLabel>{t(lang, { en: "Mood", hi: "मन" })}</FieldLabel>
         <div className="flex flex-col gap-2">

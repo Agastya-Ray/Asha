@@ -192,7 +192,7 @@ export function TalkScreen() {
         {error ? <p className="text-lg text-clay">{error}</p> : null}
         <div ref={endRef} />
       </div>
-      <div className="mt-4">
+      <div data-tour="talk-mic" className="mt-4">
         <MicButton
           className="w-full [&>button]:w-full [&>button]:min-h-16 [&>button]:text-xl"
           label={t(lang, { en: "Press and speak", hi: "दबाएँ और बोलें" })}

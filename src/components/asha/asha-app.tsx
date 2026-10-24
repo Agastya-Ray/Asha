@@ -3,6 +3,7 @@ import { App as NativeApp } from "@capacitor/app";
 import { HeartHandshake, Leaf, MessageCircle, Pill, Settings, Sun } from "lucide-react";
 import { CareScreen } from "@/components/asha/care";
 import { ReminderEngine } from "@/components/asha/engine";
+import { runBack } from "@/lib/asha/back";
 import { QuietBanner, QuietSheet } from "@/components/asha/quiet";
 import { MedsScreen } from "@/components/asha/meds";
 import { FairyDock, FamilyEngine } from "@/components/asha/family-engine";
@@ -10,6 +11,7 @@ import { FamilyHome } from "@/components/asha/family-home";
 import { FamilyScreen } from "@/components/asha/family-screen";
 import { FairyIntro } from "@/components/asha/fairy-intro";
 import { FairyTour } from "@/components/asha/fairy-guide";
+import { PetRoam } from "@/components/asha/roam";
 import { RoleChoice } from "@/components/asha/role-choice";
 import { Onboarding } from "@/components/asha/onboarding";
 import { Splash } from "@/components/asha/splash";
@@ -66,10 +68,16 @@ function Shell() {
     if (!isNative) return;
     let remove: (() => void) | undefined;
     void NativeApp.addListener("backButton", () => {
+      if (runBack()) return;
       const s = useAsha.getState();
+      const family = s.introSeen && s.roleChosen && s.appRole === "family";
       if (s.tab === "settings") s.closeSettings();
-      else if (s.tab !== "today" && s.onboarded) s.setTab("today");
-      else void NativeApp.minimizeApp();
+      else if (s.tab !== "today" && s.onboarded && !family) s.setTab("today");
+      // during setup, back goes one step back, and from the first step to "who will use this phone?"
+      else if (s.introSeen && s.roleChosen && !s.onboarded && !family) {
+        if (s.setupStep > 1) s.setSetupStep((s.setupStep - 1) as 1 | 2 | 3);
+        else s.unchooseRole();
+      } else void NativeApp.minimizeApp();
     }).then((h) => {
       remove = () => void h.remove();
     });
@@ -81,7 +89,9 @@ function Shell() {
       <div className="mx-auto flex min-h-dvh w-full max-w-lg flex-col">
         <Header />
         {onboarded && introSeen && roleChosen && !familyMode ? <QuietBanner /> : null}
-        <main className="flex-1 px-4 pb-36">
+        <main
+          className={`flex-1 px-4 ${onboarded && introSeen && roleChosen && !familyMode ? "pb-36" : !introSeen ? "" : "pb-8"}`}
+        >
           {!introSeen ? (
             <FairyIntro />
           ) : !roleChosen ? (
@@ -109,7 +119,8 @@ function Shell() {
       </div>
       {onboarded && introSeen && roleChosen && !familyMode ? <Nav /> : null}
       {onboarded && introSeen && roleChosen && !familyMode && tourDone ? <FairyDock /> : null}
-      {onboarded && introSeen && roleChosen && !familyMode && !tourDone && tab === "today" ? <FairyTour /> : null}
+      {onboarded && introSeen && roleChosen && !familyMode && tourDone ? <PetRoam /> : null}
+      {onboarded && introSeen && roleChosen && !familyMode && !tourDone ? <FairyTour /> : null}
       <FamilyEngine />
       {/* in the intro and setup the fairy talks in her own bubble (with Again); the dark bar covered her words and the headings */}
       {introSeen && roleChosen && (onboarded || familyMode) ? <Speaking docked={onboarded && !familyMode} /> : null}
@@ -148,6 +159,7 @@ function Header() {
             <button
               type="button"
               aria-label={t(lang, { en: "Settings", hi: "सेटिंग" })}
+              data-tour="settings"
               onClick={() => openSettings()}
               className={cn(
                 "inline-flex size-12 items-center justify-center rounded-full border border-line",
@@ -193,6 +205,7 @@ function Nav() {
             <button
               key={item.id}
               type="button"
+              data-tour-tab={item.id}
               onClick={() => setTab(item.id)}
               aria-current={on ? "page" : undefined}
               className={cn("flex min-h-[4.25rem] flex-col items-center justify-center gap-1 text-base font-bold transition-colors", on ? "tab-on text-sage" : "text-quiet")}

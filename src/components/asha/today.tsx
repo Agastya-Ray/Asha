@@ -191,7 +191,7 @@ export function TodayScreen() {
       ) : null}
 
       <Card className="mt-5">
-        <div className="flex flex-wrap items-center gap-3">
+        <div data-pet="water" className="flex flex-wrap items-center gap-3">
           <Droplets className="size-7 shrink-0 text-sage" aria-hidden />
           <p className="min-w-0 flex-1 text-lg font-bold">
             {t(lang, { en: "Water", hi: "पानी" })} · {checkin?.water ?? 0} / 8
@@ -348,6 +348,7 @@ function AgendaCard({ item, perch = false }: { item: AgendaItem; perch?: boolean
       </div>
       <div className="mt-4 flex flex-col gap-2">
         <Button
+          data-tour-done
           onClick={() => {
             if (item.kind === "med") logDose(item.id, item.time, "taken");
             else logMeal(item.id);
