@@ -190,4 +190,8 @@ export type Persist = {
   chat: ChatTurn[];
   memories: Memory[];
   prescriptions: Prescription[];
+  /** days spent together (only ever goes up) and the last one counted */
+  growth: { days: number; last: string };
+  /** crown flowers the person has already been shown */
+  crownSeen: number;
 };

@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { deleteFace } from "@/lib/asha/faces";
 import { FacePicker } from "@/components/asha/ideas/call-faces";
 import { Button } from "@/components/ui/button";
+import { AskHowButton } from "@/components/asha/ideas/ask-how";
 import { Card, Choice, FieldLabel, LangSwitch, SpeakField, t } from "@/components/asha/bits";
 import { useQuietSheet } from "@/components/asha/quiet";
 import { ReminderHealth } from "@/components/asha/reminder-health";
@@ -44,6 +45,8 @@ export function SettingsScreen() {
           hi: "आपकी सूची इसी फ़ोन पर रहती है. सिर्फ पर्ची की फ़ोटो या बात वाला संदेश पढ़ने के लिए भेजा जाता है, रखा नहीं जाता.",
         })}
       </p>
+
+      <AskHowButton />
 
       <ReminderHealth always />
 

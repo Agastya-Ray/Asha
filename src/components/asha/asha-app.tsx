@@ -13,7 +13,9 @@ import { FairyIntro } from "@/components/asha/fairy-intro";
 import { FairyTour } from "@/components/asha/fairy-guide";
 import { PetRoam } from "@/components/asha/roam";
 import { RememberSheet } from "@/components/asha/ideas/remember";
+import { AskHow } from "@/components/asha/ideas/ask-how";
 import { DoseSpotlight } from "@/components/asha/ideas/dose-spotlight";
+import { CrownKeeper } from "@/components/asha/ideas/crown";
 import { RoleChoice } from "@/components/asha/role-choice";
 import { Onboarding } from "@/components/asha/onboarding";
 import { Splash } from "@/components/asha/splash";
@@ -129,6 +131,8 @@ function Shell() {
       {introSeen && roleChosen && (onboarded || familyMode) ? <Speaking docked={onboarded && !familyMode} /> : null}
       <QuietSheet />
       <RememberSheet />
+      <AskHow />
+      <CrownKeeper />
       <ReminderEngine />
     </div>
   );
