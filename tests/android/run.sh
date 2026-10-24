@@ -280,7 +280,9 @@ alive() {
   elif [ -z "$(adb shell pidof $PKG | tr -d '\r')" ]; then FAILED=1; log "stress $1: Asha is NOT running"
   else log "stress $1: Asha still running"; fi
 }
-relaunch() { adb shell am force-stop $PKG; adb shell monkey -p $PKG -c android.intent.category.LAUNCHER 1 >/dev/null 2>&1; sleep 15; }
+# a dose due in the last 45 minutes opens the full-screen medicine card; close it like a user would, so Today is reachable
+close_spotlight() { local xy; for _ in 1 2 3; do xy=$(center_webview '^(Close|बंद करें)$'); [ -n "$xy" ] || break; adb shell input tap $xy; log "closed the medicine card at $xy"; sleep 2; done; }
+relaunch() { adb shell am force-stop $PKG; adb shell monkey -p $PKG -c android.intent.category.LAUNCHER 1 >/dev/null 2>&1; sleep 15; close_spotlight; }
 # (the run is in Hindi by now, so every text below is matched in both languages)
 # a morning again, with the floating fairy off so she cannot sit on the controls
 setclock 101608302026.00
