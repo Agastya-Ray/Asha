@@ -13,6 +13,8 @@ export type Contact = {
   name: string;
   relation: string;
   phone: string;
+  /** when a photo of them was saved for the call buttons (the photo is in IndexedDB, see faces.ts) */
+  photoAt?: number;
 };
 
 export type Med = {

@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Card, Hear, t, useNow } from "@/components/asha/bits";
 import { ReminderHealth } from "@/components/asha/reminder-health";
 import { VoiceCommand } from "@/components/asha/voice-command";
+import { CallFaces } from "@/components/asha/ideas/call-faces";
 import { isNative } from "@/lib/asha/native";
 import { plateLine } from "@/lib/asha/plans";
 import { buildAgenda, doseProgress, todayCheckin } from "@/lib/asha/schedule";
@@ -189,6 +190,8 @@ export function TodayScreen() {
           </p>
         </Card>
       ) : null}
+
+      <CallFaces />
 
       <Card className="mt-5">
         <div data-pet="water" className="flex flex-wrap items-center gap-3">
