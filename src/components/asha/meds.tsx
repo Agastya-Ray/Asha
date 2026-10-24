@@ -1,4 +1,5 @@
 import { useRef, useState } from "react";
+import { MedPhotoRow, PhotoAsk } from "@/components/asha/ideas/med-photo";
 import { Button } from "@/components/ui/button";
 import { Card, FieldLabel, SpeakField, t } from "@/components/asha/bits";
 import { apiReadPrescription } from "@/lib/asha/api";
@@ -311,6 +312,9 @@ export function MedsScreen() {
   const removeMed = useAsha((s) => s.removeMed);
   const saveMeds = useAsha((s) => s.saveMeds);
   const [adding, setAdding] = useState(false);
+  const [newId0, setNewId0] = useState(() => newId());
+  // the medicine just added: the fairy asks for a photo of it
+  const [askPhoto, setAskPhoto] = useState<string | null>(null);
   const [editing, setEditing] = useState<string | null>(null);
   const [removing, setRemoving] = useState<string | null>(null);
   const [reading, setReading] = useState(false);
@@ -420,6 +424,7 @@ export function MedsScreen() {
               <Card key={med.id}>
                 <p className="text-2xl font-bold">{med.name}</p>
                 <p className="mt-1 text-lg">{medSummary(med, lang)}</p>
+                <MedPhotoRow med={med} />
                 {med.note ? <p className="mt-2 text-base text-quiet">{med.note}</p> : null}
                 {med.pillsLeft !== null ? (
                   <p className="mt-2 text-base font-bold text-clay">
@@ -466,7 +471,7 @@ export function MedsScreen() {
         <div className="mt-4">
           <MedEditor
             initial={{
-              id: newId(),
+              id: newId0,
               name: "",
               dose: "",
               times: ["08:00"],
@@ -476,9 +481,15 @@ export function MedsScreen() {
             }}
             submitLabel={t(lang, { en: "Save this medicine", hi: "यह दवा सहेजें" })}
             onCancel={() => setAdding(false)}
-            onSave={() => setAdding(false)}
+            onSave={() => {
+              setAdding(false);
+              setAskPhoto(newId0);
+              setNewId0(newId());
+            }}
           />
         </div>
+      ) : askPhoto ? (
+        <PhotoAsk medId={askPhoto} onDone={() => setAskPhoto(null)} />
       ) : (
         <div className="mt-4 flex flex-col gap-3">
           <Button onClick={() => setAdding(true)}>{t(lang, { en: "Add a medicine", hi: "दवा जोड़ें" })}</Button>

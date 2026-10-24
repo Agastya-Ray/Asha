@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Card, Hear, t, useNow } from "@/components/asha/bits";
 import { ReminderHealth } from "@/components/asha/reminder-health";
 import { VoiceCommand } from "@/components/asha/voice-command";
+import { FamilyPhotoOffer } from "@/components/asha/ideas/family-med-photos";
 import { CallFaces } from "@/components/asha/ideas/call-faces";
 import { YesterdayNote } from "@/components/asha/ideas/yesterday-note";
 import { isNative } from "@/lib/asha/native";
@@ -149,6 +150,7 @@ export function TodayScreen() {
       ) : null}
       </section>
 
+      <FamilyPhotoOffer />
       <VisitSoon />
       <YesterdayNote />
       <VoiceCommand />

@@ -12,6 +12,7 @@ import { FamilyScreen } from "@/components/asha/family-screen";
 import { FairyIntro } from "@/components/asha/fairy-intro";
 import { FairyTour } from "@/components/asha/fairy-guide";
 import { PetRoam } from "@/components/asha/roam";
+import { DoseSpotlight } from "@/components/asha/ideas/dose-spotlight";
 import { RoleChoice } from "@/components/asha/role-choice";
 import { Onboarding } from "@/components/asha/onboarding";
 import { Splash } from "@/components/asha/splash";
@@ -121,6 +122,7 @@ function Shell() {
       {onboarded && introSeen && roleChosen && !familyMode && tourDone ? <FairyDock /> : null}
       {onboarded && introSeen && roleChosen && !familyMode && tourDone ? <PetRoam /> : null}
       {onboarded && introSeen && roleChosen && !familyMode && !tourDone ? <FairyTour /> : null}
+      {onboarded && introSeen && roleChosen && !familyMode && tourDone && tab !== "sos" ? <DoseSpotlight /> : null}
       <FamilyEngine />
       {/* in the intro and setup the fairy talks in her own bubble (with Again); the dark bar covered her words and the headings */}
       {introSeen && roleChosen && (onboarded || familyMode) ? <Speaking docked={onboarded && !familyMode} /> : null}
