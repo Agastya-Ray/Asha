@@ -12,6 +12,8 @@ import {
   sendHeart,
   sendPreset,
   sendVoice,
+  hiddenNotes,
+  hideNote,
   textOf,
   useFamily,
   voiceUrl,
@@ -56,6 +58,8 @@ export function Feed({ messages, emptyText }: { messages: FamilyMsg[]; emptyText
   const role = useAsha((s) => s.appRole);
   const heardLocal = useFamily((s) => s.heardLocal);
   const [playing, setPlaying] = useState<number | null>(null);
+  const hidden = role === "elder" ? hiddenNotes() : [];
+  const [putAway, setPutAway] = useState(false);
 
   if (!messages.length) {
     return (
@@ -80,7 +84,17 @@ export function Feed({ messages, emptyText }: { messages: FamilyMsg[]; emptyText
 
   return (
     <div className="mt-3 flex flex-col gap-3">
-      {messages.map((m) => {
+      {putAway ? (
+        <Card className="bg-linen">
+          <p className="text-lg">
+            {t(lang, {
+              en: "I've put that away, it won't play again. 💛 If someone keeps upsetting you, you can stop their messages under Your people.",
+              hi: "मैंने उसे हटा दिया, वह फिर नहीं चलेगा. 💛 अगर कोई बार-बार दुख दे, तो 'आपके लोग' में उनके संदेश रोक सकते हैं.",
+            })}
+          </p>
+        </Card>
+      ) : null}
+      {messages.filter((m) => !hidden.includes(m.id)).map((m) => {
         const urgent = m.kind === "alert";
         const update = m.kind === "status" || m.kind === "digest" || m.kind === "nudge";
         const isNew = !m.mine && !m.heardAt && !heardLocal.includes(m.id);
@@ -96,6 +110,11 @@ export function Feed({ messages, emptyText }: { messages: FamilyMsg[]; emptyText
             <p className={cn("text-lg", urgent && "font-bold")}>{textOf(m, lang)}</p>
             <div className="mt-2 flex flex-wrap items-center gap-2 text-sm text-quiet">
               <span>{ago(m.at, lang)}</span>
+              {m.mine && m.scheduledFor ? (
+                <span className="font-bold text-clay">
+                  · ⏰ {lang === "hi" ? `${whenWords(m.scheduledFor, lang)} पर चलेगा` : `plays at ${whenWords(m.scheduledFor, lang)}`}
+                </span>
+              ) : null}
               {m.mine && m.heardAt ? <span className="font-bold text-sage">· {t(lang, { en: "seen ✓", hi: "देख लिया ✓" })}</span> : null}
               {m.reaction ? <span className="text-base">· {m.reaction}</span> : null}
               {!m.mine ? (
@@ -118,6 +137,18 @@ export function Feed({ messages, emptyText }: { messages: FamilyMsg[]; emptyText
                       onClick={() => void playVoice(m.id)}
                     >
                       🎙 {playing === m.id ? t(lang, { en: "Playing…", hi: "चल रहा…" }) : t(lang, { en: "Play voice", hi: "आवाज़ सुनें" })}
+                    </button>
+                  ) : null}
+                  {m.voice && role === "elder" ? (
+                    <button
+                      type="button"
+                      className="inline-flex min-h-11 items-center rounded-full border border-line bg-paper px-3 text-sm font-bold text-quiet"
+                      onClick={() => {
+                        hideNote(m.id);
+                        setPutAway(true);
+                      }}
+                    >
+                      {t(lang, { en: "This upset me", hi: "इससे दुख हुआ" })}
                     </button>
                   ) : null}
                   {!m.reaction && (m.kind !== "nudge" || role === "family") ? (
@@ -334,9 +365,25 @@ function blobToBase64(b: Blob) {
   });
 }
 
-/** Pro: a 20-second voice note. Press to start, press to stop. */
-export function VoiceNote() {
+const WHEN = [
+  { at: "now", en: "Now", hi: "अभी" },
+  { at: "08:00", en: "Morning 8:00", hi: "सुबह 8:00" },
+  { at: "13:00", en: "Lunch 1:00", hi: "दोपहर 1:00" },
+  { at: "18:00", en: "Evening 6:00", hi: "शाम 6:00" },
+];
+
+/** "8:00 am" / "सुबह 8:00" for a held note's time, on this phone's clock. */
+function whenWords(iso: string, lang: "en" | "hi") {
+  return new Date(iso).toLocaleTimeString(lang === "hi" ? "hi-IN" : "en-US", { hour: "numeric", minute: "2-digit" });
+}
+
+/**
+ * Pro: a 20-second voice note. Press to start, press to stop.
+ * Family can hold it for a time on the elder's clock ("play it for Maa in the morning").
+ */
+export function VoiceNote({ schedule = false }: { schedule?: boolean }) {
   const lang = useAsha((s) => s.lang);
+  const [at, setAt] = useState("now");
   const pro = useAsha((s) => s.pro);
   const caps = useFamily((s) => s.caps);
   const [state, setState] = useState<"idle" | "rec" | "sending">("idle");
@@ -368,10 +415,22 @@ export function VoiceNote() {
         setState("sending");
         const blob = new Blob(chunks, { type: r.mimeType || mime || "audio/webm" });
         const b64 = await blobToBase64(blob);
-        const res = await sendVoice(b64, blob.type);
+        const res = await sendVoice(b64, blob.type, undefined, schedule ? at : "now");
         setState("idle");
         setSecs(0);
-        setNote(res.ok ? { ok: true, text: t(lang, { en: "Voice note sent 💌", hi: "आवाज़ वाला संदेश भेज दिया 💌" }) } : { ok: false, text: sendError(res, lang) });
+        const held = res.ok && res.scheduled ? whenWords(res.scheduled, lang) : "";
+        setNote(
+          res.ok
+            ? {
+                ok: true,
+                text: held
+                  ? lang === "hi"
+                    ? `रख लिया 💌 ${held} पर सुनाई देगा.`
+                    : `Saved 💌 It will play for them at ${held}.`
+                  : t(lang, { en: "Voice note sent 💌", hi: "आवाज़ वाला संदेश भेज दिया 💌" }),
+              }
+            : { ok: false, text: sendError(res, lang) },
+        );
       };
       rec.current = r;
       r.start();
@@ -390,6 +449,32 @@ export function VoiceNote() {
 
   return (
     <div className="mt-3">
+      {schedule ? (
+        <div className="mb-2">
+          <p className="text-base font-bold">{t(lang, { en: "When should they hear it?", hi: "वे इसे कब सुनें?" })}</p>
+          <div className="mt-1 flex flex-wrap gap-2">
+            {WHEN.map((w) => (
+              <button
+                key={w.at}
+                type="button"
+                aria-pressed={at === w.at}
+                onClick={() => setAt(w.at)}
+                className={cn("min-h-11 rounded-full border px-3 font-bold", at === w.at ? "border-sage bg-sage text-paper" : "border-line bg-paper")}
+              >
+                {lang === "hi" ? w.hi : w.en}
+              </button>
+            ))}
+            <input
+              type="time"
+              aria-label={t(lang, { en: "Another time", hi: "कोई और समय" })}
+              className="field min-h-11 w-auto"
+              value={WHEN.some((w) => w.at === at) ? "" : at}
+              onChange={(e) => e.target.value && setAt(e.target.value)}
+            />
+          </div>
+          <p className="mt-1 text-sm text-quiet">{t(lang, { en: "Their clock, the next time it comes round.", hi: "उनकी घड़ी के हिसाब से, अगली बार जब वह समय आए." })}</p>
+        </div>
+      ) : null}
       <Button
         variant={state === "rec" ? "sos" : "quiet"}
         disabled={state === "sending"}

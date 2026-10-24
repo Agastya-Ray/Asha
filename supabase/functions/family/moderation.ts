@@ -85,7 +85,7 @@ export async function checkText(raw: string, geminiKey: string): Promise<Verdict
 export async function checkVoice(base64: string, mime: string, geminiKey: string): Promise<Verdict & { said?: string }> {
   const out = await gemini(geminiKey, [
     {
-      text: `${AI_PROMPT}\nThis message is a short voice note. Also include "said": the exact words spoken, in the language spoken. If you cannot hear words clearly, return ok:false reason:"unsafe".`,
+      text: `${AI_PROMPT}\nThis message is a short voice note. Listen to HOW it is said as well as the words: also reject (reason "unkind") a raised, angry, harsh, mocking, cold or threatening tone, shouting, or someone crying or in distress, even when the words themselves are fine. Also include "said": the exact words spoken, in the language spoken. If you cannot hear words clearly, return ok:false reason:"unsafe".`,
     },
     { inline_data: { mime_type: mime, data: base64 } },
   ]);
