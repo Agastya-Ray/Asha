@@ -74,6 +74,8 @@ type State = Persist & {
   setTextSize: (size: TextSize) => void;
   finishIntro: () => void;
   chooseRole: (role: AppRole) => void;
+  /** back to "who will use this phone?" (picked the wrong one) */
+  unchooseRole: () => void;
   replayIntro: () => void;
   setFairyName: (name: string) => void;
   setFairyVoice: (voice: Persist["fairyVoice"]) => void;
@@ -223,7 +225,9 @@ export const useAsha = create<State>((set) => ({
   setTextSize: (textSize) => set({ textSize }),
   finishIntro: () => set({ introSeen: true }),
   setQuiet: (quietUntil) => set({ quietUntil: Math.max(0, Math.round(quietUntil)) }),
-  chooseRole: (appRole) => set({ appRole, roleChosen: true, tab: appRole === "family" ? "family" : "today" }),
+  chooseRole: (appRole) =>
+    set({ appRole, roleChosen: true, tab: appRole === "family" ? "family" : "today" }),
+  unchooseRole: () => set({ appRole: "elder", roleChosen: false, tab: "today" }),
   replayIntro: () => set({ introSeen: false }),
   setFairyName: (fairyName) => set({ fairyName: fairyName.trim().slice(0, 24) }),
   setFairyVoice: (fairyVoice) => set({ fairyVoice }),

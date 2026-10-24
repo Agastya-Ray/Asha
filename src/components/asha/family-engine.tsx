@@ -7,7 +7,7 @@ import { t, useNow } from "@/components/asha/bits";
 import { FairyScene, type FairyMood } from "@/components/asha/fairy";
 import { awake, checkinQuestion, companionNudge, nudgeBubble } from "@/lib/asha/companion";
 import { useQuietSheet } from "@/components/asha/quiet";
-import { actOnSpoken } from "@/components/asha/voice-command";
+import { actOnSpoken, intentOf } from "@/components/asha/voice-command";
 import { QUIET, minutesSaid } from "@/lib/asha/quiet";
 import { canListen, listenOnce } from "@/lib/asha/listen";
 import { buildAgenda } from "@/lib/asha/schedule";
@@ -106,10 +106,14 @@ export function FairyDock() {
   const now = useNow();
   const [rested, setRested] = useState(readRest);
   // "Don't want me around?": ask why, react, then say good night and fade away
-  const [bye, setBye] = useState<"" | "ask" | "sad" | "brave" | "yawn" | "lie" | "gone">("");
+  const [bye, setBye] = useState<"" | "ask" | "sad" | "brave" | "yawn" | "settle" | "lie" | "gone">("");
   const [awayUntil, setAwayUntil] = useState(readAway);
   // she listens when tapped: what you say goes to the same helper as "Tell Asha"
-  const [ear, setEar] = useState<"" | "listening" | "thinking" | "hello" | "shy" | "blush" | "wake" | "missed" | "nomic">("");
+  const [ear, setEar] = useState<"" | "listening" | "thinking" | "hello" | "shy" | "blush" | "stir" | "wake" | "missed" | "nomic">("");
+  // what she is saying right now: the bubble shows exactly these words while she says them
+  const [line, setLine] = useState<{ en: string; hi: string } | null>(null);
+  // woken at night, she stays up a couple of minutes before drifting back to sleep
+  const [wokeAt, setWokeAt] = useState(0);
   // on Today the reminder card keeps a corner free for her (data-fairy-perch), so she sits there instead of over its text
   const [perch, setPerch] = useState<HTMLElement | null>(null);
   useEffect(() => {
@@ -125,6 +129,10 @@ export function FairyDock() {
   const unread = unreadOf({ messages, heardLocal });
   // she always speaks in her own little voice, never the grown-up warm voice Asha uses
   const say = (text: string) => void speak(text, voiceLang, "fairy");
+  const sayLine = (l: { en: string; hi: string }) => {
+    setLine(l);
+    say(t(voiceLang, l));
+  };
 
   // Settings and Talk have controls along the bottom edge; she would sit on top of them
   if (tab === "family" || tab === "sos" || tab === "settings") return null;
@@ -142,18 +150,38 @@ export function FairyDock() {
   // woken at night she rubs her eyes first
   const hello = () => {
     const day = awake(wakeTime, sleepTime, new Date());
-    setEar(day ? "shy" : "wake");
-    if (day) fairySound("giggle");
-    later(day ? 1300 : 1800, () => {
+    const you = { en: name ? ` ${name}` : "", hi: name ? ` ${name} जी` : "" };
+    if (day) {
+      setEar("shy");
+      fairySound("giggle");
+      later(1300, () => {
+        setEar("hello");
+        fairySound("chime");
+        sayLine({ en: `Hello${you.en}! I'm right here with you.`, hi: `नमस्ते${you.hi}! मैं यहीं आपके पास हूँ.` });
+      });
+      later(6000, () => {
+        setEar("");
+        setLine(null);
+      });
+      return;
+    }
+    // at night: she stirs and stretches on the floor, slowly rises rubbing her eyes, then says hello
+    setWokeAt(Date.now());
+    setEar("stir");
+    fairySound("yawn");
+    later(1800, () => {
+      setEar("wake");
+      sayLine({ en: `Oh… hello${you.en}! I was having the sweetest little dream.`, hi: `ओह… नमस्ते${you.hi}! मैं एक बहुत प्यारा सपना देख रही थी.` });
+    });
+    later(6000, () => {
       setEar("hello");
       fairySound("chime");
+      sayLine({ en: "I'm awake now. I'm right here if you need me.", hi: "अब मैं जाग गई हूँ. ज़रूरत हो तो मैं यहीं हूँ." });
     });
-    say(
-      day
-        ? t(voiceLang, { en: `Hello${name ? ` ${name}` : ""}! I'm right here with you.`, hi: `नमस्ते${name ? ` ${name} जी` : ""}! मैं यहीं आपके पास हूँ.` })
-        : t(voiceLang, { en: `Mmm… hello${name ? `, ${name}` : ""}! I was just napping. I'm here if you need me.`, hi: `हम्म… नमस्ते${name ? ` ${name} जी` : ""}! मैं ज़रा सो रही थी. ज़रूरत हो तो मैं यहीं हूँ.` }),
-    );
-    later(5000, () => setEar(""));
+    later(11000, () => {
+      setEar("");
+      setLine(null);
+    });
   };
   const blush = () => {
     setEar("blush");
@@ -175,6 +203,11 @@ export function FairyDock() {
       setEar(r.problem === "denied" ? "nomic" : "missed");
       later(r.problem === "denied" ? 5000 : 2500, () => setEar(""));
       return;
+    }
+    // feeling unwell never waits for her to "think"
+    if (intentOf(said) === "call") {
+      setEar("");
+      return actOnSpoken(said);
     }
     if (QUIET.test(said)) {
       setEar("");
@@ -200,20 +233,24 @@ export function FairyDock() {
       later(1800, () => {
         setBye("brave");
         fairySound("chime");
-        say(t(voiceLang, { en: `That's okay${name ? `, ${name}` : ""}. I'm still here to help you, as a tiny friend or to remind you about your medicines.`, hi: `कोई बात नहीं${name ? ` ${name} जी` : ""}. मैं फिर भी आपकी मदद के लिए यहीं हूँ, छोटी सी दोस्त बनकर या दवाइयाँ याद दिलाने के लिए.` }));
+        sayLine({ en: `That's okay${name ? `, ${name}` : ""}. I'm still here to help you, as a tiny friend or to remind you about your medicines.`, hi: `कोई बात नहीं${name ? ` ${name} जी` : ""}. मैं फिर भी आपकी मदद के लिए यहीं हूँ, छोटी सी दोस्त बनकर या दवाइयाँ याद दिलाने के लिए.` });
       });
-      later(6500, () => {
+      later(7000, () => {
         setBye("yawn");
         fairySound("yawn");
+        sayLine({ en: `Good night${name ? `, ${name}` : ""}. See you soon.`, hi: `शुभ रात्रि${name ? ` ${name} जी` : ""}. जल्दी मिलेंगे.` });
       });
-      later(8800, () => setBye("lie"));
+      // she grows drowsy, sinks down to the floor, then curls up
+      later(9800, () => setBye("settle"));
+      later(11000, () => setBye("lie"));
     } else {
       setBye("yawn");
       fairySound("yawn");
-      later(2300, () => setBye("lie"));
-      say(t(voiceLang, { en: `Okay, well I wanted to sleep anyway. Good night${name ? `, ${name}` : ""}! See you soon.`, hi: `ठीक है, मुझे वैसे भी नींद आ रही थी. शुभ रात्रि${name ? ` ${name} जी` : ""}! जल्दी मिलेंगे.` }));
+      sayLine({ en: `Okay, well I wanted to sleep anyway. Good night${name ? `, ${name}` : ""}! See you soon.`, hi: `ठीक है, मुझे वैसे भी नींद आ रही थी. शुभ रात्रि${name ? ` ${name} जी` : ""}! जल्दी मिलेंगे.` });
+      later(4200, () => setBye("settle"));
+      later(5400, () => setBye("lie"));
     }
-    later(sadFirst ? 12500 : 6000, () => {
+    later(sadFirst ? 15000 : 9500, () => {
       const until = Date.now() + 3 * 60 * 60 * 1000;
       saveAway(until);
       setAwayUntil(until);
@@ -237,28 +274,27 @@ export function FairyDock() {
     );
   }
 
-  // after the yawn she curls up on the floor of the screen, sleeps a moment, then fades away softly
-  if (bye === "lie") {
-    return (
-      <div data-fairy="bye-lie" className="fairy-dock fairy-dock-floor fairy-vanish-soft pointer-events-none fixed right-3 z-30">
-        <FairyScene news={false} mood="sleep" floor size="md" label={fairyName ? t(lang, { en: `${fairyName} is asleep`, hi: `${fairyName} सो रही है` }) : t(lang, { en: "Your fairy is asleep", hi: "आपकी परी सो रही है" })} />
-      </div>
-    );
-  }
   if (bye && bye !== "gone") {
-    const line =
-      bye === "ask"
+    const words =
+      line && (bye === "brave" || bye === "yawn")
+        ? t(lang, line)
+        : bye === "ask"
         ? t(lang, { en: "Don't want me around? Why?", hi: "मुझे पास नहीं रखना? क्यों?" })
         : bye === "sad"
           ? t(lang, { en: "Oh… *sniff*", hi: "ओह… *सुबक*" })
           : bye === "brave"
             ? t(lang, { en: "I'm still here to help, as a tiny friend or for your medicines.", hi: "मैं मदद के लिए यहीं हूँ, छोटी दोस्त या दवाइयों के लिए." })
             : t(lang, { en: `*yawn* Good night${name ? `, ${name}` : ""}! See you soon.`, hi: `*उबासी* शुभ रात्रि${name ? ` ${name} जी` : ""}! जल्दी मिलेंगे.` });
-    const face: FairyMood = bye === "ask" ? "asking" : bye === "sad" ? "sad" : bye === "brave" ? "happy" : "yawn";
+    // after the yawn she grows drowsy and sinks to the floor of the screen, curls up, sleeps a moment, then fades away softly
+    const down = bye === "settle" || bye === "lie";
+    const face: FairyMood = bye === "ask" ? "asking" : bye === "sad" ? "sad" : bye === "brave" ? "happy" : bye === "settle" ? "tired" : bye === "lie" ? "sleep" : "yawn";
     return (
-      <div data-fairy={`bye-${bye}`} className={`fairy-dock fixed right-3 z-30 flex items-end gap-2 ${speaking ? "fairy-dock-up" : ""}`}>
-        <div className="mb-6 max-w-[13rem] rounded-2xl rounded-br-sm border border-line bg-paper px-3 py-2 text-base font-bold shadow-sm">
-          <p>{line}</p>
+      <div
+        data-fairy={`bye-${bye}`}
+        className={cn("fairy-dock fixed right-3 z-30 flex items-end gap-2", down ? "fairy-dock-floor pointer-events-none" : speaking && "fairy-dock-up", bye === "lie" && "fairy-vanish-soft")}
+      >
+        <div className={cn("mb-6 max-w-[13rem] rounded-2xl rounded-br-sm border border-line bg-paper px-3 py-2 text-base font-bold shadow-sm transition-opacity duration-700", down && "pointer-events-none opacity-0")}>
+          <p>{words}</p>
           {bye === "ask" ? (
             <div className="mt-2 flex flex-col gap-2">
               <button
@@ -283,7 +319,7 @@ export function FairyDock() {
             </div>
           ) : null}
         </div>
-        <FairyScene news={false} mood={face} size="md" label={line} />
+        <FairyScene news={false} mood={face} floor={bye === "lie"} size="md" label={bye === "lie" ? (fairyName ? t(lang, { en: `${fairyName} is asleep`, hi: `${fairyName} सो रही है` }) : t(lang, { en: "Your fairy is asleep", hi: "आपकी परी सो रही है" })) : words} />
       </div>
     );
   }
@@ -357,14 +393,16 @@ export function FairyDock() {
       };
     } else {
       // nothing to say: she is simply there, watching what you tap; at night she sleeps on the floor
-      const night = !awake(wakeTime, sleepTime, now);
+      const upFor = now.getTime() - wokeAt;
+      const night = (!awake(wakeTime, sleepTime, now) && !(upFor < 150_000)) || ear === "stir";
       kind = night ? "sleep" : "idle";
       // she stretches for the first hour after waking, and grows sleepy in the last hour before bed
       const m = now.getHours() * 60 + now.getMinutes();
       const toMins = (hhmm: string) => Number(hhmm.split(":")[0]) * 60 + Number(hhmm.split(":")[1]);
       const sinceWake = (m - toMins(wakeTime || "07:00") + 1440) % 1440;
       const toBed = (toMins(sleepTime || "21:30") - m + 1440) % 1440;
-      mood = night ? "sleep" : sinceWake < 60 ? "stretch" : toBed <= 60 ? "tired" : undefined;
+      const nightUp = !night && !awake(wakeTime, sleepTime, now);
+      mood = night ? "sleep" : nightUp ? (upFor > 120_000 ? "tired" : undefined) : sinceWake < 60 ? "stretch" : toBed <= 60 ? "tired" : undefined;
       if (mood === "stretch") bubble = t(lang, { en: `*stretch* Good morning${name ? `, ${name}` : ""}!`, hi: `*अंगड़ाई* सुप्रभात${name ? ` ${name} जी` : ""}!` });
       if (mood === "tired") bubble = t(lang, { en: "*yawn* Getting sleepy… almost bedtime.", hi: "*उबासी* नींद आ रही है… सोने का समय होने वाला है." });
       label = night
@@ -388,15 +426,15 @@ export function FairyDock() {
               ? t(lang, { en: "Oh! Hi… hee hee.", hi: "अरे! नमस्ते… ही ही." })
               : ear === "blush"
                 ? t(lang, { en: "Aww, stop it! You're making me blush.", hi: "अरे, बस करिए! मुझे शर्म आ रही है." })
-                : ear === "wake"
-                  ? t(lang, { en: "*rubs eyes* Hmm? I'm up!", hi: "*आँखें मलती है* हम्म? जाग गई!" })
-              : t(lang, { en: "Hello! I'm right here.", hi: "नमस्ते! मैं यहीं हूँ." });
-    mood = ear === "listening" ? "asking" : ear === "thinking" ? "thinking" : ear === "missed" || ear === "nomic" ? "sad" : ear === "shy" ? "shy" : ear === "blush" ? "blush" : ear === "wake" ? "wakeup" : "wave";
+                : line
+                  ? t(lang, line)
+                  : t(lang, { en: "Hello! I'm right here.", hi: "नमस्ते! मैं यहीं हूँ." });
+    mood = ear === "listening" ? "asking" : ear === "thinking" ? "thinking" : ear === "missed" || ear === "nomic" ? "sad" : ear === "shy" ? "shy" : ear === "blush" ? "blush" : ear === "wake" ? "wakeup" : ear === "stir" ? "stretch" : "wave";
   }
 
   // on Today the reminder card already says it, so she stays small and quiet there and does not cover it;
   // with nothing to say she is small and quiet everywhere
-  const quiet = !ear && ((tab === "today" && (kind === "due" || kind === "missed")) || (kind === "idle" && !bubble) || kind === "sleep");
+  const quiet = ear === "stir" || (!ear && ((tab === "today" && (kind === "due" || kind === "missed")) || (kind === "idle" && !bubble) || kind === "sleep"));
   talking.current = !quiet;
   if (quiet && perch && tab === "today" && (kind === "due" || kind === "missed")) {
     return createPortal(
@@ -407,7 +445,7 @@ export function FairyDock() {
     );
   }
   return (
-    <div data-fairy={kind} className={`fairy-dock fixed right-3 z-30 flex items-end gap-2 ${kind === "sleep" && !ear ? "fairy-dock-floor" : speaking ? "fairy-dock-up" : ""}`}>
+    <div data-fairy={kind} className={`fairy-dock fixed right-3 z-30 flex items-end gap-2 ${kind === "sleep" && (!ear || ear === "stir") ? "fairy-dock-floor" : speaking ? "fairy-dock-up" : ""}`}>
       {quiet ? null : (
         <div className="mb-6 max-w-[11rem] rounded-2xl rounded-br-sm border border-line bg-paper px-3 py-2 text-base font-bold shadow-sm">
           {bubble}

@@ -6,7 +6,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 
-/** "Taken" and "10 min later" buttons on the reminder notification. */
+/** "Taken" and "10 min later" buttons on the reminder notification and on the home-screen fairy. */
 public class ActionReceiver extends BroadcastReceiver {
     static PendingIntent pending(Context ctx, String key, String action) {
         Intent i = new Intent(ctx, ActionReceiver.class);
@@ -33,5 +33,7 @@ public class ActionReceiver extends BroadcastReceiver {
             AlarmStore.scheduleFollowUp(ctx, key, 1, System.currentTimeMillis() + gap * 60_000L);
         }
         AlarmStore.pushAction(ctx, key, action);
+        AlarmStore.clearDue(ctx, key);
+        FairyWidget.refreshAll(ctx);
     }
 }

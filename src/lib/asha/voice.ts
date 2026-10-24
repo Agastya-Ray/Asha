@@ -59,36 +59,59 @@ export function stopSpeaking() {
   set({ active: false });
 }
 
-// Titli talks much more than Asha, so she gets her own daily allowance
+// Asha's allowance counts clips. Titli's counts letters: the free ElevenLabs plan gives about 20,000 letters
+// a month, so she gets ~600 new letters a day; lines she has said before come from the phone and cost nothing.
 const DAILY_WARM = 40;
-const DAILY_FAIRY = 150;
-function warmAllowed(fairy: boolean) {
+const DAILY_FAIRY_LETTERS = 600;
+function warmAllowed(fairy: boolean, letters: number) {
   try {
     const raw = localStorage.getItem(fairy ? "asha.tts.fairy" : "asha.tts");
     const p = raw ? (JSON.parse(raw) as { day: string; n: number }) : null;
-    return !p || p.day !== todayKey() || p.n < (fairy ? DAILY_FAIRY : DAILY_WARM);
+    if (!p || p.day !== todayKey()) return true;
+    return fairy ? p.n + letters <= DAILY_FAIRY_LETTERS : p.n < DAILY_WARM;
   } catch {
     return true;
   }
 }
-function countWarm(fairy: boolean) {
+function countWarm(fairy: boolean, letters: number) {
   try {
     const day = todayKey();
     const slot = fairy ? "asha.tts.fairy" : "asha.tts";
     const raw = localStorage.getItem(slot);
     const p = raw ? (JSON.parse(raw) as { day: string; n: number }) : { day, n: 0 };
-    localStorage.setItem(slot, JSON.stringify({ day, n: p.day === day ? p.n + 1 : 1 }));
+    const add = fairy ? letters : 1;
+    localStorage.setItem(slot, JSON.stringify({ day, n: p.day === day ? p.n + add : add }));
   } catch {
     /* ignore */
   }
 }
 
+// Titli's clips are kept on the phone for good, so each sentence is paid for once
+const KEEP = "titli-voice-v1";
+const keepUrl = (key: string) => `https://asha.local/titli/${encodeURIComponent(key)}`;
+async function kept(key: string) {
+  try {
+    if (typeof caches === "undefined") return null;
+    const hit = await (await caches.open(KEEP)).match(keepUrl(key));
+    return hit ? await hit.text() : null;
+  } catch {
+    return null;
+  }
+}
+function keep(key: string, b64: string) {
+  if (typeof caches === "undefined") return;
+  void caches
+    .open(KEEP)
+    .then((c) => c.put(keepUrl(key), new Response(b64)))
+    .catch(() => undefined);
+}
+
 let fairyRestUntil = 0;
 async function warmClip(text: string, lang: Lang, fairy?: { id: string; owner: string }) {
   const key = `${fairy?.id ?? "asha"}|${lang}|${text}`;
-  const hit = cache.get(key);
+  const hit = cache.get(key) ?? (fairy ? await kept(key) : null);
   if (hit) return hit;
-  if (Date.now() < (fairy ? fairyRestUntil : warmRestUntil) || !warmAllowed(!!fairy)) throw new Error("rest");
+  if (Date.now() < (fairy ? fairyRestUntil : warmRestUntil) || !warmAllowed(!!fairy, text.length)) throw new Error("rest");
   const res = await apiTts(text, lang, fairy);
   if (!res.ok) {
     const until = Date.now() + (res.status === 429 ? 30 : 5) * 60 * 1000;
@@ -96,7 +119,8 @@ async function warmClip(text: string, lang: Lang, fairy?: { id: string; owner: s
     else warmRestUntil = until;
     throw new Error(res.error);
   }
-  countWarm(!!fairy);
+  countWarm(!!fairy, text.length);
+  if (fairy) keep(key, res.audio);
   if (cache.size > 40) cache.delete(cache.keys().next().value as string);
   cache.set(key, res.audio);
   return res.audio;

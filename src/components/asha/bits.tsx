@@ -27,11 +27,23 @@ export function Card({ className, children }: { className?: string; children: Re
 }
 
 /** "Hear this" button. `say` must already be in Asha's voice language. */
-export function Hear({ say, label }: { say: string; label: string }) {
+export function Hear({ say, label, round = false }: { say: string; label: string; round?: boolean }) {
   const voiceLang = useAsha((s) => s.voiceLang);
   const voiceOn = useAsha((s) => s.voiceOn);
   const rich = useAsha((s) => s.richVoice);
   if (!voiceOn) return null;
+  // round: just the speaker, beside the words it reads out (the label stays for screen readers)
+  if (round)
+    return (
+      <button
+        type="button"
+        aria-label={label}
+        onClick={() => void speak(say, voiceLang, rich ? "warm" : "device")}
+        className="hear-round inline-flex size-12 shrink-0 items-center justify-center rounded-full active:scale-[0.95]"
+      >
+        <Volume2 className="size-6" aria-hidden />
+      </button>
+    );
   return (
     <button
       type="button"

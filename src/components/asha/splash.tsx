@@ -1,10 +1,13 @@
 import { useEffect, useState } from "react";
+import { fairySoundSoon } from "@/lib/asha/sfx";
 
-/** Calm opening: a leaf draws itself inside slow breathing rings, then "Asha" rises in. Tap to skip. */
+/** Calm opening: a leaf draws itself inside slow breathing rings, with a soft bell sound, then "Asha" rises in. Tap to skip. */
 export function Splash({ onDone }: { onDone: () => void }) {
   const [leaving, setLeaving] = useState(false);
   useEffect(() => {
     const reduce = window.matchMedia?.("(prefers-reduced-motion: reduce)").matches;
+    // a soft sound with the leaf (the Android app may play it before any touch; a browser waits for one)
+    fairySoundSoon("open", true);
     const t1 = window.setTimeout(() => setLeaving(true), reduce ? 500 : 2300);
     const t2 = window.setTimeout(onDone, reduce ? 800 : 2800);
     return () => {

@@ -91,8 +91,8 @@ export function TalkScreen() {
         <h1 className="display text-4xl">{t(lang, { en: "Talk", hi: "बात" })}</h1>
         <p className="mt-2 text-lg text-quiet">
           {t(lang, {
-            en: "Medicines, meals, the chart, greetings, 'Tell Asha', and Help stay free for everyone.",
-            hi: "दवा, खाना, चार्ट, अभिवादन, 'आशा को बताएँ' और मदद सबके लिए मुफ़्त हैं.",
+            en: "Reminders, meals and Help are always free.",
+            hi: "याद दिलाना, खाना और मदद हमेशा मुफ़्त हैं.",
           })}
         </p>
         <Card className="mt-5">
@@ -196,7 +196,7 @@ export function TalkScreen() {
         {error ? <p className="text-lg text-clay">{error}</p> : null}
         <div ref={endRef} />
       </div>
-      <div className="mt-4">
+      <div data-tour="talk-mic" className="mt-4">
         <MicButton
           className="w-full [&>button]:w-full [&>button]:min-h-16 [&>button]:text-xl"
           label={t(lang, { en: "Press and speak", hi: "दबाएँ और बोलें" })}
