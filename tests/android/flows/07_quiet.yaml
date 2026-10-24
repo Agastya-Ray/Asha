@@ -27,6 +27,11 @@ appId: com.agastyaray.asha
 - tapOn:
     text: "🤫.*is quiet until.*"
     retryTapIfNoChange: false
+# The sheet is on screen now (run 108 and 114 screenshots), but the WebView doesn't hand a sheet opened over
+# Today to the accessibility tree that Maestro reads until something scrolls. A small scroll of the page
+# behind the sheet makes it send a fresh tree.
+- waitForAnimationToEnd
+- scroll
 - extendedWaitUntil:
     visible: "Wake her now"
     timeout: 10000
