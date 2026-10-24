@@ -186,6 +186,11 @@ adb shell input swipe 450 1500 450 700 400; sleep 2; shot 29b-today-after-taken-
 
 # --- every screen, as a user ---
 flow 03_tabs.yaml
+# can the runner and the phone reach the family server? (on 24 Oct every family call failed in ~0.5 s)
+FAM=qheqzgxtzcagpayelfxn.supabase.co
+log "family server from the runner: $(curl -s -o /dev/null -w '%{http_code} in %{time_total}s' -X OPTIONS -H 'Origin: https://localhost' -H 'Access-Control-Request-Method: POST' https://$FAM/functions/v1/family 2>&1)"
+log "family server from the phone: $(adb shell "ping -c 1 -W 3 $FAM 2>&1 | head -2 | tr '\n' ' '")"
+adb shell "curl -s -o /dev/null -w '%{http_code}' https://$FAM/functions/v1/family" >/dev/null 2>&1 && log "phone curl: $(adb shell "curl -s -o /dev/null -w '%{http_code}' https://$FAM/functions/v1/family" 2>&1)"
 flow 04_family.yaml
 flow 05_prescription.yaml
 
