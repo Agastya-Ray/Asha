@@ -51,6 +51,8 @@ jobs:
         continue-on-error: true
         run: |
           cd dist
+          # Built files only, nothing for Vercel to build: tell it to skip this branch
+          echo '{"git":{"deploymentEnabled":false}}' > vercel.json
           git init -q -b web-preview
           git -c user.name=ci -c user.email=ci@users.noreply.github.com add -A
           git -c user.name=ci -c user.email=ci@users.noreply.github.com commit -qm "web build ${{ github.sha }}"
