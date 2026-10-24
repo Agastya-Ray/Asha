@@ -338,6 +338,7 @@ public class FairyBubbleService extends Service {
         Button taken = pop.findViewById(id("pop_taken"));
         Button later = pop.findViewById(id("pop_later"));
         title.setText(t.optString("title"));
+        if ((getApplicationInfo().flags & android.content.pm.ApplicationInfo.FLAG_DEBUGGABLE) != 0) android.util.Log.i("AshaFairy", "pop " + key + " | " + t.optString("title"));
         String text = t.optString("body");
         if (attempt > 0) text = t.optString("againLabel", "Reminder " + (attempt + 1)) + (text.isEmpty() ? "" : " · " + text);
         body.setText(text);

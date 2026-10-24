@@ -64,6 +64,25 @@ expect_overlays() {
   [ "$n" = "$want" ] && pass "$what ($n overlay windows)" || fail "$what: wanted $want overlay windows, saw $n"
 }
 said() { grep "AshaSpeaker" "$OUT/logcat-stream.txt" | tail -${1:-3}; }
+# The reminder card is an overlay window, which uiautomator does not list: tap its buttons by where they sit.
+# Both buttons are at the bottom of the card: Later 48dp up, Taken 118dp up (Pixel 6: 2.625 px per dp).
+pop_frame() {
+  adb shell dumpsys window windows > "$OUT/windows-pop-now.txt"
+  python3 -c '
+import re,sys
+x=open(sys.argv[1]).read()
+for blk in re.split(r"\n  Window #", x):
+    if "com.agastyaray.asha}" not in blk.split("\n")[0]: continue
+    m=re.search(r" frame=\[(\d+),(\d+)\]\[(\d+),(\d+)\]", blk)
+    if m and "mViewVisibility=0x0" in blk and int(m[3])-int(m[1]) > 600: print(m[1],m[2],m[3],m[4]); break
+' "$OUT/windows-pop-now.txt"
+}
+pop_tap() {
+  local f up; f=$(pop_frame); [ -z "$f" ] && { echo ""; return; }
+  up=$([ "$1" = taken ] && echo 310 || echo 126)
+  set -- $f; local xy="$(( ($1+$3)/2 )) $(( $4-up ))"; adb shell input tap $xy; echo "$xy"
+}
+pop_title() { grep "AshaFairy" "$OUT/logcat-stream.txt" | tail -1 | sed 's/.*| //'; }
 
 adb root >/dev/null 2>&1; sleep 3; adb wait-for-device
 sleep 40
@@ -79,9 +98,12 @@ adb logcat -c; adb logcat -G 16M 2>/dev/null || true
 adb logcat -v time -b main -b system -b crash > "$OUT/logcat-stream.txt" 2>/dev/null &
 STREAM_PID=$!
 
+# like a real phone, "Display over other apps" starts off (this emulator image allows it by default)
+adb shell appops set $PKG SYSTEM_ALERT_WINDOW deny
 flow 01_setup.yaml
 flow 02_permissions.yaml
 adb shell appops set $PKG SCHEDULE_EXACT_ALARM allow
+adb shell monkey -p $PKG -c android.intent.category.LAUNCHER 1 >/dev/null 2>&1; sleep 12
 
 # 1. She asks, on Today, if she may stay on the screen
 xy=$(find_webview "^Yes, stay with me$")
@@ -114,30 +136,32 @@ REC=$!
 sleep 45
 shot F05-she-pops-up-at-0800
 expect_overlays 1 "08:00: the reminder card is up (the little fairy waits inside it)" pop
-xy=$(center "^(Taken|ली)$")
-[ -n "$xy" ] && pass "pop-up has a Taken button" || fail "no Taken button on the pop-up"
-adb shell uiautomator dump /sdcard/ui.xml >/dev/null 2>&1; adb exec-out cat /sdcard/ui.xml > "$OUT/pop-ui.xml"
-FIRST=$(python3 -c 'import re,sys; x=open(sys.argv[1]).read(); m=re.search(r"resource-id=\"[^\"]*pop_title\"[^>]*", x) or re.search(r"[^>]*pop_title[^>]*", x); t=re.search(r" text=\"([^\"]*)\"", m.group(0)) if m else None; print(t.group(1) if t else "")' "$OUT/pop-ui.xml")
-log "first card: $FIRST"
-[ -n "$xy" ] && adb shell input tap $xy; sleep 1
+FIRST=$(pop_title); log "first card: $FIRST"
+xy=$(pop_tap taken)
+[ -n "$xy" ] && pass "pop-up is on screen; tapped its Taken/Eaten at $xy" || fail "no pop-up window to tap"
+sleep 1
 shot F06-taken-happy
 sleep 3
 shot F07-next-reminder
 wait $REC 2>/dev/null; adb pull /sdcard/fairy-pop.mp4 "$OUT/fairy-pop.mp4" >/dev/null 2>&1 && pass "recorded the pop-up video" || log "no video"
-adb shell uiautomator dump /sdcard/ui.xml >/dev/null 2>&1; adb exec-out cat /sdcard/ui.xml > "$OUT/pop2-ui.xml"
-SECOND=$(python3 -c 'import re,sys; x=open(sys.argv[1]).read(); m=re.search(r"[^>]*pop_title[^>]*", x); t=re.search(r" text=\"([^\"]*)\"", m.group(0)) if m else None; print(t.group(1) if t else "")' "$OUT/pop2-ui.xml")
-log "second card: $SECOND"
+SECOND=$(pop_title); log "second card: $SECOND"
 [ -n "$SECOND" ] && [ "$SECOND" != "$FIRST" ] && pass "the second 08:00 reminder came next" || fail "no second reminder after Taken (first '$FIRST', then '$SECOND')"
 adb shell dumpsys notification --noredact | grep -E "android.title=" > "$OUT/notes-after-taken.txt"
-grep -q "$FIRST" "$OUT/notes-after-taken.txt" && fail "Taken on the pop-up left '$FIRST' in the notifications" || pass "Taken on the pop-up cleared its notification"
-xy=$(center "min later|बाद")
-[ -n "$xy" ] && adb shell input tap $xy && sleep 3
+[ -n "$FIRST" ] && grep -qF "$FIRST" "$OUT/notes-after-taken.txt" && fail "Taken on the pop-up left '$FIRST' in the notifications" || pass "Taken on the pop-up cleared its notification"
+xy=$(pop_tap later); log "tapped Later at $xy"; sleep 3
 shot F08-later-back-to-corner
 expect_overlays 1 "after Later she goes back to her spot" after-later
 
 # 5. Drop her at the bottom: she naps (the reminder pop-up still works)
-adb shell dumpsys window windows | awk -v p="$PKG" '/^  Window #/{inw=index($0, p "}")>0} inw&&/mFrame=|frame=\[/{print; exit}' > "$OUT/bubble-frame.txt"
-BXY=$(python3 -c 'import re,sys; m=re.search(r"\[(-?\d+),(-?\d+)\]\[(-?\d+),(-?\d+)\]", open(sys.argv[1]).read()); print((int(m[1])+int(m[3]))//2, (int(m[2])+int(m[4]))//2) if m else print("")' "$OUT/bubble-frame.txt")
+adb shell dumpsys window windows > "$OUT/bubble-windows.txt"
+BXY=$(python3 -c '
+import re,sys
+x=open(sys.argv[1]).read()
+for blk in re.split(r"\n  Window #", x):
+    if "com.agastyaray.asha}" not in blk.split("\n")[0]: continue
+    m=re.search(r" frame=\[(-?\d+),(-?\d+)\]\[(-?\d+),(-?\d+)\]", blk)
+    if m and int(m[3])-int(m[1]) < 400: print((int(m[1])+int(m[3]))//2, (int(m[2])+int(m[4]))//2); break
+' "$OUT/bubble-windows.txt")
 log "little fairy at $BXY"
 if [ -n "$BXY" ]; then
   adb shell input swipe $BXY 540 2250 1500; sleep 1
@@ -162,7 +186,7 @@ setclock 101519292026.40
 sleep 45
 shot F13-visits-for-dinner-when-off
 [ "$(overlays)" -ge 1 ] && pass "switched off, she still comes at 19:30 with the reminder" || fail "switched off: no pop-up at 19:30"
-xy=$(center "^(Eaten|खा लिया|Taken|ली)$"); [ -n "$xy" ] && adb shell input tap $xy; sleep 5
+log "19:30 card: $(pop_title)"; xy=$(pop_tap taken); log "tapped Eaten at $xy"; sleep 5
 shot F14-visit-over
 expect_overlays 0 "after answering, the visit ends (she stays off)" visit-over
 
