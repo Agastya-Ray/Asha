@@ -8,6 +8,7 @@ import type {
   Lang,
   Med,
   Persist,
+  Prescription,
   AppRole,
   Tab,
   TextSize,
@@ -56,6 +57,7 @@ export const initialPersist = (): Persist => ({
   coachDismissed: false,
   sample: false,
   chat: [],
+  prescriptions: [],
 });
 
 type State = Persist & {
@@ -90,6 +92,8 @@ type State = Persist & {
   saveMed: (med: Med) => void;
   removeMed: (id: string) => void;
   saveMeds: (meds: Med[]) => void;
+  savePrescription: (p: Prescription) => void;
+  removePrescription: (id: string) => void;
   updateMeal: (id: string, patch: Partial<{ name: string; time: string; note: string }>) => void;
   logDose: (medId: string, time: string, status: "taken" | "skipped") => void;
   undoDose: (medId: string, time: string) => void;
@@ -184,6 +188,20 @@ function sanitize(raw: unknown): Persist {
     reminded: Array.isArray(r.reminded) ? r.reminded : [],
     snooze: r.snooze && typeof r.snooze === "object" ? r.snooze : {},
     chat: Array.isArray(r.chat) ? r.chat : [],
+    prescriptions: Array.isArray(r.prescriptions)
+      ? r.prescriptions
+          .filter((p) => p && typeof p === "object" && typeof p.id === "string")
+          .map((p) => ({
+            ...p,
+            date: String(p.date ?? ""),
+            doctor: String(p.doctor ?? ""),
+            meds: Array.isArray(p.meds) ? p.meds.map(String) : [],
+            instructions: Array.isArray(p.instructions) ? p.instructions.map(String) : [],
+            followUp: String(p.followUp ?? ""),
+            savedAt: Number(p.savedAt) || 0,
+            hasPhoto: p.hasPhoto === true,
+          }))
+      : [],
     quietUntil: typeof r.quietUntil === "number" && r.quietUntil > Date.now() ? r.quietUntil : 0,
     setupStep: r.setupStep === 2 || r.setupStep === 3 || r.setupStep === 4 ? r.setupStep : 1,
   };
@@ -281,6 +299,9 @@ export const useAsha = create<State>((set) => ({
       }
       return { meds };
     }),
+  // newest first; the same id replaces the old copy
+  savePrescription: (p) => set((s) => ({ prescriptions: [p, ...s.prescriptions.filter((x) => x.id !== p.id)].slice(0, 30) })),
+  removePrescription: (id) => set((s) => ({ prescriptions: s.prescriptions.filter((x) => x.id !== id) })),
   updateMeal: (id, patch) =>
     set((s) => ({
       meals: s.meals.map((m) => (m.id === id ? { ...m, ...patch } : m)),
