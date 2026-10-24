@@ -24,8 +24,8 @@ export async function elevenSpeak(text: string, voice: unknown, owner: unknown):
         text,
         // flash costs half the credits of multilingual (the free plan has 10,000 a month) and speaks Hindi too
         model_id: process.env.ELEVENLABS_MODEL || "eleven_flash_v2_5",
-        // a little slower than normal, expressive, and still clearly the same girl every time
-        voice_settings: { stability: 0.45, similarity_boost: 0.8, style: 0.55, use_speaker_boost: true, speed: 0.85 },
+        // slow and gentle (Agastya: "much slower"), expressive, and still clearly the same girl every time
+        voice_settings: { stability: 0.45, similarity_boost: 0.8, style: 0.55, use_speaker_boost: true, speed: 0.78 },
       }),
     });
   try {
