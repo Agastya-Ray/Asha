@@ -232,11 +232,11 @@ if [ -z "$xy" ]; then log "Settings not found in the dump; using the header gear
 adb shell input tap $xy; sleep 3; shot 39a-settings-opened
 adb shell input swipe 540 1500 540 900 400; sleep 2
 adb exec-out cat /sdcard/ui.xml > "$OUT/settings-ui.xml"
-xy=$(find_webview "^हिन्दी$")
+xy=$(find_above_nav "^हिन्दी$")
 if [ -n "$xy" ]; then adb shell input tap $xy; log "tapped Hindi at $xy"; sleep 3; else FAILED=1; log "no Hindi switch on screen"; fi
 shot 39b-settings-after-hindi
 adb shell input swipe 540 1500 540 900 400; sleep 2
-xy=$(find_webview "^A\\+\\+$")
+xy=$(find_above_nav "^A\\+\\+$")
 if [ -n "$xy" ]; then adb shell input tap $xy; log "tapped the largest text size at $xy"; sleep 3; else FAILED=1; log "no largest text button on screen"; fi
 shot 40-settings-hindi-largest-text
 adb shell input keyevent KEYCODE_BACK; sleep 3
