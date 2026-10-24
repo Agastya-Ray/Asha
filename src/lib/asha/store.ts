@@ -9,6 +9,7 @@ import type {
   Med,
   Memory,
   Persist,
+  Prescription,
   AppRole,
   Tab,
   TextSize,
@@ -58,6 +59,7 @@ export const initialPersist = (): Persist => ({
   sample: false,
   chat: [],
   memories: [],
+  prescriptions: [],
 });
 
 type State = Persist & {
@@ -95,6 +97,8 @@ type State = Persist & {
   remember: (m: Memory) => void;
   updateMemory: (id: string, patch: Partial<Memory>) => void;
   forget: (id: string) => void;
+  savePrescription: (p: Prescription) => void;
+  removePrescription: (id: string) => void;
   updateMeal: (id: string, patch: Partial<{ name: string; time: string; note: string }>) => void;
   logDose: (medId: string, time: string, status: "taken" | "skipped") => void;
   undoDose: (medId: string, time: string) => void;
@@ -196,6 +200,20 @@ function sanitize(raw: unknown): Persist {
           .filter((m) => m && typeof m === "object" && typeof m.id === "string")
           .map((m) => ({ ...m, said: String(m.said ?? ""), what: String(m.what ?? ""), kind: m.kind === "plan" ? ("plan" as const) : ("remind" as const), day: String(m.day ?? ""), at: Number(m.at) || 0, createdAt: Number(m.createdAt) || 0, done: m.done === true }))
       : [],
+    prescriptions: Array.isArray(r.prescriptions)
+      ? r.prescriptions
+          .filter((p) => p && typeof p === "object" && typeof p.id === "string")
+          .map((p) => ({
+            ...p,
+            date: String(p.date ?? ""),
+            doctor: String(p.doctor ?? ""),
+            meds: Array.isArray(p.meds) ? p.meds.map(String) : [],
+            instructions: Array.isArray(p.instructions) ? p.instructions.map(String) : [],
+            followUp: String(p.followUp ?? ""),
+            savedAt: Number(p.savedAt) || 0,
+            hasPhoto: p.hasPhoto === true,
+          }))
+      : [],
     quietUntil: typeof r.quietUntil === "number" && r.quietUntil > Date.now() ? r.quietUntil : 0,
     setupStep: r.setupStep === 2 || r.setupStep === 3 || r.setupStep === 4 ? r.setupStep : 1,
   };
@@ -296,6 +314,9 @@ export const useAsha = create<State>((set) => ({
   remember: (m) => set((s) => ({ memories: [m, ...s.memories.filter((x) => x.id !== m.id)] })),
   updateMemory: (id, patch) => set((s) => ({ memories: s.memories.map((m) => (m.id === id ? { ...m, ...patch } : m)) })),
   forget: (id) => set((s) => ({ memories: s.memories.filter((m) => m.id !== id) })),
+  // newest first; the same id replaces the old copy
+  savePrescription: (p) => set((s) => ({ prescriptions: [p, ...s.prescriptions.filter((x) => x.id !== p.id)].slice(0, 30) })),
+  removePrescription: (id) => set((s) => ({ prescriptions: s.prescriptions.filter((x) => x.id !== id) })),
   updateMeal: (id, patch) =>
     set((s) => ({
       meals: s.meals.map((m) => (m.id === id ? { ...m, ...patch } : m)),
