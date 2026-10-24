@@ -2,7 +2,9 @@ import { useRef, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, FieldLabel, SpeakField, t } from "@/components/asha/bits";
 import { apiReadPrescription } from "@/lib/asha/api";
-import { normTime, speakClock } from "@/lib/asha/time";
+import { normTime, speakClock, todayKey } from "@/lib/asha/time";
+import { PrescriptionList, RxDetailsEditor, type RxDraft } from "@/components/asha/ideas/prescriptions";
+import { putRxPhoto } from "@/lib/asha/rx";
 import { newId, useAsha } from "@/lib/asha/store";
 import type { Food, Med } from "@/lib/asha/types";
 import { latinDigits } from "@/lib/asha/schedule";
@@ -315,6 +317,9 @@ export function MedsScreen() {
   const [error, setError] = useState("");
   const [drafts, setDrafts] = useState<Draft[] | null>(null);
   const [caution, setCaution] = useState("");
+  const [rx, setRx] = useState<RxDraft | null>(null);
+  const [rxImage, setRxImage] = useState("");
+  const savePrescription = useAsha((s) => s.savePrescription);
   const fileRef = useRef<HTMLInputElement>(null);
   const galleryRef = useRef<HTMLInputElement>(null);
 
@@ -352,6 +357,13 @@ export function MedsScreen() {
         };
       });
       setCaution(res.caution);
+      setRx({
+        date: res.date || todayKey(),
+        doctor: res.doctor ?? "",
+        instructions: (res.instructions ?? []).join("\n"),
+        followUp: res.followUp ?? "",
+      });
+      setRxImage(image);
       if (!next.length) {
         setError(
           t(lang, {
@@ -569,6 +581,7 @@ export function MedsScreen() {
               </Card>
             ))}
           </div>
+          {rx ? <RxDetailsEditor value={rx} onChange={setRx} /> : null}
           <div className="mt-4 flex flex-col gap-2">
             <Button
               onClick={() => {
@@ -597,6 +610,22 @@ export function MedsScreen() {
                   pillsLeft: d.pillsLeft,
                 })),
               );
+                if (rx) {
+                  const id = newId();
+                  savePrescription({
+                    id,
+                    date: rx.date,
+                    doctor: rx.doctor.trim(),
+                    meds: chosen.map((d) => [d.name.trim(), d.dose.trim(), d.note].filter(Boolean).join(", ")),
+                    instructions: rx.instructions.split("\n").map((l) => l.trim()).filter(Boolean),
+                    followUp: rx.followUp,
+                    savedAt: Date.now(),
+                    hasPhoto: Boolean(rxImage),
+                  });
+                  if (rxImage) void putRxPhoto(id, rxImage);
+                }
+                setRx(null);
+                setRxImage("");
                 setDrafts(null);
                 setCaution("");
                 setError("");
@@ -604,12 +633,20 @@ export function MedsScreen() {
             >
               {t(lang, { en: "Add the ticked medicines", hi: "चुनी हुई दवाएँ जोड़ें" })}
             </Button>
-            <Button variant="quiet" onClick={() => setDrafts(null)}>
+            <Button
+              variant="quiet"
+              onClick={() => {
+                setDrafts(null);
+                setRx(null);
+                setRxImage("");
+              }}
+            >
               {t(lang, { en: "Do not add these", hi: "इन्हें न जोड़ें" })}
             </Button>
           </div>
         </div>
       ) : null}
+      <PrescriptionList />
     </div>
   );
 }

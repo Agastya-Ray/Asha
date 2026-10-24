@@ -28,7 +28,7 @@ async function whereAmI(): Promise<string> {
   }
 }
 
-async function callNumber(number: string) {
+export async function callNumber(number: string) {
   if (isNative) {
     try {
       await AshaNative.call({ number: latinDigits(number) });

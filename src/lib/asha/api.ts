@@ -59,5 +59,14 @@ export function apiChat(input: { show: Lang; say: Lang; context: string; turns: 
 export type RxMedicine = { name: string; dose: string; times: string[]; food: string; days: number; note: string };
 
 export function apiReadPrescription(image: string) {
-  return post<{ medicines: RxMedicine[]; unreadable: boolean; caution: string }>("/api/rx", { image }, 45000);
+  return post<{
+    medicines: RxMedicine[];
+    unreadable: boolean;
+    caution: string;
+    /** older servers leave these out */
+    date?: string;
+    doctor?: string;
+    instructions?: string[];
+    followUp?: string;
+  }>("/api/rx", { image }, 45000);
 }
