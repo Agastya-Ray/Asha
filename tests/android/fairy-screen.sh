@@ -188,6 +188,8 @@ adb shell wm dismiss-keyguard; sleep 2
 adb shell appops set $PKG SYSTEM_ALERT_WINDOW allow && log "Display over other apps: on"
 setclock 101519202026.00
 launch; sleep 4
+# she floats only for people who switch her on in Settings, never by herself
+flow fairy_float_on.yaml && pass "Settings: Floating fairy switched on"
 adb shell input keyevent KEYCODE_HOME; sleep 4
 shot F12-home-wallpaper-and-floating
 expect_overlays 1 "with the permission she also floats over other apps" float
