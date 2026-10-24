@@ -1,6 +1,7 @@
 import { useAsha } from "@/lib/asha/store";
 import { useEffect, useRef, useState, type CSSProperties } from "react";
 import { cn } from "@/lib/cn";
+import { CrownFlowers } from "@/components/asha/ideas/crown";
 import idle from "@/assets/fairy/idle.webp";
 import happy from "@/assets/fairy/happy.webp";
 import thinking from "@/assets/fairy/thinking.webp";
@@ -85,10 +86,13 @@ export function Pixie({ mood = "idle", look, className, style }: { mood?: PixieM
     <div className={cn("pixie relative", `pixie-${mood}`, className)} style={style} role="img" aria-label={`${fairyName || "Your fairy"}${mood === "sleep" ? ", asleep" : ""}`}>
       <div className="pixie-glow absolute inset-0" />
       <div className="pixie-lean absolute inset-0" style={lean}>
-        {was && was !== mood ? (
-          <img key={`was-${was}`} src={ART[was]} alt="" draggable={false} className="pixie-was absolute inset-0 h-full w-full object-contain object-bottom" />
-        ) : null}
-        <img key={mood} src={ART[mood]} alt="" draggable={false} className={cn("pixie-art absolute inset-0 h-full w-full object-contain object-bottom", was && was !== mood && "pixie-in")} />
+        <div className="pixie-art absolute inset-0">
+          {was && was !== mood ? (
+            <img key={`was-${was}`} src={ART[was]} alt="" draggable={false} className="pixie-was absolute inset-0 h-full w-full object-contain object-bottom" />
+          ) : null}
+          <img key={mood} src={ART[mood]} alt="" draggable={false} className={cn("absolute inset-0 h-full w-full object-contain object-bottom", was && was !== mood && "pixie-in")} />
+          <CrownFlowers mood={mood} />
+        </div>
       </div>
       <Extras mood={mood} />
     </div>
