@@ -48,11 +48,12 @@ export type Heard = "call" | "help" | "quiet" | "how" | "taken" | "ate" | "not-y
 
 /** What a short spoken sentence asks for. Help wins; a "not yet" stops a dose or meal being marked. */
 export function intentOf(said: string): Heard {
+  // "how do I mark it taken?" or "how do I call the doctor?" is a question, not a dose taken or a call now
+  const how = HOW.test(said) && (howTopic(said) || HOW_ANY.test(said.trim()));
+  if (how && !URGENT.test(said) && !HELP.test(said) && !CALL_NOW.test(said.replace(/\bcall\b/gi, ""))) return "how";
   if (CALL_NOW.test(said) || URGENT.test(said)) return "call";
   if (HELP.test(said)) return "help";
   if (QUIET.test(said)) return "quiet";
-  // "how do I mark it taken?" is a question, not a dose taken
-  if (HOW.test(said) && (howTopic(said) || HOW_ANY.test(said.trim()))) return "how";
   const taken = TAKEN.test(said) && !ATE.test(said);
   const ate = ATE.test(said);
   if ((taken || ate) && NOT_YET.test(said)) return "not-yet";
