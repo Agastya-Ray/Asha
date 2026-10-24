@@ -110,8 +110,11 @@ export function CrownKeeper() {
   const due = ready && count > seen;
   useEffect(() => {
     if (!due) return;
-    const id = window.setTimeout(() => setOpen(true), 1200);
-    return () => window.clearTimeout(id);
+    // never on top of something else she is showing (a dose reminder comes first): wait until the screen is free
+    const id = window.setInterval(() => {
+      if (!document.querySelector('[role="dialog"][aria-modal="true"]')) setOpen(true);
+    }, 1200);
+    return () => window.clearInterval(id);
   }, [due]);
 
   const flower = FLOWERS[count - 1];
