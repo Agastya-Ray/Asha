@@ -7,6 +7,8 @@ import { apiChat } from "@/lib/asha/api";
 import { QUIET, minutesSaid } from "@/lib/asha/quiet";
 import { CONDITIONS, text as phrase } from "@/lib/asha/plans";
 import { useAsha } from "@/lib/asha/store";
+import { REMIND, memoryContext } from "@/lib/asha/remember";
+import { useRemember } from "@/components/asha/ideas/remember";
 import { speak } from "@/lib/asha/voice";
 
 const CRISIS =
@@ -39,6 +41,8 @@ export function TalkScreen() {
     setError("");
     // "I'm going to a wedding, be quiet": quiet time, not a chat question
     if (QUIET.test(text) && !CRISIS.test(text) && !URGENT.test(text)) return useQuietSheet.getState().show(minutesSaid(text));
+    // "remind me to…": she writes it down and asks what is missing, then the chat goes on
+    if (!CRISIS.test(text) && !URGENT.test(text) && REMIND.test(text) && useRemember.getState().begin(text)) return;
     if (CRISIS.test(text)) setCrisis(true);
     if (URGENT.test(text)) setUrgent(true);
     push({ role: "user", text });
@@ -51,7 +55,7 @@ export function TalkScreen() {
       .join(", ");
     const context = `Name: ${name || "not given"}. Conditions: ${conditionNames || "none selected"}. Medicines: ${
       meds.map((m) => `${m.name} ${m.dose} at ${m.times.join(", ")}`).join("; ") || "none listed"
-    }. Local time: ${new Date().toLocaleString("en-IN")}.`;
+    }. ${memoryContext(useAsha.getState().memories)} Local time: ${new Date().toLocaleString("en-IN")}.`;
     const turns = [...useAsha.getState().chat].slice(-10).map((turn) => ({ role: turn.role, content: turn.text }));
     const res = await apiChat({ show: lang, say: voiceLang, context, turns });
     setBusy(false);

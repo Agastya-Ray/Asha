@@ -121,6 +121,12 @@ public final class AlarmStore {
     /** Sets the alarm for the next time this reminder is due. */
     public static void scheduleNext(Context ctx, JSONObject t, boolean forceTomorrow) {
         long now = System.currentTimeMillis();
+        // A one-off note ("remind me to call Ravi at 5"): rings once, never again.
+        long once = t.optLong("onceAt", 0);
+        if (once > 0) {
+            if (once > now) setAlarm(ctx, t.optString("key"), once, 0, false);
+            return;
+        }
         Calendar c = Calendar.getInstance();
         c.set(Calendar.HOUR_OF_DAY, t.optInt("hour"));
         c.set(Calendar.MINUTE, t.optInt("minute"));

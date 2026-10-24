@@ -8,6 +8,9 @@ import { buildAgenda } from "@/lib/asha/schedule";
 import { useQuietSheet } from "@/components/asha/quiet";
 import { useAsha } from "@/lib/asha/store";
 import { speak } from "@/lib/asha/voice";
+import { hearMemory } from "@/lib/asha/remember";
+import { todayKey } from "@/lib/asha/time";
+import { useRemember } from "@/components/asha/ideas/remember";
 
 /** Words heard on Today that should go on to the Talk screen. */
 export const useTalkHandoff = create<{ text: string; set: (text: string) => void }>((set) => ({
@@ -25,15 +28,20 @@ const WATER = /\b(water|glass)\b|पानी/i;
 // "I haven't taken it", "remind me later", "दवा नहीं ली": never mark these as done
 const NOT_YET = /n't\b|\b(not|never|yet|later|remind|forgot|forget|skip)\b|नहीं|नही\b|भूल|बाद में|याद दिला/i;
 
-export type Heard = "help" | "quiet" | "taken" | "ate" | "not-yet" | "water" | "other";
+export type Heard = "help" | "quiet" | "remember" | "taken" | "ate" | "not-yet" | "water" | "other";
 
 /** What a short spoken sentence asks for. Help wins; a "not yet" stops a dose or meal being marked. */
 export function intentOf(said: string): Heard {
   if (HELP.test(said) || URGENT.test(said)) return "help";
+  // "I'm going to the temple tomorrow" is a plan to remember; "going to the temple" (now) asks for quiet
+  const later = hearMemory(said);
+  if (later?.day && later.day !== todayKey() && !/quiet|silent|चुप|शांत/i.test(said)) return "remember";
   if (QUIET.test(said)) return "quiet";
   const taken = TAKEN.test(said) && !ATE.test(said);
   const ate = ATE.test(said);
   if ((taken || ate) && NOT_YET.test(said)) return "not-yet";
+  // "remind me to call Ravi at 5", "I'm going to the temple tomorrow"
+  if (hearMemory(said)) return "remember";
   if (taken) return "taken";
   if (ate) return "ate";
   if (WATER.test(said)) return "water";
@@ -114,6 +122,10 @@ export function actOnSpoken(said: string) {
   }
   if (want === "quiet") {
     useQuietSheet.getState().show(minutesSaid(said));
+    return;
+  }
+  if (want === "remember") {
+    useRemember.getState().begin(said);
     return;
   }
   if (want === "taken") {

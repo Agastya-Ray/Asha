@@ -75,7 +75,8 @@ export function ReminderEngine() {
         state.sleepTime !== prev.sleepTime ||
         state.quietUntil !== prev.quietUntil ||
         state.onboarded !== prev.onboarded ||
-        state.appRole !== prev.appRole
+        state.appRole !== prev.appRole ||
+        state.memories !== prev.memories
       ) {
         syncReminders();
       }

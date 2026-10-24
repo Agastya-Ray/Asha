@@ -3,6 +3,7 @@ import { AshaNative, isNative, type NativeReminder } from "@/lib/asha/native";
 import { timeWords } from "@/lib/asha/family";
 import { againSentence, doseSentence, mealNote, mealSentence, mealTitle, missedText, morningLine, nightLine } from "@/lib/asha/speech";
 import { backLine } from "@/lib/asha/quiet";
+import { dueLine } from "@/lib/asha/remember";
 import { useAsha } from "@/lib/asha/store";
 import { speakClock, todayKey, toMin } from "@/lib/asha/time";
 import type { Persist } from "@/lib/asha/types";
@@ -99,6 +100,23 @@ export function buildReminders(s: S): NativeReminder[] {
       body: nightLine(lang, s.name),
       say: nightLine(v, s.name),
       lang: v,
+    });
+  }
+  // things she was asked to remember, each rung once
+  const now = Date.now();
+  for (const m of s.memories) {
+    if (m.done || !m.at || m.at <= now || m.at - now > 7 * 86400000) continue;
+    const at = new Date(m.at);
+    out.push({
+      key: `note|${m.id}`,
+      hour: at.getHours(),
+      minute: at.getMinutes(),
+      kind: "greet",
+      title: lang === "hi" ? "याद है?" : "You asked me to remember",
+      body: dueLine(lang, s.name, m.what || m.said),
+      say: dueLine(v, s.name, m.what || m.said),
+      lang: v,
+      onceAt: m.at,
     });
   }
   return out;

@@ -22,11 +22,14 @@ public class ReminderReceiver extends BroadcastReceiver {
         if (attempt == 0) AlarmStore.scheduleNext(ctx, t, true);
 
         if (t.optLong("skipUntil", 0) > System.currentTimeMillis()) return; // already done today
+        // a note hours late (phone was off) is not said out of the blue; the app shows it instead
+        long once = t.optLong("onceAt", 0);
+        if (once > 0 && System.currentTimeMillis() - once > 2 * 60 * 60 * 1000L) return;
 
         // Quiet mode: greetings wait for another day; medicines and meals only buzz a silent card
         // and are said out loud when quiet ends.
         if (AlarmStore.quiet(ctx)) {
-            if ("greet".equals(t.optString("kind"))) return;
+            if ("greet".equals(t.optString("kind")) && once == 0) return;
             AlarmStore.addQuietMissed(ctx, key);
             ReminderService.showCard(ctx, t, attempt);
             return;

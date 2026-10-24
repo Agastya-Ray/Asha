@@ -21,6 +21,8 @@ export type NativeReminder = {
   doneLabel?: string;
   snoozeLabel?: string;
   againLabel?: string;
+  /** a one-off reminder: rings once at this time (ms), never again */
+  onceAt?: number;
 };
 
 export type NativeConfig = {
