@@ -1,0 +1,344 @@
+--------- beginning of main
+10-26 19:21:37.919 D/Maestro (11057): Requesting view hierarchy
+10-26 19:21:37.924 W/QueryController(11057): Could not detect idle state.
+10-26 19:21:37.925 W/QueryController(11057): Could not detect idle state.
+10-26 19:21:38.081 I/AidlLazyServiceRegistrar(10841): Process has 0 (of 1 available) client(s) in use after notification artd has clients: 0
+10-26 19:21:38.081 I/AidlLazyServiceRegistrar(10841): Trying to shut down the service. No clients in use for any service in process.
+--------- beginning of kernel
+10-26 19:21:38.266 I/servicemanager(    0): Notifying artd they don't (previously: do) have clients when we now have no record of a client
+10-26 19:21:38.271 I/servicemanager(    0): Unregistering artd
+10-26 19:21:38.272 I/BpBinder(    0): onLastStrongRef automatically unlinking death recipients:
+10-26 19:21:38.085 I/AidlLazyServiceRegistrar(10841): Unregistered all clients and exiting
+10-26 19:21:38.275 I/init    (    0): Service 'artd' (pid 10841) exited with status 0 oneshot service took 19.854000 seconds in background
+10-26 19:21:38.277 I/init    (    0): Sending signal 9 to service 'artd' (pid 10841) process group...
+10-26 19:21:38.279 I/libprocessgroup(    0): Successfully killed process cgroup uid 1082 pid 10841 in 0ms
+10-26 19:21:38.690 D/EGL_emulation( 8024): app_time_stats: avg=63.15ms min=41.89ms max=87.80ms count=16
+10-26 19:21:39.735 D/EGL_emulation( 8024): app_time_stats: avg=55.17ms min=40.05ms max=68.70ms count=18
+10-26 19:21:40.484 I/Maestro (11057): Skipping invisible child: android.view.accessibility.AccessibilityNodeInfo@bc08; boundsInParent: Rect(0, 0 - 1080, 128); boundsInScreen: Rect(0, 0 - 1080, 128); boundsInWindow: Rect(0, 0 - 1080, 128); packageName: com.agastyaray.asha; className: android.view.View; text: null; error: null; maxTextLength: -1; stateDescription: null; contentDescription: null; tooltipText: null; containerTitle: null; viewIdResName: android:id/statusBarBackground; uniqueId: null; checkable: false; checked: false; focusable: false; focused: false; selected: false; clickable: false; longClickable: false; contextClickable: false; enabled: true; password: false; scrollable: false; importantForAccessibility: false; visible: false; actions: [AccessibilityAction: ACTION_SELECT - null, AccessibilityAction: ACTION_CLEAR_SELECTION - null, AccessibilityAction: ACTION_ACCESSIBILITY_FOCUS - null, AccessibilityAction: ACTION_SHOW_ON_SCREEN - null]; isTextSelectable: false
+10-26 19:21:40.536 D/StatusBarIconController(  831): ignoring old pipeline callbacks, because the new mobile icons are enabled
+10-26 19:21:40.565 D/Maestro (11057): View hierarchy received in 2646 ms
+10-26 19:21:40.777 W/QueryController(11057): Could not detect idle state.
+10-26 19:21:40.778 D/EGL_emulation( 8024): app_time_stats: avg=61.92ms min=43.10ms max=89.68ms count=16
+10-26 19:21:40.838 D/UiDevice(11057): Waiting 500ms for window update of package com.agastyaray.asha.
+10-26 19:21:41.148 D/StrictMode(10769): StrictMode policy violation: android.os.strictmode.SqliteObjectLeakedViolation: Finalizing a Cursor that has not been deactivated or closed. database = /data/user/0/com.android.providers.contacts/databases/contacts2.db, table = raw_contacts, query = SELECT contacts_view._id AS _id, contacts_view.display_name AS display_name, contacts_view.photo_thumb_uri AS photo_thumb_uri, data1 AS number, data2 AS type, data3 AS label, contacts_view.lookup AS lookup FROM raw_contacts JOIN view_contacts as contacts_view ON (contacts_view._id = raw_contacts.contact_id) JOIN (SELECT data_id,normalized_number FROM phone_lookup WHERE (phone_lookup.min_match = '7654321')) AS lookup ON lookup.data_id=data._id JOIN data ON data.raw_contact_id=raw_contacts._id WHERE (PHONE_NUMBERS_EQUAL(data.data1, '+15551234567', 0, 7)) ORDER BY  length(lookup.normalized_number) DESC
+10-26 19:21:41.148 D/StrictMode(10769): 	at android.os.StrictMode.onSqliteObjectLeaked(StrictMode.java:2222)
+10-26 19:21:41.148 D/StrictMode(10769): 	at android.database.sqlite.SQLiteCursor.finalize(SQLiteCursor.java:282)
+10-26 19:21:41.148 D/StrictMode(10769): 	at java.lang.Daemons$FinalizerDaemon.doFinalize(Daemons.java:339)
+10-26 19:21:41.148 D/StrictMode(10769): 	at java.lang.Daemons$FinalizerDaemon.processReference(Daemons.java:324)
+10-26 19:21:41.148 D/StrictMode(10769): 	at java.lang.Daemons$FinalizerDaemon.runInternal(Daemons.java:300)
+10-26 19:21:41.148 D/StrictMode(10769): 	at java.lang.Daemons$Daemon.run(Daemons.java:145)
+10-26 19:21:41.148 D/StrictMode(10769): 	at java.lang.Thread.run(Thread.java:1012)
+10-26 19:21:41.150 D/StrictMode(10769): StrictMode policy violation: android.os.strictmode.LeakedClosableViolation: A resource was acquired at attached stack trace but never released. See java.io.Closeable for information on avoiding resource leaks.
+10-26 19:21:41.150 D/StrictMode(10769): 	at android.os.StrictMode$AndroidCloseGuardReporter.report(StrictMode.java:1994)
+10-26 19:21:41.150 D/StrictMode(10769): 	at dalvik.system.CloseGuard.warnIfOpen(CloseGuard.java:336)
+10-26 19:21:41.150 D/StrictMode(10769): 	at android.database.AbstractCursor.finalize(AbstractCursor.java:531)
+10-26 19:21:41.150 D/StrictMode(10769): 	at android.database.sqlite.SQLiteCursor.finalize(SQLiteCursor.java:291)
+10-26 19:21:41.150 D/StrictMode(10769): 	at java.lang.Daemons$FinalizerDaemon.doFinalize(Daemons.java:339)
+10-26 19:21:41.150 D/StrictMode(10769): 	at java.lang.Daemons$FinalizerDaemon.processReference(Daemons.java:324)
+10-26 19:21:41.150 D/StrictMode(10769): 	at java.lang.Daemons$FinalizerDaemon.runInternal(Daemons.java:300)
+10-26 19:21:41.150 D/StrictMode(10769): 	at java.lang.Daemons$Daemon.run(Daemons.java:145)
+10-26 19:21:41.150 D/StrictMode(10769): 	at java.lang.Thread.run(Thread.java:1012)
+10-26 19:21:41.150 D/StrictMode(10769): Caused by: java.lang.Throwable: Explicit termination method 'AbstractCursor.close' not called
+10-26 19:21:41.150 D/StrictMode(10769): 	at dalvik.system.CloseGuard.openWithCallSite(CloseGuard.java:288)
+10-26 19:21:41.150 D/StrictMode(10769): 	at dalvik.system.CloseGuard.open(CloseGuard.java:257)
+10-26 19:21:41.150 D/StrictMode(10769): 	at android.database.AbstractCursor.<init>(AbstractCursor.java:227)
+10-26 19:21:41.150 D/StrictMode(10769): 	at android.database.AbstractWindowedCursor.<init>(AbstractWindowedCursor.java:39)
+10-26 19:21:41.150 D/StrictMode(10769): 	at android.database.sqlite.SQLiteCursor.<init>(SQLiteCursor.java:98)
+10-26 19:21:41.150 D/StrictMode(10769): 	at android.database.sqlite.SQLiteDirectCursorDriver.query(SQLiteDirectCursorDriver.java:52)
+10-26 19:21:41.150 D/StrictMode(10769): 	at android.database.sqlite.SQLiteDatabase.rawQueryWithFactory(SQLiteDatabase.java:1714)
+10-26 19:21:41.150 D/StrictMode(10769): 	at android.database.sqlite.SQLiteQueryBuilder.query(SQLiteQueryBuilder.java:592)
+10-26 19:21:41.150 D/StrictMode(10769): 	at com.android.providers.contacts.ContactsProvider2.doQuery(ContactsProvider2.java:7543)
+10-26 19:21:41.150 D/StrictMode(10769): 	at com.android.providers.contacts.ContactsProvider2.queryLocal(ContactsProvider2.java:7249)
+10-26 19:21:41.150 D/StrictMode(10769): 	at com.android.providers.contacts.ContactsProvider2.queryCorpLookupIfNecessary(ContactsProvider2.java:7728)
+10-26 19:21:41.150 D/StrictMode(10769): 	at com.android.providers.contacts.ContactsProvider2.queryLookupEnterprise(ContactsProvider2.java:7867)
+10-26 19:21:41.150 D/StrictMode(10769): 	at com.android.providers.contacts.ContactsProvider2.queryPhoneLookupEnterprise(ContactsProvider2.java:7838)
+10-26 19:21:41.150 D/StrictMode(10769): 	at com.android.providers.contacts.ContactsProvider2.queryLocal(ContactsProvider2.java:7172)
+10-26 19:21:41.150 D/StrictMode(10769): 	at com.android.providers.contacts.ContactsProvider2.queryDirectoryIfNecessary(ContactsProvider2.java:5883)
+10-26 19:21:41.150 D/StrictMode(10769): 	at com.android.providers.contacts.ContactsProvider2.queryInternal(ContactsProvider2.java:5728)
+10-26 19:21:41.150 D/StrictMode(10769): 	at com.android.providers.contacts.ContactsProvider2.query(ContactsProvider2.java:5673)
+10-26 19:21:41.150 D/StrictMode(10769): 	at android.content.ContentProvider.query(ContentProvider.java:1692)
+10-26 19:21:41.150 D/StrictMode(10769): 	at android.content.ContentProvider$Transport.query(ContentProvider.java:292)
+10-26 19:21:41.150 D/StrictMode(10769): 	at android.content.ContentProviderNative.onTransact(ContentProviderNative.java:107)
+10-26 19:21:41.150 D/StrictMode(10769): 	at android.os.Binder.execTransactInternal(Binder.java:1339)
+10-26 19:21:41.150 D/StrictMode(10769): 	at android.os.Binder.execTransact(Binder.java:1275)
+10-26 19:21:41.339 W/UiDevice(11057): Timed out waiting 500ms on window update.
+10-26 19:21:41.339 W/UiDevice(11057): java.util.concurrent.TimeoutException: Expected event not received within: 500 ms among: []
+10-26 19:21:41.339 W/UiDevice(11057): 	at android.app.UiAutomation.executeAndWaitForEvent(UiAutomation.java:1071)
+10-26 19:21:41.339 W/UiDevice(11057): 	at androidx.test.uiautomator.UiDevice.waitForWindowUpdate(UiDevice.java:1253)
+10-26 19:21:41.339 W/UiDevice(11057): 	at dev.mobile.maestro.Service.isWindowUpdating(MaestroDriverService.kt:359)
+10-26 19:21:41.339 W/UiDevice(11057): 	at maestro_android.MaestroDriverGrpc$MethodHandlers.invoke(MaestroDriverGrpc.java:965)
+10-26 19:21:41.339 W/UiDevice(11057): 	at io.grpc.stub.ServerCalls$UnaryServerCallHandler$UnaryServerCallListener.onHalfClose(ServerCalls.java:182)
+10-26 19:21:41.339 W/UiDevice(11057): 	at io.grpc.internal.ServerCallImpl$ServerStreamListenerImpl.halfClosed(ServerCallImpl.java:355)
+10-26 19:21:41.339 W/UiDevice(11057): 	at io.grpc.internal.ServerImpl$JumpToApplicationThreadServerStreamListener$1HalfClosed.runInContext(ServerImpl.java:867)
+10-26 19:21:41.339 W/UiDevice(11057): 	at io.grpc.internal.ContextRunnable.run(ContextRunnable.java:37)
+10-26 19:21:41.339 W/UiDevice(11057): 	at io.grpc.internal.SerializingExecutor.run(SerializingExecutor.java:133)
+10-26 19:21:41.339 W/UiDevice(11057): 	at java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1145)
+10-26 19:21:41.339 W/UiDevice(11057): 	at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:644)
+10-26 19:21:41.339 W/UiDevice(11057): 	at java.lang.Thread.run(Thread.java:1012)
+--------- beginning of system
+10-26 19:21:41.342 W/ProcessStats(  519): Tracking association SourceState{82e1d48 com.google.android.gms.persistent/10131 BTop #18962} whose proc state 2 is better than process ProcessState{776b9f0 com.google.android.gms/10131 pkg=com.google.android.gms} proc state 8 (567 skipped)
+10-26 19:21:41.439 W/QueryController(11057): Could not detect idle state.
+10-26 19:21:41.506 D/UiDevice(11057): Waiting 500ms for window update of package com.agastyaray.asha.
+10-26 19:21:41.702 D/WifiNl80211Manager(  519): Scan result ready event
+10-26 19:21:41.702 D/WifiNative(  519): Scan result ready event
+10-26 19:21:41.796 D/EGL_emulation( 8024): app_time_stats: avg=57.28ms min=38.26ms max=78.85ms count=17
+10-26 19:21:42.023 W/UiDevice(11057): Timed out waiting 500ms on window update.
+10-26 19:21:42.023 W/UiDevice(11057): java.util.concurrent.TimeoutException: Expected event not received within: 500 ms among: []
+10-26 19:21:42.023 W/UiDevice(11057): 	at android.app.UiAutomation.executeAndWaitForEvent(UiAutomation.java:1071)
+10-26 19:21:42.023 W/UiDevice(11057): 	at androidx.test.uiautomator.UiDevice.waitForWindowUpdate(UiDevice.java:1253)
+10-26 19:21:42.023 W/UiDevice(11057): 	at dev.mobile.maestro.Service.isWindowUpdating(MaestroDriverService.kt:359)
+10-26 19:21:42.023 W/UiDevice(11057): 	at maestro_android.MaestroDriverGrpc$MethodHandlers.invoke(MaestroDriverGrpc.java:965)
+10-26 19:21:42.023 W/UiDevice(11057): 	at io.grpc.stub.ServerCalls$UnaryServerCallHandler$UnaryServerCallListener.onHalfClose(ServerCalls.java:182)
+10-26 19:21:42.023 W/UiDevice(11057): 	at io.grpc.internal.ServerCallImpl$ServerStreamListenerImpl.halfClosed(ServerCallImpl.java:355)
+10-26 19:21:42.023 W/UiDevice(11057): 	at io.grpc.internal.ServerImpl$JumpToApplicationThreadServerStreamListener$1HalfClosed.runInContext(ServerImpl.java:867)
+10-26 19:21:42.023 W/UiDevice(11057): 	at io.grpc.internal.ContextRunnable.run(ContextRunnable.java:37)
+10-26 19:21:42.023 W/UiDevice(11057): 	at io.grpc.internal.SerializingExecutor.run(SerializingExecutor.java:133)
+10-26 19:21:42.023 W/UiDevice(11057): 	at java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1145)
+10-26 19:21:42.023 W/UiDevice(11057): 	at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:644)
+10-26 19:21:42.023 W/UiDevice(11057): 	at java.lang.Thread.run(Thread.java:1012)
+10-26 19:21:42.151 D/Maestro (11057): Requesting view hierarchy
+10-26 19:21:42.155 W/QueryController(11057): Could not detect idle state.
+10-26 19:21:42.155 W/QueryController(11057): Could not detect idle state.
+10-26 19:21:42.810 D/EGL_emulation( 8024): app_time_stats: avg=54.88ms min=42.35ms max=65.40ms count=17
+10-26 19:21:43.773 I/keystore2(  158): system/security/keystore2/src/watchdog.rs:319 - Watchdog thread idle -> terminating. Have a great day.
+10-26 19:21:43.863 D/EGL_emulation( 8024): app_time_stats: avg=55.09ms min=37.21ms max=70.21ms count=18
+10-26 19:21:43.986 I/WorkerManager( 1807): dispose()
+10-26 19:21:43.986 W/A       ( 1807): Queue length for executor EventBus is now 11. Perhaps some tasks are too long, or the pool is too small.
+10-26 19:21:44.212 D/ActivityManager(  519): freezing 10769 android.process.acore
+10-26 19:21:44.863 I/Maestro (11057): Skipping invisible child: android.view.accessibility.AccessibilityNodeInfo@bc08; boundsInParent: Rect(0, 0 - 1080, 128); boundsInScreen: Rect(0, 0 - 1080, 128); boundsInWindow: Rect(0, 0 - 1080, 128); packageName: com.agastyaray.asha; className: android.view.View; text: null; error: null; maxTextLength: -1; stateDescription: null; contentDescription: null; tooltipText: null; containerTitle: null; viewIdResName: android:id/statusBarBackground; uniqueId: null; checkable: false; checked: false; focusable: false; focused: false; selected: false; clickable: false; longClickable: false; contextClickable: false; enabled: true; password: false; scrollable: false; importantForAccessibility: false; visible: false; actions: [AccessibilityAction: ACTION_SELECT - null, AccessibilityAction: ACTION_CLEAR_SELECTION - null, AccessibilityAction: ACTION_ACCESSIBILITY_FOCUS - null, AccessibilityAction: ACTION_SHOW_ON_SCREEN - null]; isTextSelectable: false
+10-26 19:21:44.906 D/Maestro (11057): View hierarchy received in 2755 ms
+10-26 19:21:44.930 D/EGL_emulation( 8024): app_time_stats: avg=57.28ms min=39.61ms max=74.82ms count=18
+10-26 19:21:45.133 D/TaplEvents( 1086): TIS / TouchInteractionService.onInputEvent: MotionEvent { action=ACTION_DOWN, actionButton=0, id[0]=0, x[0]=759.0, y[0]=230.0, toolType[0]=TOOL_TYPE_FINGER, buttonState=0, classification=NONE, metaState=0, flags=0x0, edgeFlags=0x0, pointerCount=1, historySize=0, eventTime=1242536, downTime=1242536, deviceId=-1, source=0x1002, displayId=0, eventId=-132049151 }
+10-26 19:21:45.297 D/TaplEvents( 1086): TIS / TouchInteractionService.onInputEvent: MotionEvent { action=ACTION_UP, actionButton=0, id[0]=0, x[0]=759.0, y[0]=230.0, toolType[0]=TOOL_TYPE_FINGER, buttonState=0, classification=NONE, metaState=0, flags=0x0, edgeFlags=0x0, pointerCount=1, historySize=0, eventTime=1242747, downTime=1242536, deviceId=-1, source=0x1002, displayId=0, eventId=-519187888 }
+10-26 19:21:45.489 D/Maestro (11057): Requesting view hierarchy
+10-26 19:21:45.490 W/QueryController(11057): Could not detect idle state.
+10-26 19:21:45.491 W/QueryController(11057): Could not detect idle state.
+10-26 19:21:45.535 E/chromium( 8024): [ERROR:page_load_metrics_update_dispatcher.cc(178)] Invalid first_paint 0.649 s for first_image_paint 0.534 s
+10-26 19:21:45.813 E/chromium( 8024): [ERROR:page_load_metrics_update_dispatcher.cc(178)] Invalid first_paint 0.649 s for first_image_paint 0.534 s
+10-26 19:21:45.948 D/EGL_emulation( 8024): app_time_stats: avg=53.71ms min=35.89ms max=80.80ms count=18
+10-26 19:21:46.994 D/EGL_emulation( 8024): app_time_stats: avg=48.54ms min=33.73ms max=68.80ms count=20
+10-26 19:21:47.313 I/Maestro (11057): Skipping invisible child: android.view.accessibility.AccessibilityNodeInfo@bc08; boundsInParent: Rect(0, 0 - 1080, 128); boundsInScreen: Rect(0, 0 - 1080, 128); boundsInWindow: Rect(0, 0 - 1080, 128); packageName: com.agastyaray.asha; className: android.view.View; text: null; error: null; maxTextLength: -1; stateDescription: null; contentDescription: null; tooltipText: null; containerTitle: null; viewIdResName: android:id/statusBarBackground; uniqueId: null; checkable: false; checked: false; focusable: false; focused: false; selected: false; clickable: false; longClickable: false; contextClickable: false; enabled: true; password: false; scrollable: false; importantForAccessibility: false; visible: false; actions: [AccessibilityAction: ACTION_SELECT - null, AccessibilityAction: ACTION_CLEAR_SELECTION - null, AccessibilityAction: ACTION_ACCESSIBILITY_FOCUS - null, AccessibilityAction: ACTION_SHOW_ON_SCREEN - null]; isTextSelectable: false
+10-26 19:21:47.452 D/Maestro (11057): View hierarchy received in 1963 ms
+10-26 19:21:47.572 D/Maestro (11057): Requesting view hierarchy
+10-26 19:21:47.573 W/QueryController(11057): Could not detect idle state.
+10-26 19:21:47.574 W/QueryController(11057): Could not detect idle state.
+10-26 19:21:48.016 D/EGL_emulation( 8024): app_time_stats: avg=50.39ms min=31.89ms max=68.04ms count=19
+10-26 19:21:48.551 E/A       ( 1807): disposing SearchServiceClient after timeout []
+10-26 19:21:48.986 I/Maestro (11057): Skipping invisible child: android.view.accessibility.AccessibilityNodeInfo@bc08; boundsInParent: Rect(0, 0 - 1080, 128); boundsInScreen: Rect(0, 0 - 1080, 128); boundsInWindow: Rect(0, 0 - 1080, 128); packageName: com.agastyaray.asha; className: android.view.View; text: null; error: null; maxTextLength: -1; stateDescription: null; contentDescription: null; tooltipText: null; containerTitle: null; viewIdResName: android:id/statusBarBackground; uniqueId: null; checkable: false; checked: false; focusable: false; focused: false; selected: false; clickable: false; longClickable: false; contextClickable: false; enabled: true; password: false; scrollable: false; importantForAccessibility: false; visible: false; actions: [AccessibilityAction: ACTION_SELECT - null, AccessibilityAction: ACTION_CLEAR_SELECTION - null, AccessibilityAction: ACTION_ACCESSIBILITY_FOCUS - null, AccessibilityAction: ACTION_SHOW_ON_SCREEN - null]; isTextSelectable: false
+10-26 19:21:49.040 D/Maestro (11057): View hierarchy received in 1468 ms
+10-26 19:21:49.042 D/EGL_emulation( 8024): app_time_stats: avg=47.44ms min=27.19ms max=60.96ms count=20
+10-26 19:21:49.276 D/Maestro (11057): Requesting view hierarchy
+10-26 19:21:49.281 W/QueryController(11057): Could not detect idle state.
+10-26 19:21:49.285 W/QueryController(11057): Could not detect idle state.
+10-26 19:21:50.048 D/EGL_emulation( 8024): app_time_stats: avg=48.90ms min=32.82ms max=70.95ms count=19
+10-26 19:21:50.536 D/StatusBarIconController(  831): ignoring old pipeline callbacks, because the new mobile icons are enabled
+10-26 19:21:50.642 D/EGL_emulation(  831): app_time_stats: avg=50572.77ms min=50572.77ms max=50572.77ms count=1
+10-26 19:21:51.085 D/EGL_emulation( 8024): app_time_stats: avg=47.12ms min=30.16ms max=64.25ms count=20
+10-26 19:21:51.195 I/ContentMaintenance( 5593): Internal cache bytes used: 0; limit: 100000000; download size: 0
+10-26 19:21:51.210 I/RealtimeCacheCleanup( 5593): Beginning Realtime garbage collection.
+10-26 19:21:51.213 I/RealtimeCacheCleanup( 5593): Finished Realtime garbage collection.
+10-26 19:21:51.251 I/Maestro (11057): Skipping invisible child: android.view.accessibility.AccessibilityNodeInfo@bc08; boundsInParent: Rect(0, 0 - 1080, 128); boundsInScreen: Rect(0, 0 - 1080, 128); boundsInWindow: Rect(0, 0 - 1080, 128); packageName: com.agastyaray.asha; className: android.view.View; text: null; error: null; maxTextLength: -1; stateDescription: null; contentDescription: null; tooltipText: null; containerTitle: null; viewIdResName: android:id/statusBarBackground; uniqueId: null; checkable: false; checked: false; focusable: false; focused: false; selected: false; clickable: false; longClickable: false; contextClickable: false; enabled: true; password: false; scrollable: false; importantForAccessibility: false; visible: false; actions: [AccessibilityAction: ACTION_SELECT - null, AccessibilityAction: ACTION_CLEAR_SELECTION - null, AccessibilityAction: ACTION_ACCESSIBILITY_FOCUS - null, AccessibilityAction: ACTION_SHOW_ON_SCREEN - null]; isTextSelectable: false
+10-26 19:21:51.383 D/Maestro (11057): View hierarchy received in 2107 ms
+10-26 19:21:51.562 D/Maestro (11057): Requesting view hierarchy
+10-26 19:21:51.563 W/QueryController(11057): Could not detect idle state.
+10-26 19:21:51.563 W/QueryController(11057): Could not detect idle state.
+10-26 19:21:52.136 D/EGL_emulation( 8024): app_time_stats: avg=57.04ms min=40.95ms max=75.35ms count=18
+10-26 19:21:52.537 D/StatusBarIconController(  831): ignoring old pipeline callback because the new wifi icon is enabled
+10-26 19:21:53.160 D/EGL_emulation( 8024): app_time_stats: avg=48.20ms min=34.61ms max=70.32ms count=20
+10-26 19:21:53.397 I/Maestro (11057): Skipping invisible child: android.view.accessibility.AccessibilityNodeInfo@bc08; boundsInParent: Rect(0, 0 - 1080, 128); boundsInScreen: Rect(0, 0 - 1080, 128); boundsInWindow: Rect(0, 0 - 1080, 128); packageName: com.agastyaray.asha; className: android.view.View; text: null; error: null; maxTextLength: -1; stateDescription: null; contentDescription: null; tooltipText: null; containerTitle: null; viewIdResName: android:id/statusBarBackground; uniqueId: null; checkable: false; checked: false; focusable: false; focused: false; selected: false; clickable: false; longClickable: false; contextClickable: false; enabled: true; password: false; scrollable: false; importantForAccessibility: false; visible: false; actions: [AccessibilityAction: ACTION_SELECT - null, AccessibilityAction: ACTION_CLEAR_SELECTION - null, AccessibilityAction: ACTION_ACCESSIBILITY_FOCUS - null, AccessibilityAction: ACTION_SHOW_ON_SCREEN - null]; isTextSelectable: false
+10-26 19:21:53.453 D/Maestro (11057): View hierarchy received in 1891 ms
+10-26 19:21:53.787 D/TaplEvents( 1086): TIS / TouchInteractionService.onInputEvent: MotionEvent { action=ACTION_DOWN, actionButton=0, id[0]=0, x[0]=540.0, y[0]=1200.0, toolType[0]=TOOL_TYPE_FINGER, buttonState=0, classification=NONE, metaState=0, flags=0x0, edgeFlags=0x0, pointerCount=1, historySize=0, eventTime=1251247, downTime=1251247, deviceId=-1, source=0x1002, displayId=0, eventId=-644512538 }
+10-26 19:21:54.137 E/chromium( 8024): [ERROR:page_load_metrics_update_dispatcher.cc(178)] Invalid first_paint 0.649 s for first_image_paint 0.534 s
+10-26 19:21:54.212 D/EGL_emulation( 8024): app_time_stats: avg=52.61ms min=37.10ms max=73.64ms count=19
+10-26 19:21:54.220 E/chromium( 8024): [ERROR:page_load_metrics_update_dispatcher.cc(178)] Invalid first_paint 0.649 s for first_image_paint 0.534 s
+10-26 19:21:54.338 E/chromium( 8024): [ERROR:page_load_metrics_update_dispatcher.cc(178)] Invalid first_paint 0.649 s for first_image_paint 0.534 s
+10-26 19:21:54.537 E/chromium( 8024): [ERROR:page_load_metrics_update_dispatcher.cc(178)] Invalid first_paint 0.649 s for first_image_paint 0.534 s
+10-26 19:21:54.538 I/netd    (  336): tetherGetStats() -> {[]} <5.39ms>
+10-26 19:21:54.551 I/netd    (  336): bandwidthSetGlobalAlert(2097152) <0.18ms>
+10-26 19:21:54.554 I/netd    (  336): bandwidthRemoveInterfaceQuota(eth0) <0.58ms>
+10-26 19:21:54.558 I/netd    (  336): bandwidthSetInterfaceQuota(eth0, 9223372036854775807) <0.37ms>
+10-26 19:21:54.559 D/TaplEvents( 1086): TIS / TouchInteractionService.onInputEvent: MotionEvent { action=ACTION_UP, actionButton=0, id[0]=0, x[0]=540.0, y[0]=240.0, toolType[0]=TOOL_TYPE_FINGER, buttonState=0, classification=NONE, metaState=0, flags=0x0, edgeFlags=0x0, pointerCount=1, historySize=0, eventTime=1252007, downTime=1251247, deviceId=-1, source=0x1002, displayId=0, eventId=-587517248 }
+10-26 19:21:54.685 E/chromium( 8024): [ERROR:page_load_metrics_update_dispatcher.cc(178)] Invalid first_paint 0.649 s for first_image_paint 0.534 s
+10-26 19:21:55.248 D/EGL_emulation( 8024): app_time_stats: avg=59.37ms min=38.91ms max=177.99ms count=17
+10-26 19:21:55.398 W/QueryController(11057): Could not detect idle state.
+10-26 19:21:55.398 D/Maestro (11057): Requesting view hierarchy
+10-26 19:21:55.399 W/QueryController(11057): Could not detect idle state.
+10-26 19:21:55.400 W/QueryController(11057): Could not detect idle state.
+10-26 19:21:55.916 W/ProcessStats(  519): Tracking association SourceState{82e1d48 com.google.android.gms.persistent/10131 BTop #18976} whose proc state 2 is better than process ProcessState{776b9f0 com.google.android.gms/10131 pkg=com.google.android.gms} proc state 8 (35 skipped)
+10-26 19:21:56.268 D/EGL_emulation( 8024): app_time_stats: avg=49.11ms min=32.59ms max=61.82ms count=20
+10-26 19:21:57.006 I/Maestro (11057): Skipping invisible child: android.view.accessibility.AccessibilityNodeInfo@bc08; boundsInParent: Rect(0, 0 - 1080, 128); boundsInScreen: Rect(0, 0 - 1080, 128); boundsInWindow: Rect(0, 0 - 1080, 128); packageName: com.agastyaray.asha; className: android.view.View; text: null; error: null; maxTextLength: -1; stateDescription: null; contentDescription: null; tooltipText: null; containerTitle: null; viewIdResName: android:id/statusBarBackground; uniqueId: null; checkable: false; checked: false; focusable: false; focused: false; selected: false; clickable: false; longClickable: false; contextClickable: false; enabled: true; password: false; scrollable: false; importantForAccessibility: false; visible: false; actions: [AccessibilityAction: ACTION_SELECT - null, AccessibilityAction: ACTION_CLEAR_SELECTION - null, AccessibilityAction: ACTION_ACCESSIBILITY_FOCUS - null, AccessibilityAction: ACTION_SHOW_ON_SCREEN - null]; isTextSelectable: false
+10-26 19:21:57.047 D/Maestro (11057): View hierarchy received in 1649 ms
+10-26 19:21:57.212 D/Maestro (11057): Requesting view hierarchy
+10-26 19:21:57.214 W/QueryController(11057): Could not detect idle state.
+10-26 19:21:57.219 W/QueryController(11057): Could not detect idle state.
+10-26 19:21:57.290 D/EGL_emulation( 8024): app_time_stats: avg=48.24ms min=31.81ms max=60.72ms count=20
+10-26 19:21:58.312 D/EGL_emulation( 8024): app_time_stats: avg=46.49ms min=31.15ms max=68.80ms count=20
+10-26 19:21:58.867 I/Maestro (11057): Skipping invisible child: android.view.accessibility.AccessibilityNodeInfo@bc08; boundsInParent: Rect(0, 0 - 1080, 128); boundsInScreen: Rect(0, 0 - 1080, 128); boundsInWindow: Rect(0, 0 - 1080, 128); packageName: com.agastyaray.asha; className: android.view.View; text: null; error: null; maxTextLength: -1; stateDescription: null; contentDescription: null; tooltipText: null; containerTitle: null; viewIdResName: android:id/statusBarBackground; uniqueId: null; checkable: false; checked: false; focusable: false; focused: false; selected: false; clickable: false; longClickable: false; contextClickable: false; enabled: true; password: false; scrollable: false; importantForAccessibility: false; visible: false; actions: [AccessibilityAction: ACTION_SELECT - null, AccessibilityAction: ACTION_CLEAR_SELECTION - null, AccessibilityAction: ACTION_ACCESSIBILITY_FOCUS - null, AccessibilityAction: ACTION_SHOW_ON_SCREEN - null]; isTextSelectable: false
+10-26 19:21:58.958 D/Maestro (11057): View hierarchy received in 1746 ms
+10-26 19:21:59.091 D/Maestro (11057): Requesting view hierarchy
+10-26 19:21:59.093 W/QueryController(11057): Could not detect idle state.
+10-26 19:21:59.095 W/QueryController(11057): Could not detect idle state.
+10-26 19:21:59.333 D/EGL_emulation( 8024): app_time_stats: avg=49.80ms min=32.00ms max=61.74ms count=19
+10-26 19:22:00.009 I/AiAiEcho( 1648): Predicting[0]: 
+10-26 19:22:00.009 I/AiAiEcho( 1648): EchoTargets: 
+10-26 19:22:00.009 I/AiAiEcho( 1648): Filtered by AiAi flag check: 
+10-26 19:22:00.009 I/AiAiEcho( 1648): Ranked targets strategy: SORT, count: 0, ranking metadata: 
+10-26 19:22:00.009 I/AiAiEcho( 1648): #postPredictionTargets: Sending updates to UISurface lockscreen with targets# 0 (types=[])
+10-26 19:22:00.011 W/PageIndicator(  831): Total number of pages invalid: 0. Assuming 1 page.
+10-26 19:22:00.022 D/EGL_emulation(  831): app_time_stats: avg=9379.71ms min=9379.71ms max=9379.71ms count=1
+10-26 19:22:00.337 D/EGL_emulation( 8024): app_time_stats: avg=49.21ms min=33.43ms max=68.56ms count=19
+10-26 19:22:00.545 D/StatusBarIconController(  831): ignoring old pipeline callbacks, because the new mobile icons are enabled
+10-26 19:22:00.790 I/Maestro (11057): Skipping invisible child: android.view.accessibility.AccessibilityNodeInfo@bc08; boundsInParent: Rect(0, 0 - 1080, 128); boundsInScreen: Rect(0, 0 - 1080, 128); boundsInWindow: Rect(0, 0 - 1080, 128); packageName: com.agastyaray.asha; className: android.view.View; text: null; error: null; maxTextLength: -1; stateDescription: null; contentDescription: null; tooltipText: null; containerTitle: null; viewIdResName: android:id/statusBarBackground; uniqueId: null; checkable: false; checked: false; focusable: false; focused: false; selected: false; clickable: false; longClickable: false; contextClickable: false; enabled: true; password: false; scrollable: false; importantForAccessibility: false; visible: false; actions: [AccessibilityAction: ACTION_SELECT - null, AccessibilityAction: ACTION_CLEAR_SELECTION - null, AccessibilityAction: ACTION_ACCESSIBILITY_FOCUS - null, AccessibilityAction: ACTION_SHOW_ON_SCREEN - null]; isTextSelectable: false
+10-26 19:22:00.867 D/Maestro (11057): View hierarchy received in 1776 ms
+10-26 19:22:01.057 D/Maestro (11057): Requesting view hierarchy
+10-26 19:22:01.058 W/QueryController(11057): Could not detect idle state.
+10-26 19:22:01.058 W/QueryController(11057): Could not detect idle state.
+10-26 19:22:01.347 D/EGL_emulation( 8024): app_time_stats: avg=48.00ms min=29.55ms max=67.51ms count=19
+10-26 19:22:02.205 I/Maestro (11057): Skipping invisible child: android.view.accessibility.AccessibilityNodeInfo@bc08; boundsInParent: Rect(0, 0 - 1080, 128); boundsInScreen: Rect(0, 0 - 1080, 128); boundsInWindow: Rect(0, 0 - 1080, 128); packageName: com.agastyaray.asha; className: android.view.View; text: null; error: null; maxTextLength: -1; stateDescription: null; contentDescription: null; tooltipText: null; containerTitle: null; viewIdResName: android:id/statusBarBackground; uniqueId: null; checkable: false; checked: false; focusable: false; focused: false; selected: false; clickable: false; longClickable: false; contextClickable: false; enabled: true; password: false; scrollable: false; importantForAccessibility: false; visible: false; actions: [AccessibilityAction: ACTION_SELECT - null, AccessibilityAction: ACTION_CLEAR_SELECTION - null, AccessibilityAction: ACTION_ACCESSIBILITY_FOCUS - null, AccessibilityAction: ACTION_SHOW_ON_SCREEN - null]; isTextSelectable: false
+10-26 19:22:02.284 D/Maestro (11057): View hierarchy received in 1227 ms
+10-26 19:22:02.427 D/EGL_emulation( 8024): app_time_stats: avg=47.95ms min=33.66ms max=78.64ms count=21
+10-26 19:22:02.539 D/TaplEvents( 1086): TIS / TouchInteractionService.onInputEvent: MotionEvent { action=ACTION_DOWN, actionButton=0, id[0]=0, x[0]=540.0, y[0]=1200.0, toolType[0]=TOOL_TYPE_FINGER, buttonState=0, classification=NONE, metaState=0, flags=0x0, edgeFlags=0x0, pointerCount=1, historySize=0, eventTime=1259975, downTime=1259975, deviceId=-1, source=0x1002, displayId=0, eventId=-199168213 }
+10-26 19:22:02.807 E/chromium( 8024): [ERROR:page_load_metrics_update_dispatcher.cc(178)] Invalid first_paint 0.649 s for first_image_paint 0.534 s
+10-26 19:22:02.890 E/chromium( 8024): [ERROR:page_load_metrics_update_dispatcher.cc(178)] Invalid first_paint 0.649 s for first_image_paint 0.534 s
+10-26 19:22:03.035 E/chromium( 8024): [ERROR:page_load_metrics_update_dispatcher.cc(178)] Invalid first_paint 0.649 s for first_image_paint 0.534 s
+10-26 19:22:03.191 E/chromium( 8024): [ERROR:page_load_metrics_update_dispatcher.cc(178)] Invalid first_paint 0.649 s for first_image_paint 0.534 s
+10-26 19:22:03.204 D/TaplEvents( 1086): TIS / TouchInteractionService.onInputEvent: MotionEvent { action=ACTION_UP, actionButton=0, id[0]=0, x[0]=540.0, y[0]=240.0, toolType[0]=TOOL_TYPE_FINGER, buttonState=0, classification=NONE, metaState=0, flags=0x0, edgeFlags=0x0, pointerCount=1, historySize=0, eventTime=1260664, downTime=1259975, deviceId=-1, source=0x1002, displayId=0, eventId=-867948897 }
+10-26 19:22:03.333 E/chromium( 8024): [ERROR:page_load_metrics_update_dispatcher.cc(178)] Invalid first_paint 0.649 s for first_image_paint 0.534 s
+10-26 19:22:03.612 D/EGL_emulation( 8024): app_time_stats: avg=64.30ms min=36.04ms max=216.95ms count=18
+10-26 19:22:03.613 I/ActivityManager(  519): Killing 2873:com.google.android.dialer/u0a128 (adj 975): empty #17
+10-26 19:22:03.619 I/libprocessgroup(  519): Successfully killed process cgroup uid 10128 pid 2873 in 5ms
+10-26 19:22:03.831 W/binder_debug(    0): 4 callbacks suppressed
+10-26 19:22:03.831 I/binder  (    0): undelivered transaction 1317923, process died.
+10-26 19:22:03.840 I/binder  (    0): undelivered transaction 1316179, process died.
+10-26 19:22:03.652 D/DisplayManagerService(  519): Drop pending events for gone uid 10128
+10-26 19:22:03.653 I/Zygote  (  337): Process 2873 exited due to signal 9 (Killed)
+10-26 19:22:03.958 W/QueryController(11057): Could not detect idle state.
+10-26 19:22:03.959 D/Maestro (11057): Requesting view hierarchy
+10-26 19:22:03.959 W/QueryController(11057): Could not detect idle state.
+10-26 19:22:03.959 W/QueryController(11057): Could not detect idle state.
+10-26 19:22:04.082 I/Maestro (11057): Skipping invisible child: android.view.accessibility.AccessibilityNodeInfo@bc08; boundsInParent: Rect(0, 0 - 1080, 128); boundsInScreen: Rect(0, 0 - 1080, 128); boundsInWindow: Rect(0, 0 - 1080, 128); packageName: com.agastyaray.asha; className: android.view.View; text: null; error: null; maxTextLength: -1; stateDescription: null; contentDescription: null; tooltipText: null; containerTitle: null; viewIdResName: android:id/statusBarBackground; uniqueId: null; checkable: false; checked: false; focusable: false; focused: false; selected: false; clickable: false; longClickable: false; contextClickable: false; enabled: true; password: false; scrollable: false; importantForAccessibility: false; visible: false; actions: [AccessibilityAction: ACTION_SELECT - null, AccessibilityAction: ACTION_CLEAR_SELECTION - null, AccessibilityAction: ACTION_ACCESSIBILITY_FOCUS - null, AccessibilityAction: ACTION_SHOW_ON_SCREEN - null]; isTextSelectable: false
+10-26 19:22:04.092 D/Maestro (11057): View hierarchy received in 133 ms
+10-26 19:22:04.152 D/Maestro (11057): Requesting view hierarchy
+10-26 19:22:04.152 W/QueryController(11057): Could not detect idle state.
+10-26 19:22:04.153 W/QueryController(11057): Could not detect idle state.
+10-26 19:22:04.201 I/Maestro (11057): Skipping invisible child: android.view.accessibility.AccessibilityNodeInfo@bc08; boundsInParent: Rect(0, 0 - 1080, 128); boundsInScreen: Rect(0, 0 - 1080, 128); boundsInWindow: Rect(0, 0 - 1080, 128); packageName: com.agastyaray.asha; className: android.view.View; text: null; error: null; maxTextLength: -1; stateDescription: null; contentDescription: null; tooltipText: null; containerTitle: null; viewIdResName: android:id/statusBarBackground; uniqueId: null; checkable: false; checked: false; focusable: false; focused: false; selected: false; clickable: false; longClickable: false; contextClickable: false; enabled: true; password: false; scrollable: false; importantForAccessibility: false; visible: false; actions: [AccessibilityAction: ACTION_SELECT - null, AccessibilityAction: ACTION_CLEAR_SELECTION - null, AccessibilityAction: ACTION_ACCESSIBILITY_FOCUS - null, AccessibilityAction: ACTION_SHOW_ON_SCREEN - null]; isTextSelectable: false
+10-26 19:22:04.211 D/Maestro (11057): View hierarchy received in 59 ms
+10-26 19:22:04.345 D/Maestro (11057): Requesting view hierarchy
+10-26 19:22:04.345 W/QueryController(11057): Could not detect idle state.
+10-26 19:22:04.346 W/QueryController(11057): Could not detect idle state.
+10-26 19:22:04.395 I/Maestro (11057): Skipping invisible child: android.view.accessibility.AccessibilityNodeInfo@bc08; boundsInParent: Rect(0, 0 - 1080, 128); boundsInScreen: Rect(0, 0 - 1080, 128); boundsInWindow: Rect(0, 0 - 1080, 128); packageName: com.agastyaray.asha; className: android.view.View; text: null; error: null; maxTextLength: -1; stateDescription: null; contentDescription: null; tooltipText: null; containerTitle: null; viewIdResName: android:id/statusBarBackground; uniqueId: null; checkable: false; checked: false; focusable: false; focused: false; selected: false; clickable: false; longClickable: false; contextClickable: false; enabled: true; password: false; scrollable: false; importantForAccessibility: false; visible: false; actions: [AccessibilityAction: ACTION_SELECT - null, AccessibilityAction: ACTION_CLEAR_SELECTION - null, AccessibilityAction: ACTION_ACCESSIBILITY_FOCUS - null, AccessibilityAction: ACTION_SHOW_ON_SCREEN - null]; isTextSelectable: false
+10-26 19:22:04.404 D/Maestro (11057): View hierarchy received in 59 ms
+10-26 19:22:04.467 D/Maestro (11057): Requesting view hierarchy
+10-26 19:22:04.467 W/QueryController(11057): Could not detect idle state.
+10-26 19:22:04.468 W/QueryController(11057): Could not detect idle state.
+10-26 19:22:04.480 I/resolv  (  336): GetAddrInfoHandler::run: {100 786532 100 983140 10131 0}
+10-26 19:22:04.485 I/resolv  (  336): res_nmkquery: (QUERY, IN, A)
+10-26 19:22:04.485 I/resolv  (  336): res_nmkquery: (QUERY, IN, AAAA)
+10-26 19:22:04.490 I/resolv  (  336): res_nsend: used send_dg 485 terrno: 0
+10-26 19:22:04.491 I/resolv  (  336): doQuery: rcode=0, ancount=8, return value=485
+10-26 19:22:04.528 I/resolv  (  336): res_nsend: used send_dg 389 terrno: 0
+10-26 19:22:04.528 I/resolv  (  336): doQuery: rcode=0, ancount=8, return value=389
+10-26 19:22:04.532 I/Maestro (11057): Skipping invisible child: android.view.accessibility.AccessibilityNodeInfo@bc08; boundsInParent: Rect(0, 0 - 1080, 128); boundsInScreen: Rect(0, 0 - 1080, 128); boundsInWindow: Rect(0, 0 - 1080, 128); packageName: com.agastyaray.asha; className: android.view.View; text: null; error: null; maxTextLength: -1; stateDescription: null; contentDescription: null; tooltipText: null; containerTitle: null; viewIdResName: android:id/statusBarBackground; uniqueId: null; checkable: false; checked: false; focusable: false; focused: false; selected: false; clickable: false; longClickable: false; contextClickable: false; enabled: true; password: false; scrollable: false; importantForAccessibility: false; visible: false; actions: [AccessibilityAction: ACTION_SELECT - null, AccessibilityAction: ACTION_CLEAR_SELECTION - null, AccessibilityAction: ACTION_ACCESSIBILITY_FOCUS - null, AccessibilityAction: ACTION_SHOW_ON_SCREEN - null]; isTextSelectable: false
+10-26 19:22:04.541 D/Maestro (11057): View hierarchy received in 74 ms
+10-26 19:22:04.636 D/Maestro (11057): Requesting view hierarchy
+10-26 19:22:04.637 W/QueryController(11057): Could not detect idle state.
+10-26 19:22:04.637 W/QueryController(11057): Could not detect idle state.
+10-26 19:22:04.687 I/Maestro (11057): Skipping invisible child: android.view.accessibility.AccessibilityNodeInfo@bc08; boundsInParent: Rect(0, 0 - 1080, 128); boundsInScreen: Rect(0, 0 - 1080, 128); boundsInWindow: Rect(0, 0 - 1080, 128); packageName: com.agastyaray.asha; className: android.view.View; text: null; error: null; maxTextLength: -1; stateDescription: null; contentDescription: null; tooltipText: null; containerTitle: null; viewIdResName: android:id/statusBarBackground; uniqueId: null; checkable: false; checked: false; focusable: false; focused: false; selected: false; clickable: false; longClickable: false; contextClickable: false; enabled: true; password: false; scrollable: false; importantForAccessibility: false; visible: false; actions: [AccessibilityAction: ACTION_SELECT - null, AccessibilityAction: ACTION_CLEAR_SELECTION - null, AccessibilityAction: ACTION_ACCESSIBILITY_FOCUS - null, AccessibilityAction: ACTION_SHOW_ON_SCREEN - null]; isTextSelectable: false
+10-26 19:22:04.695 D/Maestro (11057): View hierarchy received in 59 ms
+10-26 19:22:04.752 D/Maestro (11057): Requesting view hierarchy
+10-26 19:22:04.752 W/QueryController(11057): Could not detect idle state.
+10-26 19:22:04.753 W/QueryController(11057): Could not detect idle state.
+10-26 19:22:04.818 I/Maestro (11057): Skipping invisible child: android.view.accessibility.AccessibilityNodeInfo@bc08; boundsInParent: Rect(0, 0 - 1080, 128); boundsInScreen: Rect(0, 0 - 1080, 128); boundsInWindow: Rect(0, 0 - 1080, 128); packageName: com.agastyaray.asha; className: android.view.View; text: null; error: null; maxTextLength: -1; stateDescription: null; contentDescription: null; tooltipText: null; containerTitle: null; viewIdResName: android:id/statusBarBackground; uniqueId: null; checkable: false; checked: false; focusable: false; focused: false; selected: false; clickable: false; longClickable: false; contextClickable: false; enabled: true; password: false; scrollable: false; importantForAccessibility: false; visible: false; actions: [AccessibilityAction: ACTION_SELECT - null, AccessibilityAction: ACTION_CLEAR_SELECTION - null, AccessibilityAction: ACTION_ACCESSIBILITY_FOCUS - null, AccessibilityAction: ACTION_SHOW_ON_SCREEN - null]; isTextSelectable: false
+10-26 19:22:04.832 D/Maestro (11057): View hierarchy received in 80 ms
+10-26 19:22:04.928 D/Maestro (11057): Requesting view hierarchy
+10-26 19:22:04.929 W/QueryController(11057): Could not detect idle state.
+10-26 19:22:04.929 W/QueryController(11057): Could not detect idle state.
+10-26 19:22:04.982 I/Maestro (11057): Skipping invisible child: android.view.accessibility.AccessibilityNodeInfo@bc08; boundsInParent: Rect(0, 0 - 1080, 128); boundsInScreen: Rect(0, 0 - 1080, 128); boundsInWindow: Rect(0, 0 - 1080, 128); packageName: com.agastyaray.asha; className: android.view.View; text: null; error: null; maxTextLength: -1; stateDescription: null; contentDescription: null; tooltipText: null; containerTitle: null; viewIdResName: android:id/statusBarBackground; uniqueId: null; checkable: false; checked: false; focusable: false; focused: false; selected: false; clickable: false; longClickable: false; contextClickable: false; enabled: true; password: false; scrollable: false; importantForAccessibility: false; visible: false; actions: [AccessibilityAction: ACTION_SELECT - null, AccessibilityAction: ACTION_CLEAR_SELECTION - null, AccessibilityAction: ACTION_ACCESSIBILITY_FOCUS - null, AccessibilityAction: ACTION_SHOW_ON_SCREEN - null]; isTextSelectable: false
+10-26 19:22:04.992 D/Maestro (11057): View hierarchy received in 64 ms
+10-26 19:22:05.068 D/TaplEvents( 1086): TIS / TouchInteractionService.onInputEvent: MotionEvent { action=ACTION_DOWN, actionButton=0, id[0]=0, x[0]=540.0, y[0]=1200.0, toolType[0]=TOOL_TYPE_FINGER, buttonState=0, classification=NONE, metaState=0, flags=0x0, edgeFlags=0x0, pointerCount=1, historySize=0, eventTime=1262528, downTime=1262528, deviceId=-1, source=0x1002, displayId=0, eventId=-712364149 }
+10-26 19:22:05.150 D/EGL_emulation( 8024): app_time_stats: avg=169.71ms min=35.51ms max=1117.72ms count=9
+10-26 19:22:05.246 E/chromium( 8024): [ERROR:page_load_metrics_update_dispatcher.cc(178)] Invalid first_paint 0.649 s for first_image_paint 0.534 s
+10-26 19:22:05.400 E/chromium( 8024): [ERROR:page_load_metrics_update_dispatcher.cc(178)] Invalid first_paint 0.649 s for first_image_paint 0.534 s
+10-26 19:22:05.599 E/chromium( 8024): [ERROR:page_load_metrics_update_dispatcher.cc(178)] Invalid first_paint 0.649 s for first_image_paint 0.534 s
+10-26 19:22:05.699 E/chromium( 8024): [ERROR:page_load_metrics_update_dispatcher.cc(178)] Invalid first_paint 0.649 s for first_image_paint 0.534 s
+10-26 19:22:05.704 D/TaplEvents( 1086): TIS / TouchInteractionService.onInputEvent: MotionEvent { action=ACTION_UP, actionButton=0, id[0]=0, x[0]=540.0, y[0]=240.0, toolType[0]=TOOL_TYPE_FINGER, buttonState=0, classification=NONE, metaState=0, flags=0x0, edgeFlags=0x0, pointerCount=1, historySize=0, eventTime=1263162, downTime=1262528, deviceId=-1, source=0x1002, displayId=0, eventId=-753850844 }
+10-26 19:22:05.843 E/chromium( 8024): [ERROR:page_load_metrics_update_dispatcher.cc(178)] Invalid first_paint 0.649 s for first_image_paint 0.534 s
+10-26 19:22:05.919 D/ActivityManager(  519): freezing 10866 com.android.keychain
+10-26 19:22:05.920 D/ActivityManager(  519): freezing 10527 com.android.settings
+10-26 19:22:06.212 D/EGL_emulation( 8024): app_time_stats: avg=64.51ms min=37.60ms max=228.14ms count=16
+10-26 19:22:06.465 W/QueryController(11057): Could not detect idle state.
+10-26 19:22:06.487 D/Maestro (11057): Requesting view hierarchy
+10-26 19:22:06.490 W/QueryController(11057): Could not detect idle state.
+10-26 19:22:06.492 W/QueryController(11057): Could not detect idle state.
+10-26 19:22:06.565 I/Maestro (11057): Skipping invisible child: android.view.accessibility.AccessibilityNodeInfo@bc08; boundsInParent: Rect(0, 0 - 1080, 128); boundsInScreen: Rect(0, 0 - 1080, 128); boundsInWindow: Rect(0, 0 - 1080, 128); packageName: com.agastyaray.asha; className: android.view.View; text: null; error: null; maxTextLength: -1; stateDescription: null; contentDescription: null; tooltipText: null; containerTitle: null; viewIdResName: android:id/statusBarBackground; uniqueId: null; checkable: false; checked: false; focusable: false; focused: false; selected: false; clickable: false; longClickable: false; contextClickable: false; enabled: true; password: false; scrollable: false; importantForAccessibility: false; visible: false; actions: [AccessibilityAction: ACTION_SELECT - null, AccessibilityAction: ACTION_CLEAR_SELECTION - null, AccessibilityAction: ACTION_ACCESSIBILITY_FOCUS - null, AccessibilityAction: ACTION_SHOW_ON_SCREEN - null]; isTextSelectable: false
+10-26 19:22:06.573 D/Maestro (11057): View hierarchy received in 86 ms
+10-26 19:22:06.668 D/Maestro (11057): Requesting view hierarchy
+10-26 19:22:06.669 W/QueryController(11057): Could not detect idle state.
+10-26 19:22:06.669 W/QueryController(11057): Could not detect idle state.
+10-26 19:22:06.725 I/Maestro (11057): Skipping invisible child: android.view.accessibility.AccessibilityNodeInfo@bc08; boundsInParent: Rect(0, 0 - 1080, 128); boundsInScreen: Rect(0, 0 - 1080, 128); boundsInWindow: Rect(0, 0 - 1080, 128); packageName: com.agastyaray.asha; className: android.view.View; text: null; error: null; maxTextLength: -1; stateDescription: null; contentDescription: null; tooltipText: null; containerTitle: null; viewIdResName: android:id/statusBarBackground; uniqueId: null; checkable: false; checked: false; focusable: false; focused: false; selected: false; clickable: false; longClickable: false; contextClickable: false; enabled: true; password: false; scrollable: false; importantForAccessibility: false; visible: false; actions: [AccessibilityAction: ACTION_SELECT - null, AccessibilityAction: ACTION_CLEAR_SELECTION - null, AccessibilityAction: ACTION_ACCESSIBILITY_FOCUS - null, AccessibilityAction: ACTION_SHOW_ON_SCREEN - null]; isTextSelectable: false
+10-26 19:22:06.734 D/Maestro (11057): View hierarchy received in 66 ms
+10-26 19:22:06.789 D/Maestro (11057): Requesting view hierarchy
+10-26 19:22:06.790 W/QueryController(11057): Could not detect idle state.
+10-26 19:22:06.791 W/QueryController(11057): Could not detect idle state.
+10-26 19:22:06.842 I/Maestro (11057): Skipping invisible child: android.view.accessibility.AccessibilityNodeInfo@bc08; boundsInParent: Rect(0, 0 - 1080, 128); boundsInScreen: Rect(0, 0 - 1080, 128); boundsInWindow: Rect(0, 0 - 1080, 128); packageName: com.agastyaray.asha; className: android.view.View; text: null; error: null; maxTextLength: -1; stateDescription: null; contentDescription: null; tooltipText: null; containerTitle: null; viewIdResName: android:id/statusBarBackground; uniqueId: null; checkable: false; checked: false; focusable: false; focused: false; selected: false; clickable: false; longClickable: false; contextClickable: false; enabled: true; password: false; scrollable: false; importantForAccessibility: false; visible: false; actions: [AccessibilityAction: ACTION_SELECT - null, AccessibilityAction: ACTION_CLEAR_SELECTION - null, AccessibilityAction: ACTION_ACCESSIBILITY_FOCUS - null, AccessibilityAction: ACTION_SHOW_ON_SCREEN - null]; isTextSelectable: false
+10-26 19:22:06.852 D/Maestro (11057): View hierarchy received in 63 ms
+10-26 19:22:06.948 D/Maestro (11057): Requesting view hierarchy
+10-26 19:22:06.948 W/QueryController(11057): Could not detect idle state.
+10-26 19:22:06.949 W/QueryController(11057): Could not detect idle state.
+10-26 19:22:06.995 I/Maestro (11057): Skipping invisible child: android.view.accessibility.AccessibilityNodeInfo@bc08; boundsInParent: Rect(0, 0 - 1080, 128); boundsInScreen: Rect(0, 0 - 1080, 128); boundsInWindow: Rect(0, 0 - 1080, 128); packageName: com.agastyaray.asha; className: android.view.View; text: null; error: null; maxTextLength: -1; stateDescription: null; contentDescription: null; tooltipText: null; containerTitle: null; viewIdResName: android:id/statusBarBackground; uniqueId: null; checkable: false; checked: false; focusable: false; focused: false; selected: false; clickable: false; longClickable: false; contextClickable: false; enabled: true; password: false; scrollable: false; importantForAccessibility: false; visible: false; actions: [AccessibilityAction: ACTION_SELECT - null, AccessibilityAction: ACTION_CLEAR_SELECTION - null, AccessibilityAction: ACTION_ACCESSIBILITY_FOCUS - null, AccessibilityAction: ACTION_SHOW_ON_SCREEN - null]; isTextSelectable: false
+10-26 19:22:07.003 D/Maestro (11057): View hierarchy received in 55 ms
+10-26 19:22:07.059 D/Maestro (11057): Requesting view hierarchy
+10-26 19:22:07.059 W/QueryController(11057): Could not detect idle state.
+10-26 19:22:07.060 W/QueryController(11057): Could not detect idle state.
+10-26 19:22:07.121 I/Maestro (11057): Skipping invisible child: android.view.accessibility.AccessibilityNodeInfo@bc08; boundsInParent: Rect(0, 0 - 1080, 128); boundsInScreen: Rect(0, 0 - 1080, 128); boundsInWindow: Rect(0, 0 - 1080, 128); packageName: com.agastyaray.asha; className: android.view.View; text: null; error: null; maxTextLength: -1; stateDescription: null; contentDescription: null; tooltipText: null; containerTitle: null; viewIdResName: android:id/statusBarBackground; uniqueId: null; checkable: false; checked: false; focusable: false; focused: false; selected: false; clickable: false; longClickable: false; contextClickable: false; enabled: true; password: false; scrollable: false; importantForAccessibility: false; visible: false; actions: [AccessibilityAction: ACTION_SELECT - null, AccessibilityAction: ACTION_CLEAR_SELECTION - null, AccessibilityAction: ACTION_ACCESSIBILITY_FOCUS - null, AccessibilityAction: ACTION_SHOW_ON_SCREEN - null]; isTextSelectable: false
+10-26 19:22:07.130 D/Maestro (11057): View hierarchy received in 71 ms
+10-26 19:22:07.227 D/Maestro (11057): Requesting view hierarchy
+10-26 19:22:07.227 W/QueryController(11057): Could not detect idle state.
+10-26 19:22:07.227 W/QueryController(11057): Could not detect idle state.
+10-26 19:22:07.287 I/Maestro (11057): Skipping invisible child: android.view.accessibility.AccessibilityNodeInfo@bc08; boundsInParent: Rect(0, 0 - 1080, 128); boundsInScreen: Rect(0, 0 - 1080, 128); boundsInWindow: Rect(0, 0 - 1080, 128); packageName: com.agastyaray.asha; className: android.view.View; text: null; error: null; maxTextLength: -1; stateDescription: null; contentDescription: null; tooltipText: null; containerTitle: null; viewIdResName: android:id/statusBarBackground; uniqueId: null; checkable: false; checked: false; focusable: false; focused: false; selected: false; clickable: false; longClickable: false; contextClickable: false; enabled: true; password: false; scrollable: false; importantForAccessibility: false; visible: false; actions: [AccessibilityAction: ACTION_SELECT - null, AccessibilityAction: ACTION_CLEAR_SELECTION - null, AccessibilityAction: ACTION_ACCESSIBILITY_FOCUS - null, AccessibilityAction: ACTION_SHOW_ON_SCREEN - null]; isTextSelectable: false
+10-26 19:22:07.296 D/Maestro (11057): View hierarchy received in 69 ms
+10-26 19:22:07.354 D/Maestro (11057): Requesting view hierarchy
+10-26 19:22:07.355 W/QueryController(11057): Could not detect idle state.
+10-26 19:22:07.355 W/QueryController(11057): Could not detect idle state.
+10-26 19:22:07.410 I/Maestro (11057): Skipping invisible child: android.view.accessibility.AccessibilityNodeInfo@bc08; boundsInParent: Rect(0, 0 - 1080, 128); boundsInScreen: Rect(0, 0 - 1080, 128); boundsInWindow: Rect(0, 0 - 1080, 128); packageName: com.agastyaray.asha; className: android.view.View; text: null; error: null; maxTextLength: -1; stateDescription: null; contentDescription: null; tooltipText: null; containerTitle: null; viewIdResName: android:id/statusBarBackground; uniqueId: null; checkable: false; checked: false; focusable: false; focused: false; selected: false; clickable: false; longClickable: false; contextClickable: false; enabled: true; password: false; scrollable: false; importantForAccessibility: false; visible: false; actions: [AccessibilityAction: ACTION_SELECT - null, AccessibilityAction: ACTION_CLEAR_SELECTION - null, AccessibilityAction: ACTION_ACCESSIBILITY_FOCUS - null, AccessibilityAction: ACTION_SHOW_ON_SCREEN - null]; isTextSelectable: false
+10-26 19:22:07.417 D/Maestro (11057): View hierarchy received in 63 ms
+10-26 19:22:07.527 D/TaplEvents( 1086): TIS / TouchInteractionService.onInputEvent: MotionEvent { action=ACTION_DOWN, actionButton=0, id[0]=0, x[0]=540.0, y[0]=1200.0, toolType[0]=TOOL_TYPE_FINGER, buttonState=0, classification=NONE, metaState=0, flags=0x0, edgeFlags=0x0, pointerCount=1, historySize=0, eventTime=1264987, downTime=1264987, deviceId=-1, source=0x1002, displayId=0, eventId=-1042265656 }
+10-26 19:22:07.558 D/StatusBarIconController(  831): ignoring old pipeline callback because the new wifi icon is enabled
+10-26 19:22:07.597 D/EGL_emulation( 8024): app_time_stats: avg=230.72ms min=42.23ms max=1102.36ms count=6
+10-26 19:22:07.700 E/chromium( 8024): [ERROR:page_load_metrics_update_dispatcher.cc(178)] Invalid first_paint 0.649 s for first_image_paint 0.534 s
+10-26 19:22:07.868 E/chromium( 8024): [ERROR:page_load_metrics_update_dispatcher.cc(178)] Invalid first_paint 0.649 s for first_image_paint 0.534 s
+10-26 19:22:08.016 E/chromium( 8024): [ERROR:page_load_metrics_update_dispatcher.cc(178)] Invalid first_paint 0.649 s for first_image_paint 0.534 s
+10-26 19:22:08.161 E/chromium( 8024): [ERROR:page_load_metrics_update_dispatcher.cc(178)] Invalid first_paint 0.649 s for first_image_paint 0.534 s
+10-26 19:22:08.167 D/TaplEvents( 1086): TIS / TouchInteractionService.onInputEvent: MotionEvent { action=ACTION_UP, actionButton=0, id[0]=0, x[0]=540.0, y[0]=240.0, toolType[0]=TOOL_TYPE_FINGER, buttonState=0, classification=NONE, metaState=0, flags=0x0, edgeFlags=0x0, pointerCount=1, historySize=0, eventTime=1265627, downTime=1264987, deviceId=-1, source=0x1002, displayId=0, eventId=-526825704 }
+10-26 19:22:08.267 E/chromium( 8024): [ERROR:page_load_metrics_update_dispatcher.cc(178)] Invalid first_paint 0.649 s for first_image_paint 0.534 s
+10-26 19:22:08.619 D/EGL_emulation( 8024): app_time_stats: avg=58.59ms min=37.15ms max=217.67ms count=17
+10-26 19:22:08.920 W/QueryController(11057): Could not detect idle state.
+10-26 19:22:08.921 D/Maestro (11057): Requesting view hierarchy
+10-26 19:22:08.921 W/QueryController(11057): Could not detect idle state.
+10-26 19:22:08.922 W/QueryController(11057): Could not detect idle state.
+10-26 19:22:09.037 I/Maestro (11057): Skipping invisible child: android.view.accessibility.AccessibilityNodeInfo@bc08; boundsInParent: Rect(0, 0 - 1080, 128); boundsInScreen: Rect(0, 0 - 1080, 128); boundsInWindow: Rect(0, 0 - 1080, 128); packageName: com.agastyaray.asha; className: android.view.View; text: null; error: null; maxTextLength: -1; stateDescription: null; contentDescription: null; tooltipText: null; containerTitle: null; viewIdResName: android:id/statusBarBackground; uniqueId: null; checkable: false; checked: false; focusable: false; focused: false; selected: false; clickable: false; longClickable: false; contextClickable: false; enabled: true; password: false; scrollable: false; importantForAccessibility: false; visible: false; actions: [AccessibilityAction: ACTION_SELECT - null, AccessibilityAction: ACTION_CLEAR_SELECTION - null, AccessibilityAction: ACTION_ACCESSIBILITY_FOCUS - null, AccessibilityAction: ACTION_SHOW_ON_SCREEN - null]; isTextSelectable: false
+10-26 19:22:09.044 D/Maestro (11057): View hierarchy received in 123 ms
+10-26 19:22:09.101 D/Maestro (11057): Requesting view hierarchy
+10-26 19:22:09.102 W/QueryController(11057): Could not detect idle state.
+10-26 19:22:09.102 W/QueryController(11057): Could not detect idle state.
+10-26 19:22:09.155 I/Maestro (11057): Skipping invisible child: android.view.accessibility.AccessibilityNodeInfo@bc08; boundsInParent: Rect(0, 0 - 1080, 128); boundsInScreen: Rect(0, 0 - 1080, 128); boundsInWindow: Rect(0, 0 - 1080, 128); packageName: com.agastyaray.asha; className: android.view.View; text: null; error: null; maxTextLength: -1; stateDescription: null; contentDescription: null; tooltipText: null; containerTitle: null; viewIdResName: android:id/statusBarBackground; uniqueId: null; checkable: false; checked: false; focusable: false; focused: false; selected: false; clickable: false; longClickable: false; contextClickable: false; enabled: true; password: false; scrollable: false; importantForAccessibility: false; visible: false; actions: [AccessibilityAction: ACTION_SELECT - null, AccessibilityAction: ACTION_CLEAR_SELECTION - null, AccessibilityAction: ACTION_ACCESSIBILITY_FOCUS - null, AccessibilityAction: ACTION_SHOW_ON_SCREEN - null]; isTextSelectable: false
+10-26 19:22:09.163 D/Maestro (11057): View hierarchy received in 62 ms
+10-26 19:22:09.265 D/Maestro (11057): Requesting view hierarchy
+10-26 19:22:09.266 W/QueryController(11057): Could not detect idle state.
+10-26 19:22:09.266 W/QueryController(11057): Could not detect idle state.
+10-26 19:22:09.323 I/Maestro (11057): Skipping invisible child: android.view.accessibility.AccessibilityNodeInfo@bc08; boundsInParent: Rect(0, 0 - 1080, 128); boundsInScreen: Rect(0, 0 - 1080, 128); boundsInWindow: Rect(0, 0 - 1080, 128); packageName: com.agastyaray.asha; className: android.view.View; text: null; error: null; maxTextLength: -1; stateDescription: null; contentDescription: null; tooltipText: null; containerTitle: null; viewIdResName: android:id/statusBarBackground; uniqueId: null; checkable: false; checked: false; focusable: false; focused: false; selected: false; clickable: false; longClickable: false; contextClickable: false; enabled: true; password: false; scrollable: false; importantForAccessibility: false; visible: false; actions: [AccessibilityAction: ACTION_SELECT - null, AccessibilityAction: ACTION_CLEAR_SELECTION - null, AccessibilityAction: ACTION_ACCESSIBILITY_FOCUS - null, AccessibilityAction: ACTION_SHOW_ON_SCREEN - null]; isTextSelectable: false
+10-26 19:22:09.331 D/Maestro (11057): View hierarchy received in 66 ms
+10-26 19:22:09.391 D/Maestro (11057): Requesting view hierarchy
+10-26 19:22:09.391 W/QueryController(11057): Could not detect idle state.
+10-26 19:22:09.392 W/QueryController(11057): Could not detect idle state.
+10-26 19:22:09.441 I/Maestro (11057): Skipping invisible child: android.view.accessibility.AccessibilityNodeInfo@bc08; boundsInParent: Rect(0, 0 - 1080, 128); boundsInScreen: Rect(0, 0 - 1080, 128); boundsInWindow: Rect(0, 0 - 1080, 128); packageName: com.agastyaray.asha; className: android.view.View; text: null; error: null; maxTextLength: -1; stateDescription: null; contentDescription: null; tooltipText: null; containerTitle: null; viewIdResName: android:id/statusBarBackground; uniqueId: null; checkable: false; checked: false; focusable: false; focused: false; selected: false; clickable: false; longClickable: false; contextClickable: false; enabled: true; password: false; scrollable: false; importantForAccessibility: false; visible: false; actions: [AccessibilityAction: ACTION_SELECT - null, AccessibilityAction: ACTION_CLEAR_SELECTION - null, AccessibilityAction: ACTION_ACCESSIBILITY_FOCUS - null, AccessibilityAction: ACTION_SHOW_ON_SCREEN - null]; isTextSelectable: false
+10-26 19:22:09.449 D/Maestro (11057): View hierarchy received in 58 ms
+10-26 19:22:09.656 D/WindowManager(  519): captureDisplay
+10-26 19:22:09.663 I/hwservicemanager(  135): getTransport: Cannot find entry android.hardware.graphics.mapper@4.0::IMapper/default in either framework or device VINTF manifest.
+10-26 19:22:09.663 I/Gralloc4(11041): mapper 4.x is not supported
+10-26 19:22:09.849 I/servicemanager(    0): Could not find android.hardware.graphics.allocator.IAllocator/default in the VINTF manifest.
+10-26 19:22:09.692 D/libEGL  (11041): loaded /vendor/lib64/egl/libEGL_emulation.so
+10-26 19:22:09.693 D/libEGL  (11041): loaded /vendor/lib64/egl/libGLESv1_CM_emulation.so
+10-26 19:22:09.694 D/libEGL  (11041): loaded /vendor/lib64/egl/libGLESv2_emulation.so
+10-26 19:22:09.707 W/OpenGLRenderer(11041): Failed to initialize 101010-2 format, error = EGL_SUCCESS
+10-26 19:22:10.132 E/chromium( 8024): [ERROR:page_load_metrics_update_dispatcher.cc(178)] Invalid first_paint 0.649 s for first_image_paint 0.534 s
