@@ -12,7 +12,10 @@ const VOICE = "cgSgspJ2msm6clMCkdW9"; // Jessica, same as DEFAULT_FAIRY_VOICE in
 const SERVER = process.env.ASHA_API ?? "https://asha-rho.vercel.app";
 const OUT = "public/fairy-clips";
 // flash_v2_5 costs half a credit a character; the free plan has 10,000 credits a month
-const MAX_CREDITS = Number(process.env.MAX_CREDITS ?? 9000);
+const MAX_CREDITS = Number(process.env.MAX_CREDITS ?? 7500);
+// stop in time to commit what is recorded, before the job's six-hour limit
+const MAX_MS = 5 * 60 * 60 * 1000;
+const started = Date.now();
 const PLACEHOLDER_NAME = "Ami";
 
 function walk(dir) {
@@ -81,15 +84,16 @@ function lines() {
 
 async function say(text) {
   let res;
-  for (let tries = 0; ; tries++) {
+  for (;;) {
     res = await fetch(`${SERVER}/api/tts`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ text, lang: "en", who: "fairy", voice: VOICE, owner: "" }),
     });
-    // the server rations requests per minute; wait for the window to clear
-    if (res.status !== 429 || tries >= 8) break;
-    await new Promise((r) => setTimeout(r, 30000));
+    // the server allows about 60 requests an hour per device and per IP; wait for the next hour to start
+    if (res.status !== 429) break;
+    console.log(`hourly limit reached at ${new Date().toISOString()}, waiting`);
+    await new Promise((r) => setTimeout(r, 61 * 60 * 1000));
   }
   const body = await res.json().catch(() => ({}));
   // only Jessica's own voice is kept; a fallback voice would be recorded for good
@@ -115,6 +119,10 @@ let spent = 0;
 let n = Object.keys(index).length;
 for (const line of todo) {
   const cost = line.text.length / 2;
+  if (Date.now() - started > MAX_MS) {
+    console.log("stopping before the job's time limit; the next run continues");
+    break;
+  }
   if (spent + cost > MAX_CREDITS) {
     console.log(`stopping at the credit limit (${MAX_CREDITS}); run again later to continue`);
     break;
