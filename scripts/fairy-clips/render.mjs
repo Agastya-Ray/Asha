@@ -97,6 +97,8 @@ async function say(text) {
   }
   const body = await res.json().catch(() => ({}));
   // only Jessica's own voice is kept; a fallback voice would be recorded for good
+  // out of credits for the month, or the voice is resting: stop cleanly so what is recorded is kept
+  if (res.status === 503 || /quota_exceeded/.test(body.why ?? "")) return null;
   if (!res.ok || !body.ok || body.provider !== "elevenlabs") throw new Error(`voice server ${res.status}: ${body.error ?? ""} ${body.why ?? ""}`);
   await new Promise((r) => setTimeout(r, 2500)); // keep well under the server's per-minute limit
   return Buffer.from(body.audio, "base64");
@@ -129,7 +131,12 @@ for (const line of todo) {
   }
   const file = `${String(++n).padStart(4, "0")}.mp3`;
   mkdirSync(OUT, { recursive: true });
-  writeFileSync(join(OUT, file), await say(line.text));
+  const audio = await say(line.text);
+  if (!audio) {
+    console.log("the voice is out of credits or resting; run again after the monthly reset");
+    break;
+  }
+  writeFileSync(join(OUT, file), audio);
   index[`${line.lang}|${line.text}`] = file;
   spent += cost;
   writeFileSync(indexPath, JSON.stringify(index, null, 1));
