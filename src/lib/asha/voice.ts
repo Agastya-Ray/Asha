@@ -4,6 +4,7 @@ import { apiTts } from "@/lib/asha/api";
 import { AshaNative, isNative } from "@/lib/asha/native";
 import { todayKey } from "@/lib/asha/time";
 import { useAsha } from "@/lib/asha/store";
+import { clipSegments } from "@/lib/asha/clip-segments";
 
 /**
  * Asha's voice, in order of preference:
@@ -112,11 +113,41 @@ export const PHONE_VOICE = "phone";
 export const DEFAULT_FAIRY_ID = "cgSgspJ2msm6clMCkdW9";
 const DEFAULT_FAIRY = { id: DEFAULT_FAIRY_ID, owner: "" };
 
+// Recorded ahead of time by scripts/fairy-clips: "lang|line" -> file in fairy-clips/. Read once, when first needed.
+let shippedIndex: Promise<Record<string, string>> | null = null;
+function shippedClip(text: string, lang: Lang): Promise<string | null> {
+  shippedIndex ??= fetch(`${import.meta.env.BASE_URL}fairy-clips/index.json`)
+    .then((r) => (r.ok ? (r.json() as Promise<Record<string, string>>) : {}))
+    .catch(() => ({}));
+  return shippedIndex.then(async (index) => {
+    const file = index[`${lang}|${text}`];
+    if (!file) return null;
+    try {
+      const res = await fetch(`${import.meta.env.BASE_URL}fairy-clips/${file}`);
+      if (!res.ok) return null;
+      const bytes = new Uint8Array(await res.arrayBuffer());
+      let bin = "";
+      for (let i = 0; i < bytes.length; i += 0x8000) bin += String.fromCharCode(...bytes.subarray(i, i + 0x8000));
+      return btoa(bin);
+    } catch {
+      return null;
+    }
+  });
+}
+
 let fairyRestUntil = 0;
 async function warmClip(text: string, lang: Lang, fairy?: { id: string; owner: string }) {
   const key = `${fairy?.id ?? "asha"}|${lang}|${text}`;
   const hit = cache.get(key) ?? (fairy ? await kept(key) : null);
   if (hit) return hit;
+  // lines recorded ahead of time ship inside the app, in the default voice only
+  if (fairy?.id === DEFAULT_FAIRY_ID) {
+    const shipped = await shippedClip(text, lang);
+    if (shipped) {
+      cache.set(key, shipped);
+      return shipped;
+    }
+  }
   if (Date.now() < (fairy ? fairyRestUntil : warmRestUntil) || !warmAllowed(!!fairy, text.length)) throw new Error("rest");
   const res = await apiTts(text, lang, fairy);
   if (!res.ok) {
@@ -205,18 +236,6 @@ const knownNames = () => {
   return [s.name, s.fairyName].map((n) => n?.trim() ?? "").filter((n) => n.length >= 2);
 };
 
-/** Splits a line around the names in it: "What a lovely name, Ami. Every…" becomes three parts, and "Ami" is
- * one short clip of its own. Only the name changes from person to person, so the rest can be kept. */
-function splitAroundNames(text: string, names: string[]) {
-  const found = names.filter((n) => text.includes(n));
-  if (!found.length) return [text];
-  const re = new RegExp(`(${found.map((n) => n.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")).join("|")})`);
-  return text
-    .split(re)
-    .map((p) => p.trim())
-    .filter((p) => /[\p{L}\p{N}]/u.test(p));
-}
-
 export async function speak(text: string, lang: Lang, prefer: "warm" | "device" | "fairy", loud = false) {
   const clean = text.replace(/\s+/g, " ").trim();
   if (!clean || (!loud && hushUntil > Date.now())) return;
@@ -231,7 +250,7 @@ export async function speak(text: string, lang: Lang, prefer: "warm" | "device" 
   if (prefer === "warm" || fairyVoice) {
     try {
       // Titli's name is said on its own, so the rest of the line is one clip the phone keeps for good
-      const parts = fairyVoice ? splitAroundNames(clean, knownNames()) : [clean];
+      const parts = fairyVoice ? clipSegments(clean, knownNames()) : [clean];
       const clips = await Promise.all(parts.map((p) => warmClip(p, lang, fairyVoice ?? undefined)));
       for (const b64 of clips) {
         if (mine !== generation) return;

@@ -128,7 +128,7 @@ export function FairyIntro() {
     if (step === "home")
       parts.push(
         t(voiceLang, HOME_INTRO),
-        ...HOME_ROWS.map((r) => t(voiceLang, r.text) + "."),
+        ...HOME_ROWS.map((r) => t(voiceLang, r.text)),
         t(voiceLang, NOT_DOCTOR),
       );
     void speak(parts.join(" … "), voiceLang, "fairy");

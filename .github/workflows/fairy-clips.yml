@@ -1,0 +1,34 @@
+name: Record Titli's fixed lines
+
+# Runs by hand. Records the lines Titli says the same every time, in Jessica, and commits the clips to this branch
+# so the app plays them with no call. Needs the ELEVENLABS_API_KEY secret.
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  record:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - run: npm install --no-audit --no-fund --ignore-scripts
+      - name: Record lines
+        env:
+          ELEVENLABS_API_KEY: ${{ secrets.ELEVENLABS_API_KEY }}
+        run: node --experimental-strip-types scripts/fairy-clips/render.mjs
+      - name: Commit clips
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add public/fairy-clips
+          if git diff --cached --quiet; then
+            echo "no new clips"
+          else
+            git commit -m "Record Titli's fixed lines"
+            git push
+          fi
