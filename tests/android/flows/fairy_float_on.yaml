@@ -14,12 +14,12 @@ appId: com.agastyaray.asha
     visible: ".*Fairy on my home and lock screen.*|.*Floating fairy.*|Settings"
     timeout: 10000
 - scrollUntilVisible:
-    element: ".*Floating fairy over other apps.*"
+    element: "(?s).*Floating fairy over other apps.*"
     direction: DOWN
     visibilityPercentage: 60
     timeout: 30000
 - takeScreenshot: F11b-settings-floating-toggle
 - tapOn:
-    text: ".*Floating fairy over other apps.*"
+    text: "(?s).*Floating fairy over other apps.*"
     retryTapIfNoChange: false
 - waitForAnimationToEnd

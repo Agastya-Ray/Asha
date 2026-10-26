@@ -10,6 +10,13 @@ appId: com.agastyaray.asha
     direction: DOWN
     visibilityPercentage: 60
     timeout: 30000
+# lift the button above the in-app fairy and her greeting, which sit near the bottom of the screen
+- swipe:
+    start: "50%,70%"
+    end: "50%,45%"
+    duration: 600
+- waitForAnimationToEnd:
+    timeout: 3000
 - takeScreenshot: F01-today-she-asks
 - tapOn:
     text: "Yes, live on my screen"
