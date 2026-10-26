@@ -41,35 +41,37 @@ export function FairyStayAsk() {
   };
 
   return (
-    <Card className="mt-5 border-[#f3c4d0]">
-      <div className="flex items-start gap-3">
-        <Pixie mood={step === "ask" ? "asking" : "point"} className="h-24 w-20 shrink-0" />
-        <p className="min-w-0 flex-1 text-xl font-bold">{t(lang, step === "ask" ? ask : how)}</p>
-      </div>
-      <div className="mt-2 flex justify-end">
-        <Hear say={t(voiceLang, step === "ask" ? ask : how)} label={t(lang, { en: "Hear this", hi: "इसे सुनें" })} />
-      </div>
-      <div className="mt-3 flex flex-col gap-2">
-        <Button
-          onClick={async () => {
-            setStep("preview");
-            await wantHome();
-          }}
-        >
-          {step === "ask"
-            ? t(lang, { en: "Yes, live on my screen", hi: "हाँ, मेरी स्क्रीन पर रहो" })
-            : t(lang, { en: "Open the page again", hi: "पन्ना फिर खोलें" })}
-        </Button>
-        <Button
-          variant="quiet"
-          onClick={() => {
-            notNow();
-            setStep("gone");
-          }}
-        >
-          {t(lang, { en: "Not now", hi: "अभी नहीं" })}
-        </Button>
-      </div>
-    </Card>
+    <div data-fairy-asks>
+      <Card className="mt-5 border-[#f3c4d0]">
+        <div className="flex items-start gap-3">
+          <Pixie mood={step === "ask" ? "asking" : "point"} className="h-24 w-20 shrink-0" />
+          <p className="min-w-0 flex-1 text-xl font-bold">{t(lang, step === "ask" ? ask : how)}</p>
+        </div>
+        <div className="mt-2 flex justify-end">
+          <Hear say={t(voiceLang, step === "ask" ? ask : how)} label={t(lang, { en: "Hear this", hi: "इसे सुनें" })} />
+        </div>
+        <div className="mt-3 flex flex-col gap-2">
+          <Button
+            onClick={async () => {
+              setStep("preview");
+              await wantHome();
+            }}
+          >
+            {step === "ask"
+              ? t(lang, { en: "Yes, live on my screen", hi: "हाँ, मेरी स्क्रीन पर रहो" })
+              : t(lang, { en: "Open the page again", hi: "पन्ना फिर खोलें" })}
+          </Button>
+          <Button
+            variant="quiet"
+            onClick={() => {
+              notNow();
+              setStep("gone");
+            }}
+          >
+            {t(lang, { en: "Not now", hi: "अभी नहीं" })}
+          </Button>
+        </div>
+      </Card>
+    </div>
   );
 }
