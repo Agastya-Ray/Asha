@@ -3,6 +3,10 @@ appId: com.agastyaray.asha
 ---
 - launchApp:
     clearState: true
+# a slow emulator sometimes shows "Pixel Launcher isn't responding" over the app; let it wait
+- tapOn:
+    text: "Wait"
+    optional: true
 # The fairy is asleep in her night room; a tap wakes her, she says hello and asks for a name.
 - extendedWaitUntil:
     visible: "Wake the fairy"

@@ -117,6 +117,7 @@ adb logcat -c; adb logcat -G 16M 2>/dev/null || true
 adb logcat -v time -b main -b system -b crash > "$OUT/logcat-stream.txt" 2>/dev/null &
 STREAM_PID=$!
 
+adb shell am broadcast -a android.intent.action.CLOSE_SYSTEM_DIALOGS >/dev/null
 flow 01_setup.yaml
 flow 02_permissions.yaml
 adb shell appops set $PKG SCHEDULE_EXACT_ALARM allow
