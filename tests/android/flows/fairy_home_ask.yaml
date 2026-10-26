@@ -1,19 +1,22 @@
 # Today: the fairy asks to live on the home screen; "Yes" opens Android's wallpaper preview.
 # The card sits near the top of Today, so look upward first, then downward.
+# No centring: with the greeting fairy moving below it, Maestro could not settle on a centred position.
 appId: com.agastyaray.asha
 ---
+- waitForAnimationToEnd:
+    timeout: 5000
 - scrollUntilVisible:
-    element: ".*live on my screen.*"
+    element: "Yes, live on my screen"
     direction: UP
-    centerElement: true
+    visibilityPercentage: 60
     timeout: 15000
     optional: true
 - scrollUntilVisible:
-    element: ".*live on my screen.*"
+    element: "Yes, live on my screen"
     direction: DOWN
-    centerElement: true
+    visibilityPercentage: 60
     timeout: 15000
 - takeScreenshot: F01-today-she-asks
 - tapOn:
-    text: ".*live on my screen.*"
+    text: "Yes, live on my screen"
     retryTapIfNoChange: false

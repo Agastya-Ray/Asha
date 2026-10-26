@@ -1,12 +1,17 @@
 # Settings: switch on "Floating fairy over other apps" (the permission is already allowed, so she comes straight on).
 appId: com.agastyaray.asha
 ---
-- tapOn: "Settings"
+# the gear at the top right (Today also has the word "Settings" in its reminder help, so tap the gear by place)
+- tapOn:
+    point: "70%,9%"
+- extendedWaitUntil:
+    visible: ".*Fairy on my home and lock screen.*|.*Floating fairy.*|Settings"
+    timeout: 10000
 - scrollUntilVisible:
     element: ".*Floating fairy over other apps.*"
     direction: DOWN
-    centerElement: true
-    timeout: 20000
+    visibilityPercentage: 60
+    timeout: 30000
 - takeScreenshot: F11b-settings-floating-toggle
 - tapOn:
     text: ".*Floating fairy over other apps.*"
