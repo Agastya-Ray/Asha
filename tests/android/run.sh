@@ -84,7 +84,9 @@ find_webview() {
 # like find_webview, but scrolls on until the control sits above the bottom nav (a tap lower down hits a tab)
 find_above_nav() {
   local xy=""
-  for i in $(seq 1 12); do xy=$(center_webview "$1"); [ -n "$xy" ] && [ "${xy#* }" -lt 1900 ] && break; xy=""; adb shell input swipe 540 1750 540 750 500; sleep 2; done
+  # from the top of the page: Today keeps its scroll, and with big text a card can sit above the start point
+  for i in 1 2 3 4 5 6; do adb shell input swipe 540 750 540 1750 300; done; sleep 2
+  for i in $(seq 1 20); do xy=$(center_webview "$1"); [ -n "$xy" ] && [ "${xy#* }" -lt 1900 ] && break; xy=""; adb shell input swipe 540 1750 540 750 500; sleep 2; done
   echo "$xy"
 }
 # The times below are written for 15 Oct 2026 (16 Oct = the next day) but run from tomorrow's date, so the phone's
