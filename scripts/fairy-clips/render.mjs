@@ -80,15 +80,21 @@ function lines() {
 }
 
 async function say(text) {
-  const res = await fetch(`${SERVER}/api/tts`, {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ text, lang: "en", who: "fairy", voice: VOICE, owner: "" }),
-  });
+  let res;
+  for (let tries = 0; ; tries++) {
+    res = await fetch(`${SERVER}/api/tts`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ text, lang: "en", who: "fairy", voice: VOICE, owner: "" }),
+    });
+    // the server rations requests per minute; wait for the window to clear
+    if (res.status !== 429 || tries >= 8) break;
+    await new Promise((r) => setTimeout(r, 30000));
+  }
   const body = await res.json().catch(() => ({}));
   // only Jessica's own voice is kept; a fallback voice would be recorded for good
   if (!res.ok || !body.ok || body.provider !== "elevenlabs") throw new Error(`voice server ${res.status}: ${body.error ?? ""} ${body.why ?? ""}`);
-  await new Promise((r) => setTimeout(r, 1200)); // the server allows about 60 requests a minute
+  await new Promise((r) => setTimeout(r, 2500)); // keep well under the server's per-minute limit
   return Buffer.from(body.audio, "base64");
 }
 
