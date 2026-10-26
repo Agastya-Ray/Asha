@@ -20,6 +20,10 @@ jobs:
         with:
           node-version: 22
       - run: npm install --no-audit --no-fund --ignore-scripts
+      - name: Check the key is set
+        env:
+          ELEVENLABS_API_KEY: ${{ secrets.ELEVENLABS_API_KEY }}
+        run: test -n "$ELEVENLABS_API_KEY" && echo "ELEVENLABS_API_KEY is set" || echo "ELEVENLABS_API_KEY is missing"
       - name: Record lines
         env:
           ELEVENLABS_API_KEY: ${{ secrets.ELEVENLABS_API_KEY }}
