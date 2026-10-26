@@ -107,7 +107,9 @@ adb shell settings put global auto_time_zone 0
 adb shell service call alarm 3 s16 Asia/Kolkata >/dev/null
 setclock 101507302026.00          # today, 07:30 India time
 adb shell settings put system screen_off_timeout 1800000
-adb shell settings put global animator_duration_scale 1   # the workflow turns animations off; her flight needs them (and the video shows it)
+# Maestro cannot read a screen that never stops moving, so animations stay off for the Maestro flows (the workflow
+# turns them off) and come on only for the native parts, where her flight needs them (and the video shows it).
+anim() { adb shell settings put global animator_duration_scale $1; }
 adb install -r "${APK:-Asha.apk}" && log "installed Asha"
 # like a real phone, "Display over other apps" starts off (this emulator image allows it by default)
 adb shell appops set $PKG SYSTEM_ALERT_WINDOW deny
@@ -123,7 +125,9 @@ adb shell appops get $PKG USE_FULL_SCREEN_INTENT >> "$OUT/full-screen-permission
 launch
 
 # ---------- A. she asks to live on the home screen: one press, no permission ----------
+anim 0
 flow fairy_home_ask.yaml && pass "Today: she asks to live on the home screen, and Yes was pressed"
+anim 1
 sleep 5
 shot F02-wallpaper-preview
 top_activity > "$OUT/after-yes-activity.txt"
@@ -189,7 +193,9 @@ adb shell appops set $PKG SYSTEM_ALERT_WINDOW allow && log "Display over other a
 setclock 101519202026.00
 launch; sleep 4
 # she floats only for people who switch her on in Settings, never by herself
+anim 0
 flow fairy_float_on.yaml && pass "Settings: Floating fairy switched on"
+anim 1
 adb shell input keyevent KEYCODE_HOME; sleep 4
 shot F12-home-wallpaper-and-floating
 expect_overlays 1 "with the permission she also floats over other apps" float
