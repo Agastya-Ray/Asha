@@ -1,6 +1,12 @@
 # Settings: switch on "Floating fairy over other apps" (the permission is already allowed, so she comes straight on).
 appId: com.agastyaray.asha
 ---
+# in the evening the fairy may ask about tomorrow in a card that covers the page; answer it first
+- tapOn:
+    text: "Not today"
+    optional: true
+- waitForAnimationToEnd:
+    timeout: 3000
 # the gear at the top right (Today also has the word "Settings" in its reminder help, so tap the gear by place)
 - tapOn:
     point: "70%,9%"
