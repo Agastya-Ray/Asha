@@ -1,7 +1,7 @@
 name: Record Titli's fixed lines
 
 # Records the lines Titli says the same every time, in Jessica, and commits the clips to this branch so the app
-# plays them with no call. Needs the ELEVENLABS_API_KEY secret. Runs by hand, and on push to this branch for now.
+# plays them with no call. Asks the app's voice server for each line, so no key is needed here. Runs by hand, and on push to this branch for now.
 on:
   workflow_dispatch:
   push:
@@ -21,8 +21,6 @@ jobs:
           node-version: 22
       - run: npm install --no-audit --no-fund --ignore-scripts
       - name: Record lines
-        env:
-          ELEVENLABS_API_KEY: ${{ secrets.ELEVENLABS_API_KEY }}
         run: |
           node --experimental-strip-types scripts/fairy-clips/render.mjs 2>&1 | tee scripts/fairy-clips/last-run.log
           exit ${PIPESTATUS[0]}

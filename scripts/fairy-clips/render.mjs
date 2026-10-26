@@ -1,15 +1,16 @@
 // Records Titli's fixed lines once, in Jessica (the default voice), into public/fairy-clips/ so the app plays
 // them without a call. Lines with a name in them are cut around the name (src/lib/asha/clip-segments.ts), so only
 // the name is left out. Run with: node --experimental-strip-types scripts/fairy-clips/render.mjs
-// Needs ELEVENLABS_API_KEY. Existing clips are skipped, so a run that stops at the free plan's limit can be resumed.
+// Asks the app's own voice server (api/tts.ts), which holds the ElevenLabs key, so no key is needed here.
+// Existing clips are skipped, so a run that stops at the free plan's limit can be resumed.
 import ts from "typescript";
 import { existsSync, mkdirSync, readFileSync, readdirSync, writeFileSync } from "node:fs";
 import { join } from "node:path";
 import { clipSegments } from "../../src/lib/asha/clip-segments.ts";
 
 const VOICE = "cgSgspJ2msm6clMCkdW9"; // Jessica, same as DEFAULT_FAIRY_VOICE in api/_eleven.ts
+const SERVER = process.env.ASHA_API ?? "https://asha-rho.vercel.app";
 const OUT = "public/fairy-clips";
-const KEY = process.env.ELEVENLABS_API_KEY ?? "";
 // flash_v2_5 costs half a credit a character; the free plan has 10,000 credits a month
 const MAX_CREDITS = Number(process.env.MAX_CREDITS ?? 9000);
 const PLACEHOLDER_NAME = "Ami";
@@ -79,17 +80,16 @@ function lines() {
 }
 
 async function say(text) {
-  const res = await fetch(`https://api.elevenlabs.io/v1/text-to-speech/${VOICE}?output_format=mp3_44100_64`, {
+  const res = await fetch(`${SERVER}/api/tts`, {
     method: "POST",
-    headers: { "Content-Type": "application/json", "xi-api-key": KEY },
-    body: JSON.stringify({
-      text,
-      model_id: "eleven_flash_v2_5",
-      voice_settings: { stability: 0.45, similarity_boost: 0.8, style: 0.55, use_speaker_boost: true, speed: 0.85 },
-    }),
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ text, lang: "en", who: "fairy", voice: VOICE, owner: "" }),
   });
-  if (!res.ok) throw new Error(`ElevenLabs ${res.status}: ${(await res.text()).slice(0, 200)}`);
-  return Buffer.from(await res.arrayBuffer());
+  const body = await res.json().catch(() => ({}));
+  // only Jessica's own voice is kept; a fallback voice would be recorded for good
+  if (!res.ok || !body.ok || body.provider !== "elevenlabs") throw new Error(`voice server ${res.status}: ${body.error ?? ""} ${body.why ?? ""}`);
+  await new Promise((r) => setTimeout(r, 1200)); // the server allows about 60 requests a minute
+  return Buffer.from(body.audio, "base64");
 }
 
 if (process.env.DRY) {
@@ -98,7 +98,6 @@ if (process.env.DRY) {
   console.log(all.slice(0, 12));
   process.exit(0);
 }
-if (!KEY) throw new Error("ELEVENLABS_API_KEY is not set");
 mkdirSync(OUT, { recursive: true });
 const indexPath = join(OUT, "index.json");
 const index = existsSync(indexPath) ? JSON.parse(readFileSync(indexPath, "utf8")) : {};
@@ -115,6 +114,7 @@ for (const line of todo) {
     break;
   }
   const file = `${String(++n).padStart(4, "0")}.mp3`;
+  mkdirSync(OUT, { recursive: true });
   writeFileSync(join(OUT, file), await say(line.text));
   index[`${line.lang}|${line.text}`] = file;
   spent += cost;
