@@ -315,11 +315,17 @@ export function FairyTour() {
     const top = Math.min(rect.top, fy) - pad;
     const bottom = Math.max(rect.bottom, fy + FH) + pad;
     if (vp.h - bottom >= top) {
-      place = { top: bottom + 10 };
+      place = { top: bottom + 10, maxHeight: vp.h - bottom - 18 };
       tail = "up";
     } else {
-      place = { bottom: vp.h - top + 10 };
+      place = { bottom: vp.h - top + 10, maxHeight: top - 18 };
       tail = "down";
+    }
+    // with big text there can be too little room on either side: then she talks from the bottom of the screen,
+    // over the page, so her buttons are never pushed off it
+    if ((place.maxHeight as number) < 260) {
+      place = { bottom: 8, maxHeight: vp.h - 16 };
+      tail = null;
     }
   }
   const tailX = Math.max(28, Math.min(vp.w - 44, fx + FW / 2));
@@ -362,8 +368,8 @@ export function FairyTour() {
         </div>
       </div>
       {via ? null : (
-        <div className="fixed inset-x-0 mx-auto max-w-lg px-4" style={place}>
-          <div key={i} className="fi-bubble relative rounded-3xl border-2 border-[#f3c4d0] bg-paper p-4 shadow-lg">
+        <div className="fixed inset-x-0 mx-auto flex max-w-lg flex-col px-4" style={place}>
+          <div key={i} className="fi-bubble relative flex min-h-0 flex-col rounded-3xl border-2 border-[#f3c4d0] bg-paper p-4 shadow-lg">
             {tail ? (
               <span
                 className={`tour-tail absolute ${tail === "up" ? "tour-tail-up" : "tour-tail-down"}`}
@@ -372,14 +378,14 @@ export function FairyTour() {
               />
             ) : null}
             <p className="text-sm font-bold uppercase tracking-wide text-[#d9506f]">{label}</p>
-            <p className="mt-1 text-lg leading-snug">
+            <p className="mt-1 min-h-0 overflow-y-auto text-lg leading-snug">
               {sentences(t(lang, line)).map((part, k) => (
                 <span key={k} className="fi-word" style={{ animationDelay: `${0.4 + k * SENTENCE_S}s` }}>
                   {part}
                 </span>
               ))}
             </p>
-            <div className="mt-3 grid grid-cols-[auto_auto_1fr] gap-2">
+            <div className="mt-3 grid shrink-0 grid-cols-2 gap-2">
               <button
                 type="button"
                 disabled={i === 0}
@@ -400,7 +406,7 @@ export function FairyTour() {
                 🔊 {t(lang, { en: "Again", hi: "फिर से" })}
               </button>
               <Button
-                className="min-h-12"
+                className="col-span-2 min-h-14"
                 onClick={() => {
                   setBack(false);
                   if (i < TOUR.length - 1) setI(i + 1);
