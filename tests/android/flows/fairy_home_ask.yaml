@@ -1,5 +1,5 @@
 # Today: the fairy asks to live on the home screen; "Yes" opens Android's wallpaper preview.
-# The card sits near the top of Today, so look upward first, then downward.
+# The card sits near the top of Today; the script scrolls Today to the top first.
 # No centring: with the greeting fairy moving below it, Maestro could not settle on a centred position.
 appId: com.agastyaray.asha
 ---
@@ -7,15 +7,9 @@ appId: com.agastyaray.asha
     timeout: 5000
 - scrollUntilVisible:
     element: "Yes, live on my screen"
-    direction: UP
-    visibilityPercentage: 60
-    timeout: 15000
-    optional: true
-- scrollUntilVisible:
-    element: "Yes, live on my screen"
     direction: DOWN
     visibilityPercentage: 60
-    timeout: 15000
+    timeout: 30000
 - takeScreenshot: F01-today-she-asks
 - tapOn:
     text: "Yes, live on my screen"

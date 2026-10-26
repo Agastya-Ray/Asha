@@ -127,6 +127,8 @@ launch
 
 # ---------- A. she asks to live on the home screen: one press, no permission ----------
 anim 0
+# start from the top of Today: the question sits above the medicine card, and Today keeps its scroll
+for i in 1 2 3 4 5 6; do adb shell input swipe 540 700 540 1800 300; done; sleep 2
 flow fairy_home_ask.yaml && pass "Today: she asks to live on the home screen, and Yes was pressed"
 anim 1
 sleep 5
