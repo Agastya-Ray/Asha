@@ -4,6 +4,7 @@ import { apiTts } from "@/lib/asha/api";
 import { AshaNative, isNative } from "@/lib/asha/native";
 import { todayKey } from "@/lib/asha/time";
 import { useAsha } from "@/lib/asha/store";
+import { clipSegments } from "@/lib/asha/clip-segments";
 
 /**
  * Asha's voice, in order of preference:
@@ -112,11 +113,41 @@ export const PHONE_VOICE = "phone";
 export const DEFAULT_FAIRY_ID = "cgSgspJ2msm6clMCkdW9";
 const DEFAULT_FAIRY = { id: DEFAULT_FAIRY_ID, owner: "" };
 
+// Recorded ahead of time by scripts/fairy-clips: "lang|line" -> file in fairy-clips/. Read once, when first needed.
+let shippedIndex: Promise<Record<string, string>> | null = null;
+function shippedClip(text: string, lang: Lang): Promise<string | null> {
+  shippedIndex ??= fetch(`${import.meta.env.BASE_URL}fairy-clips/index.json`)
+    .then((r) => (r.ok ? (r.json() as Promise<Record<string, string>>) : {}))
+    .catch(() => ({}));
+  return shippedIndex.then(async (index) => {
+    const file = index[`${lang}|${text}`];
+    if (!file) return null;
+    try {
+      const res = await fetch(`${import.meta.env.BASE_URL}fairy-clips/${file}`);
+      if (!res.ok) return null;
+      const bytes = new Uint8Array(await res.arrayBuffer());
+      let bin = "";
+      for (let i = 0; i < bytes.length; i += 0x8000) bin += String.fromCharCode(...bytes.subarray(i, i + 0x8000));
+      return btoa(bin);
+    } catch {
+      return null;
+    }
+  });
+}
+
 let fairyRestUntil = 0;
 async function warmClip(text: string, lang: Lang, fairy?: { id: string; owner: string }) {
   const key = `${fairy?.id ?? "asha"}|${lang}|${text}`;
   const hit = cache.get(key) ?? (fairy ? await kept(key) : null);
   if (hit) return hit;
+  // lines recorded ahead of time ship inside the app, in the default voice only
+  if (fairy?.id === DEFAULT_FAIRY_ID) {
+    const shipped = await shippedClip(text, lang);
+    if (shipped) {
+      cache.set(key, shipped);
+      return shipped;
+    }
+  }
   if (Date.now() < (fairy ? fairyRestUntil : warmRestUntil) || !warmAllowed(!!fairy, text.length)) throw new Error("rest");
   const res = await apiTts(text, lang, fairy);
   if (!res.ok) {
@@ -189,6 +220,22 @@ function phoneVoice(text: string, lang: Lang, mine: number, fairy = false) {
   });
 }
 
+function playClip(b64: string) {
+  return new Promise<void>((resolve, reject) => {
+    const next = new Audio(`data:audio/mpeg;base64,${b64}`);
+    audio = next;
+    next.onended = () => resolve();
+    next.onpause = () => resolve();
+    next.onerror = () => reject(new Error("play"));
+    next.play().then(() => set({ active: true, source: "warm" }), reject);
+  });
+}
+
+const knownNames = () => {
+  const s = useAsha.getState();
+  return [s.name, s.fairyName].map((n) => n?.trim() ?? "").filter((n) => n.length >= 2);
+};
+
 export async function speak(text: string, lang: Lang, prefer: "warm" | "device" | "fairy", loud = false) {
   const clean = text.replace(/\s+/g, " ").trim();
   if (!clean || (!loud && hushUntil > Date.now())) return;
@@ -202,17 +249,14 @@ export async function speak(text: string, lang: Lang, prefer: "warm" | "device" 
   const fairyVoice = prefer === "fairy" && chosen?.id !== PHONE_VOICE ? (chosen ?? DEFAULT_FAIRY) : null;
   if (prefer === "warm" || fairyVoice) {
     try {
-      const b64 = await warmClip(clean, lang, fairyVoice ?? undefined);
-      if (mine !== generation) return;
-      const next = new Audio(`data:audio/mpeg;base64,${b64}`);
-      audio = next;
-      await new Promise<void>((resolve, reject) => {
-        next.onended = () => resolve();
-        next.onpause = () => resolve();
-        next.onerror = () => reject(new Error("play"));
-        next.play().then(() => set({ active: true, source: "warm" }), reject);
-      });
-      if (audio === next && mine === generation) set({ active: false });
+      // Titli's name is said on its own, so the rest of the line is one clip the phone keeps for good
+      const parts = fairyVoice ? clipSegments(clean, knownNames()) : [clean];
+      const clips = await Promise.all(parts.map((p) => warmClip(p, lang, fairyVoice ?? undefined)));
+      for (const b64 of clips) {
+        if (mine !== generation) return;
+        await playClip(b64);
+      }
+      if (mine === generation) set({ active: false });
       return;
     } catch {
       if (mine !== generation) return;

@@ -1,0 +1,144 @@
+// Records Titli's fixed lines once, in Jessica (the default voice), into public/fairy-clips/ so the app plays
+// them without a call. Lines with a name in them are cut around the name (src/lib/asha/clip-segments.ts), so only
+// the name is left out. Run with: node --experimental-strip-types scripts/fairy-clips/render.mjs
+// Asks the app's own voice server (api/tts.ts), which holds the ElevenLabs key, so no key is needed here.
+// Existing clips are skipped, so a run that stops at the free plan's limit can be resumed.
+import ts from "typescript";
+import { existsSync, mkdirSync, readFileSync, readdirSync, writeFileSync } from "node:fs";
+import { join } from "node:path";
+import { clipSegments } from "../../src/lib/asha/clip-segments.ts";
+
+const VOICE = "cgSgspJ2msm6clMCkdW9"; // Jessica, same as DEFAULT_FAIRY_VOICE in api/_eleven.ts
+const SERVER = process.env.ASHA_API ?? "https://asha-rho.vercel.app";
+const OUT = "public/fairy-clips";
+// flash_v2_5 costs half a credit a character; the free plan has 10,000 credits a month
+const MAX_CREDITS = Number(process.env.MAX_CREDITS ?? 7500);
+// stop in time to commit what is recorded, before the job's six-hour limit
+const MAX_MS = 5 * 60 * 60 * 1000;
+const started = Date.now();
+const PLACEHOLDER_NAME = "Ami";
+
+function walk(dir) {
+  return readdirSync(dir, { withFileTypes: true }).flatMap((e) => {
+    const p = join(dir, e.name);
+    if (e.isDirectory()) return walk(p);
+    return /\.(ts|tsx)$/.test(e.name) ? [p] : [];
+  });
+}
+
+// Value of a template or string literal with the name filled in. Expressions that need the app to run are skipped.
+function literalText(node, sf, name) {
+  if (ts.isStringLiteral(node) || ts.isNoSubstitutionTemplateLiteral(node)) return node.text;
+  if (!ts.isTemplateExpression(node)) return null;
+  let out = node.head.text;
+  for (const span of node.templateSpans) {
+    let value;
+    try {
+      value = new Function("name", `return (${span.expression.getText(sf)});`)(name);
+    } catch {
+      return null;
+    }
+    out += value == null ? "" : String(value);
+    out += span.literal.text;
+  }
+  return out;
+}
+
+const first = (f) => (/fairy-intro|onboarding/.test(f) ? 1 : 0);
+
+function lines() {
+  const found = new Map();
+  const add = (lang, raw, names) => {
+    const clean = raw.replace(/\s+/g, " ").trim();
+    // a label ("Settings") is not something she says; a sentence is
+    if (clean.split(" ").length < 3) return;
+    for (const piece of clipSegments(clean, names)) found.set(`${lang}|${piece}`, { lang, text: piece });
+  };
+  // the first-run screens come first, so they are recorded first when the free plan's credits run short
+  const files = [...walk("src/components/asha"), ...walk("src/lib/asha")].sort((a, b) => first(b) - first(a));
+  for (const file of files) {
+    const source = readFileSync(file, "utf8");
+    // only files that say something out loud, or show her guide
+    if (!/\bspeak\(|FairyGuide/.test(source)) continue;
+    const sf = ts.createSourceFile(file, source, ts.ScriptTarget.Latest, true);
+    const visit = (node) => {
+      if (ts.isObjectLiteralExpression(node)) {
+        const prop = (k) => node.properties.find((p) => ts.isPropertyAssignment(p) && p.name.getText(sf).replace(/["']/g, "") === k);
+        const en = prop("en");
+        const hi = prop("hi");
+        if (en && hi) {
+          for (const [lang, p] of [["en", en], ["hi", hi]]) {
+            for (const [name, names] of [["", []], [PLACEHOLDER_NAME, [PLACEHOLDER_NAME]]]) {
+              const raw = literalText(p.initializer, sf, name);
+              if (raw != null) add(lang, raw, names);
+            }
+          }
+        }
+      }
+      ts.forEachChild(node, visit);
+    };
+    visit(sf);
+  }
+  return [...found.values()];
+}
+
+async function say(text) {
+  let res;
+  for (;;) {
+    res = await fetch(`${SERVER}/api/tts`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ text, lang: "en", who: "fairy", voice: VOICE, owner: "" }),
+    });
+    // the server allows about 60 requests an hour per device and per IP; wait for the next hour to start
+    if (res.status !== 429) break;
+    console.log(`hourly limit reached at ${new Date().toISOString()}, waiting`);
+    await new Promise((r) => setTimeout(r, 61 * 60 * 1000));
+  }
+  const body = await res.json().catch(() => ({}));
+  // only Jessica's own voice is kept; a fallback voice would be recorded for good
+  // out of credits for the month, or the voice is resting: stop cleanly so what is recorded is kept
+  if (res.status === 503 || /quota_exceeded/.test(body.why ?? "")) return null;
+  if (!res.ok || !body.ok || body.provider !== "elevenlabs") throw new Error(`voice server ${res.status}: ${body.error ?? ""} ${body.why ?? ""}`);
+  await new Promise((r) => setTimeout(r, 2500)); // keep well under the server's per-minute limit
+  return Buffer.from(body.audio, "base64");
+}
+
+if (process.env.DRY) {
+  const all = lines();
+  console.log(all.length, all.reduce((n, l) => n + l.text.length, 0));
+  console.log(all.slice(0, 12));
+  process.exit(0);
+}
+mkdirSync(OUT, { recursive: true });
+const indexPath = join(OUT, "index.json");
+const index = existsSync(indexPath) ? JSON.parse(readFileSync(indexPath, "utf8")) : {};
+const todo = lines().filter((l) => !index[`${l.lang}|${l.text}`]);
+const chars = todo.reduce((n, l) => n + l.text.length, 0);
+console.log(`${todo.length} lines to record, ${chars} characters (about ${chars / 2} credits)`);
+
+let spent = 0;
+let n = Object.keys(index).length;
+for (const line of todo) {
+  const cost = line.text.length / 2;
+  if (Date.now() - started > MAX_MS) {
+    console.log("stopping before the job's time limit; the next run continues");
+    break;
+  }
+  if (spent + cost > MAX_CREDITS) {
+    console.log(`stopping at the credit limit (${MAX_CREDITS}); run again later to continue`);
+    break;
+  }
+  const file = `${String(++n).padStart(4, "0")}.mp3`;
+  mkdirSync(OUT, { recursive: true });
+  const audio = await say(line.text);
+  if (!audio) {
+    console.log("the voice is out of credits or resting; run again after the monthly reset");
+    break;
+  }
+  writeFileSync(join(OUT, file), audio);
+  index[`${line.lang}|${line.text}`] = file;
+  spent += cost;
+  writeFileSync(indexPath, JSON.stringify(index, null, 1));
+}
+console.log(`done: ${Object.keys(index).length} lines in index, ${spent} credits spent this run`);
