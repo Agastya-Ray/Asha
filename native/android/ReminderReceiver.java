@@ -31,7 +31,7 @@ public class ReminderReceiver extends BroadcastReceiver {
         if (AlarmStore.quiet(ctx)) {
             if ("greet".equals(t.optString("kind")) && once == 0) return;
             AlarmStore.addQuietMissed(ctx, key);
-            ReminderService.showCard(ctx, t, attempt);
+            ReminderService.showCard(ctx, t, attempt, false);
             return;
         }
         startService(ctx, key, attempt, t);
@@ -48,6 +48,7 @@ public class ReminderReceiver extends BroadcastReceiver {
             // Some phones refuse background services. Still show the card and speak briefly.
             if (t == null) { ReminderService.endQuietQuick(ctx, goAsync()); return; }
             ReminderService.showCard(ctx, t, attempt);
+            FairyBubbleService.popUp(ctx, t, attempt);
             if (!AlarmStore.config(ctx).optBoolean("speak", true)) return;
             PendingResult pending = goAsync();
             Speaker.get(ctx).speak(ReminderService.sentence(t, attempt, AlarmStore.config(ctx).optInt("repeats", 2)), t.optString("lang", "en"),

@@ -3,6 +3,10 @@ appId: com.agastyaray.asha
 ---
 - launchApp:
     clearState: true
+# a slow emulator sometimes shows "Pixel Launcher isn't responding" over the app; let it wait
+- tapOn:
+    text: "Wait"
+    optional: true
 # The fairy is asleep in her night room; a tap wakes her, she says hello and asks for a name.
 - extendedWaitUntil:
     visible: "Wake the fairy"
@@ -109,8 +113,10 @@ appId: com.agastyaray.asha
 - inputText: "500 mg"
 - hideKeyboard
 - takeScreenshot: 10-med-editor
+# centre it: at the very bottom edge the tap can land on Android's gesture bar instead
 - scrollUntilVisible:
     element: "Save this medicine"
+    centerElement: true
 - tapOn: "Save this medicine"
 - takeScreenshot: 11-med-saved
 - scrollUntilVisible:

@@ -29,6 +29,7 @@ import {
 import { AshaNative, isNative } from "@/lib/asha/native";
 import { useAsha } from "@/lib/asha/store";
 import { speak, useSpeech } from "@/lib/asha/voice";
+import { settleStay } from "@/lib/asha/stay";
 import { fairySound, fairySoundOnce, type Sfx } from "@/lib/asha/sfx";
 
 /** Keeps the Family Circle in sync: on open, on return to the app, and when a push arrives. */
@@ -64,8 +65,10 @@ export function FamilyEngine() {
       if (document.visibilityState === "visible" && useFamily.getState().circles.length) void pullInbox();
     };
     document.addEventListener("visibilitychange", onVis);
-    // turn the floating fairy back on if she was on
+    // turn the floating fairy back on if she was on, or on for the first time once Android allows her
     if (isNative && useFamily.getState().bubble) void AshaNative.setBubble({ on: true }).catch(() => undefined);
+    else void settleStay();
+    if (isNative) void App.addListener("resume", () => void settleStay()).then((h) => removers.push(() => void h.remove()));
     return () => {
       removers.forEach((r) => r());
       document.removeEventListener("visibilitychange", onVis);
@@ -120,6 +123,12 @@ export function FairyDock() {
   useEffect(() => {
     const el = document.querySelector<HTMLElement>("[data-fairy-perch]");
     if (el !== perch) setPerch(el);
+  });
+  // while her "may I live on your home screen?" card is on Today, she is already asking there: no chatter over its buttons
+  const [asking, setAsking] = useState(false);
+  useEffect(() => {
+    const on = !!document.querySelector("[data-fairy-asks]");
+    if (on !== asking) setAsking(on);
   });
   // while her bubble is up, the page gets extra room at the bottom so the last card can scroll clear of it
   const talking = useRef(false);
@@ -417,6 +426,7 @@ export function FairyDock() {
       mood = night ? "sleep" : nightUp ? (upFor > 120_000 ? "tired" : undefined) : sinceWake < 60 ? "stretch" : toBed <= 60 ? "tired" : undefined;
       if (mood === "stretch") bubble = t(lang, { en: `*stretch* Good morning${name ? `, ${name}` : ""}!`, hi: `*अंगड़ाई* सुप्रभात${name ? ` ${name} जी` : ""}!` });
       if (mood === "tired") bubble = t(lang, { en: "*yawn* Getting sleepy… almost bedtime.", hi: "*उबासी* नींद आ रही है… सोने का समय होने वाला है." });
+      if (asking && tab === "today") bubble = "";
       label = night
         ? t(lang, { en: "The fairy is asleep. Tap to wake her", hi: "परी सो रही है. जगाने के लिए छुएँ" })
         : t(lang, { en: "Talk to the fairy", hi: "परी से बात करें" });
@@ -469,7 +479,7 @@ export function FairyDock() {
         </div>
       )}
       <SoundOnce moment={kind === "cheer" ? `cheer|${todayKey(now)}|${bubble}` : ""} sound="chime" />
-      <Flitter on={kind === "idle" && !ear && !bubble} lang={lang}>
+      <Flitter on={kind === "idle" && !ear && !bubble && !(asking && tab === "today")} lang={lang}>
         {(pose) => (
           <FairyScene news={news} mood={pose || mood} size={quiet ? "sm" : "md"} floor={kind === "sleep"} label={quiet && bubble ? `${label}: ${bubble}` : label} onTap={onTap} />
         )}

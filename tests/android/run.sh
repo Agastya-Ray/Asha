@@ -84,7 +84,9 @@ find_webview() {
 # like find_webview, but scrolls on until the control sits above the bottom nav (a tap lower down hits a tab)
 find_above_nav() {
   local xy=""
-  for i in $(seq 1 12); do xy=$(center_webview "$1"); [ -n "$xy" ] && [ "${xy#* }" -lt 1900 ] && break; xy=""; adb shell input swipe 540 1750 540 750 500; sleep 2; done
+  # from the top of the page: Today keeps its scroll, and with big text a card can sit above the start point
+  for i in 1 2 3 4 5 6; do adb shell input swipe 540 750 540 1750 300; done; sleep 2
+  for i in $(seq 1 20); do xy=$(center_webview "$1"); [ -n "$xy" ] && [ "${xy#* }" -lt 1900 ] && break; xy=""; adb shell input swipe 540 1750 540 750 500; sleep 2; done
   echo "$xy"
 }
 # The times below are written for 15 Oct 2026 (16 Oct = the next day) but run from tomorrow's date, so the phone's
@@ -186,6 +188,13 @@ adb shell input swipe 450 1500 450 700 400; sleep 2; shot 29b-today-after-taken-
 
 # --- every screen, as a user ---
 flow 03_tabs.yaml
+# can the runner and the phone reach the family server? (on 24 Oct every family call failed in ~0.5 s)
+FAM=qheqzgxtzcagpayelfxn.supabase.co
+log "family server from the runner: $(curl -s -o /dev/null -w '%{http_code} in %{time_total}s' -X OPTIONS -H 'Origin: https://localhost' -H 'Access-Control-Request-Method: POST' https://$FAM/functions/v1/family 2>&1)"
+log "family server certificate: $(echo | timeout 10 openssl s_client -connect $FAM:443 -servername $FAM 2>/dev/null | openssl x509 -noout -issuer -startdate 2>&1 | tr '\n' ' ')"
+log "its chain: $(echo | timeout 10 openssl s_client -showcerts -connect $FAM:443 -servername $FAM 2>/dev/null | grep -E '^ *[0-9] s:|i:' | tr '\n' ' ')"
+log "family server from the phone: $(adb shell "ping -c 1 -W 3 $FAM 2>&1 | head -2 | tr '\n' ' '")"
+adb shell "curl -s -o /dev/null -w '%{http_code}' https://$FAM/functions/v1/family" >/dev/null 2>&1 && log "phone curl: $(adb shell "curl -s -o /dev/null -w '%{http_code}' https://$FAM/functions/v1/family" 2>&1)"
 flow 04_family.yaml
 flow 05_prescription.yaml
 

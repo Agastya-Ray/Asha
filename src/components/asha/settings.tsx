@@ -9,7 +9,9 @@ import { ReminderHealth } from "@/components/asha/reminder-health";
 import { VoicePicker } from "@/components/asha/voice-picker";
 import { CONDITIONS } from "@/lib/asha/plans";
 import { AshaNative, isNative } from "@/lib/asha/native";
-import { forgetMe, pushNativeConfig, testPush, useFamily } from "@/lib/asha/family";
+import { forgetMe, testPush, useFamily } from "@/lib/asha/family";
+import { stayOff, wantHome, wantStay, wantedStay } from "@/lib/asha/stay";
+import { App } from "@capacitor/app";
 import { newId, useAsha } from "@/lib/asha/store";
 import type { Lang, TextSize } from "@/lib/asha/types";
 
@@ -253,26 +255,42 @@ function FairySettings() {
   const [note, setNote] = useState("");
   const [confirm, setConfirm] = useState(false);
 
+  const [onHome, setOnHome] = useState(false);
+  // back from Android's page without the permission on Android 13+: most likely the "restricted settings" block
+  const [blocked, setBlocked] = useState(false);
+  useEffect(() => {
+    if (!isNative) return;
+    const check = () =>
+      void AshaNative.status()
+        .then((st) => {
+          setOnHome(st.wallpaper === true);
+          if (st.overlay) setBlocked(false);
+          else if ((st.sdk ?? 0) >= 33 && wantedStay()) setBlocked(true);
+        })
+        .catch(() => undefined);
+    check();
+    let remove: (() => void) | undefined;
+    void App.addListener("resume", check).then((h) => {
+      remove = () => void h.remove();
+    });
+    return () => remove?.();
+  }, []);
+
   async function toggleBubble() {
     if (bubble) {
+      stayOff();
       await AshaNative.setBubble({ on: false }).catch(() => undefined);
       useFamily.setState({ bubble: false });
       return;
     }
-    const can = await AshaNative.canDrawOverlays().catch(() => ({ ok: false }));
-    if (!can.ok) {
+    if ((await wantStay()) === "settings") {
       setNote(
         t(lang, {
-          en: "A settings page opens. Find Asha and turn on 'Display over other apps', then come back and press this again.",
-          hi: "एक सेटिंग पन्ना खुलेगा. आशा ढूँढकर 'Display over other apps' चालू करें, फिर वापस आकर यह बटन दोबारा दबाएँ.",
+          en: "A settings page opens. Find Asha and turn on 'Display over other apps', then come back. The fairy will be there.",
+          hi: "एक सेटिंग पन्ना खुलेगा. आशा ढूँढकर 'Display over other apps' चालू करें, फिर वापस आएँ. परी वहाँ होगी.",
         }),
       );
-      await AshaNative.openOverlaySettings().catch(() => undefined);
-      return;
     }
-    const r = await AshaNative.setBubble({ on: true }).catch(() => ({ ok: false }));
-    useFamily.setState({ bubble: r.ok });
-    void pushNativeConfig();
   }
 
   return (
@@ -284,7 +302,35 @@ function FairySettings() {
         </Button>
         {isNative ? (
           <>
+            <Toggle
+              on={onHome}
+              lang={lang}
+              label={t(lang, { en: "Fairy on my home and lock screen", hi: "होम और लॉक स्क्रीन पर परी" })}
+              onClick={() => void (onHome ? AshaNative.openWallpaper() : wantHome())}
+            />
             <Toggle on={bubble} lang={lang} label={t(lang, { en: "Floating fairy over other apps", hi: "दूसरे ऐप्स के ऊपर तैरती परी" })} onClick={() => void toggleBubble()} />
+            {blocked && !bubble ? (
+              <Card className="border-clay bg-clay-soft">
+                <p className="text-lg font-bold">
+                  {t(lang, { en: "Android said 'Access denied'? One extra step:", hi: "Android ने 'Access denied' कहा? एक और कदम:" })}
+                </p>
+                <ol className="mt-2 list-decimal space-y-1 pl-5 text-base">
+                  <li>{t(lang, { en: "Press the button below. Asha's App info opens.", hi: "नीचे का बटन दबाएँ. आशा का App info खुलेगा." })}</li>
+                  <li>{t(lang, { en: "Tap ⋮ (three dots) at the top right.", hi: "ऊपर दाएँ ⋮ (तीन बिंदु) दबाएँ." })}</li>
+                  <li>{t(lang, { en: "Tap 'Allow restricted settings' and confirm.", hi: "'Allow restricted settings' दबाएँ और पक्का करें." })}</li>
+                  <li>{t(lang, { en: "Come back and press 'Floating fairy' again.", hi: "वापस आकर 'तैरती परी' फिर दबाएँ." })}</li>
+                </ol>
+                <p className="mt-2 text-base text-quiet">
+                  {t(lang, {
+                    en: "Android asks this only because Asha did not come from the Play Store. A family member can do it once.",
+                    hi: "Android यह सिर्फ़ इसलिए पूछता है क्योंकि आशा Play Store से नहीं आई. परिवार का कोई एक बार कर सकता है.",
+                  })}
+                </p>
+                <Button className="mt-3" variant="quiet" onClick={() => void AshaNative.openAppInfo()}>
+                  {t(lang, { en: "Open Asha's App info", hi: "आशा का App info खोलें" })}
+                </Button>
+              </Card>
+            ) : null}
             <Card>
               <p className="text-lg font-bold">{t(lang, { en: "Put the fairy on your home screen", hi: "परी को होम स्क्रीन पर रखें" })}</p>
               <ol className="mt-2 list-decimal space-y-1 pl-5 text-base">

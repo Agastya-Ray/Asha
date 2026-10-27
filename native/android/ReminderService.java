@@ -66,6 +66,7 @@ public class ReminderService extends Service {
         if (t == null) { finish(startId); return START_NOT_STICKY; }
 
         showCard(this, t, attempt);
+        FairyBubbleService.popUp(this, t, attempt);
         JSONObject cfg = AlarmStore.config(this);
         int maxRepeats = cfg.optInt("repeats", 2);
         int gap = cfg.optInt("repeatMinutes", 10);
@@ -116,6 +117,7 @@ public class ReminderService extends Service {
             JSONObject t = AlarmStore.find(ctx, missed.optString(i));
             if (t == null || t.optLong("skipUntil", 0) > now) continue; // taken meanwhile
             showCard(ctx, t, 1);
+            FairyBubbleService.popUp(ctx, t, 1);
             AlarmStore.scheduleFollowUp(ctx, t.optString("key"), 2, now + gap * 60_000L);
             if (say.length() > 0) say.append(' ');
             say.append(t.optString("say"));
@@ -196,6 +198,11 @@ public class ReminderService extends Service {
     }
 
     static void showCard(Context ctx, JSONObject t, int attempt) {
+        showCard(ctx, t, attempt, true);
+    }
+
+    /** alarm = false: a silent card only (quiet mode) */
+    static void showCard(Context ctx, JSONObject t, int attempt, boolean alarm) {
         NotificationManager nm = (NotificationManager) ctx.getSystemService(Context.NOTIFICATION_SERVICE);
         if (nm == null) return;
         String key = t.optString("key");
@@ -230,6 +237,13 @@ public class ReminderService extends Service {
                 .setSummaryText(t.optString("body")));
         }
         if (attempt > 0) b.setSubText(t.optString("againLabel", "Reminder " + (attempt + 1)));
+        // Not lost among old notifications: on a locked or sleeping phone the fairy opens full screen, like an
+        // alarm clock (in use, Android shows a big card at the top). Not in quiet mode, not while Asha is open,
+        // and not when the floating fairy is about to fly in with it herself.
+        if (alarm && !AlarmStore.quiet(ctx) && !FairyBubbleService.appOnScreen() && !FairyBubbleService.wouldPop(ctx)
+            && !ReminderAlarmActivity.offer(key, attempt)) {
+            b.setFullScreenIntent(ReminderAlarmActivity.pending(ctx, key, attempt), true);
+        }
         nm.notify(AlarmStore.notificationId(key), b.build());
         if (!"greet".equals(t.optString("kind"))) {
             AlarmStore.setDue(ctx, key);
