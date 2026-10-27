@@ -1,10 +1,13 @@
-import { useEffect, useLayoutEffect, useState, type CSSProperties } from "react";
+import { useEffect, useLayoutEffect, useRef, useState, type CSSProperties } from "react";
 import { Button } from "@/components/ui/button";
 import { t } from "@/components/asha/bits";
 import { Pixie, type PixieMood } from "@/components/asha/pixie";
 import type { Localized } from "@/lib/asha/plans";
 import { digits } from "@/lib/asha/schedule";
 import { useAsha } from "@/lib/asha/store";
+import { aimAt, aimRect } from "@/lib/asha/aim";
+import { apiChat } from "@/lib/asha/api";
+import { canListen, listenOnce } from "@/lib/asha/listen";
 import { useBack } from "@/lib/asha/back";
 import { speak, stopSpeaking } from "@/lib/asha/voice";
 
@@ -19,6 +22,16 @@ function sentences(text: string) {
   return text.match(/[^.?!।…]+[.?!।…]*\s*/g) ?? [text];
 }
 const SENTENCE_S = 0.9;
+// on the tour each sentence waits for her voice to reach it: about this long per word at her slow, gentle pace
+const WORD_S = 0.5;
+function sentenceDelays(parts: string[]) {
+  let at = 0.6;
+  return parts.map((p) => {
+    const start = at;
+    at += p.trim().split(/\s+/).length * WORD_S + 0.4;
+    return start;
+  });
+}
 /** How long her sentences take to appear, so what comes after (the form) can wait for her. */
 export function guideDelay(lang: "en" | "hi", line: Localized) {
   return Math.min(4, sentences(t(lang, line)).length * SENTENCE_S + 0.2);
@@ -74,6 +87,8 @@ type TourStep = {
   target: string[] | null;
   /** she taps it with her hand once she gets there */
   tap?: boolean;
+  /** a resting place: she asks if anything is unclear, and offers to show any room again */
+  check?: boolean;
   line: (name: string, helper: string) => Localized;
 };
 
@@ -107,10 +122,36 @@ const TOUR: TourStep[] = [
   {
     room: "meds",
     via: '[data-tour-tab="meds"]',
-    target: ['[data-tour="meds-list"]'],
+    // the first medicine's card: the whole list can be taller than the screen, leaving her bubble no room
+    target: ['[data-tour="meds-list"] > :first-child', '[data-tour="meds-list"]'],
     line: () => ({
-      en: "Come, this is your medicine room. Every medicine you take lives here. You can add one by typing its name, or take a photo of the prescription, and I'll read the names for you to check.",
-      hi: "आइए, यह आपकी दवाओं का कमरा है. आपकी हर दवा यहीं रहती है. नाम लिखकर दवा जोड़ सकते हैं, या पर्ची की फ़ोटो लीजिए, मैं नाम पढ़ूँगी और आप जाँच लीजिए.",
+      en: "Come, this is your medicine room. Every medicine you take lives here, with how many tablets are left.",
+      hi: "आइए, यह आपकी दवाओं का कमरा है. आपकी हर दवा यहीं रहती है, और कितनी गोलियाँ बची हैं, वह भी.",
+    }),
+  },
+  {
+    room: "meds",
+    target: ['[data-tour="meds-add"]'],
+    line: () => ({
+      en: "To add a new medicine, press this button. Then just type its name, and when you take it.",
+      hi: "नई दवा जोड़नी हो, तो यह बटन दबाइए. फिर बस उसका नाम लिखिए, और कब लेनी है.",
+    }),
+  },
+  {
+    room: "meds",
+    target: ['[data-tour="meds-photo"]', '[data-tour="meds-add"]'],
+    line: () => ({
+      en: "Or, take a photo of your prescription here. I will read the names for you. Then you check them, slowly, one by one.",
+      hi: "या फिर, यहाँ अपनी पर्ची की फ़ोटो लीजिए. मैं नाम पढ़ूँगी. फिर आप उन्हें आराम से, एक एक करके जाँच लीजिए.",
+    }),
+  },
+  {
+    room: "meds",
+    target: null,
+    check: true,
+    line: (name) => ({
+      en: `Let's rest here for a moment${name ? `, ${name}` : ""}. That was a lot! If you have a question, please ask me. I'm more than happy to answer. Or if you want to see any room again, just tell me, and I'll show you around again.`,
+      hi: `चलिए, यहाँ थोड़ा रुकते हैं${name ? `, ${name}` : ""}. बहुत कुछ देख लिया! कुछ पूछना हो, तो ज़रूर पूछिए. मुझे जवाब देकर बहुत अच्छा लगेगा. या कोई कमरा फिर से देखना हो, तो बस बताइए, मैं फिर से दिखा दूँगी.`,
     }),
   },
   {
@@ -141,6 +182,15 @@ const TOUR: TourStep[] = [
     }),
   },
   {
+    room: "talk",
+    target: null,
+    check: true,
+    line: () => ({
+      en: "Are you doing okay? We're nearly done. If anything is not clear, ask me, any time. Or choose a room below, and I'll show it to you again.",
+      hi: "आप ठीक हैं? हम लगभग पूरा देख चुके. कुछ भी साफ़ न हो, तो मुझसे पूछिए, कभी भी. या नीचे कोई कमरा चुनिए, मैं फिर से दिखा दूँगी.",
+    }),
+  },
+  {
     room: "settings",
     via: '[data-tour="settings"]',
     target: ['[data-tour="set-size"]'],
@@ -153,16 +203,46 @@ const TOUR: TourStep[] = [
     room: "today",
     via: '[data-tour-tab="today"]',
     target: null,
+    check: true,
     line: (name) => ({
-      en: `That's my whole home, and now it's your home too${name ? `, ${name}` : ""}. I'll stay close by. Tap me any time you need me!`,
-      hi: `यह मेरा पूरा घर है, और अब यह आपका भी घर है${name ? `, ${name}` : ""}. मैं पास ही रहूँगी. जब भी ज़रूरत हो, मुझे छू लीजिए!`,
+      en: `That's my whole home, and now it's your home too${name ? `, ${name}` : ""}. If you want to see any room again, just tell me. I'll stay close by. Tap me any time you need me!`,
+      hi: `यह मेरा पूरा घर है, और अब यह आपका भी घर है${name ? `, ${name}` : ""}. कोई कमरा फिर से देखना हो, तो बस बताइए. मैं पास ही रहूँगी. जब भी ज़रूरत हो, मुझे छू लीजिए!`,
     }),
   },
 ];
 
+const ROOM_NAME: Record<Room, Localized> = {
+  today: { en: "Today", hi: "आज" },
+  meds: { en: "Medicines", hi: "दवाएँ" },
+  care: { en: "Care", hi: "देखभाल" },
+  family: { en: "Family", hi: "परिवार" },
+  talk: { en: "Talk", hi: "बात" },
+  settings: { en: "Settings", hi: "सेटिंग" },
+};
+
+/** "show me the medicines again": which room they named, if any */
+function roomSaid(said: string): Room | null {
+  if (/medicine|\bmeds?\b|tablet|pill|prescription|दवा|गोली|पर्ची/i.test(said)) return "meds";
+  if (/\bcare\b|meal|food|diary|feel|chart|देखभाल|खाना|डायरी/i.test(said)) return "care";
+  if (/family|daughter|\bson\b|heart|परिवार|बेटी|बेटा/i.test(said)) return "family";
+  if (/\btalk|chat|microphone|\bmic\b|बात|माइक/i.test(said)) return "talk";
+  if (/setting|wheel|letters|language|voice|सेटिंग|भाषा|आवाज़|अक्षर/i.test(said)) return "settings";
+  if (/today|my day|help button|done button|\bआज\b|मदद/i.test(said)) return "today";
+  return null;
+}
+
+const TOUR_CONTEXT = `Right now you are their fairy, showing them round the Asha app for the first time. They stopped to ask you something about it. The rooms:
+Today: what is due right now (a medicine or a meal); press the big Done button when it's done; the red Help button at the top calls their loved one.
+Medicines: the list of their medicines and tablets left; "Add a medicine" to type one in; "Photo of prescription" to have the names read.
+Care: meals, a daily "how do you feel" diary, a chart of the last seven days for the doctor. Opened from a card on Today.
+Family: press the heart to send love; notes from family come to them.
+Talk: press the microphone and just talk.
+Settings: the little wheel at the top; bigger letters, language, voice, loved ones' numbers.
+Answer simply and kindly, and say where to press.`;
+
 // her size on the tour, and where her pointing fingertip is in the "point" picture (left edge, a third of the way down)
-const FW = 128;
-const FH = 160;
+const FW = 168;
+const FH = 210;
 const TIP_Y = 0.32;
 
 function findTarget(sel: string[] | null) {
@@ -206,69 +286,99 @@ export function FairyTour() {
     window.scrollTo({ top: 0 });
   };
   const label = useFairyLabel();
-  const [i, setI] = useState(0);
-  const [back, setBack] = useState(false);
-  // "via": on her way, tapping the room's button; "here": showing the thing in the room
-  const [phase, setPhase] = useState<"via" | "here">("here");
+  // "via": on her way, tapping the room's button; "here": showing the thing in the room.
+  // One state, so a new step never starts for a moment in the last step's phase (that made her say a line twice).
+  const [pos, setPos] = useState<{ i: number; phase: "via" | "here" }>({ i: 0, phase: "here" });
+  const { i, phase } = pos;
+  // going back, she is just in that room; going forward into a new room, she flies to its button first
+  const go = (n: number, backwards = false) => setPos({ i: n, phase: TOUR[n].via && !backwards ? "via" : "here" });
+  // showing a room again from a resting place: where to come back to afterwards
+  const [resume, setResume] = useState<number | null>(null);
+  // her bubble and voice wait until she has arrived and had a breath, so nothing happens all at once
+  // (kept per step, so a new step never sees the last one's "ready" for a moment and speaks too soon)
+  const [readyFor, setReadyFor] = useState("");
+  const ready = readyFor === `${i}-${phase}`;
+  // what she answered to their question, in place of her line
+  const [answer, setAnswer] = useState<string | null>(null);
+  const [ear, setEar] = useState<"" | "listening" | "thinking">("");
+  const asked = useRef(0);
   const [rect, setRect] = useState<DOMRect | null>(null);
+  // the words on the thing, which her finger touches (the spotlight still lights the whole thing)
+  const [aim, setAim] = useState<DOMRect | null>(null);
   const [vp, setVp] = useState(() => ({ w: window.innerWidth, h: window.innerHeight }));
   const [arrived, setArrived] = useState(false);
   const step = TOUR[i];
   // the phone's back key goes back one step in the tour, never out of the app
   useBack(() => {
-    if (i > 0) {
-      setBack(true);
-      setI(i - 1);
-    }
+    if (i > 0) go(i - 1, true);
     return true;
   }, true);
   const line = step.line(name, helperIn(lang));
   const spoken = step.line(name, helperIn(voiceLang));
 
-  // a new step: walk forward through the room's button; going back, just be in that room
+  // in the room once she has tapped its button (or straight away, going back)
   useLayoutEffect(() => {
-    if (step.via && !back) setPhase("via");
-    else {
-      goTo(step.room);
-      setPhase("here");
-    }
-  }, [i]);
+    if (phase === "here") goTo(step.room);
+  }, [i, phase]);
 
   useLayoutEffect(() => {
     setArrived(false);
+    setAnswer(null);
+    setEar("");
+    asked.current++;
+    stopSpeaking();
     const timers: number[] = [];
     const via = phase === "via";
     const measure = (el: HTMLElement | null) => {
       setRect(el ? el.getBoundingClientRect() : null);
+      setAim(el ? aimRect(el) : null);
       setVp({ w: window.innerWidth, h: window.innerHeight });
     };
     let el: HTMLElement | null = null;
-    const place = () => {
-      el = via ? findTarget([step.via!]) : findTarget(step.target);
-      // bring it into the upper part of the screen, so her bubble has room underneath (fixed bars stay put)
-      if (el && !el.closest(".dock, header, nav") && getComputedStyle(el).position !== "fixed") {
-        const r = el.getBoundingClientRect();
+    // bring it into the upper part of the screen, so her bubble has room underneath (fixed bars stay put)
+    const show = (target: HTMLElement | null) => {
+      if (target && !target.closest(".dock, header, nav") && getComputedStyle(target).position !== "fixed") {
+        const r = target.getBoundingClientRect();
         window.scrollTo({ top: window.scrollY + r.top - Math.max(96, window.innerHeight * 0.22), behavior: "instant" as ScrollBehavior });
       }
-      measure(el);
+      measure(target);
     };
-    if (!via && step.via) window.scrollTo({ top: 0, behavior: "instant" as ScrollBehavior });
-    // the new room needs a moment to draw before she can find things in it
-    timers.push(window.setTimeout(place, via ? 0 : 60));
-    timers.push(
-      window.setTimeout(() => {
-        measure(el);
-        setArrived(true);
-      }, 800),
-    );
-    // on the room's button: a tap, and in she goes
-    if (via)
+    const place = (tries = 0) => {
+      el = via ? findTarget([step.via!]) : findTarget(step.target);
+      // a room can still be loading (the family circle on a slow phone): look again for a moment
+      if (!el && step.target && !via && tries < 6) {
+        timers.push(window.setTimeout(() => place(tries + 1), 400));
+        return;
+      }
+      show(el);
+      // still loading: she talks from the middle meanwhile, and flies over once it appears
+      if (!el && step.target && !via) {
+        let more = 0;
+        const look = () => {
+          const found = findTarget(step.target);
+          if (found) {
+            el = found;
+            show(el);
+          } else if (++more < 30) timers.push(window.setTimeout(look, 500));
+        };
+        timers.push(window.setTimeout(look, 500));
+      }
+      // she takes a while to fly there; once settled, a breath, and then she speaks
       timers.push(
         window.setTimeout(() => {
-          goTo(step.room);
-          setPhase("here");
-        }, 1900),
+          measure(el);
+          setArrived(true);
+        }, 1500),
       );
+      if (!via) timers.push(window.setTimeout(() => setReadyFor(`${i}-${phase}`), 2300));
+    };
+    if (!via && step.via) window.scrollTo({ top: 0, behavior: "instant" as ScrollBehavior });
+    // Slowly, one thing at a time: the new room opens and she stays by its button a moment so it can be seen,
+    // then she flies to the thing, settles, takes a breath, and only then speaks.
+    const start = via ? 0 : step.via ? 1200 : 60;
+    timers.push(window.setTimeout(() => place(), start));
+    // on the room's button: a tap, a pause, and in she goes
+    if (via) timers.push(window.setTimeout(() => setPos({ i, phase: "here" }), 4000));
     const onMove = () => measure(el);
     window.addEventListener("resize", onMove);
     window.addEventListener("scroll", onMove, true);
@@ -281,55 +391,96 @@ export function FairyTour() {
 
   // she speaks once she is showing the thing, and her words appear as she says them
   useEffect(() => {
-    if (voiceOn && phase === "here") void speak(t(voiceLang, spoken), voiceLang, "fairy");
-  }, [i, phase, voiceLang]);
+    if (voiceOn && phase === "here" && ready) void speak(t(voiceLang, spoken), voiceLang, "fairy");
+  }, [i, phase, ready, voiceLang]);
+
+  // the rooms she has shown so far, to see again
+  const seen = Array.from(new Set(TOUR.slice(0, i + 1).filter((s) => !s.check).map((s) => s.room)));
+  const replay = (room: Room) => {
+    setResume(i);
+    go(TOUR.findIndex((s) => s.room === room && !s.check));
+  };
+  const next = () => {
+    const after = TOUR[i + 1];
+    // done showing that room again: back to where they asked
+    if (resume !== null && (!after || after.room !== step.room || after.check)) {
+      setResume(null);
+      return go(resume, true);
+    }
+    if (after) go(i + 1);
+    else finish();
+  };
+  const ask = async () => {
+    const mine = asked.current;
+    const tell = (l: Localized) => {
+      setEar("");
+      setAnswer(t(lang, l));
+      void speak(t(voiceLang, l), voiceLang, "fairy");
+    };
+    if (!canListen())
+      return tell({ en: "I can't hear on this phone. Press one of the rooms below, and I'll show it again.", hi: "इस फ़ोन पर मैं सुन नहीं पाती. नीचे कोई कमरा दबाइए, मैं फिर से दिखा दूँगी." });
+    setEar("listening");
+    const r = await listenOnce(voiceLang);
+    if (mine !== asked.current) return;
+    const said = r.text.trim();
+    if (!said)
+      return tell(
+        r.problem === "denied"
+          ? { en: "I can't use the microphone yet. You can allow it in Settings later.", hi: "माइक अभी चालू नहीं है. बाद में सेटिंग में चालू कर सकते हैं." }
+          : { en: "I didn't hear that. Press the button and ask me again, slowly.", hi: "मैं सुन नहीं पाई. बटन दबाकर फिर से, धीरे से पूछिए." },
+      );
+    const room = roomSaid(said);
+    if (room && seen.includes(room) && !/\?|how|why|what|कैसे|क्यों|क्या/i.test(said)) {
+      setEar("");
+      return replay(room);
+    }
+    setEar("thinking");
+    const res = await apiChat({ show: lang, say: voiceLang, context: TOUR_CONTEXT, turns: [{ role: "user", content: said }] });
+    if (mine !== asked.current) return;
+    setEar("");
+    if (!res.ok)
+      return tell({ en: "I couldn't think of the answer just now. Ask me again in the Talk room later.", hi: "अभी मैं जवाब नहीं सोच पाई. बाद में 'बात' वाले कमरे में फिर पूछिए." });
+    setAnswer(res.show);
+    void speak(res.say, voiceLang, "fairy");
+  };
   useEffect(() => () => stopSpeaking(), []);
 
   const via = phase === "via";
   const tapping = arrived && (via || step.tap);
 
-  // Where she flies: her fingertip on the thing. Narrow things on the right (Help, Settings) get her from the left,
-  // turned round; everything else from the right edge, pointing left at it.
+  // Where she flies: her fingertip right at the words on the thing, from its right, or from its left turned round
+  // when there is no room on the right (Help, Settings).
   const pad = 8;
   let fx = (vp.w - FW * 1.4) / 2;
-  let fy = vp.h * 0.18;
+  let fy = vp.h * 0.1;
   let flip = false;
   const big = !rect;
-  if (rect) {
-    const narrowRight = rect.width < vp.w / 2 && rect.left + rect.width / 2 > vp.w / 2;
-    const tipX = narrowRight ? rect.left + Math.min(rect.width * 0.35, 40) : rect.right - Math.min(rect.width * 0.18, 70);
-    const tipY = rect.top + Math.min(rect.height / 2, 60);
-    flip = narrowRight;
-    fx = flip ? tipX - FW : tipX;
-    fy = tipY - FH * TIP_Y;
-    fx = Math.max(4, Math.min(vp.w - FW - 4, fx));
-    if (fy < 8) fy = Math.max(8, rect.bottom - FH * 0.2);
+  if (rect && aim) {
+    const at = aimAt(aim, FW, FH, TIP_Y, vp.w);
+    fx = at.x;
+    flip = at.flip;
+    fy = at.y;
     fy = Math.max(8, Math.min(vp.h - FH - 8, fy));
   }
 
-  // The bubble goes on the far side of the thing and of her, never on top of either.
+  // The bubble sits at the far end of the screen from what she is showing, so it never covers the thing
+  // (or the rest of its card).
   let place: CSSProperties;
   let tail: "up" | "down" | null = null;
-  if (!rect) place = { top: fy + FH * 1.4 + 12 };
-  else {
-    const top = Math.min(rect.top, fy) - pad;
-    const bottom = Math.max(rect.bottom, fy + FH) + pad;
-    if (vp.h - bottom >= top) {
-      place = { top: bottom + 10, maxHeight: vp.h - bottom - 18 };
-      tail = "up";
-    } else {
-      place = { bottom: vp.h - top + 10, maxHeight: top - 18 };
-      tail = "down";
-    }
-    // with big text there can be too little room on either side: then she talks from the bottom of the screen,
-    // over the page, so her buttons are never pushed off it
-    if ((place.maxHeight as number) < 260) {
-      place = { bottom: 8, maxHeight: vp.h - 16 };
-      tail = null;
-    }
+  // with nothing to show she floats near the top, and her bubble (taller at a resting place) sits at the bottom
+  if (!rect) place = { bottom: 16, maxHeight: vp.h - 32 };
+  else if (rect.top + rect.height / 2 < vp.h / 2) {
+    place = { bottom: 16, maxHeight: vp.h - rect.bottom - pad - 26 };
+    tail = null;
+  } else {
+    place = { top: 16, maxHeight: rect.top - pad - 26 };
+    tail = null;
   }
+  // with big text there can be too little room on either side: then she talks from the bottom of the screen,
+  // over the page, so her buttons are never pushed off it
+  if ((place.maxHeight as number) < 260) place = { bottom: 8, maxHeight: vp.h - 16 };
   const tailX = Math.max(28, Math.min(vp.w - 44, fx + FW / 2));
-  const mood: PixieMood = !rect ? (arrived ? "wave" : "fly") : arrived ? "point" : "flyside";
+  const mood: PixieMood = ear === "listening" ? "asking" : ear === "thinking" ? "thinking" : !rect ? (arrived ? "wave" : "fly") : arrived ? "point" : "flyside";
 
   return (
     <div className="fixed inset-0 z-50" role="dialog" aria-modal="true" aria-label={label}>
@@ -367,7 +518,7 @@ export function FairyTour() {
           <Pixie mood={mood} className="h-full w-full" />
         </div>
       </div>
-      {via ? null : (
+      {via || !ready ? null : (
         <div className="fixed inset-x-0 mx-auto flex max-w-lg flex-col px-4" style={place}>
           <div key={i} className="fi-bubble relative flex min-h-0 flex-col rounded-3xl border-2 border-[#f3c4d0] bg-paper p-4 shadow-lg">
             {tail ? (
@@ -378,9 +529,9 @@ export function FairyTour() {
               />
             ) : null}
             <p className="text-sm font-bold uppercase tracking-wide text-[#d9506f]">{label}</p>
-            <p className="mt-1 min-h-0 overflow-y-auto text-lg leading-snug">
-              {sentences(t(lang, line)).map((part, k) => (
-                <span key={k} className="fi-word" style={{ animationDelay: `${0.4 + k * SENTENCE_S}s` }}>
+            <p key={answer ?? ""} className="mt-1 min-h-0 overflow-y-auto text-lg leading-snug">
+              {sentences(answer ?? t(lang, line)).map((part, k, all) => (
+                <span key={k} className="fi-word" style={{ animationDelay: `${sentenceDelays(all)[k]}s` }}>
                   {part}
                 </span>
               ))}
@@ -391,10 +542,7 @@ export function FairyTour() {
                 disabled={i === 0}
                 aria-label={t(lang, { en: "Back: hear what she said before", hi: "पीछे: पिछली बात फिर सुनें" })}
                 className="min-h-12 rounded-2xl border border-line px-3 text-base font-bold text-quiet disabled:opacity-40"
-                onClick={() => {
-                  setBack(true);
-                  setI(i - 1);
-                }}
+                onClick={() => go(i - 1, true)}
               >
                 ← {t(lang, { en: "Back", hi: "पीछे" })}
               </button>
@@ -405,17 +553,40 @@ export function FairyTour() {
               >
                 🔊 {t(lang, { en: "Again", hi: "फिर से" })}
               </button>
-              <Button
-                className="col-span-2 min-h-14"
-                onClick={() => {
-                  setBack(false);
-                  if (i < TOUR.length - 1) setI(i + 1);
-                  else finish();
-                }}
-              >
-                {i < TOUR.length - 1 ? t(lang, { en: "Next", hi: "आगे" }) : t(lang, { en: "Thank you", hi: "शुक्रिया" })}
+              <Button className="col-span-2 min-h-14" onClick={next}>
+                {i < TOUR.length - 1 || resume !== null ? t(lang, { en: "Next", hi: "आगे" }) : t(lang, { en: "Thank you", hi: "शुक्रिया" })}
               </Button>
             </div>
+            {step.check ? (
+              <div className="mt-3 shrink-0 border-t border-line pt-3">
+                <button
+                  type="button"
+                  disabled={ear !== ""}
+                  onClick={() => void ask()}
+                  className="min-h-12 w-full rounded-2xl border-2 border-[#f3c4d0] bg-[#fff5f7] px-3 text-base font-bold text-[#b8405d] disabled:opacity-70"
+                >
+                  🎤{" "}
+                  {ear === "listening"
+                    ? t(lang, { en: "I'm listening…", hi: "मैं सुन रही हूँ…" })
+                    : ear === "thinking"
+                      ? t(lang, { en: "Let me think…", hi: "सोचने दीजिए…" })
+                      : t(lang, { en: "Ask me something", hi: "मुझसे कुछ पूछिए" })}
+                </button>
+                <p className="mt-3 text-base text-quiet">{t(lang, { en: "See a room again:", hi: "कोई कमरा फिर से देखें:" })}</p>
+                <div className="mt-2 flex flex-wrap gap-2">
+                  {seen.map((r) => (
+                    <button
+                      key={r}
+                      type="button"
+                      onClick={() => replay(r)}
+                      className="min-h-11 rounded-full border border-line bg-paper px-4 text-base font-bold text-ink"
+                    >
+                      {t(lang, ROOM_NAME[r])}
+                    </button>
+                  ))}
+                </div>
+              </div>
+            ) : null}
             <div className="mt-3 flex justify-center gap-1.5" aria-hidden>
               {TOUR.map((_, k) => (
                 <span key={k} className={`ob-dot h-2 rounded-full ${k === i ? "w-6 bg-[#d9506f]" : "w-2 bg-line"}`} />
