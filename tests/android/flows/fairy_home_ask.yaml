@@ -1,0 +1,16 @@
+# Today: the fairy asks to live on the home screen; "Yes" opens Android's wallpaper preview.
+# The card sits near the top of Today; the script scrolls Today to the top first.
+# No lift swipe: while this card shows, the in-app fairy stays small and quiet, so her greeting cannot cover Yes.
+appId: com.agastyaray.asha
+---
+- waitForAnimationToEnd:
+    timeout: 5000
+- scrollUntilVisible:
+    element: "Yes, live on my screen"
+    direction: DOWN
+    visibilityPercentage: 60
+    timeout: 30000
+- takeScreenshot: F01-today-she-asks
+- tapOn:
+    text: "Yes, live on my screen"
+    retryTapIfNoChange: false

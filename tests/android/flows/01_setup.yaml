@@ -3,6 +3,10 @@ appId: com.agastyaray.asha
 ---
 - launchApp:
     clearState: true
+# a slow emulator sometimes shows "Pixel Launcher isn't responding" over the app; let it wait
+- tapOn:
+    text: "Wait"
+    optional: true
 # The fairy is asleep in her night room; a tap wakes her, she says hello and asks for a name.
 - extendedWaitUntil:
     visible: "Wake the fairy"
@@ -109,8 +113,10 @@ appId: com.agastyaray.asha
 - inputText: "500 mg"
 - hideKeyboard
 - takeScreenshot: 10-med-editor
+# centre it: at the very bottom edge the tap can land on Android's gesture bar instead
 - scrollUntilVisible:
     element: "Save this medicine"
+    centerElement: true
 - tapOn: "Save this medicine"
 - takeScreenshot: 11-med-saved
 - scrollUntilVisible:
@@ -122,63 +128,91 @@ appId: com.agastyaray.asha
 # Titli shows the person round her whole home once: Today (what is due, the big button, Help), then each room.
 - extendedWaitUntil:
     visible: "Welcome to my home.*"
-    timeout: 10000
+    timeout: 15000
 - takeScreenshot: 12-tour-1-today
 - tapOn:
     text: "Next"
     retryTapIfNoChange: false
 - extendedWaitUntil:
     visible: "When it's done.*"
-    timeout: 10000
+    timeout: 15000
 - takeScreenshot: 12-tour-2-green
 - tapOn:
     text: "Next"
     retryTapIfNoChange: false
 - extendedWaitUntil:
     visible: "I'm here to take care of you.*"
-    timeout: 10000
+    timeout: 15000
 - takeScreenshot: 12-tour-3-help
 - tapOn:
     text: "Next"
     retryTapIfNoChange: false
 - extendedWaitUntil:
     visible: "Come, this is your medicine room.*"
-    timeout: 10000
+    timeout: 15000
 - takeScreenshot: 12-tour-4-meds
 - tapOn:
     text: "Next"
     retryTapIfNoChange: false
 - extendedWaitUntil:
+    visible: "To add a new medicine.*"
+    timeout: 15000
+- takeScreenshot: 12-tour-4b-meds-add
+- tapOn:
+    text: "Next"
+    retryTapIfNoChange: false
+- extendedWaitUntil:
+    visible: "Or, take a photo of your prescription.*"
+    timeout: 15000
+- takeScreenshot: 12-tour-4c-meds-photo
+- tapOn:
+    text: "Next"
+    retryTapIfNoChange: false
+- extendedWaitUntil:
+    visible: "Let's rest here for a moment.*"
+    timeout: 15000
+- takeScreenshot: 12-tour-4d-rest
+- tapOn:
+    text: "Next"
+    retryTapIfNoChange: false
+- extendedWaitUntil:
     visible: "This is the care room.*"
-    timeout: 10000
+    timeout: 15000
 - takeScreenshot: 12-tour-5-care
 - tapOn:
     text: "Next"
     retryTapIfNoChange: false
 - extendedWaitUntil:
     visible: "And this is where your family lives.*"
-    timeout: 10000
+    timeout: 15000
 - takeScreenshot: 12-tour-6-family
 - tapOn:
     text: "Next"
     retryTapIfNoChange: false
 - extendedWaitUntil:
     visible: "This is my favourite room.*"
-    timeout: 10000
+    timeout: 15000
 - takeScreenshot: 12-tour-7-talk
 - tapOn:
     text: "Next"
     retryTapIfNoChange: false
 - extendedWaitUntil:
+    visible: "Are you doing okay.*"
+    timeout: 15000
+- takeScreenshot: 12-tour-7b-rest
+- tapOn:
+    text: "Next"
+    retryTapIfNoChange: false
+- extendedWaitUntil:
     visible: "Behind this little wheel.*"
-    timeout: 10000
+    timeout: 15000
 - takeScreenshot: 12-tour-8-settings
 - tapOn:
     text: "Next"
     retryTapIfNoChange: false
 - extendedWaitUntil:
     visible: "That's my whole home.*"
-    timeout: 10000
+    timeout: 15000
 - takeScreenshot: 12-tour-9-end
 - tapOn: "Thank you"
 - waitForAnimationToEnd

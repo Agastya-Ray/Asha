@@ -41,12 +41,14 @@ export function ReminderHealth({ always = false }: { always?: boolean }) {
   const needNotes = !st.notifications;
   const needExact = !st.exactAlarms;
   const needBattery = !st.batteryFree && !batteryAsked;
-  if (!always && !needNotes && !needExact && !needBattery) return null;
+  // Android 14+ can turn off the fairy's full-screen reminder (like an alarm clock) for an app
+  const needFull = st.fullScreen === false;
+  if (!always && !needNotes && !needExact && !needBattery && !needFull) return null;
 
   return (
     <Card className="mt-5 border-clay bg-clay-soft">
       <p className="text-xl font-bold">{t(lang, { en: "So Asha never misses a reminder", hi: "ताकि आशा कोई याद न चूके" })}</p>
-      {!needNotes && !needExact && !needBattery ? (
+      {!needNotes && !needExact && !needBattery && !needFull ? (
         <p className="mt-2 text-lg">{t(lang, { en: "All set. Reminders will ring on time.", hi: "सब ठीक है. याद समय पर आएगी." })}</p>
       ) : null}
       <div className="mt-3 flex flex-col gap-2">
@@ -93,6 +95,19 @@ export function ReminderHealth({ always = false }: { always?: boolean }) {
               {t(lang, {
                 en: "In the list, find Asha and choose 'Don't optimise' or 'No restrictions'. Phones like Xiaomi, Vivo, Oppo and Realme need this most.",
                 hi: "सूची में आशा ढूँढें और 'Don't optimise' या 'No restrictions' चुनें. शाओमी, वीवो, ओप्पो, रियलमी फ़ोन में यह सबसे ज़रूरी है.",
+              })}
+            </p>
+          </>
+        ) : null}
+        {needFull ? (
+          <>
+            <Button onClick={() => void AshaNative.openFullScreenSettings()}>
+              {t(lang, { en: "Let the fairy fill the screen at reminder time", hi: "याद के समय परी पूरी स्क्रीन पर आए" })}
+            </Button>
+            <p className="text-base text-quiet">
+              {t(lang, {
+                en: "A settings page opens. Turn the switch on for Asha, then come back.",
+                hi: "एक सेटिंग पन्ना खुलेगा. आशा के लिए स्विच चालू करें, फिर वापस आएँ.",
               })}
             </p>
           </>

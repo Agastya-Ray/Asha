@@ -34,6 +34,8 @@ public class ActionReceiver extends BroadcastReceiver {
         Speaker.get(ctx).stop();
         NotificationManager nm = (NotificationManager) ctx.getSystemService(Context.NOTIFICATION_SERVICE);
         if (nm != null) nm.cancel(AlarmStore.notificationId(key));
+        FairyBubbleService.answered(key);
+        ReminderAlarmActivity.answered(key);
 
         String day = intent.getStringExtra("day");
         boolean today = day == null || day.equals(ReminderService.dayKey(Calendar.getInstance()));

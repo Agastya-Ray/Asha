@@ -64,6 +64,19 @@ public class AshaNativePlugin extends Plugin {
         }
     }
 
+    // While Asha is on screen the fairy inside the app is the one you see; the floating one waits outside.
+    @Override
+    protected void handleOnResume() {
+        super.handleOnResume();
+        FairyBubbleService.setAppVisible(getContext(), true);
+    }
+
+    @Override
+    protected void handleOnPause() {
+        super.handleOnPause();
+        FairyBubbleService.setAppVisible(getContext(), false);
+    }
+
     /** Called by FamilyNotify when a message arrives while the app is running. */
     static void emitFamily() {
         AshaNativePlugin p = instance;
@@ -127,6 +140,33 @@ public class AshaNativePlugin extends Plugin {
     public void openOverlaySettings(PluginCall call) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             Intent i = new Intent(Settings.ACTION_MANAGE_OVERLAY_PERMISSION, Uri.parse("package:" + getContext().getPackageName()));
+            i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            try { getContext().startActivity(i); } catch (Exception ignored) { }
+        }
+        call.resolve();
+    }
+
+    /** Android's preview of the fairy wallpaper, with its own "Set wallpaper" button. */
+    @PluginMethod
+    public void openWallpaper(PluginCall call) {
+        android.content.Context c = getActivity() != null ? getActivity() : getContext();
+        call.resolve(ok(FairyWallpaper.openPicker(c)));
+    }
+
+    /** Asha's App info page (where Android 13+ hides "Allow restricted settings" in the ⋮ menu). */
+    @PluginMethod
+    public void openAppInfo(PluginCall call) {
+        Intent i = new Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS, Uri.parse("package:" + getContext().getPackageName()));
+        i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        try { getContext().startActivity(i); } catch (Exception ignored) { }
+        call.resolve();
+    }
+
+    /** Android 14+: the switch that lets the fairy open full screen at reminder time. */
+    @PluginMethod
+    public void openFullScreenSettings(PluginCall call) {
+        if (Build.VERSION.SDK_INT >= 34) {
+            Intent i = new Intent(Settings.ACTION_MANAGE_APP_USE_FULL_SCREEN_INTENT, Uri.parse("package:" + getContext().getPackageName()));
             i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
             try { getContext().startActivity(i); } catch (Exception ignored) { }
         }
@@ -253,6 +293,9 @@ public class AshaNativePlugin extends Plugin {
         AlarmStore.applyQuiet(getContext(), oldQuiet, AlarmStore.config(getContext()).optLong("quietUntil", 0));
         // a dose marked inside the app takes its buttons off the home-screen fairy
         FairyWidget.refreshAll(getContext());
+        FairyBubbleService.recheck(getContext());
+        ReminderAlarmActivity.recheck(getContext());
+        FairyBubbleService.refresh(getContext());
         call.resolve(ok(true));
     }
 
@@ -281,6 +324,12 @@ public class AshaNativePlugin extends Plugin {
         r.put("phone", getPermissionState("phone") == PermissionState.GRANTED);
         r.put("microphone", getPermissionState("microphone") == PermissionState.GRANTED);
         r.put("speechInput", SpeechRecognizer.isRecognitionAvailable(ctx));
+        // the fairy on the screen: as the wallpaper (no permission), floating over apps, and full screen at reminder time
+        r.put("wallpaper", FairyWallpaper.isSet(ctx));
+        r.put("sdk", Build.VERSION.SDK_INT);
+        r.put("overlay", FairyBubbleService.canDraw(ctx));
+        NotificationManager nm = (NotificationManager) ctx.getSystemService(Context.NOTIFICATION_SERVICE);
+        r.put("fullScreen", Build.VERSION.SDK_INT < 34 || (nm != null && nm.canUseFullScreenIntent()));
         call.resolve(r);
     }
 

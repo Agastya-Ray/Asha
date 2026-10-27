@@ -6,6 +6,7 @@ import { fairySound } from "@/lib/asha/sfx";
 import { useAsha } from "@/lib/asha/store";
 import { speak, useSpeech } from "@/lib/asha/voice";
 import { awake } from "@/lib/asha/companion";
+import { aimAt, aimRect } from "@/lib/asha/aim";
 
 /**
  * Titli is a phone pet, not a sticker in the corner. Whenever she has nothing to remind you of, every so often
@@ -74,8 +75,8 @@ const CURIOUS = (x: string): Localized[] => [
   { en: `Let me peek… "${x}"!`, hi: `ज़रा देखूँ… "${x}"!` },
 ];
 
-const FW = 96;
-const FH = 120;
+const FW = 136;
+const FH = 170;
 const TIP_Y = 0.32;
 
 function visible(el: Element) {
@@ -148,14 +149,11 @@ export function PetRoam() {
     seen.current.add(spot.key);
     const line = spot.lines[Math.floor(Math.random() * spot.lines.length)];
     const words = t(lang, line);
-    const r = spot.el.getBoundingClientRect();
-    const vw = window.innerWidth;
-    const narrowRight = r.width < vw / 2 && r.left + r.width / 2 > vw / 2;
-    const tipX = narrowRight ? r.left + Math.min(r.width * 0.3, 30) : r.right - Math.min(r.width * 0.15, 60);
-    let x = narrowRight ? tipX - FW : tipX;
-    let y = r.top + Math.min(r.height / 2, 40) - FH * TIP_Y;
-    x = Math.max(4, Math.min(vw - FW - 4, x));
-    y = Math.max(70, Math.min(window.innerHeight - FH - 90, y));
+    // her fingertip right at the words on it
+    const at = aimAt(aimRect(spot.el), FW, FH, TIP_Y, window.innerWidth);
+    const narrowRight = at.flip;
+    const x = at.x;
+    const y = Math.max(70, Math.min(window.innerHeight - FH - 90, at.y));
     const h = home();
     document.documentElement.classList.add("pet-out");
     fairySound("flutter");
