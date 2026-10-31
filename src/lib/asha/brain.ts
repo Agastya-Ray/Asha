@@ -190,7 +190,9 @@ class HttpFail extends Error {
 function whyOf(e: unknown): { why: Why; detail: string } {
   const status = e instanceof HttpFail ? e.status : e instanceof Anthropic.APIError ? (e.status ?? 0) : 0;
   const body = e instanceof HttpFail ? e.body : e instanceof Error ? e.message : String(e);
-  const detail = `${status || ""} ${body}`.trim().slice(0, 300);
+  // the service's own short message ("invalid x-api-key"), not its whole JSON, for whoever helps them
+  const said = body.match(/"message"\s*:\s*"([^"]{1,160})"/)?.[1] ?? body.replace(/^\d{3}\s+/, "");
+  const detail = `${status ? `${status}: ` : ""}${said}`.trim().slice(0, 200);
   if (e instanceof Anthropic.APIConnectionError) return { why: "offline", detail };
   if (status === 401 || status === 403 || /valid api key|api key not valid|invalid.{0,12}key|incorrect api key|authentication/i.test(body)) return { why: "key", detail };
   if (status === 402 || status === 429 || /credit|quota|billing|insufficient|balance/i.test(body)) return { why: "credit", detail };
