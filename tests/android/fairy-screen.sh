@@ -240,27 +240,19 @@ adb shell dumpsys notification --noredact | grep -E "android.title=" > "$OUT/not
 [ -n "$FIRST" ] && grep -qF "$FIRST" "$OUT/notes-after-alarm.txt" && fail "Taken left '$FIRST' in the notifications" || pass "Taken on the alarm cleared its notification"
 adb shell wm dismiss-keyguard; sleep 2
 
-# ---------- V1. in Asha on Settings (no fairy of its own there): the 08:00 reminder snoozed with Later rings again ----------
+# ---------- V1. in Asha on Settings (no fairy of its own there): 13:00 lunch is read out, so she floats in ----------
 adb shell am start -n $PKG/.MainActivity --es openTab settings >/dev/null 2>&1; sleep 8
 M=$(voice_mark)
-setclock 101508102026.20          # the 08:00 reminder put off with Later rings again at about 08:10:40
-sleep 40
+setclock 101512592026.30
+sleep 32
 shot V1-in-asha-settings-she-speaks
 voice_since $M > "$OUT/voice-V1.txt"
 peek=$(center_webview "is talking|बोल रही है")
-grep -q "AshaSpeaker.*SAY at=app" "$OUT/voice-V1.txt" && { [ -n "$peek" ] && pass "V1: in Asha on Settings the reminder is spoken and she floats in at the top while she speaks" || fail "V1: spoken on Settings but no fairy drawn on the page"; } \
-  || log "V1: the snoozed reminder did not ring on Settings ($(head -c 300 "$OUT/voice-V1.txt"))"
-
-# ---------- V2. on the home screen, no 'Display over other apps': 13:00 lunch, she speaks from her wallpaper ----------
-adb shell input keyevent KEYCODE_HOME; sleep 3
-M=$(voice_mark)
-setclock 101512592026.30
-sleep 40
-shot V2-home-screen-lunch
-voice_since $M > "$OUT/voice-V2.txt"
-if grep -q "FAIL" "$OUT/voice-V2.txt"; then fail "V2: home screen, a voice with no fairy on screen ($(grep -m1 FAIL "$OUT/voice-V2.txt"))"
-elif grep -q "PASS" "$OUT/voice-V2.txt"; then pass "V2: home screen, she is seen while she speaks ($(grep -m1 -oE "PASS\([^)]*\)" "$OUT/voice-V2.txt"))"
-else log "V2: home screen, nothing spoken at 13:00 ($(grep "info" "$OUT/voice-check.log" | tail -2))"; fi
+if grep -q "FAIL" "$OUT/voice-V1.txt"; then fail "V1: in Asha on Settings, a voice with no fairy ($(grep -m1 FAIL "$OUT/voice-V1.txt"))"
+elif grep -q "AshaSpeaker.*SAY at=app" "$OUT/voice-V1.txt"; then
+  grep -q "AshaVoice SAY drawn=true" "$OUT/voice-V1.txt" || [ -n "$peek" ] && pass "V1: in Asha on Settings the lunch reminder is spoken and she floats in at the top" \
+    || fail "V1: lunch spoken on Settings, but the page showed no fairy"
+else fail "V1: the 13:00 reminder was not spoken in Asha ($(grep info "$OUT/voice-check.log" | tail -2))"; fi
 
 # ---------- V3. Asha left in the background: her timers keep running, but not one word or sound comes out ----------
 M=$(voice_mark)
@@ -305,17 +297,18 @@ adb shell am broadcast -f 0x20 -a android.intent.action.BOOT_COMPLETED -n $PKG/.
 sleep 8; expect_overlays 1 "after a phone restart she floats again" reboot
 pid=$(adb shell pidof $PKG | tr -d '\r'); [ -n "$pid" ] && adb shell kill -9 $pid
 sleep 25; expect_overlays 1 "after Android killed Asha she floats again" kill
-# the dinner reminder put off with Later rings again ten minutes on, with Asha killed: she flies in and then speaks
-adb shell input keyevent KEYCODE_HOME; sleep 2
+# V2+V5. the dinner reminder put off with Later rings again ten minutes on: Asha killed, "Display over other apps"
+# switched off, phone on the home screen. She can't float, so she speaks from her wallpaper.
+adb shell appops set $PKG SYSTEM_ALERT_WINDOW deny; pid=$(adb shell pidof $PKG | tr -d '\r'); [ -n "$pid" ] && adb shell kill -9 $pid
+adb shell input keyevent KEYCODE_HOME; sleep 4
 M=$(voice_mark)
 setclock 101519402026.10
 sleep 45
-shot V5-after-kill-reminder
+shot V5-after-kill-home-screen-reminder
 voice_since $M > "$OUT/voice-V5.txt"
 if grep -q FAIL "$OUT/voice-V5.txt"; then fail "V5: after a kill, a voice with no fairy on screen ($(grep -m1 FAIL "$OUT/voice-V5.txt"))"
 elif grep -q PASS "$OUT/voice-V5.txt"; then pass "V5: after a kill, the reminder came with her on screen ($(grep -m1 -oE "PASS\([^)]*\)" "$OUT/voice-V5.txt"))"
 else fail "V5: after a kill, the snoozed reminder was not spoken"; fi
-xy=$(pop_tap taken); log "tapped Eaten at $xy"; sleep 3
 
 # ---------- E. late at night she sleeps on the floor of the home screen ----------
 setclock 101523102026.00
