@@ -53,7 +53,12 @@ appId: com.agastyaray.asha
     centerElement: true
     timeout: 90000
 - tapOn: "Cancel"
-- assertVisible: "Use my own AI account"
+# the form folds away, so the button may sit above the screen now
+- scrollUntilVisible:
+    element: "Use my own AI account"
+    direction: UP
+    centerElement: true
+    timeout: 90000
 - tapOn: "Talk"
 - assertVisible: "Talk with .*"
 - takeScreenshot: 93-talk-titli-face
