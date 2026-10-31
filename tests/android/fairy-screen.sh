@@ -242,6 +242,10 @@ adb shell wm dismiss-keyguard; sleep 2
 
 # ---------- V1. in Asha on Settings (no fairy of its own there): 13:00 lunch is read out, so she floats in ----------
 adb shell am start -n $PKG/.MainActivity --es openTab settings >/dev/null 2>&1; sleep 8
+# a new day brings her crown card ("a new flower") over the page: answer it, then go to Settings by the gear
+xy=$(find_webview "It's lovely"); [ -n "$xy" ] && { adb shell input tap $xy; sleep 2; }
+adb shell input tap 756 216; sleep 4
+shot V1a-settings-before-lunch
 M=$(voice_mark)
 setclock 101512592026.30
 sleep 32
@@ -250,7 +254,7 @@ voice_since $M > "$OUT/voice-V1.txt"
 peek=$(center_webview "is talking|बोल रही है")
 if grep -q "FAIL" "$OUT/voice-V1.txt"; then fail "V1: in Asha on Settings, a voice with no fairy ($(grep -m1 FAIL "$OUT/voice-V1.txt"))"
 elif grep -q "AshaSpeaker.*SAY at=app" "$OUT/voice-V1.txt"; then
-  grep -q "AshaVoice SAY drawn=true" "$OUT/voice-V1.txt" || [ -n "$peek" ] && pass "V1: in Asha on Settings the lunch reminder is spoken and she floats in at the top" \
+  [ -n "$peek" ] || grep -q "AshaVoice SAY drawn=true" "$OUT/voice-V1.txt" && pass "V1: in Asha on Settings the lunch reminder is spoken and she floats in at the top" \
     || fail "V1: lunch spoken on Settings, but the page showed no fairy"
 else fail "V1: the 13:00 reminder was not spoken in Asha ($(grep info "$OUT/voice-check.log" | tail -2))"; fi
 
