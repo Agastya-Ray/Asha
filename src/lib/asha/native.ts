@@ -80,6 +80,7 @@ interface AshaNativePlugin {
   openFullScreenSettings(): Promise<void>;
   openAppInfo(): Promise<void>;
   addListener(eventName: "family" | "listening", fn: () => void): Promise<PluginListenerHandle>;
+  addListener(eventName: "speaking", fn: (e: { on: boolean }) => void): Promise<PluginListenerHandle>;
 }
 
 export type FamilyNativeConfig = {

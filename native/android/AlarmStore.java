@@ -22,6 +22,8 @@ import java.util.Calendar;
 public final class AlarmStore {
     private static final String PREFS = "asha_alarms";
     private static final String KEY_TEMPLATES = "templates";
+    /** follow-ups and "Later" snoozes still to ring: key -> {at, attempt}, so they survive the app's re-sync and a restart */
+    private static final String KEY_FOLLOW = "followUps";
     private static final String KEY_ACTIONS = "actions";
     private static final String KEY_CONFIG = "config";
     private static final String KEY_QUIET_MISSED = "quietMissed";
@@ -116,6 +118,46 @@ public final class AlarmStore {
             JSONObject t = list.optJSONObject(i);
             if (t != null) scheduleNext(ctx, t, false);
         }
+        restoreFollowUps(ctx, list);
+    }
+
+    /**
+     * Opening Asha re-sends the reminder list (replaceAll), which cancels every alarm, and a restart clears them all.
+     * A "Later" pressed before that must still ring: set again each follow-up that is still ahead and not yet done.
+     */
+    private static synchronized void restoreFollowUps(Context ctx, JSONArray list) {
+        JSONObject all = followUps(ctx);
+        JSONObject keep = new JSONObject();
+        long now = System.currentTimeMillis();
+        java.util.Iterator<String> it = all.keys();
+        while (it.hasNext()) {
+            String key = it.next();
+            JSONObject f = all.optJSONObject(key);
+            if (f == null) continue;
+            long at = f.optLong("at");
+            JSONObject t = null;
+            for (int i = 0; i < list.length(); i++) {
+                JSONObject x = list.optJSONObject(i);
+                if (x != null && key.equals(x.optString("key"))) { t = x; break; }
+            }
+            if (t == null || at <= now || t.optLong("skipUntil", 0) > now) continue; // gone, past, or done today
+            setAlarm(ctx, key, at, f.optInt("attempt", 1), true);
+            try { keep.put(key, f); } catch (JSONException ignored) { }
+        }
+        prefs(ctx).edit().putString(KEY_FOLLOW, keep.toString()).apply();
+    }
+
+    private static JSONObject followUps(Context ctx) {
+        try { return new JSONObject(prefs(ctx).getString(KEY_FOLLOW, "{}")); } catch (JSONException e) { return new JSONObject(); }
+    }
+
+    private static synchronized void rememberFollowUp(Context ctx, String key, int attempt, long at) {
+        JSONObject all = followUps(ctx);
+        try {
+            if (at > 0) all.put(key, new JSONObject().put("at", at).put("attempt", attempt));
+            else all.remove(key);
+        } catch (JSONException ignored) { }
+        prefs(ctx).edit().putString(KEY_FOLLOW, all.toString()).apply();
     }
 
     /** Sets the alarm for the next time this reminder is due. */
@@ -152,6 +194,7 @@ public final class AlarmStore {
 
     /** A follow-up ("are you sure you took it?") some minutes after the first reminder. */
     public static void scheduleFollowUp(Context ctx, String key, int attempt, long atMillis) {
+        if (!QUIET_END.equals(key)) rememberFollowUp(ctx, key, attempt, atMillis);
         setAlarm(ctx, key, atMillis, attempt, true);
     }
 
@@ -214,6 +257,7 @@ public final class AlarmStore {
         }
         prefs(ctx).edit().putString(KEY_TEMPLATES, list.toString()).apply();
         cancel(ctx, key, true);
+        rememberFollowUp(ctx, key, 0, 0); // done: no more follow-ups
     }
 
     // ---------- actions pressed on the notification, read by the app later ----------

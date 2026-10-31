@@ -12,6 +12,7 @@ import { FamilyScreen } from "@/components/asha/family-screen";
 import { FairyIntro } from "@/components/asha/fairy-intro";
 import { FairyTour } from "@/components/asha/fairy-guide";
 import { PetRoam } from "@/components/asha/roam";
+import { SpeakingPeek } from "@/components/asha/speaking-peek";
 import { RememberSheet } from "@/components/asha/ideas/remember";
 import { AskHow } from "@/components/asha/ideas/ask-how";
 import { DoseSpotlight } from "@/components/asha/ideas/dose-spotlight";
@@ -127,6 +128,8 @@ function Shell() {
       {onboarded && introSeen && roleChosen && !familyMode && !tourDone ? <FairyTour /> : null}
       {onboarded && introSeen && roleChosen && !familyMode && tourDone && tab !== "sos" ? <DoseSpotlight /> : null}
       <FamilyEngine />
+      {/* a voice is never heard without her: on screens without a fairy she floats in while it speaks */}
+      {onboarded ? <SpeakingPeek /> : null}
       {/* in the intro and setup the fairy talks in her own bubble (with Again); the dark bar covered her words and the headings */}
       {/* on the tour her bubble has its own Again, and the bar would sit over what she is showing */}
       {introSeen && roleChosen && (onboarded || familyMode) && (tourDone || familyMode) ? <Speaking docked={onboarded && !familyMode} /> : null}
