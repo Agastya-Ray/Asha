@@ -37,8 +37,22 @@ public class ReminderAlarmActivity extends Activity {
 
     static boolean shownNow() { return resumed && showing != null; }
 
+    /** The reminder on her full screen right now, or null. */
+    static String currentKey() {
+        ReminderAlarmActivity a = showing;
+        return a == null || a.isFinishing() ? null : a.key;
+    }
+
+    /** Reminders that rang in the moment between her alarm being asked to open and it opening. */
+    private static final ArrayList<Object[]> early = new ArrayList<>();
+    private static long openingAt;
+
+    /** Her full screen was just asked to open (by the notification or directly). */
+    static void opening() { openingAt = android.os.SystemClock.uptimeMillis(); }
+
     /** Opens her full screen directly. Only allowed from the background with "Display over other apps". */
     static boolean open(Context ctx, String key, int attempt) {
+        opening();
         try {
             ctx.startActivity(new Intent(ctx, ReminderAlarmActivity.class).putExtra("key", key).putExtra("attempt", attempt)
                 .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK));
@@ -81,6 +95,14 @@ public class ReminderAlarmActivity extends Activity {
      */
     static boolean offer(String k, int attempt) {
         ReminderAlarmActivity a = showing;
+        if (a == null && android.os.SystemClock.uptimeMillis() - openingAt < 5_000) {
+            // she is on her way: Android would not open a second full screen, so this one joins her queue
+            synchronized (early) {
+                for (Object[] w : early) if (k.equals(w[0])) { w[1] = attempt; return true; }
+                early.add(new Object[]{k, attempt, android.os.SystemClock.uptimeMillis()});
+            }
+            return true;
+        }
         if (a == null || a.isFinishing()) return false;
         a.main.post(() -> {
             if (k.equals(a.key)) return;
@@ -115,6 +137,15 @@ public class ReminderAlarmActivity extends Activity {
         root.setPadding(pad, pad, pad, pad);
         setContentView(root);
         showing = this;
+        String first = getIntent().getStringExtra("key");
+        synchronized (early) {
+            long now = android.os.SystemClock.uptimeMillis();
+            for (Object[] w : early) {
+                if (now - (Long) w[2] > 10 * 60_000L || (first != null && first.equals(w[0]))) continue; // stale, or this one
+                waiting.add(new Object[]{w[0], w[1]});
+            }
+            early.clear();
+        }
         show(getIntent());
     }
 
@@ -163,6 +194,8 @@ public class ReminderAlarmActivity extends Activity {
             @Override public void dismiss() { next(); }
             @Override public void open() { openAsha(); }
         });
+        // a reminder that waited its turn: she says it now that it is on her card
+        if (!fresh && !same) ReminderService.say(this, t, attempt);
         if (!same) {
             if (bob != null) bob.cancel();
             fairy.setScaleX(1f);

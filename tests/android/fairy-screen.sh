@@ -287,7 +287,8 @@ anim 1
 adb shell input keyevent KEYCODE_HOME; sleep 4
 shot F12-home-wallpaper-and-floating
 expect_overlays 1 "with the permission she also floats over other apps" float
-adb shell am start -a android.settings.SETTINGS >/dev/null 2>&1; sleep 3   # in another app
+# in another app (the phone app). Not Android's own Settings: it hides every app's floating windows on purpose.
+adb shell am start -a android.intent.action.DIAL >/dev/null 2>&1; sleep 3
 M=$(voice_mark)
 setclock 101519292026.40          # 19:30 dinner, phone in use: she flies in herself, over the other app
 sleep 45

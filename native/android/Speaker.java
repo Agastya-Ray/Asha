@@ -88,10 +88,22 @@ public final class Speaker {
      * appear (she flies in first). If she cannot be shown at all, she stays silent: never a voice from nowhere.
      */
     public void speakWhenSeen(String text, String lang, float rate, float pitch, long waitMs, Done done) {
+        speakWhenSeen(text, lang, rate, pitch, waitMs, null, done);
+    }
+
+    /** Says whether this line still belongs on the screen (false: another card is showing; it is said when its own card comes). */
+    public interface Still { boolean ok(); }
+
+    public void speakWhenSeen(String text, String lang, float rate, float pitch, long waitMs, Still still, Done done) {
         final Handler h = new Handler(Looper.getMainLooper());
         final long until = SystemClock.uptimeMillis() + waitMs;
         h.post(new Runnable() {
             @Override public void run() {
+                if (still != null && !still.ok()) {
+                    log("WAITS (another card is showing; said when this one comes)", text);
+                    if (done != null) done.done(false);
+                    return;
+                }
                 if (seenAt(app) != null) { speak(text, lang, rate, pitch, done); return; }
                 if (SystemClock.uptimeMillis() >= until) {
                     log("SILENT (not on screen)", text);

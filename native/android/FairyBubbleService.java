@@ -166,6 +166,12 @@ public class FairyBubbleService extends Service {
         return t;
     }
 
+    /** The reminder on her floating card right now, or null. */
+    static String popKeyNow() {
+        FairyBubbleService s = running;
+        return s == null || s.pop == null ? null : s.popKey;
+    }
+
     /** Asha's own screen is showing (the app shows due reminders itself). */
     public static boolean appOnScreen() { return appVisible; }
 
@@ -469,7 +475,10 @@ public class FairyBubbleService extends Service {
             Object[] w = waiting.remove(0);
             JSONObject next = AlarmStore.find(this, (String) w[0]);
             if (next == null || next.optLong("skipUntil", 0) > System.currentTimeMillis()) continue;
-            main.postDelayed(() -> showPop(next, (Integer) w[1]), 700);
+            main.postDelayed(() -> {
+                showPop(next, (Integer) w[1]);
+                ReminderService.say(this, next, (Integer) w[1]); // her words match the card now on screen
+            }, 700);
             return;
         }
         applyVisibility();

@@ -261,9 +261,15 @@ export async function speak(text: string, lang: Lang, prefer: "warm" | "device" 
   }
   const mine = ++generation;
   // she is drawn as she starts (the speaking peek appears on screens without her); the test checks this line
-  window.setTimeout(() => {
-    if (mine === generation && useSpeech.getState().active) report(`SAY drawn=${fairyDrawn()}`, clean);
-  }, 400);
+  // (she may still be fading or flying in, so look a few times over the first moments)
+  const look = (left: number) =>
+    window.setTimeout(() => {
+      if (mine !== generation || !useSpeech.getState().active) return;
+      const drawn = fairyDrawn();
+      if (drawn || left === 0) report(`SAY drawn=${drawn}`, clean);
+      else look(left - 1);
+    }, 400);
+  look(3);
   audio?.pause();
   audio = null;
   if (!isNative && typeof window !== "undefined") window.speechSynthesis?.cancel();

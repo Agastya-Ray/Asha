@@ -84,9 +84,29 @@ public class ReminderService extends Service {
         final int id = startId;
         if (!cfg.optBoolean("speak", true)) { finish(id); return START_NOT_STICKY; }
         main.postDelayed(() -> finish(id), 60_000); // safety stop
+        final String key = t.optString("key");
         Speaker.get(this).speakWhenSeen(sentence(t, attempt, maxRepeats), t.optString("lang", "en"),
-            (float) cfg.optDouble("rate", 0.92), 1.0f, SEEN_WAIT, ok -> main.post(() -> finish(id)));
+            (float) cfg.optDouble("rate", 0.92), 1.0f, SEEN_WAIT, () -> onCard(key), ok -> main.post(() -> finish(id)));
         return START_NOT_STICKY;
+    }
+
+    /**
+     * Her words always match her card: while another reminder's card is up (two ring at the same minute), this one
+     * waits its turn and is said when its own card comes (say()).
+     */
+    static boolean onCard(String key) {
+        String a = ReminderAlarmActivity.currentKey();
+        if (a != null) return a.equals(key);
+        String p = FairyBubbleService.popKeyNow();
+        return p == null || p.equals(key);
+    }
+
+    /** A reminder that waited its turn is on her card now: say it. */
+    static void say(Context ctx, JSONObject t, int attempt) {
+        JSONObject cfg = AlarmStore.config(ctx);
+        if (t == null || !cfg.optBoolean("speak", true) || AlarmStore.quiet(ctx)) return;
+        Speaker.get(ctx).speak(sentence(t, attempt, cfg.optInt("repeats", 2)), t.optString("lang", "en"),
+            (float) cfg.optDouble("rate", 0.92), null);
     }
 
     /** How long the voice waits for her to fly onto the screen (her fly-in takes about a second). */
@@ -263,6 +283,7 @@ public class ReminderService extends Service {
         if (alarm && !AlarmStore.quiet(ctx) && !FairyBubbleService.appOnScreen() && !FairyBubbleService.wouldPop(ctx)
             && !ReminderAlarmActivity.offer(key, attempt)) {
             b.setFullScreenIntent(ReminderAlarmActivity.pending(ctx, key, attempt), true);
+            ReminderAlarmActivity.opening();
         }
         nm.notify(AlarmStore.notificationId(key), b.build());
         if (!"greet".equals(t.optString("kind"))) {
