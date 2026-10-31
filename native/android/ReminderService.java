@@ -84,9 +84,9 @@ public class ReminderService extends Service {
         final int id = startId;
         if (!cfg.optBoolean("speak", true)) { finish(id); return START_NOT_STICKY; }
         main.postDelayed(() -> finish(id), 60_000); // safety stop
-        final String key = t.optString("key");
+        final String cardKey = t.optString("key");
         Speaker.get(this).speakWhenSeen(sentence(t, attempt, maxRepeats), t.optString("lang", "en"),
-            (float) cfg.optDouble("rate", 0.92), 1.0f, SEEN_WAIT, () -> onCard(key), ok -> main.post(() -> finish(id)));
+            (float) cfg.optDouble("rate", 0.92), 1.0f, SEEN_WAIT, () -> onCard(cardKey), ok -> main.post(() -> finish(id)));
         return START_NOT_STICKY;
     }
 
