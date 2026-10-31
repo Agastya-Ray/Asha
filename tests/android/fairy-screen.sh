@@ -240,6 +240,17 @@ adb shell dumpsys notification --noredact | grep -E "android.title=" > "$OUT/not
 [ -n "$FIRST" ] && grep -qF "$FIRST" "$OUT/notes-after-alarm.txt" && fail "Taken left '$FIRST' in the notifications" || pass "Taken on the alarm cleared its notification"
 adb shell wm dismiss-keyguard; sleep 2
 
+# ---------- C2. "Later" survives opening Asha: the app re-sends its reminders on open, which used to cancel the snooze ----------
+adb shell am start -n $PKG/.MainActivity --es openTab today >/dev/null 2>&1; sleep 10
+adb shell input keyevent KEYCODE_HOME; sleep 2
+M=$(grep -c "" "$OUT/logcat-stream.txt")
+setclock 101508102026.40
+sleep 35
+tail -n +"$M" "$OUT/logcat-stream.txt" | grep -E "AshaSpeaker|AshaFairy.*pop" > "$OUT/snooze-after-open.txt"
+shot C2-later-rings-after-opening-asha
+grep -qiE "breakfast|still waiting|AshaSpeaker" "$OUT/snooze-after-open.txt" && pass "C2: the reminder put off with Later still rang after Asha was opened" \
+  || fail "C2: Later was lost after opening Asha (nothing rang at 08:10)"
+
 # ---------- V1. in Asha on Settings (no fairy of its own there): 13:00 lunch is read out, so she floats in ----------
 adb shell am start -n $PKG/.MainActivity --es openTab settings >/dev/null 2>&1; sleep 8
 # a new day brings her crown card ("a new flower") over the page: answer it, then go to Settings by the gear
