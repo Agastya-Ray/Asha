@@ -49,7 +49,7 @@ if (isNative) {
 /** Is a fairy (any Pixie: the dock, a roaming trip, the tour, the intro, a sheet, or the speaking peek) drawn and visible? */
 export function fairyDrawn(notPeek = false) {
   if (typeof document === "undefined") return true;
-  for (const el of Array.from(document.querySelectorAll<HTMLElement>(".fairy-scene, .pixie, .fi-garden-scene"))) {
+  for (const el of Array.from(document.querySelectorAll<HTMLElement>(".fairy-scene, .pixie, .fairy-flipbook, .fi-garden-scene"))) {
     if (notPeek && el.closest(".speaking-peek")) continue;
     const r = el.getBoundingClientRect();
     if (r.width < 8 || r.height < 8) continue;
