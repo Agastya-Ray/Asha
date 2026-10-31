@@ -168,6 +168,11 @@ shot 26-lockscreen-at-0800
 adb shell wm dismiss-keyguard; sleep 2
 adb shell cmd statusbar expand-notifications; sleep 2
 shot 27-notification-shade-0800
+# Android folds an app's ungrouped notifications into one bundle ("ranker_group"), which hides each reminder's
+# Taken button behind two taps. Each reminder now has its own group, so none should be bundled.
+adb shell dumpsys notification --noredact | grep -E "groupKey=.*com\.agastyaray\.asha" > "$OUT/notification-groups.txt"
+if grep -q "ranker_group" "$OUT/notification-groups.txt"; then FAILED=1; log "FAIL Android bundled Asha's reminders together (see notification-groups.txt)"
+else log "PASS no reminder is folded into a bundle"; fi
 xy=$(center "Taken")
 if [ -z "$xy" ]; then
   # the action buttons only show once the collapsed Asha notification is expanded

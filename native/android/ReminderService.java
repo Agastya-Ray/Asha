@@ -42,6 +42,7 @@ public class ReminderService extends Service {
             .setContentTitle("Asha")
             .setContentText(t != null ? t.optString("title") : "")
             .setSmallIcon(android.R.drawable.ic_lock_idle_alarm)
+            .setGroup("asha.busy")
             .build();
         try {
             if (Build.VERSION.SDK_INT >= 34) {
@@ -262,6 +263,8 @@ public class ReminderService extends Service {
             .setPriority(Notification.PRIORITY_MAX)
             .setVisibility(Notification.VISIBILITY_PUBLIC)
             .setContentIntent(openPi)
+            // each reminder its own group: never folded into a bundle where Taken / Later are hidden
+            .setGroup("asha.card." + key)
             .setAutoCancel(true)
             .setOngoing(false);
         if (!"greet".equals(t.optString("kind"))) {
