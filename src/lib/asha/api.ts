@@ -1,6 +1,7 @@
 // Talks to the small Asha server (the /api folder, hosted on Vercel).
 import { isNative } from "@/lib/asha/native";
 import type { Lang } from "@/lib/asha/types";
+import type { TitliMood } from "../../../api/_titli";
 
 /** Where the server lives. In the browser it is the same site. In the app it is the Vercel address. */
 const FALLBACK_API = "https://asha-rho.vercel.app";
@@ -52,8 +53,9 @@ export function apiVoices() {
   return post<{ voices: VoiceChoice[] }>("/api/voices", {}, 20000);
 }
 
-export function apiChat(input: { show: Lang; say: Lang; context: string; turns: { role: string; content: string }[] }) {
-  return post<{ say: string; show: string }>("/api/chat", input);
+export function apiChat(input: { show: Lang; say: Lang; context: string; fairy?: string; turns: { role: string; content: string }[] }) {
+  // mood: the face Titli makes while saying it (older servers leave it out)
+  return post<{ say: string; show: string; mood?: TitliMood }>("/api/chat", input);
 }
 
 export type RxMedicine = { name: string; dose: string; times: string[]; food: string; days: number; note: string };

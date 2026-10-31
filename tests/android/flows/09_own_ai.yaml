@@ -1,0 +1,64 @@
+# Titli's brain: connect your own AI account. On the real phone build, with keys that look real but are not:
+# Claude goes from the WebView straight to api.anthropic.com (CORS), Gemini through native HTTP. Both must answer
+# "did not accept this key", which proves the request reached the service and the reason is told plainly.
+# Then Talk still works through the free helper, and her face is on the Talk screen.
+appId: com.agastyaray.asha
+---
+- launchApp
+- runFlow: wake_if_quiet.yaml
+- tapOn: "Settings"
+- scrollUntilVisible:
+    element: "Use my own AI account"
+    centerElement: true
+    timeout: 90000
+- tapOn: "Use my own AI account"
+- waitForAnimationToEnd
+- takeScreenshot: 90-brain-choices
+- scrollUntilVisible:
+    element: "sk-…"
+    centerElement: true
+    timeout: 90000
+- tapOn: "sk-…"
+- inputText: "sk-ant-api03-NOTAREALKEYforAshaTesting0000000000000000"
+- hideKeyboard
+- scrollUntilVisible:
+    element: "Test and save"
+    centerElement: true
+    timeout: 90000
+- tapOn: "Test and save"
+- extendedWaitUntil:
+    visible: "Claude did not accept this key.*"
+    timeout: 40000
+- takeScreenshot: 91-brain-claude-wrong-key
+- scrollUntilVisible:
+    element: "Gemini \\(Google\\)"
+    direction: UP
+    centerElement: true
+    timeout: 90000
+- tapOn: "Gemini \\(Google\\)"
+- scrollUntilVisible:
+    element: "sk-…"
+    centerElement: true
+    timeout: 90000
+- tapOn: "sk-…"
+- eraseText: 80
+- inputText: "AIzaSyNOTAREALKEYforAshaTesting000000"
+- hideKeyboard
+- scrollUntilVisible:
+    element: "Test and save"
+    centerElement: true
+    timeout: 90000
+- tapOn: "Test and save"
+- extendedWaitUntil:
+    visible: "Gemini \\(Google\\) did not accept this key.*"
+    timeout: 40000
+- takeScreenshot: 92-brain-gemini-wrong-key
+- scrollUntilVisible:
+    element: "Cancel"
+    centerElement: true
+    timeout: 90000
+- tapOn: "Cancel"
+- assertVisible: "Use my own AI account"
+- tapOn: "Talk"
+- assertVisible: "Talk with .*"
+- takeScreenshot: 93-talk-titli-face

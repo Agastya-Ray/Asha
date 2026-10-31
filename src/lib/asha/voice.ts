@@ -236,7 +236,8 @@ const knownNames = () => {
   return [s.name, s.fairyName].map((n) => n?.trim() ?? "").filter((n) => n.length >= 2);
 };
 
-export async function speak(text: string, lang: Lang, prefer: "warm" | "device" | "fairy", loud = false) {
+/** "fairy-phone": her own little voice from the phone, never a cloud clip (chat replies: free and the same all day). */
+export async function speak(text: string, lang: Lang, prefer: "warm" | "device" | "fairy" | "fairy-phone", loud = false) {
   const clean = text.replace(/\s+/g, " ").trim();
   if (!clean || (!loud && hushUntil > Date.now())) return;
   const mine = ++generation;
@@ -262,5 +263,5 @@ export async function speak(text: string, lang: Lang, prefer: "warm" | "device" 
       if (mine !== generation) return;
     }
   }
-  await phoneVoice(clean, lang, mine, prefer === "fairy");
+  await phoneVoice(clean, lang, mine, prefer === "fairy" || prefer === "fairy-phone");
 }
