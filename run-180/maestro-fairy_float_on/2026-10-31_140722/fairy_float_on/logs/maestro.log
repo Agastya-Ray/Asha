@@ -1,0 +1,75 @@
+14:07:27.253 [ INFO] maestro.cli.runner.MaestroCommandRunner.runCommands$lambda$0: Define variables RUNNING
+14:07:27.256 [ INFO] maestro.cli.runner.MaestroCommandRunner.runCommands$lambda$11: Define variables metadata CommandMetadata(numberOfRuns=null, evaluatedCommand=MaestroCommand(defineVariablesCommand=DefineVariablesCommand(env={MAESTRO_FILENAME=fairy_float_on, MAESTRO_DEVICE_UDID=emulator-5554, MAESTRO_SHARD_ID=1, MAESTRO_SHARD_INDEX=0}, label=null, optional=false)), logMessages=[], insight=Insight(message=, level=NONE), aiReasoning=null, labeledCommand=null)
+14:07:27.257 [ INFO] maestro.cli.runner.MaestroCommandRunner.runCommands$lambda$2: Define variables COMPLETED
+14:07:27.258 [ INFO] maestro.cli.runner.MaestroCommandRunner.runCommands$lambda$0: Apply configuration RUNNING
+14:07:27.259 [ INFO] maestro.cli.runner.MaestroCommandRunner.runCommands$lambda$11: Apply configuration metadata CommandMetadata(numberOfRuns=null, evaluatedCommand=MaestroCommand(applyConfigurationCommand=ApplyConfigurationCommand(config=MaestroConfig(appId=com.agastyaray.asha, name=null, tags=[], ext={}, onFlowStart=null, onFlowComplete=null, properties={}), label=null, optional=false)), logMessages=[], insight=Insight(message=, level=NONE), aiReasoning=null, labeledCommand=null)
+14:07:27.259 [ INFO] maestro.cli.runner.MaestroCommandRunner.runCommands$lambda$2: Apply configuration COMPLETED
+14:07:27.259 [ INFO] maestro.cli.runner.MaestroCommandRunner.runCommands$lambda$0: Tap on (Optional) "Not today" RUNNING
+14:07:27.267 [ INFO] maestro.cli.runner.MaestroCommandRunner.runCommands$lambda$11: Tap on (Optional) "Not today" metadata CommandMetadata(numberOfRuns=null, evaluatedCommand=MaestroCommand(tapOnElementCommand=TapOnElementCommand(selector=ElementSelector(textRegex=Not today, idRegex=null, size=null, below=null, above=null, leftOf=null, rightOf=null, containsChild=null, containsDescendants=null, traits=null, index=null, enabled=null, optional=true, selected=null, checked=null, focused=null, childOf=null, css=null), retryIfNoChange=false, waitUntilVisible=false, longPress=false, repeat=null, waitToSettleTimeoutMs=null, relativePoint=null, label=null, optional=true)), logMessages=[], insight=Insight(message=, level=NONE), aiReasoning=null, labeledCommand=null)
+14:07:34.190 [ INFO] maestro.orchestra.Orchestra.executeCommands: [Command execution] CommandWarned: Element not found: Text matching regex: Not today
+14:07:34.190 [ INFO] maestro.cli.runner.MaestroCommandRunner.runCommands$lambda$11: Tap on (Optional) "Not today" metadata CommandMetadata(numberOfRuns=null, evaluatedCommand=MaestroCommand(tapOnElementCommand=TapOnElementCommand(selector=ElementSelector(textRegex=Not today, idRegex=null, size=null, below=null, above=null, leftOf=null, rightOf=null, containsChild=null, containsDescendants=null, traits=null, index=null, enabled=null, optional=true, selected=null, checked=null, focused=null, childOf=null, css=null), retryIfNoChange=false, waitUntilVisible=false, longPress=false, repeat=null, waitToSettleTimeoutMs=null, relativePoint=null, label=null, optional=true)), logMessages=[], insight=Insight(message=Element not found: Text matching regex: Not today, level=WARNING), aiReasoning=null, labeledCommand=null)
+14:07:34.381 [ INFO] maestro.Maestro.takeScreenshot: Taking screenshot
+14:07:34.382 [TRACE] maestro.utils.ScreenshotUtils.takeScreenshot: Taking screenshot to output sink
+14:07:34.730 [ INFO] maestro.cli.runner.MaestroCommandRunner.runCommands$lambda$6: Tap on (Optional) "Not today" WARNED
+14:07:34.731 [ INFO] maestro.cli.runner.MaestroCommandRunner.runCommands$lambda$0: Wait for animation to end within 3000 ms RUNNING
+14:07:34.731 [ INFO] maestro.cli.runner.MaestroCommandRunner.runCommands$lambda$11: Wait for animation to end within 3000 ms metadata CommandMetadata(numberOfRuns=null, evaluatedCommand=MaestroCommand(waitForAnimationToEndCommand=WaitForAnimationToEndCommand(timeout=3000, label=null, optional=false)), logMessages=[], insight=Insight(message=, level=NONE), aiReasoning=null, labeledCommand=null)
+14:07:34.733 [ INFO] maestro.Maestro.waitForAnimationToEnd$lambda$54: Waiting for animation to end with timeout 3000
+14:07:34.733 [TRACE] maestro.utils.ScreenshotUtils.takeScreenshot: Taking screenshot to byte array
+14:07:34.733 [TRACE] maestro.utils.ScreenshotUtils.takeScreenshot: Taking screenshot to output sink
+14:07:35.111 [TRACE] maestro.utils.ScreenshotUtils.takeScreenshot: Taking screenshot to byte array
+14:07:35.111 [TRACE] maestro.utils.ScreenshotUtils.takeScreenshot: Taking screenshot to output sink
+14:07:35.564 [ INFO] maestro.cli.runner.MaestroCommandRunner.runCommands$lambda$2: Wait for animation to end within 3000 ms COMPLETED
+14:07:35.565 [ INFO] maestro.cli.runner.MaestroCommandRunner.runCommands$lambda$0: Tap on point (70%,9%) RUNNING
+14:07:35.568 [ INFO] maestro.cli.runner.MaestroCommandRunner.runCommands$lambda$11: Tap on point (70%,9%) metadata CommandMetadata(numberOfRuns=null, evaluatedCommand=MaestroCommand(tapOnPointV2Command=TapOnPointV2Command(point=70%,9%, retryIfNoChange=false, longPress=false, repeat=null, waitToSettleTimeoutMs=null, label=null, optional=false)), logMessages=[], insight=Insight(message=, level=NONE), aiReasoning=null, labeledCommand=null)
+14:07:35.577 [ INFO] maestro.Maestro.hierarchyBasedTap-ogj28Uc: Tapping at (756, 216) using hierarchy based logic for wait
+14:07:36.734 [ INFO] maestro.Maestro.hierarchyBasedTap-ogj28Uc: Something has changed in the UI judging by view hierarchy. Proceed.
+14:07:36.735 [ INFO] maestro.cli.runner.MaestroCommandRunner.runCommands$lambda$2: Tap on point (70%,9%) COMPLETED
+14:07:36.735 [ INFO] maestro.cli.runner.MaestroCommandRunner.runCommands$lambda$0: Assert that ".*Fairy on my home and lock screen.*|.*Floating fairy.*|Settings" is visible RUNNING
+14:07:36.738 [ INFO] maestro.cli.runner.MaestroCommandRunner.runCommands$lambda$11: Assert that ".*Fairy on my home and lock screen.*|.*Floating fairy.*|Settings" is visible metadata CommandMetadata(numberOfRuns=null, evaluatedCommand=MaestroCommand(assertConditionCommand=AssertConditionCommand(condition=Condition(platform=null, visible=ElementSelector(textRegex=.*Fairy on my home and lock screen.*|.*Floating fairy.*|Settings, idRegex=null, size=null, below=null, above=null, leftOf=null, rightOf=null, containsChild=null, containsDescendants=null, traits=null, index=null, enabled=null, optional=false, selected=null, checked=null, focused=null, childOf=null, css=null), notVisible=null, scriptCondition=null, label=null), timeout=10000, label=null, optional=false)), logMessages=[], insight=Insight(message=, level=NONE), aiReasoning=null, labeledCommand=null)
+14:07:36.869 [ INFO] maestro.cli.runner.MaestroCommandRunner.runCommands$lambda$2: Assert that ".*Fairy on my home and lock screen.*|.*Floating fairy.*|Settings" is visible COMPLETED
+14:07:36.869 [ INFO] maestro.cli.runner.MaestroCommandRunner.runCommands$lambda$0: Scrolling DOWN until "(?s).*Floating fairy over other apps.*" is visible with speed 40, visibility percentage 60%, timeout 30000 ms, with centering disabled RUNNING
+14:07:36.871 [ INFO] maestro.cli.runner.MaestroCommandRunner.runCommands$lambda$11: Scrolling DOWN until "(?s).*Floating fairy over other apps.*" is visible with speed 40, visibility percentage 60%, timeout 30000 ms, with centering disabled metadata CommandMetadata(numberOfRuns=null, evaluatedCommand=MaestroCommand(scrollUntilVisibleCommand=ScrollUntilVisibleCommand(selector=ElementSelector(textRegex=(?s).*Floating fairy over other apps.*, idRegex=null, size=null, below=null, above=null, leftOf=null, rightOf=null, containsChild=null, containsDescendants=null, traits=null, index=null, enabled=null, optional=false, selected=null, checked=null, focused=null, childOf=null, css=null), direction=DOWN, scrollDuration=601, visibilityPercentage=60, timeout=30000, waitToSettleTimeoutMs=null, centerElement=false, originalSpeedValue=40, label=null, optional=false)), logMessages=[], insight=Insight(message=, level=NONE), aiReasoning=null, labeledCommand=null)
+14:07:37.648 [ WARN] maestro.orchestra.Orchestra.scrollUntilVisible: Error: maestro.MaestroException$ElementNotFound: Element not found: Text matching regex: (?s).*Floating fairy over other apps.*
+14:07:37.654 [ INFO] maestro.Maestro.swipeFromCenter: Swiping UP from center
+14:07:39.137 [ WARN] maestro.orchestra.Orchestra.scrollUntilVisible: Error: maestro.MaestroException$ElementNotFound: Element not found: Text matching regex: (?s).*Floating fairy over other apps.*
+14:07:39.179 [ INFO] maestro.Maestro.swipeFromCenter: Swiping UP from center
+14:07:40.672 [ WARN] maestro.orchestra.Orchestra.scrollUntilVisible: Error: maestro.MaestroException$ElementNotFound: Element not found: Text matching regex: (?s).*Floating fairy over other apps.*
+14:07:40.676 [ INFO] maestro.Maestro.swipeFromCenter: Swiping UP from center
+14:07:42.173 [ WARN] maestro.orchestra.Orchestra.scrollUntilVisible: Error: maestro.MaestroException$ElementNotFound: Element not found: Text matching regex: (?s).*Floating fairy over other apps.*
+14:07:42.213 [ INFO] maestro.Maestro.swipeFromCenter: Swiping UP from center
+14:07:43.694 [ WARN] maestro.orchestra.Orchestra.scrollUntilVisible: Error: maestro.MaestroException$ElementNotFound: Element not found: Text matching regex: (?s).*Floating fairy over other apps.*
+14:07:43.735 [ INFO] maestro.Maestro.swipeFromCenter: Swiping UP from center
+14:07:45.197 [ WARN] maestro.orchestra.Orchestra.scrollUntilVisible: Error: maestro.MaestroException$ElementNotFound: Element not found: Text matching regex: (?s).*Floating fairy over other apps.*
+14:07:45.249 [ INFO] maestro.Maestro.swipeFromCenter: Swiping UP from center
+14:07:46.778 [ WARN] maestro.orchestra.Orchestra.scrollUntilVisible: Error: maestro.MaestroException$ElementNotFound: Element not found: Text matching regex: (?s).*Floating fairy over other apps.*
+14:07:46.822 [ INFO] maestro.Maestro.swipeFromCenter: Swiping UP from center
+14:07:48.389 [ WARN] maestro.orchestra.Orchestra.scrollUntilVisible: Error: maestro.MaestroException$ElementNotFound: Element not found: Text matching regex: (?s).*Floating fairy over other apps.*
+14:07:48.431 [ INFO] maestro.Maestro.swipeFromCenter: Swiping UP from center
+14:07:50.063 [ WARN] maestro.orchestra.Orchestra.scrollUntilVisible: Error: maestro.MaestroException$ElementNotFound: Element not found: Text matching regex: (?s).*Floating fairy over other apps.*
+14:07:50.106 [ INFO] maestro.Maestro.swipeFromCenter: Swiping UP from center
+14:07:51.548 [ WARN] maestro.orchestra.Orchestra.scrollUntilVisible: Error: maestro.MaestroException$ElementNotFound: Element not found: Text matching regex: (?s).*Floating fairy over other apps.*
+14:07:51.553 [ INFO] maestro.Maestro.swipeFromCenter: Swiping UP from center
+14:07:53.120 [ WARN] maestro.orchestra.Orchestra.scrollUntilVisible: Error: maestro.MaestroException$ElementNotFound: Element not found: Text matching regex: (?s).*Floating fairy over other apps.*
+14:07:53.161 [ INFO] maestro.Maestro.swipeFromCenter: Swiping UP from center
+14:07:54.678 [ WARN] maestro.orchestra.Orchestra.scrollUntilVisible: Error: maestro.MaestroException$ElementNotFound: Element not found: Text matching regex: (?s).*Floating fairy over other apps.*
+14:07:54.721 [ INFO] maestro.Maestro.swipeFromCenter: Swiping UP from center
+14:07:56.341 [ WARN] maestro.orchestra.Orchestra.scrollUntilVisible: Error: maestro.MaestroException$ElementNotFound: Element not found: Text matching regex: (?s).*Floating fairy over other apps.*
+14:07:56.383 [ INFO] maestro.Maestro.swipeFromCenter: Swiping UP from center
+14:07:57.933 [ WARN] maestro.orchestra.Orchestra.scrollUntilVisible: Error: maestro.MaestroException$ElementNotFound: Element not found: Text matching regex: (?s).*Floating fairy over other apps.*
+14:07:57.975 [ INFO] maestro.Maestro.swipeFromCenter: Swiping UP from center
+14:07:59.445 [ WARN] maestro.orchestra.Orchestra.scrollUntilVisible: Error: maestro.MaestroException$ElementNotFound: Element not found: Text matching regex: (?s).*Floating fairy over other apps.*
+14:07:59.487 [ INFO] maestro.Maestro.swipeFromCenter: Swiping UP from center
+14:08:01.020 [ WARN] maestro.orchestra.Orchestra.scrollUntilVisible: Error: maestro.MaestroException$ElementNotFound: Element not found: Text matching regex: (?s).*Floating fairy over other apps.*
+14:08:01.062 [ INFO] maestro.Maestro.swipeFromCenter: Swiping UP from center
+14:08:02.511 [ WARN] maestro.orchestra.Orchestra.scrollUntilVisible: Error: maestro.MaestroException$ElementNotFound: Element not found: Text matching regex: (?s).*Floating fairy over other apps.*
+14:08:02.553 [ INFO] maestro.Maestro.swipeFromCenter: Swiping UP from center
+14:08:04.122 [ WARN] maestro.orchestra.Orchestra.scrollUntilVisible: Error: maestro.MaestroException$ElementNotFound: Element not found: Text matching regex: (?s).*Floating fairy over other apps.*
+14:08:04.207 [ INFO] maestro.Maestro.swipeFromCenter: Swiping UP from center
+14:08:05.780 [ WARN] maestro.orchestra.Orchestra.scrollUntilVisible: Error: maestro.MaestroException$ElementNotFound: Element not found: Text matching regex: (?s).*Floating fairy over other apps.*
+14:08:05.820 [ INFO] maestro.Maestro.swipeFromCenter: Swiping UP from center
+14:08:07.391 [ WARN] maestro.orchestra.Orchestra.scrollUntilVisible: Error: maestro.MaestroException$ElementNotFound: Element not found: Text matching regex: (?s).*Floating fairy over other apps.*
+14:08:07.433 [ INFO] maestro.Maestro.swipeFromCenter: Swiping UP from center
+14:08:08.394 [ERROR] maestro.orchestra.Orchestra.executeCommands: [Command execution] CommandFailed: No visible element found: "(?s).*Floating fairy over other apps.*"
+14:08:08.513 [ INFO] maestro.Maestro.takeScreenshot: Taking screenshot
+14:08:08.514 [TRACE] maestro.utils.ScreenshotUtils.takeScreenshot: Taking screenshot to output sink
+14:08:08.787 [ INFO] maestro.cli.runner.MaestroCommandRunner.runCommands$lambda$4: Scrolling DOWN until "(?s).*Floating fairy over other apps.*" is visible with speed 40, visibility percentage 60%, timeout 30000 ms, with centering disabled FAILED
