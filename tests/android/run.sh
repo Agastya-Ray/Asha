@@ -223,12 +223,12 @@ grep "AshaSpeaker" "$OUT/logcat-stream.txt" | tail -3 > "$OUT/quiet-early-said.t
 grep -q "I'm back" "$OUT/quiet-early-said.txt" && log "woken early: she said I'm back" || { FAILED=1; log "woken early: no I'm back"; }
 flow 08_quiet_stay.yaml           # quiet for 30 minutes, until about 19:55
 adb shell input keyevent KEYCODE_HOME
-SAID_BEFORE=$(grep -c "AshaSpeaker" "$OUT/logcat-stream.txt")
+SAID_BEFORE=$(grep -c "AshaSpeaker.*SAY at=" "$OUT/logcat-stream.txt")
 setclock 101519292026.40          # 19:29:40, so dinner comes due while she is quiet
 sleep 80
 adb shell dumpsys notification --noredact | grep -E "android.title=|android.text=" > "$OUT/quiet-1930-cards.txt" || true
 grep -qi "dinner" "$OUT/quiet-1930-cards.txt" && log "19:30 while quiet: silent dinner card shown" || { FAILED=1; log "19:30 while quiet: no dinner card"; }
-SAID_QUIET=$(grep -c "AshaSpeaker" "$OUT/logcat-stream.txt")
+SAID_QUIET=$(grep -c "AshaSpeaker.*SAY at=" "$OUT/logcat-stream.txt")
 [ "$SAID_QUIET" = "$SAID_BEFORE" ] && log "19:30 while quiet: she stayed silent" || { FAILED=1; log "19:30 while quiet: she spoke"; grep "AshaSpeaker" "$OUT/logcat-stream.txt" | tail -3 >> "$OUT/steps.log"; }
 adb shell input keyevent KEYCODE_WAKEUP; sleep 2; shot 83-quiet-silent-card
 setclock 101520052026.00          # 20:05, past the end of quiet

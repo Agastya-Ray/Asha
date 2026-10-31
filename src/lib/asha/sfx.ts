@@ -1,5 +1,6 @@
 import { awake } from "@/lib/asha/companion";
 import { useAsha } from "@/lib/asha/store";
+import { appShown, whenHidden } from "@/lib/asha/onscreen";
 
 /**
  * The fairy's little sounds, made on the spot with Web Audio (no sound files to ship or license):
@@ -29,6 +30,9 @@ function context() {
   return ctx;
 }
 
+// Asha left the screen: hush any sound already playing
+whenHidden(() => void ctx?.suspend().catch(() => undefined));
+
 // phones only allow sound after the first touch, so wake the audio up then
 if (typeof window !== "undefined")
   window.addEventListener("pointerdown", () => context(), { once: true, capture: true });
@@ -36,6 +40,8 @@ if (typeof window !== "undefined")
 function allowed(now = new Date(), anyHour = false) {
   const s = useAsha.getState();
   return (
+    // no flutter or chime from nowhere: only while Asha (and so she) is on the screen
+    appShown() &&
     s.fairySounds &&
     !(s.quietUntil > now.getTime()) &&
     (anyHour || awake(s.wakeTime, s.sleepTime, now))

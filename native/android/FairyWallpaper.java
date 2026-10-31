@@ -70,6 +70,16 @@ public class FairyWallpaper extends WallpaperService {
         return new FairyEngine();
     }
 
+    /** Live wallpapers (not previews) showing her right now: the home screen or lock screen is up. */
+    private static final java.util.Set<Object> showingNow = java.util.Collections.synchronizedSet(new java.util.HashSet<>());
+
+    /** Is she visible as the wallpaper right now (home screen or lock screen on, screen awake)? */
+    static boolean shownNow(Context ctx) {
+        if (showingNow.isEmpty()) return false;
+        android.os.PowerManager pm = (android.os.PowerManager) ctx.getSystemService(Context.POWER_SERVICE);
+        return pm != null && pm.isInteractive();
+    }
+
     private class FairyEngine extends Engine {
         private final Handler main = new Handler(Looper.getMainLooper());
         private final Paint paint = new Paint(Paint.ANTI_ALIAS_FLAG | Paint.FILTER_BITMAP_FLAG);
@@ -110,6 +120,7 @@ public class FairyWallpaper extends WallpaperService {
         @Override
         public void onVisibilityChanged(boolean v) {
             visible = v;
+            if (v && !isPreview()) showingNow.add(this); else showingNow.remove(this);
             main.removeCallbacks(frame);
             if (v) { readAt = 0; drawFrame(); }
         }
@@ -125,12 +136,14 @@ public class FairyWallpaper extends WallpaperService {
         @Override
         public void onSurfaceDestroyed(SurfaceHolder holder) {
             visible = false;
+            showingNow.remove(this);
             main.removeCallbacks(frame);
             super.onSurfaceDestroyed(holder);
         }
 
         @Override
         public void onDestroy() {
+            showingNow.remove(this);
             main.removeCallbacks(frame);
             super.onDestroy();
         }

@@ -5,6 +5,7 @@ import { AshaNative, isNative } from "@/lib/asha/native";
 import { todayKey } from "@/lib/asha/time";
 import { useAsha } from "@/lib/asha/store";
 import { clipSegments } from "@/lib/asha/clip-segments";
+import { appShown, fairyDrawn, whenHidden } from "@/lib/asha/onscreen";
 
 /**
  * Asha's voice, in order of preference:
@@ -236,10 +237,39 @@ const knownNames = () => {
   return [s.name, s.fairyName].map((n) => n?.trim() ?? "").filter((n) => n.length >= 2);
 };
 
+// Asha left the screen: she stops mid-sentence rather than talk from nowhere
+whenHidden(() => {
+  if (useSpeech.getState().active || audio) stopSpeaking();
+});
+
+/** The emulator test reads these lines (logcat "Capacitor/Console") to check she is drawn whenever she speaks. */
+function report(what: string, text: string) {
+  try {
+    console.info(`AshaVoice ${what} ${text.slice(0, 120)}`);
+  } catch {
+    /* ignore */
+  }
+}
+
 export async function speak(text: string, lang: Lang, prefer: "warm" | "device" | "fairy", loud = false) {
   const clean = text.replace(/\s+/g, " ").trim();
   if (!clean || (!loud && hushUntil > Date.now())) return;
+  // never a voice from nowhere: not while Asha is in the background (her timers keep running there)
+  if (!appShown()) {
+    report("BLOCKED hidden", clean);
+    return;
+  }
   const mine = ++generation;
+  // she is drawn as she starts (the speaking peek appears on screens without her); the test checks this line
+  // (she may still be fading or flying in, so look a few times over the first moments)
+  const look = (left: number) =>
+    window.setTimeout(() => {
+      if (mine !== generation || !useSpeech.getState().active) return;
+      const drawn = fairyDrawn();
+      if (drawn || left === 0) report(`SAY drawn=${drawn}`, clean);
+      else look(left - 1);
+    }, 400);
+  look(3);
   audio?.pause();
   audio = null;
   if (!isNative && typeof window !== "undefined") window.speechSynthesis?.cancel();
@@ -254,6 +284,12 @@ export async function speak(text: string, lang: Lang, prefer: "warm" | "device" 
       const clips = await Promise.all(parts.map((p) => warmClip(p, lang, fairyVoice ?? undefined)));
       for (const b64 of clips) {
         if (mine !== generation) return;
+        // the clip took a moment to arrive; if Asha left the screen meanwhile, stay silent
+        if (!appShown()) {
+          report("BLOCKED hidden", clean);
+          if (mine === generation) set({ active: false });
+          return;
+        }
         await playClip(b64);
       }
       if (mine === generation) set({ active: false });
@@ -261,6 +297,11 @@ export async function speak(text: string, lang: Lang, prefer: "warm" | "device" 
     } catch {
       if (mine !== generation) return;
     }
+  }
+  if (!appShown()) {
+    report("BLOCKED hidden", clean);
+    set({ active: false });
+    return;
   }
   await phoneVoice(clean, lang, mine, prefer === "fairy");
 }

@@ -127,7 +127,7 @@ export function FairyFlipbook({
 
   return (
     <div
-      className={cn("pointer-events-none relative", className)}
+      className={cn("fairy-flipbook pointer-events-none relative", className)}
       style={{ width: CANVAS[0] * k, height: CANVAS[1] * k, marginBottom: -FLOOR * k }}
       role="img"
       aria-label="Asha the fairy"
