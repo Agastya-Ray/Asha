@@ -123,6 +123,49 @@ public class FairyBubbleService extends Service {
         return pm != null && pm.isInteractive() && (km == null || !km.isKeyguardLocked());
     }
 
+    /**
+     * Which of her floating windows is on the screen right now: "pop" (the big card), "bubble" (the little
+     * fairy), or null. Overlays never show over the lock screen, and not while the screen is off.
+     */
+    static String drawnNow(Context ctx) {
+        FairyBubbleService s = running;
+        if (s == null) return null;
+        android.os.PowerManager pm = (android.os.PowerManager) ctx.getSystemService(Context.POWER_SERVICE);
+        android.app.KeyguardManager km = (android.app.KeyguardManager) ctx.getSystemService(Context.KEYGUARD_SERVICE);
+        if (pm == null || !pm.isInteractive() || (km != null && km.isKeyguardLocked())) return null;
+        View p = s.pop, v = s.view;
+        if (p != null && p.isAttachedToWindow() && p.getVisibility() == View.VISIBLE && p.getWindowVisibility() == View.VISIBLE) return "pop";
+        if (v != null && v.isAttachedToWindow() && v.getVisibility() == View.VISIBLE && v.getWindowVisibility() == View.VISIBLE && v.getAlpha() > 0.2f) return "bubble";
+        return null;
+    }
+
+    /**
+     * A family message is read out loud: she flies in with it on her card (just "Okay"), so the voice never
+     * comes from nowhere. Only when the phone is in use outside Asha and she may draw over apps.
+     */
+    public static void popMessage(Context ctx, long id, String title, String body) {
+        if (!wouldPop(ctx)) return;
+        FairyBubbleService s = running;
+        JSONObject t = messageCard(id, title, body);
+        if (s != null) { s.main.post(() -> s.showPop(t, 0)); return; }
+        Intent i = new Intent(ctx, FairyBubbleService.class);
+        i.putExtra("msgId", id);
+        i.putExtra("msgTitle", title);
+        i.putExtra("msgBody", body);
+        launch(ctx, i);
+    }
+
+    private static JSONObject messageCard(long id, String title, String body) {
+        JSONObject t = new JSONObject();
+        try {
+            t.put("key", "family|" + id);
+            t.put("kind", "greet"); // one "Okay" button
+            t.put("title", title);
+            t.put("body", body);
+        } catch (Exception ignored) { }
+        return t;
+    }
+
     /** Asha's own screen is showing (the app shows due reminders itself). */
     public static boolean appOnScreen() { return appVisible; }
 
@@ -195,6 +238,8 @@ public class FairyBubbleService extends Service {
             else addBubble();
         }
         if (popWanted != null) showPop(AlarmStore.find(this, popWanted), intent.getIntExtra("attempt", 0));
+        String msgTitle = intent != null ? intent.getStringExtra("msgTitle") : null;
+        if (msgTitle != null) showPop(messageCard(intent.getLongExtra("msgId", 0), msgTitle, intent.getStringExtra("msgBody")), 0);
         if (view == null && pop == null && !FamilyStore.bubbleOn(this)) { quit(); return START_NOT_STICKY; }
         return START_STICKY;
     }

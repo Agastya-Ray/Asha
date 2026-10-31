@@ -49,10 +49,11 @@ public class ReminderReceiver extends BroadcastReceiver {
             if (t == null) { ReminderService.endQuietQuick(ctx, goAsync()); return; }
             ReminderService.showCard(ctx, t, attempt);
             FairyBubbleService.popUp(ctx, t, attempt);
+            ReminderService.showHer(ctx, t, attempt);
             if (!AlarmStore.config(ctx).optBoolean("speak", true)) return;
             PendingResult pending = goAsync();
-            Speaker.get(ctx).speak(ReminderService.sentence(t, attempt, AlarmStore.config(ctx).optInt("repeats", 2)), t.optString("lang", "en"),
-                (float) AlarmStore.config(ctx).optDouble("rate", 0.92), ok -> pending.finish());
+            Speaker.get(ctx).speakWhenSeen(ReminderService.sentence(t, attempt, AlarmStore.config(ctx).optInt("repeats", 2)), t.optString("lang", "en"),
+                (float) AlarmStore.config(ctx).optDouble("rate", 0.92), 1.0f, ReminderService.SEEN_WAIT, ok -> pending.finish());
         }
     }
 }

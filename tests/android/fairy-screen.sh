@@ -5,6 +5,11 @@
 # C. At reminder time on a locked phone she fills the screen like an alarm clock, one reminder at a time.
 # D. With 'Display over other apps' on she also floats over apps and flies in herself; back after restart/kill.
 # E. At night she sleeps on the floor of the home screen.
+# V. Whenever she speaks, she is on the screen. A watcher reads every line she says from logcat (Android's voice and
+#    the app's voice) and at that moment checks with dumpsys that she is drawn: Asha or her alarm on top, her card or
+#    little fairy floating over another app, or her wallpaper on the home or lock screen. Any voice from nowhere FAILS.
+#    Covered: in Asha on a screen with no fairy of its own, the home screen, another app, the lock screen, Asha in the
+#    background, and after a restart and a kill.
 set -u
 OUT="${OUT:-$PWD/results}"
 FAILED=0
@@ -96,6 +101,48 @@ pop_tap() {
 }
 pop_title() { grep "AshaFairy.*: pop " "$OUT/logcat-stream.txt" | tail -1 | sed 's/.*| //'; }
 
+# ---------- V. the voice watcher: is she on the screen at the moment she speaks? ----------
+mkdir -p "$OUT/voice"
+# her overlay windows that are drawn (same test as overlays(), own file so the main script's files stay untouched)
+overlays_now() {
+  adb shell dumpsys window windows > "$OUT/voice/windows.txt" 2>/dev/null
+  awk -v p="$PKG" '/^  Window #/{if(inw&&o&&r)n++; inw=index($0, p "}")>0; o=0; r=0} inw&&/ty=APPLICATION_OVERLAY/{o=1} inw&&/isReadyForDisplay\(\)=true/{r=1} inw&&/mViewVisibility=0x8/{r=0} END{if(inw&&o&&r)n++; print n+0}' "$OUT/voice/windows.txt"
+}
+seen_now() {
+  local f=$1 wake top focus ov wp
+  wake=$(adb shell dumpsys power | grep -m1 -oE "mWakefulness=[A-Za-z]+" | tr -d '\r')
+  top=$(adb shell dumpsys activity activities | grep -m1 -E "topResumedActivity|mResumedActivity" | tr -d '\r')
+  focus=$(adb shell dumpsys window | grep -m1 "mCurrentFocus" | tr -d '\r')
+  ov=$(overlays_now)
+  wp=$(adb shell dumpsys wallpaper | grep -c "FairyWallpaper")
+  printf '%s\n%s\n%s\noverlays=%s wallpaper=%s\n' "$wake" "$top" "$focus" "$ov" "$wp" > "$OUT/voice/$f-state.txt"
+  if [ "$wake" != "mWakefulness=Awake" ]; then echo "FAIL(screen off)"
+  elif echo "$top" | grep -q "$PKG/.ReminderAlarmActivity"; then echo "PASS(full-screen alarm)"
+  elif echo "$top" | grep -q "$PKG/"; then echo "PASS(in Asha)"
+  elif [ "${ov:-0}" -ge 1 ] && ! echo "$focus" | grep -qiE "NotificationShade|Keyguard"; then echo "PASS(floating over another app)"
+  elif [ "${wp:-0}" -gt 0 ] && echo "$focus" | grep -qiE "launcher|NotificationShade|Keyguard"; then echo "PASS(wallpaper)"
+  else echo "FAIL(not on screen: $focus)"; fi
+}
+voice_watch() {
+  local n=0 line f verdict
+  adb logcat -v time -T 1 2>/dev/null | grep --line-buffered -E "AshaSpeaker|AshaVoice" | while IFS= read -r line; do
+    case "$line" in
+      *"AshaSpeaker"*" SAY at="*|*"AshaVoice SAY"*) ;;
+      *) echo "info | $line" >> "$OUT/voice-check.log"; continue ;;
+    esac
+    n=$((n+1)); f=$(printf "V%02d" "$n")
+    verdict=$(seen_now "$f")
+    # the app's own check: was a fairy drawn on the page as the voice began?
+    case "$line" in *"AshaVoice SAY drawn=false"*) verdict="FAIL(in Asha, but no fairy drawn on the page)" ;; esac
+    [ "$n" -le 60 ] && adb exec-out screencap -p > "$OUT/voice/$f.png" 2>/dev/null
+    echo "$verdict $f | $line" >> "$OUT/voice-check.log"
+  done
+}
+: > "$OUT/voice-check.log"
+# lines checked since a mark: "voice_since <mark>" prints the verdict lines written after it
+voice_mark() { wc -l < "$OUT/voice-check.log" | tr -d ' '; }
+voice_since() { tail -n +"$(( $1 + 1 ))" "$OUT/voice-check.log" | grep -E "^(PASS|FAIL)"; }
+
 top_activity() { adb shell dumpsys activity activities | grep -m1 -E "topResumedActivity|mResumedActivity"; }
 launch() { adb shell monkey -p $PKG -c android.intent.category.LAUNCHER 1 >/dev/null 2>&1; sleep 10; }
 
@@ -116,6 +163,8 @@ adb shell appops set $PKG SYSTEM_ALERT_WINDOW deny
 adb logcat -c; adb logcat -G 16M 2>/dev/null || true
 adb logcat -v time -b main -b system -b crash > "$OUT/logcat-stream.txt" 2>/dev/null &
 STREAM_PID=$!
+voice_watch &
+WATCH_PID=$!
 
 adb shell am broadcast -a android.intent.action.CLOSE_SYSTEM_DIALOGS >/dev/null
 flow 01_setup.yaml
@@ -191,6 +240,42 @@ adb shell dumpsys notification --noredact | grep -E "android.title=" > "$OUT/not
 [ -n "$FIRST" ] && grep -qF "$FIRST" "$OUT/notes-after-alarm.txt" && fail "Taken left '$FIRST' in the notifications" || pass "Taken on the alarm cleared its notification"
 adb shell wm dismiss-keyguard; sleep 2
 
+# ---------- V1. in Asha on Settings (no fairy of its own there): the 08:00 reminder snoozed with Later rings again ----------
+adb shell am start -n $PKG/.MainActivity --es openTab settings >/dev/null 2>&1; sleep 8
+M=$(voice_mark)
+setclock 101508102026.20          # the 08:00 reminder put off with Later rings again at about 08:10:40
+sleep 40
+shot V1-in-asha-settings-she-speaks
+voice_since $M > "$OUT/voice-V1.txt"
+peek=$(center_webview "is talking|बोल रही है")
+grep -q "AshaSpeaker.*SAY at=app" "$OUT/voice-V1.txt" && { [ -n "$peek" ] && pass "V1: in Asha on Settings the reminder is spoken and she floats in at the top while she speaks" || fail "V1: spoken on Settings but no fairy drawn on the page"; } \
+  || log "V1: the snoozed reminder did not ring on Settings ($(head -c 300 "$OUT/voice-V1.txt"))"
+
+# ---------- V2. on the home screen, no 'Display over other apps': 13:00 lunch, she speaks from her wallpaper ----------
+adb shell input keyevent KEYCODE_HOME; sleep 3
+M=$(voice_mark)
+setclock 101512592026.30
+sleep 40
+shot V2-home-screen-lunch
+voice_since $M > "$OUT/voice-V2.txt"
+if grep -q "FAIL" "$OUT/voice-V2.txt"; then fail "V2: home screen, a voice with no fairy on screen ($(grep -m1 FAIL "$OUT/voice-V2.txt"))"
+elif grep -q "PASS" "$OUT/voice-V2.txt"; then pass "V2: home screen, she is seen while she speaks ($(grep -m1 -oE "PASS\([^)]*\)" "$OUT/voice-V2.txt"))"
+else log "V2: home screen, nothing spoken at 13:00 ($(grep "info" "$OUT/voice-check.log" | tail -2))"; fi
+
+# ---------- V3. Asha left in the background: her timers keep running, but not one word or sound comes out ----------
+M=$(voice_mark)
+adb shell am start -n $PKG/.MainActivity --es openTab today >/dev/null 2>&1; sleep 4
+adb shell input keyevent KEYCODE_HOME
+adb shell am start -n $PKG/.MainActivity --es openTab care >/dev/null 2>&1; sleep 2
+adb shell am start -a android.settings.SETTINGS >/dev/null 2>&1
+sleep 240
+shot V3-asha-in-background
+voice_since $M > "$OUT/voice-V3.txt"
+grep "AshaVoice BLOCKED" "$OUT/voice-check.log" | tail -5 > "$OUT/voice-V3-held-back.txt"
+grep -q "FAIL" "$OUT/voice-V3.txt" && fail "V3: a voice came from Asha in the background ($(grep -m1 FAIL "$OUT/voice-V3.txt"))" \
+  || pass "V3: 4 minutes with Asha in the background: no voice from nowhere ($(wc -l < "$OUT/voice-V3-held-back.txt") lines held back)"
+adb shell input keyevent KEYCODE_HOME; sleep 2
+
 # ---------- D. optional extra: floating over other apps, once 'Display over other apps' is on ----------
 adb shell appops set $PKG SYSTEM_ALERT_WINDOW allow && log "Display over other apps: on"
 setclock 101519202026.00
@@ -202,18 +287,34 @@ anim 1
 adb shell input keyevent KEYCODE_HOME; sleep 4
 shot F12-home-wallpaper-and-floating
 expect_overlays 1 "with the permission she also floats over other apps" float
-setclock 101519292026.40          # 19:30 dinner, phone in use: she flies in herself
+adb shell am start -a android.settings.SETTINGS >/dev/null 2>&1; sleep 3   # in another app
+M=$(voice_mark)
+setclock 101519292026.40          # 19:30 dinner, phone in use: she flies in herself, over the other app
 sleep 45
 shot F13-flies-in-at-1930
 [ "$(overlays)" -ge 1 ] && [ -n "$(pop_frame)" ] && pass "19:30, phone in use: the floating fairy flies in with the reminder" || fail "19:30: no pop-up card"
-xy=$(pop_tap taken); log "tapped Eaten at $xy"; sleep 5
+voice_since $M > "$OUT/voice-D-other-app.txt"
+grep -q "PASS(floating" "$OUT/voice-D-other-app.txt" && ! grep -q FAIL "$OUT/voice-D-other-app.txt" && pass "V4: over another app, she is on the screen while she speaks" \
+  || fail "V4: over another app, voice and fairy did not go together ($(head -c 300 "$OUT/voice-D-other-app.txt"))"
+xy=$(pop_tap later); log "tapped Later at $xy"; sleep 5
 shot F14-back-to-her-spot
-expect_overlays 1 "after Eaten she is back in her spot" after-pop
+expect_overlays 1 "after Later she is back in her spot" after-pop
 PREFS=/data/data/$PKG/shared_prefs/asha_family.xml
 adb shell am broadcast -f 0x20 -a android.intent.action.BOOT_COMPLETED -n $PKG/.BootReceiver >/dev/null
 sleep 8; expect_overlays 1 "after a phone restart she floats again" reboot
 pid=$(adb shell pidof $PKG | tr -d '\r'); [ -n "$pid" ] && adb shell kill -9 $pid
 sleep 25; expect_overlays 1 "after Android killed Asha she floats again" kill
+# the dinner reminder put off with Later rings again ten minutes on, with Asha killed: she flies in and then speaks
+adb shell input keyevent KEYCODE_HOME; sleep 2
+M=$(voice_mark)
+setclock 101519402026.10
+sleep 45
+shot V5-after-kill-reminder
+voice_since $M > "$OUT/voice-V5.txt"
+if grep -q FAIL "$OUT/voice-V5.txt"; then fail "V5: after a kill, a voice with no fairy on screen ($(grep -m1 FAIL "$OUT/voice-V5.txt"))"
+elif grep -q PASS "$OUT/voice-V5.txt"; then pass "V5: after a kill, the reminder came with her on screen ($(grep -m1 -oE "PASS\([^)]*\)" "$OUT/voice-V5.txt"))"
+else fail "V5: after a kill, the snoozed reminder was not spoken"; fi
+xy=$(pop_tap taken); log "tapped Eaten at $xy"; sleep 3
 
 # ---------- E. late at night she sleeps on the floor of the home screen ----------
 setclock 101523102026.00
@@ -222,6 +323,13 @@ adb shell appops set $PKG SYSTEM_ALERT_WINDOW deny; pid=$(adb shell pidof $PKG |
 sleep 6; adb shell input keyevent KEYCODE_HOME; sleep 4
 shot F15-night-asleep-on-home-screen
 adb shell screenrecord --time-limit 8 /sdcard/fairy-night.mp4; adb pull /sdcard/fairy-night.mp4 "$OUT/fairy-night.mp4" >/dev/null 2>&1
+
+# ---------- V. the verdict over the whole run ----------
+sleep 3; kill $WATCH_PID 2>/dev/null; pkill -f "grep --line-buffered -E AshaSpeaker" 2>/dev/null
+SAYS=$(grep -cE "^(PASS|FAIL)" "$OUT/voice-check.log"); BAD=$(grep -cE "^FAIL" "$OUT/voice-check.log")
+log "voice check: $SAYS lines spoken, $BAD without her on screen (voice-check.log, screenshots in voice/)"
+[ "$BAD" = 0 ] && [ "$SAYS" -ge 3 ] && pass "V: every time she spoke in this run, she was on the screen ($SAYS times)" \
+  || fail "V: $BAD of $SAYS spoken lines came with no fairy on the screen (or too few were spoken to judge)"
 
 grep -E "FATAL EXCEPTION" -A10 "$OUT/logcat-stream.txt" | grep -B2 -A8 "$PKG" > "$OUT/crashes.txt" && fail "Asha crashed (see crashes.txt)" || pass "no crash"
 kill $STREAM_PID 2>/dev/null || true

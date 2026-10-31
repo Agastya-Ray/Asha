@@ -59,14 +59,15 @@ public class ReminderService extends Service {
             final int id = startId;
             if (line.isEmpty() || !cfg.optBoolean("speak", true)) { finish(id); return START_NOT_STICKY; }
             main.postDelayed(() -> finish(id), 60_000);
-            Speaker.get(this).speak(line, cfg.optString("quietLang", "en"),
-                (float) cfg.optDouble("rate", 0.92), ok -> main.post(() -> finish(id)));
+            Speaker.get(this).speakWhenSeen(line, cfg.optString("quietLang", "en"),
+                (float) cfg.optDouble("rate", 0.92), 1.0f, SEEN_WAIT, ok -> main.post(() -> finish(id)));
             return START_NOT_STICKY;
         }
         if (t == null) { finish(startId); return START_NOT_STICKY; }
 
         showCard(this, t, attempt);
         FairyBubbleService.popUp(this, t, attempt);
+        showHer(this, t, attempt);
         JSONObject cfg = AlarmStore.config(this);
         int maxRepeats = cfg.optInt("repeats", 2);
         int gap = cfg.optInt("repeatMinutes", 10);
@@ -83,9 +84,27 @@ public class ReminderService extends Service {
         final int id = startId;
         if (!cfg.optBoolean("speak", true)) { finish(id); return START_NOT_STICKY; }
         main.postDelayed(() -> finish(id), 60_000); // safety stop
-        Speaker.get(this).speak(sentence(t, attempt, maxRepeats), t.optString("lang", "en"),
-            (float) cfg.optDouble("rate", 0.92), ok -> main.post(() -> finish(id)));
+        Speaker.get(this).speakWhenSeen(sentence(t, attempt, maxRepeats), t.optString("lang", "en"),
+            (float) cfg.optDouble("rate", 0.92), 1.0f, SEEN_WAIT, ok -> main.post(() -> finish(id)));
         return START_NOT_STICKY;
+    }
+
+    /** How long the voice waits for her to fly onto the screen (her fly-in takes about a second). */
+    static final long SEEN_WAIT = 8_000;
+
+    /**
+     * Makes sure she is on the screen with the reminder, so her voice never comes from nowhere.
+     * In Asha the app shows it; in use she floats in over the app (popUp); on a locked or sleeping phone the
+     * notification's full-screen alarm opens. With "Display over other apps" allowed, Android also lets Asha open
+     * the alarm herself, which covers phones where the full-screen alarm is switched off.
+     */
+    static void showHer(Context ctx, JSONObject t, int attempt) {
+        if (FairyBubbleService.appOnScreen() || FairyBubbleService.wouldPop(ctx) || AlarmStore.quiet(ctx)) return;
+        if (!FairyBubbleService.canDraw(ctx) || ReminderAlarmActivity.shownNow()) return;
+        android.os.PowerManager pm = (android.os.PowerManager) ctx.getSystemService(Context.POWER_SERVICE);
+        android.app.KeyguardManager km = (android.app.KeyguardManager) ctx.getSystemService(Context.KEYGUARD_SERVICE);
+        boolean lockedOrAsleep = (pm != null && !pm.isInteractive()) || (km != null && km.isKeyguardLocked());
+        if (lockedOrAsleep) ReminderAlarmActivity.open(ctx, t.optString("key"), attempt);
     }
 
     private void finish(int startId) {
@@ -118,6 +137,7 @@ public class ReminderService extends Service {
             if (t == null || t.optLong("skipUntil", 0) > now) continue; // taken meanwhile
             showCard(ctx, t, 1);
             FairyBubbleService.popUp(ctx, t, 1);
+            showHer(ctx, t, 1);
             AlarmStore.scheduleFollowUp(ctx, t.optString("key"), 2, now + gap * 60_000L);
             if (say.length() > 0) say.append(' ');
             say.append(t.optString("say"));
@@ -130,8 +150,8 @@ public class ReminderService extends Service {
         String line = endQuiet(ctx);
         JSONObject cfg = AlarmStore.config(ctx);
         if (line.isEmpty() || !cfg.optBoolean("speak", true)) { pending.finish(); return; }
-        Speaker.get(ctx).speak(line, cfg.optString("quietLang", "en"),
-            (float) cfg.optDouble("rate", 0.92), ok -> pending.finish());
+        Speaker.get(ctx).speakWhenSeen(line, cfg.optString("quietLang", "en"),
+            (float) cfg.optDouble("rate", 0.92), 1.0f, SEEN_WAIT, ok -> pending.finish());
     }
 
     static String sentence(JSONObject t, int attempt, int maxRepeats) {

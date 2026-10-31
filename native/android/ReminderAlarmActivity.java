@@ -32,6 +32,24 @@ import java.util.ArrayList;
  */
 public class ReminderAlarmActivity extends Activity {
     private static ReminderAlarmActivity showing;
+    /** she is on the full screen right now (resumed), so her voice comes with her */
+    private static volatile boolean resumed;
+
+    static boolean shownNow() { return resumed && showing != null; }
+
+    /** Opens her full screen directly. Only allowed from the background with "Display over other apps". */
+    static boolean open(Context ctx, String key, int attempt) {
+        try {
+            ctx.startActivity(new Intent(ctx, ReminderAlarmActivity.class).putExtra("key", key).putExtra("attempt", attempt)
+                .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK));
+            return true;
+        } catch (Exception e) {
+            return false;
+        }
+    }
+
+    @Override protected void onResume() { super.onResume(); resumed = true; }
+    @Override protected void onPause() { resumed = false; super.onPause(); }
     private final Handler main = new Handler(Looper.getMainLooper());
     private final ArrayList<Object[]> waiting = new ArrayList<>();
     private String key;

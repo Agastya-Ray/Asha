@@ -54,8 +54,11 @@ public final class FamilyNotify {
         }
 
         // Maa hears it in Asha's voice. Family members are often at work, so their phones stay quiet.
+        // She brings it herself: outside Asha she flies in with the message on her card first. If she can't be
+        // seen (locked phone, no "Display over other apps"), she stays silent; Asha reads it out when opened.
         if (elder && cfg.optBoolean("voiceOn", true) && (!quiet || urgent) && !said.isEmpty()) {
-            Speaker.get(ctx).speak(said, voiceLang, 0.92f, null);
+            if (!FairyBubbleService.appOnScreen()) FairyBubbleService.popMessage(ctx, id, title, text);
+            Speaker.get(ctx).speakWhenSeen(said, voiceLang, 0.92f, 1.0f, 6_000, null);
         }
     }
 

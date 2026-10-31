@@ -78,6 +78,13 @@ public class AshaNativePlugin extends Plugin {
     }
 
     /** Called by FamilyNotify when a message arrives while the app is running. */
+    /** A voice from Android (a reminder, a message) started or stopped: Asha shows her while it speaks. */
+    static void emitSpeaking(boolean on) {
+        AshaNativePlugin p = instance;
+        if (p == null) return;
+        try { JSObject o = new JSObject(); o.put("on", on); p.notifyListeners("speaking", o); } catch (Exception ignored) { }
+    }
+
     static void emitFamily() {
         AshaNativePlugin p = instance;
         if (p == null) return;
