@@ -3,14 +3,19 @@ import { Button } from "@/components/ui/button";
 import { Card, MicButton, t } from "@/components/asha/bits";
 import { URGENT, useTalkHandoff } from "@/components/asha/voice-command";
 import { useQuietSheet } from "@/components/asha/quiet";
-import { apiChat } from "@/lib/asha/api";
+import { providerOf, titliChat, useBrain, whyWords } from "@/lib/asha/brain";
+import { Pixie, type PixieMood } from "@/components/asha/pixie";
 import { QUIET, minutesSaid } from "@/lib/asha/quiet";
 import { CONDITIONS, text as phrase } from "@/lib/asha/plans";
 import { rxContext } from "@/lib/asha/rx";
 import { useAsha } from "@/lib/asha/store";
 import { REMIND, memoryContext } from "@/lib/asha/remember";
 import { useRemember } from "@/components/asha/ideas/remember";
-import { speak } from "@/lib/asha/voice";
+import { speak, useSpeech } from "@/lib/asha/voice";
+
+// Titli's chat replies use her own little phone voice: free, unlimited, and the same all day.
+// (Her ElevenLabs voice has ~600 new letters a day, about three replies.)
+const CHAT_VOICE = "fairy-phone" as const;
 
 const CRISIS =
   /suicid|kill myself|want to die|end my life|self-harm|hurt myself|don't want to live|do not want to live|मरना चाहती|मरना चाहता|जीना नहीं|खुदकुशी|आत्महत्या/i;
@@ -26,8 +31,15 @@ export function TalkScreen() {
   const conditions = useAsha((s) => s.conditions);
   const meds = useAsha((s) => s.meds);
   const voiceOn = useAsha((s) => s.voiceOn);
-  const rich = useAsha((s) => s.richVoice);
   const setTab = useAsha((s) => s.setTab);
+  const fairyName = useAsha((s) => s.fairyName);
+  const own = useBrain((s) => s.own);
+  const speaking = useSpeech((s) => s.active);
+  const me = fairyName.trim() || "Titli";
+  // her face follows the conversation: thinking while she works it out, then the face of her reply while she says it
+  const [face, setFace] = useState<PixieMood>("wave");
+  const [faceAt, setFaceAt] = useState(0);
+  const [via, setVia] = useState("");
   const [draft, setDraft] = useState("");
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState("");
@@ -48,6 +60,7 @@ export function TalkScreen() {
     if (URGENT.test(text)) setUrgent(true);
     push({ role: "user", text });
     setBusy(true);
+    setFace("thinking");
     const conditionNames = conditions
       .map((id) => {
         const c = CONDITIONS.find((x) => x.id === id);
@@ -58,35 +71,55 @@ export function TalkScreen() {
       meds.map((m) => `${m.name} ${m.dose} at ${m.times.join(", ")}`).join("; ") || "none listed"
     }. ${rxContext(useAsha.getState().prescriptions)} ${memoryContext(useAsha.getState().memories)} Local time: ${new Date().toLocaleString("en-IN")}.`;
     const turns = [...useAsha.getState().chat].slice(-10).map((turn) => ({ role: turn.role, content: turn.text }));
-    const res = await apiChat({ show: lang, say: voiceLang, context, turns });
+    const res = await titliChat({ show: lang, say: voiceLang, context, turns, fairy: me });
     setBusy(false);
+    const ownName = own ? providerOf(own.provider).name : "";
+    setVia(
+      res.ownFailed
+        ? `${whyWords(res.ownFailed, lang, ownName)} ${res.ok ? t(lang, { en: "The free helper answered this time.", hi: "इस बार मुफ़्त सहायक ने जवाब दिया." }) : ""}`.trim()
+        : res.ok && res.via === "own"
+          ? t(lang, { en: `Answered with your ${ownName} account.`, hi: `आपके ${ownName} खाते से जवाब.` })
+          : "",
+    );
     if (!res.ok) {
+      setFace("sad");
+      setFaceAt(Date.now());
       setError(
         res.error === "offline"
           ? t(lang, { en: "No internet right now. Reminders and Help still work.", hi: "अभी इंटरनेट नहीं. याद और मदद फिर भी चलते हैं." })
           : res.status === 429
-            ? t(lang, { en: "Asha needs a short rest. Try again in a little while.", hi: "आशा को थोड़ा आराम चाहिए. थोड़ी देर बाद फिर कोशिश करें." })
-            : t(lang, { en: "Asha could not answer just now. Try again in a moment.", hi: "आशा अभी जवाब नहीं दे पाई. थोड़ी देर में फिर कोशिश करें." }),
+            ? t(lang, { en: `${me} needs a short rest. Try again in a little while.`, hi: `${me} को थोड़ा आराम चाहिए. थोड़ी देर बाद फिर कोशिश करें.` })
+            : t(lang, { en: `${me} could not answer just now. Try again in a moment.`, hi: `${me} अभी जवाब नहीं दे पाई. थोड़ी देर में फिर कोशिश करें.` }),
       );
       return;
     }
     push({ role: "asha", text: res.show, say: res.say });
-    if (voiceOn) void speak(res.say, voiceLang, rich ? "warm" : "device");
+    setFace(res.mood);
+    setFaceAt(Date.now());
+    if (voiceOn) void speak(res.say, voiceLang, CHAT_VOICE);
   }
 
   // Words said with "Tell Asha" on Today arrive here and are sent straight away.
   const handoff = useTalkHandoff((s) => s.text);
   useEffect(() => {
-    if (!handoff || !pro) return;
+    if (!handoff || !(pro || own)) return;
     useTalkHandoff.getState().set("");
     void send(handoff);
-  }, [handoff, pro]);
+  }, [handoff, pro, own]);
+
+  // after her reply is said (or a few seconds without voice) she relaxes back to her resting face
+  useEffect(() => {
+    if (!faceAt || speaking || busy) return;
+    const id = window.setTimeout(() => setFace("idle"), 4000);
+    return () => window.clearTimeout(id);
+  }, [faceAt, speaking, busy]);
 
   useEffect(() => {
     endRef.current?.scrollIntoView({ behavior: "smooth", block: "end" });
   }, [chat.length, busy]);
 
-  if (!pro) {
+  // with their own AI account, talking is theirs already: no Pro needed
+  if (!pro && !own) {
     return (
       <div className="py-5">
         <h1 className="display text-4xl">{t(lang, { en: "Talk", hi: "बात" })}</h1>
@@ -120,7 +153,15 @@ export function TalkScreen() {
 
   return (
     <div className="py-5">
-      <h1 className="display text-4xl">{t(lang, { en: "Talk with Asha", hi: "आशा से बात" })}</h1>
+      <div className="flex items-end gap-3">
+        <div data-titli-face={busy ? "thinking" : face} className="h-32 w-28 shrink-0" aria-hidden>
+          <Pixie mood={busy ? "thinking" : speaking && face === "idle" ? "talk" : face} className="h-full w-full" />
+        </div>
+        <div className="min-w-0 pb-2">
+          <h1 className="display text-4xl">{t(lang, { en: `Talk with ${me}`, hi: `${me} से बात` })}</h1>
+          {via ? <p data-titli-via className="mt-1 text-base text-quiet">{via}</p> : null}
+        </div>
+      </div>
       <p className="mt-2 text-lg text-quiet">
         {voiceLang !== lang
           ? t(lang, {
@@ -183,17 +224,17 @@ export function TalkScreen() {
               key={`${i}-${turn.role}`}
               className={turn.role === "user" ? "ml-8 rounded-3xl bg-sage-soft px-4 py-3 text-lg" : "mr-6 rounded-3xl border border-line bg-paper px-4 py-3 text-lg"}
             >
-              <p className="text-base font-bold text-quiet">{turn.role === "user" ? name || t(lang, { en: "You", hi: "आप" }) : "Asha"}</p>
+              <p className="text-base font-bold text-quiet">{turn.role === "user" ? name || t(lang, { en: "You", hi: "आप" }) : me}</p>
               <p className="mt-1">{turn.text}</p>
               {turn.role === "asha" && voiceOn ? (
-                <button type="button" className="mt-1 min-h-11 text-base font-bold text-sage" onClick={() => void speak(turn.say ?? turn.text, voiceLang, rich ? "warm" : "device")}>
+                <button type="button" className="mt-1 min-h-11 text-base font-bold text-sage" onClick={() => void speak(turn.say ?? turn.text, voiceLang, CHAT_VOICE)}>
                   {t(lang, { en: "Hear again", hi: "फिर सुनें" })}
                 </button>
               ) : null}
             </div>
           ))
         )}
-        {busy ? <p className="text-lg text-quiet">{t(lang, { en: "Asha is thinking…", hi: "आशा सोच रही है…" })}</p> : null}
+        {busy ? <p className="text-lg text-quiet">{t(lang, { en: `${me} is thinking…`, hi: `${me} सोच रही है…` })}</p> : null}
         {error ? <p className="text-lg text-clay">{error}</p> : null}
         <div ref={endRef} />
       </div>

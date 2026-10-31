@@ -212,6 +212,9 @@ adb shell input keyevent KEYCODE_BACK; sleep 2
 adb shell am force-stop com.google.android.dialer; adb shell input keyevent KEYCODE_WAKEUP; sleep 2
 shot 75-back-in-asha
 
+# --- Titli's brain: an own AI key reaches Claude (from the WebView) and Gemini (native HTTP) ---
+flow 09_own_ai.yaml
+
 # --- Quiet mode: "I'm going to an event, be quiet" ---
 log "quiet mode test"
 setclock 101519202026.00          # 19:20, ten minutes before dinner (lunch and snack ring now, out loud)

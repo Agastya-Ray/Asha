@@ -6,7 +6,7 @@ import type { Localized } from "@/lib/asha/plans";
 import { digits } from "@/lib/asha/schedule";
 import { useAsha } from "@/lib/asha/store";
 import { aimAt, aimRect } from "@/lib/asha/aim";
-import { apiChat } from "@/lib/asha/api";
+import { titliChat } from "@/lib/asha/brain";
 import { canListen, listenOnce } from "@/lib/asha/listen";
 import { useBack } from "@/lib/asha/back";
 import { speak, stopSpeaking } from "@/lib/asha/voice";
@@ -435,7 +435,7 @@ export function FairyTour() {
       return replay(room);
     }
     setEar("thinking");
-    const res = await apiChat({ show: lang, say: voiceLang, context: TOUR_CONTEXT, turns: [{ role: "user", content: said }] });
+    const res = await titliChat({ show: lang, say: voiceLang, context: TOUR_CONTEXT, turns: [{ role: "user", content: said }], fairy: useAsha.getState().fairyName });
     if (mine !== asked.current) return;
     setEar("");
     if (!res.ok)
