@@ -52,7 +52,8 @@ export function fairyDrawn(notPeek = false) {
   for (const el of Array.from(document.querySelectorAll<HTMLElement>(".fairy-scene, .pixie, .fairy-flipbook, .fi-garden-scene"))) {
     if (notPeek && el.closest(".speaking-peek")) continue;
     const r = el.getBoundingClientRect();
-    if (r.width < 8 || r.height < 8) continue;
+    // a little picture of her on a card ("Ask me how") is not her speaking: she must be fairy-sized (the dock's smallest is 96px)
+    if (r.width < 40 || r.height < 88) continue;
     if (r.bottom <= 0 || r.right <= 0 || r.top >= window.innerHeight || r.left >= window.innerWidth) continue;
     const st = window.getComputedStyle(el);
     if (st.visibility === "hidden" || st.display === "none") continue;
