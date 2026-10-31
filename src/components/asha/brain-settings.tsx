@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, Choice, FieldLabel, t } from "@/components/asha/bits";
 import { Pixie, type PixieMood } from "@/components/asha/pixie";
@@ -78,6 +78,27 @@ export function BrainSettings() {
     }
   }
 
+  // her answer shows right where the button was pressed, and the page brings it into view
+  const resultRef = useRef<HTMLDivElement>(null);
+  useEffect(() => {
+    if (result) resultRef.current?.scrollIntoView({ behavior: "smooth", block: "center" });
+  }, [result]);
+  const resultCard = result ? (
+        <Card className={result.ok ? "mt-3 scroll-mt-28" : "mt-3 scroll-mt-28 border-clay bg-clay-soft"}>
+          <div ref={resultRef} data-brain-result={result.ok ? "ok" : "fail"} className="flex items-center gap-3">
+            <Pixie mood={result.mood} className="h-24 w-20 shrink-0" />
+            <div className="min-w-0">
+              <p className="text-lg font-bold">{result.words}</p>
+              {result.ok ? (
+                <p className="mt-1 text-base text-quiet">{t(lang, { en: "It works. Saved on this phone.", hi: "चल रहा है. इस फ़ोन पर सहेजा." })}</p>
+              ) : result.detail ? (
+                <p className="mt-1 break-words text-sm text-quiet">{result.detail}</p>
+              ) : null}
+            </div>
+          </div>
+        </Card>
+  ) : null;
+
   const masked = own ? `${own.key.slice(0, 6)}…${own.key.slice(-4)}` : "";
 
   return (
@@ -92,21 +113,7 @@ export function BrainSettings() {
             })}
       </p>
 
-      {result ? (
-        <Card className={result.ok ? "mt-3" : "mt-3 border-clay bg-clay-soft"}>
-          <div data-brain-result={result.ok ? "ok" : "fail"} className="flex items-center gap-3">
-            <Pixie mood={result.mood} className="h-24 w-20 shrink-0" />
-            <div className="min-w-0">
-              <p className="text-lg font-bold">{result.words}</p>
-              {result.ok ? (
-                <p className="mt-1 text-base text-quiet">{t(lang, { en: "It works. Saved on this phone.", hi: "चल रहा है. इस फ़ोन पर सहेजा." })}</p>
-              ) : result.detail ? (
-                <p className="mt-1 break-words text-sm text-quiet">{result.detail}</p>
-              ) : null}
-            </div>
-          </div>
-        </Card>
-      ) : null}
+      {!open ? resultCard : null}
 
       {own && !open ? (
         <Card className="mt-3">
@@ -228,6 +235,7 @@ export function BrainSettings() {
             </div>
           ) : null}
 
+          {resultCard}
           <div className="mt-4 flex flex-col gap-2">
             <Button data-brain-save disabled={busy || !(key.trim() || own?.key) || (provider === "other" && (!base.trim() || !model.trim()))} onClick={() => void testAndSave()}>
               {busy ? t(lang, { en: `${me} is trying it…`, hi: `${me} आज़मा रही है…` }) : t(lang, { en: "Test and save", hi: "जाँचें और सहेजें" })}
