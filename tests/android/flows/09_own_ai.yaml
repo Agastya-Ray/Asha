@@ -60,5 +60,11 @@ appId: com.agastyaray.asha
     centerElement: true
     timeout: 90000
 - tapOn: "Talk"
+# if an earlier flow stopped before turning Pro on, Talk is still behind the Pro card
+- runFlow:
+    when:
+      visible: "Turn on Pro on this phone"
+    commands:
+      - tapOn: "Turn on Pro on this phone"
 - assertVisible: "Talk with .*"
 - takeScreenshot: 93-talk-titli-face
