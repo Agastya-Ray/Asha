@@ -30,7 +30,7 @@ import bag from "@/assets/fairy/bag.webp";
 
 /**
  * Asha's fairy: a chibi girl with big teal eyes, long golden hair, a flower crown, a red dress and
- * teal butterfly wings, one picture per mood or pose (cut from Agastya's character sheets): waving hello,
+ * teal butterfly wings, one picture per mood or pose (Agastya's ChatGPT poses, wings added behind): waving hello,
  * flying, pointing at a reminder, jumping for joy, sitting down to rest, stretching in the morning, tired at bedtime,
  * blushing, bringing a flower, reading, chasing a butterfly, carrying the family's love notes in her bag. Sleepy or shy she
  * hides under a big leaf; asleep she lies on the floor under it. Motion (bobbing, leaning toward a tap,
@@ -141,9 +141,9 @@ function Extras({ mood }: { mood: PixieMood }) {
     return (
       <svg viewBox="0 0 160 100" className="pixie-z pointer-events-none absolute inset-0 h-full w-full overflow-visible" aria-hidden>
         <g fill="#8fb9c0" fontFamily="Fraunces, serif" fontWeight="700">
-          <text x="70" y="22" fontSize="14">z</text>
-          <text x="82" y="10" fontSize="11">z</text>
-          <text x="92" y="0" fontSize="8">z</text>
+          <text x="112" y="-22" fontSize="14">z</text>
+          <text x="124" y="-34" fontSize="11">z</text>
+          <text x="134" y="-44" fontSize="8">z</text>
         </g>
       </svg>
     );

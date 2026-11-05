@@ -243,7 +243,7 @@ Answer simply and kindly, and say where to press.`;
 // her size on the tour, and where her pointing fingertip is in the "point" picture (left edge, a third of the way down)
 const FW = 168;
 const FH = 210;
-const TIP_Y = 0.32;
+const TIP_Y = 0.38;
 
 function findTarget(sel: string[] | null) {
   if (!sel) return null;
