@@ -77,7 +77,7 @@ const CURIOUS = (x: string): Localized[] => [
 
 const FW = 136;
 const FH = 170;
-const TIP_Y = 0.32;
+const TIP_Y = 0.38;
 
 function visible(el: Element) {
   const r = el.getBoundingClientRect();
