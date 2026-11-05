@@ -1,0 +1,47 @@
+== clock set to Sat Nov  7 07:30:00 IST 2026
+== installed Asha
+== flow 01_setup.yaml
+== flow 02_permissions.yaml
+== flow fairy_home_ask.yaml
+== PASS Today: she asks to live on the home screen, and Yes was pressed
+== PASS Android's wallpaper preview opened from the Yes button
+== tapped Set wallpaper at 540 2248
+== chose home and lock at 540 1354
+== PASS the fairy is the wallpaper
+== no happy hello in the phone voice (her cloud voice is not logged; see said-after-wallpaper.txt)
+== PASS the question is gone
+== PASS recorded her on the home screen
+== PASS tapping her on the home screen opens Asha
+== clock set to Sat Nov  7 07:59:30 IST 2026
+== PASS 08:00: full-screen fairy over the lock screen
+== first: breakfast · eight in the morning
+== tapped Taken/Eaten at 540 1506
+== second: Metformin · 500 mg
+== PASS the second 08:00 reminder came next
+== tapped Later at 540 1707
+== PASS after Later the alarm closes
+== PASS Taken on the alarm cleared its notification
+== clock set to Sat Nov  7 08:10:40 IST 2026
+== PASS C2: the reminder put off with Later still rang after Asha was opened
+== clock set to Sat Nov  7 12:59:30 IST 2026
+== FAIL V1: lunch spoken on Settings, but the page showed no fairy
+== PASS V3: 4 minutes with Asha in the background: no voice from nowhere (1 lines held back)
+== Display over other apps: on
+== clock set to Sat Nov  7 19:20:00 IST 2026
+== flow fairy_float_on.yaml
+== PASS Settings: Floating fairy switched on
+== PASS with the permission she also floats over other apps (1 overlay windows)
+== clock set to Sat Nov  7 19:29:40 IST 2026
+== PASS 19:30, phone in use: the floating fairy flies in with the reminder
+== PASS V4: over another app, she is on the screen while she speaks
+== tapped Later at 540 1660
+== PASS after Later she is back in her spot (1 overlay windows)
+== PASS after a phone restart she floats again (1 overlay windows)
+== PASS after Android killed Asha she floats again (1 overlay windows)
+== clock set to Sat Nov  7 19:40:10 IST 2026
+== FAIL V5: after a kill, a voice with no fairy on screen (FAIL(not on screen:   mCurrentFocus=null) V55 | 11-07 19:40:28.535 I/AshaSpeaker(12841): SAY at=wallpaper Kamla, dinner is still waiting. When it's done, press the big button. No rush.)
+== clock set to Sat Nov  7 23:10:00 IST 2026
+== voice check: 56 lines spoken, 3 without her on screen (voice-check.log, screenshots in voice/)
+== FAIL V: 3 of 56 spoken lines came with no fairy on the screen (or too few were spoken to judge)
+== PASS no crash
+== done (failed steps: 1)
