@@ -18,7 +18,18 @@ export function SpeakingPeek() {
   useEffect(() => {
     if (!isNative) return;
     let off: (() => void) | undefined;
-    void AshaNative.addListener("speaking", (e) => setAndroid(!!e?.on))
+    void AshaNative.addListener("speaking", (e) => {
+      setAndroid(!!e?.on);
+      // the emulator test reads this: is she drawn in the app while Android reads a reminder out?
+      if (e?.on)
+        window.setTimeout(() => {
+          try {
+            console.info(`AshaVoice ANDROID drawn=${fairyDrawn()}`);
+          } catch {
+            /* ignore */
+          }
+        }, 900);
+    })
       .then((h) => {
         off = () => void h.remove();
       })
