@@ -538,6 +538,8 @@ public class FairyBubbleService extends Service {
             .setContentTitle(hi ? "परी आपकी स्क्रीन पर है" : "The fairy is on your screen")
             .setContentText(hi ? "छूकर आशा खोलें. Settings में बंद कर सकते हैं." : "Tap to open Asha. Turn her off in Settings.")
             .setOngoing(true)
+            // its own group, so Android never bundles it with a reminder (that hid the reminder's Taken button)
+            .setGroup("asha.fairy")
             .build();
         try {
             if (Build.VERSION.SDK_INT >= 34) startForeground(NOTE_ID, n, ServiceInfo.FOREGROUND_SERVICE_TYPE_SPECIAL_USE);

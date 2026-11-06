@@ -111,7 +111,8 @@ public final class FamilyNotify {
             .setContentIntent(openPi)
             .setAutoCancel(true)
             .setCategory(urgent ? Notification.CATEGORY_ALARM : Notification.CATEGORY_MESSAGE)
-            .setVisibility(Notification.VISIBILITY_PUBLIC);
+            .setVisibility(Notification.VISIBILITY_PUBLIC)
+            .setGroup("asha.family." + id);
         try {
             b.setLargeIcon(android.graphics.BitmapFactory.decodeResource(ctx.getResources(),
                 ctx.getResources().getIdentifier("fairy_happy", "drawable", ctx.getPackageName())));

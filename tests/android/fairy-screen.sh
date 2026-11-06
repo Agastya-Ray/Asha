@@ -120,13 +120,15 @@ seen_now() {
   elif echo "$top" | grep -q "$PKG/.ReminderAlarmActivity"; then echo "PASS(full-screen alarm)"
   elif echo "$top" | grep -q "$PKG/"; then echo "PASS(in Asha)"
   elif [ "${ov:-0}" -ge 1 ] && ! echo "$focus" | grep -qiE "NotificationShade|Keyguard"; then echo "PASS(floating over another app)"
-  elif [ "${wp:-0}" -gt 0 ] && echo "$focus" | grep -qiE "launcher|NotificationShade|Keyguard"; then echo "PASS(wallpaper)"
+  # (focus can be null for a moment on the home screen while a heads-up card shows: the launcher on top is enough)
+  elif [ "${wp:-0}" -gt 0 ] && echo "$focus $top" | grep -qiE "launcher|NotificationShade|Keyguard"; then echo "PASS(wallpaper)"
   else echo "FAIL(not on screen: $focus)"; fi
 }
 voice_watch() {
   local n=0 line f verdict
   adb logcat -v time -T 1 2>/dev/null | grep --line-buffered -E "AshaSpeaker|AshaVoice" | while IFS= read -r line; do
     case "$line" in
+      *"AshaVoice ANDROID drawn=false"*) echo "FAIL(in Asha, Android spoke but no fairy drawn on the page) | $line" >> "$OUT/voice-check.log"; continue ;;
       *"AshaSpeaker"*" SAY at="*|*"AshaVoice SAY"*) ;;
       *) echo "info | $line" >> "$OUT/voice-check.log"; continue ;;
     esac
@@ -265,7 +267,8 @@ voice_since $M > "$OUT/voice-V1.txt"
 peek=$(center_webview "is talking|बोल रही है")
 if grep -q "FAIL" "$OUT/voice-V1.txt"; then fail "V1: in Asha on Settings, a voice with no fairy ($(grep -m1 FAIL "$OUT/voice-V1.txt"))"
 elif grep -q "AshaSpeaker.*SAY at=app" "$OUT/voice-V1.txt"; then
-  [ -n "$peek" ] || grep -q "AshaVoice SAY drawn=true" "$OUT/voice-V1.txt" && pass "V1: in Asha on Settings the lunch reminder is spoken and she floats in at the top" \
+  sleep 1; tail -n 40 "$OUT/voice-check.log" | grep -E "AshaVoice (ANDROID|SAY) drawn=" > "$OUT/voice-V1-page.txt"
+  [ -n "$peek" ] || grep -q "drawn=true" "$OUT/voice-V1-page.txt" && pass "V1: in Asha on Settings the lunch reminder is spoken and she floats in at the top" \
     || fail "V1: lunch spoken on Settings, but the page showed no fairy"
 else fail "V1: the 13:00 reminder was not spoken in Asha ($(grep info "$OUT/voice-check.log" | tail -2))"; fi
 
