@@ -180,8 +180,14 @@ if [ -z "$xy" ]; then
   xy=$(center "Expand|Show more")
   if [ -n "$xy" ]; then adb shell input tap $xy; log "expanded the Asha group at $xy"; sleep 3; shot 27b-notification-expanded; fi
   # the group lists each reminder collapsed too; expand the Metformin one to show its buttons
-  xy=$(expand_row "^Metformin")
-  if [ -n "$xy" ]; then adb shell input tap $xy; log "expanded the Metformin reminder at $xy"; sleep 3; shot 27c-reminder-expanded; adb exec-out cat /sdcard/ui.xml > "$OUT/shade-expanded-ui.xml"; xy=$(center "Taken"); fi
+  # the reminder can sit inside a second bundle (with "The fairy is on your screen"), so open
+  # whichever arrow is nearest Metformin until its Taken button shows, up to three times
+  for i in 1 2 3; do
+    xy=$(expand_row "^Metformin")
+    [ -n "$xy" ] || break
+    adb shell input tap $xy; log "expanded the Metformin reminder at $xy (try $i)"; sleep 3; shot 27c-reminder-expanded-$i
+    adb exec-out cat /sdcard/ui.xml > "$OUT/shade-expanded-ui.xml"; xy=$(center "Taken"); [ -n "$xy" ] && break
+  done
 fi
 if [ -n "$xy" ]; then adb shell input tap $xy; log "tapped Taken on the notification at $xy"; sleep 3; else FAILED=1; log "no Taken button found in the shade"; fi
 shot 28-after-tapping-taken
@@ -216,6 +222,9 @@ sleep 5; shot 74-help-call
 adb shell input keyevent KEYCODE_BACK; sleep 2
 adb shell am force-stop com.google.android.dialer; adb shell input keyevent KEYCODE_WAKEUP; sleep 2
 shot 75-back-in-asha
+
+# --- Titli's brain: an own AI key reaches Claude (from the WebView) and Gemini (native HTTP) ---
+flow 09_own_ai.yaml
 
 # --- Quiet mode: "I'm going to an event, be quiet" ---
 log "quiet mode test"

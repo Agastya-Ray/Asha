@@ -7,6 +7,8 @@ import { Card, Choice, FieldLabel, LangSwitch, SpeakField, t } from "@/component
 import { useQuietSheet } from "@/components/asha/quiet";
 import { ReminderHealth } from "@/components/asha/reminder-health";
 import { VoicePicker } from "@/components/asha/voice-picker";
+import { BrainSettings } from "@/components/asha/brain-settings";
+import { useBrain } from "@/lib/asha/brain";
 import { CONDITIONS } from "@/lib/asha/plans";
 import { AshaNative, isNative } from "@/lib/asha/native";
 import { forgetMe, testPush, useFamily } from "@/lib/asha/family";
@@ -131,6 +133,8 @@ export function SettingsScreen() {
         </div>
       ) : null}
 
+      <BrainSettings />
+
       <h2 className="mt-6 text-2xl font-bold">{t(lang, { en: "Help and family", hi: "मदद और परिवार" })}</h2>
       <div className="mt-3 flex flex-col gap-2">
         <p className="text-base text-quiet">
@@ -211,7 +215,13 @@ export function SettingsScreen() {
       </p>
       {confirm ? (
         <div className="mt-3 flex flex-col gap-2">
-          <Button variant="sos" onClick={() => s.eraseAll()}>
+          <Button
+            variant="sos"
+            onClick={() => {
+              useBrain.getState().save(null);
+              s.eraseAll();
+            }}
+          >
             {t(lang, { en: "Yes, erase", hi: "हाँ, मिटाएँ" })}
           </Button>
           <Button variant="quiet" onClick={() => setConfirm(false)}>
