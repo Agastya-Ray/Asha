@@ -385,7 +385,7 @@ export function FairyDock() {
       kind = "checkin";
       bubble = nudgeBubble(n, lang);
       mood = "asking";
-      label = t(lang, { en: "Tell Asha how you feel", hi: "आशा को बताएँ आप कैसी हैं" });
+      label = t(lang, { en: "Tell Asha how you feel", hi: "आशा को बताएँ, आज तबीयत कैसी है" });
       onTap = () => {
         say(checkinQuestion(voiceLang, name));
         setTab("care");

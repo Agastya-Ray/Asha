@@ -68,13 +68,25 @@ export function mealNote(meal: Meal, lang: Lang) {
   return "";
 }
 
+/** "नाश्ते का समय", not "नाश्ता का समय": a Hindi meal name bends before "का". Own names are left alone. */
+export function hiOblique(title: string) {
+  const known: Record<string, string> = {
+    "नाश्ता": "नाश्ते",
+    "छोटा नाश्ता": "छोटे नाश्ते",
+    "दोपहर का खाना": "दोपहर के खाने",
+    "रात का खाना": "रात के खाने",
+    "खाना": "खाने",
+  };
+  return known[title.trim()] ?? title;
+}
+
 export function mealSentence(lang: Lang, name: string, meal: Meal, time: string) {
   const who = person(name, lang);
   const when = speakClock(lang, time);
   const title = mealTitle(meal, lang);
   const note = mealNote(meal, lang);
   if (lang === "hi") {
-    return `${who}, ${when} हो गए हैं. ${title} का समय है. ${note} आराम से खाएँ. खा लें तो बड़े बटन को दबा दें.`;
+    return `${who}, ${when} हो गए हैं. ${hiOblique(title)} का समय है. ${note} आराम से खाएँ. खा लें तो बड़े बटन को दबा दें.`;
   }
   return `${who}, it's ${when}. Time for ${title}. ${note} Eat slowly. When you finish, press the big button.`;
 }
@@ -166,10 +178,10 @@ export function lastAgainSentence(lang: Lang, name: string, title: string, famil
   const who = person(name, lang);
   if (lang === "hi") {
     const fam = familyTold ? " अगर आपसे बात न हो पाई तो मैं परिवार को बता दूँगी, बस ताकि वे चिंता न करें." : "";
-    return `${who}, मैं बस आपका हाल देख रही हूँ. ${title} अभी बाकी है. ले ली हो तो हरा बटन दबा दें.${fam}`;
+    return `${who}, मैं बस आपका हाल देख रही हूँ. ${title} अभी बाकी है. ले ली हो तो बड़ा बटन दबा दें.${fam}`;
   }
   const fam = familyTold ? " If I don't hear from you, I'll let your family know, just so they don't worry." : "";
-  return `${who}, just checking on you. Your ${title} is still waiting. If you've taken it, press the green button.${fam}`;
+  return `${who}, just checking on you. Your ${title} is still waiting. If you've taken it, press the big button.${fam}`;
 }
 
 /** Text sent to family when a medicine reminder goes unanswered. Written in the screen language. */

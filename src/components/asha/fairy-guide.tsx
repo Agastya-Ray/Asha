@@ -451,16 +451,27 @@ export function FairyTour() {
   // Where she flies: her fingertip right at the words on the thing, from its right, or from its left turned round
   // when there is no room on the right (Help, Settings).
   const pad = 8;
-  let fx = (vp.w - FW * 1.4) / 2;
-  let fy = vp.h * 0.1;
-  let flip = false;
   const big = !rect;
+  // her size: full beside the thing; smaller when she would otherwise stand over the card she is showing
+  // (at a resting place, with nothing to show, she floats a little larger near the top, with her words under her)
+  let fw = big ? Math.round(FW * 1.15) : FW;
+  let fh = big ? Math.round(FH * 1.15) : FH;
+  let fx = (vp.w - fw) / 2;
+  let fy = 8;
+  let flip = false;
   if (rect && aim) {
-    const at = aimAt(aim, FW, FH, TIP_Y, vp.w);
+    let at = aimAt(aim, fw, fh, TIP_Y, vp.w);
+    // a wide card (a medicine, a note): beside its words there is no room, so she would cover the rest of the card.
+    // Then she comes smaller, so most of it stays readable.
+    const over = Math.max(0, Math.min(at.x + fw, rect.right) - Math.max(at.x, rect.left));
+    if (over > fw * 0.4) {
+      fw = Math.round(FW * 0.72);
+      fh = Math.round(FH * 0.72);
+      at = aimAt(aim, fw, fh, TIP_Y, vp.w);
+    }
     fx = at.x;
     flip = at.flip;
-    fy = at.y;
-    fy = Math.max(8, Math.min(vp.h - FH - 8, fy));
+    fy = Math.max(8, Math.min(vp.h - fh - 8, at.y));
   }
 
   // The bubble sits at the far end of the screen from what she is showing, so it never covers the thing
@@ -468,7 +479,8 @@ export function FairyTour() {
   let place: CSSProperties;
   let tail: "up" | "down" | null = null;
   // with nothing to show she floats near the top, and her bubble (taller at a resting place) sits at the bottom
-  if (!rect) place = { bottom: 16, maxHeight: vp.h - 32 };
+  // (and below her, never over her: she is the one talking)
+  if (!rect) place = { bottom: 16, maxHeight: vp.h - (fy + fh) - 28 };
   else if (rect.top + rect.height / 2 < vp.h / 2) {
     place = { bottom: 16, maxHeight: vp.h - rect.bottom - pad - 26 };
     tail = null;
@@ -478,8 +490,17 @@ export function FairyTour() {
   }
   // with big text there can be too little room on either side: then she talks from the bottom of the screen,
   // over the page, so her buttons are never pushed off it
-  if ((place.maxHeight as number) < 260) place = { bottom: 8, maxHeight: vp.h - 16 };
-  const tailX = Math.max(28, Math.min(vp.w - 44, fx + FW / 2));
+  if ((place.maxHeight as number) < 260) {
+    place = { bottom: 8, maxHeight: vp.h - 16 };
+    // and she tucks herself small into the top corner, out of the way of her own words
+    if (!rect) {
+      fw = Math.round(FW * 0.6);
+      fh = Math.round(FH * 0.6);
+      fx = vp.w - fw - 8;
+      fy = 8;
+    }
+  }
+  const tailX = Math.max(28, Math.min(vp.w - 44, fx + fw / 2));
   const mood: PixieMood = ear === "listening" ? "asking" : ear === "thinking" ? "thinking" : !rect ? (arrived ? "wave" : "fly") : arrived ? "point" : "flyside";
 
   return (
@@ -502,15 +523,15 @@ export function FairyTour() {
         <span
           key={`tap-${i}-${phase}`}
           className="tour-tap pointer-events-none fixed"
-          style={{ left: flip ? fx + FW : fx, top: fy + FH * TIP_Y }}
+          style={{ left: flip ? fx + fw : fx, top: fy + fh * TIP_Y }}
           aria-hidden
         />
       ) : null}
       <div
         className="tour-fly pointer-events-none fixed left-0 top-0"
         style={{
-          width: big ? FW * 1.4 : FW,
-          height: big ? FH * 1.4 : FH,
+          width: fw,
+          height: fh,
           transform: `translate(${fx}px, ${fy}px)`,
         }}
       >
@@ -529,7 +550,7 @@ export function FairyTour() {
               />
             ) : null}
             <p className="text-sm font-bold uppercase tracking-wide text-[#d9506f]">{label}</p>
-            <p key={answer ?? ""} className="mt-1 min-h-0 overflow-y-auto text-lg leading-snug">
+            <p key={answer ?? ""} className="mt-1 min-h-[4.5rem] overflow-y-auto text-lg leading-snug">
               {sentences(answer ?? t(lang, line)).map((part, k, all) => (
                 <span key={k} className="fi-word" style={{ animationDelay: `${sentenceDelays(all)[k]}s` }}>
                   {part}

@@ -92,8 +92,8 @@ export const TOPICS: HowTopic[] = [
         tab: "today",
         find: { text: { en: /^I took it$/, hi: /^ले ली$/ }, tour: "now" },
         line: {
-          en: "When a medicine is due, it shows here on Today. Press I took it, and it turns green.",
-          hi: "जब दवा का समय होता है, वह यहाँ आज वाले पन्ने पर दिखती है. ले ली दबाइए, वह हरी हो जाएगी.",
+          en: "When a medicine is due, it shows here on Today. Press I took it, and it moves down to Done today.",
+          hi: "जब दवा का समय होता है, वह यहाँ आज वाले पन्ने पर दिखती है. ले ली दबाइए, वह नीचे ‘आज हो गया’ में चली जाएगी.",
         },
         mood: "point",
       },

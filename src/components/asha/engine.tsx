@@ -20,6 +20,8 @@ const buzzed = new Set<string>();
 async function webTick() {
   const s = useAsha.getState();
   if (isNative || !s.hydrated || !s.onboarded || s.appRole !== "elder" || !s.voiceOn) return;
+  // while she is showing the person round, nothing else speaks over her
+  if (!s.tourDone) return;
   if (useSpeech.getState().active) return;
   const items = buildAgenda(s);
   if (isQuiet(s)) {
@@ -47,12 +49,14 @@ async function webTick() {
       /* optional */
     }
   }
-  await speak(next.say, s.voiceLang, s.richVoice ? "warm" : "device");
+  // the fairy is the one on screen, so the reminder comes in her voice too
+  await speak(next.say, s.voiceLang, "fairy");
 }
 
 export function ReminderEngine() {
   const hydrated = useAsha((s) => s.hydrated);
   const onboarded = useAsha((s) => s.onboarded);
+  const tourDone = useAsha((s) => s.tourDone);
 
   // Keep Android's reminder list in step with the app.
   useEffect(() => {
@@ -151,13 +155,13 @@ export function ReminderEngine() {
     const id = window.setInterval(() => void webTick(), 15000);
     const greetTimer = window.setTimeout(() => {
       const s = useAsha.getState();
-      if (!s.onboarded || s.appRole !== "elder" || !s.voiceOn || !s.speakOnOpen) return;
+      if (!s.onboarded || !s.tourDone || s.appRole !== "elder" || !s.voiceOn || !s.speakOnOpen) return;
       if (!isNative && buildAgenda(s).some((item) => shouldSpeak(item, s.reminded, s.snooze))) {
         void webTick();
         return;
       }
       const g = greeting(s.voiceLang, s.name, new Date());
-      void speak(`${g.title} ${g.line}`, s.voiceLang, s.richVoice ? "warm" : "device");
+      void speak(`${g.title} ${g.line}`, s.voiceLang, "fairy");
     }, 2600);
     return () => {
       window.clearInterval(id);
@@ -166,7 +170,7 @@ export function ReminderEngine() {
       unsub();
       void wake?.release().catch(() => undefined);
     };
-  }, [hydrated, onboarded]);
+  }, [hydrated, onboarded, tourDone]);
 
   return null;
 }
