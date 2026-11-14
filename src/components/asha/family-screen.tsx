@@ -61,7 +61,7 @@ function ConsentForm({ value, onChange }: { value: Consent; onChange: (c: Consen
   const rows: { key: keyof Consent; en: string; hi: string }[] = [
     { key: "shareMeds", en: "When I take my medicines", hi: "जब मैं दवा लूँ" },
     { key: "shareMeals", en: "When I eat my meals", hi: "जब मैं खाना खाऊँ" },
-    { key: "shareMood", en: "How I feel today (from Care)", hi: "आज मैं कैसा महसूस कर रही हूँ (देखभाल से)" },
+    { key: "shareMood", en: "How I feel today (from Care)", hi: "आज मेरी तबीयत कैसी है (देखभाल से)" },
     { key: "shareMissed", en: "If I miss a medicine after 3 reminders", hi: "3 बार याद दिलाने पर भी दवा छूटे" },
     { key: "nudge", en: "If I haven't opened Asha by 1 pm", hi: "अगर दोपहर 1 बजे तक आशा न खोलूँ" },
   ];
@@ -218,7 +218,7 @@ function ElderCircle() {
   const inviteText = invite
     ? lang === "hi"
       ? `${label} ने आपको आशा परिवार में बुलाया है 💛\n1. आशा ऐप लगाएँ: ${APK}\n2. "मैं परिवार से हूँ" चुनें\n3. यह कोड डालें: ${invite.code}`
-      : `${label} invited you to her Asha family circle 💛\n1. Install the Asha app: ${APK}\n2. Choose "I'm family"\n3. Enter this code: ${invite.code}`
+      : `${label} invited you to their Asha family circle 💛\n1. Install the Asha app: ${APK}\n2. Choose "I'm family"\n3. Enter this code: ${invite.code}`
     : "";
 
   return (

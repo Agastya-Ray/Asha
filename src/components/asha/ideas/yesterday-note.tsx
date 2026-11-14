@@ -56,10 +56,10 @@ export function YesterdayNote() {
           }}
         >
           {items.length === 1
-            ? t(lang, { en: "I did take it, I forgot to press", hi: "मैंने ली थी, दबाना भूल गई" })
+            ? t(lang, { en: "I did take it, I forgot to press", hi: "मैंने ली थी, बस बटन दबाना रह गया" })
             : t(lang, {
                 en: "I did take them, I forgot to press",
-                hi: "मैंने ली थीं, दबाना भूल गई",
+                hi: "मैंने ली थीं, बस बटन दबाना रह गया",
               })}
         </Button>
       </div>

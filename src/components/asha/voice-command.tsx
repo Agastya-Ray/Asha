@@ -135,7 +135,7 @@ export function actOnSpoken(said: string) {
   const s = useAsha.getState();
   const v = s.voiceLang;
   const reply = (en: string, hi: string) => {
-    void speak(v === "hi" ? hi : en, v, s.richVoice ? "warm" : "device");
+    void speak(v === "hi" ? hi : en, v, "fairy");
   };
   const open = buildAgenda(s).filter((i) => i.state === "now" || i.state === "open" || i.state === "snoozed");
 
@@ -180,8 +180,12 @@ export function actOnSpoken(said: string) {
   if (want === "taken") {
     const med = open.find((i) => i.kind === "med");
     if (med) {
-      s.logDose(med.id, med.time, "taken");
-      reply(`Well done. I've marked ${med.title} as taken.`, `बहुत अच्छा. ${med.title} ले ली, मैंने लिख लिया.`);
+      // the medicines taken together at that time, all marked at once: "I took them" means the whole handful
+      const batch = open.filter((i) => i.kind === "med" && i.time === med.time);
+      for (const m of batch) s.logDose(m.id, m.time, "taken");
+      const names = batch.map((m) => m.title);
+      const join = (and: string) => (names.length > 1 ? `${names.slice(0, -1).join(", ")} ${and} ${names[names.length - 1]}` : names[0]);
+      reply(`Well done. I've marked ${join("and")} as taken.`, `बहुत अच्छा. ${join("और")} ले ली, मैंने लिख लिया.`);
     } else reply("There is no medicine waiting right now. You're all caught up.", "अभी कोई दवा बाकी नहीं है. सब हो गया.");
     return;
   }

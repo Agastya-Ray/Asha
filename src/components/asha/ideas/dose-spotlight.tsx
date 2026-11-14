@@ -2,6 +2,7 @@ import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { t, useNow } from "@/components/asha/bits";
 import { MedPicture } from "@/components/asha/ideas/med-photo";
+import { usePhoto } from "@/lib/asha/photos";
 import { Pixie } from "@/components/asha/pixie";
 import { buildAgenda } from "@/lib/asha/schedule";
 import { useAsha } from "@/lib/asha/store";
@@ -22,6 +23,8 @@ export function DoseSpotlight() {
   const due = agenda.filter((i) => i.kind === "med" && i.state === "now" && !closed.has(i.key));
   const item = due[0];
   const med = item ? s.meds.find((m) => m.id === item.id) : undefined;
+  // with no photo yet there is nothing to look at, so the name is the thing, said plainly, and the picture stays small
+  const photo = usePhoto(med?.id ?? "", med?.photoAt);
   if (!item || !med) return null;
   const lang = s.lang;
   const who = s.name.trim();
@@ -51,12 +54,16 @@ export function DoseSpotlight() {
         <div className="flex items-end gap-2">
           <Pixie mood="point" className="h-24 w-20 shrink-0" />
           <p className="mb-2 flex-1 rounded-3xl border-2 border-[#f3c4d0] bg-linen p-3 text-lg leading-snug">
-            {lang === "hi"
-              ? `${who ? `${who}, ` : ""}अब यह वाली. ठीक यही दवा, इतनी ही.`
-              : `${who ? `${who}, ` : ""}it's time for this one. Exactly this medicine, this much.`}
+            {photo
+              ? lang === "hi"
+                ? `${who ? `${who}, ` : ""}अब यह वाली. ठीक यही दवा, इतनी ही.`
+                : `${who ? `${who}, ` : ""}it's time for this one. Exactly this medicine, this much.`
+              : lang === "hi"
+                ? `${who ? `${who}, ` : ""}${med.name} का समय हो गया. ${item.detail}.`
+                : `${who ? `${who}, ` : ""}it's time for ${med.name}. ${item.detail}.`}
           </p>
         </div>
-        <MedPicture med={med} className="mt-3 aspect-square w-full max-h-[48vh]" />
+        <MedPicture med={med} className={photo ? "mt-3 aspect-square w-full max-h-[48vh]" : "mx-auto mt-3 aspect-square w-28"} />
         <p className="mt-4 text-center text-4xl font-bold leading-tight">{med.name}</p>
         <p className="mt-1 text-center text-2xl">{item.detail}</p>
         {due.length > 1 ? (
